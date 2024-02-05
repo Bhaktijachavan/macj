@@ -62,8 +62,16 @@ const Editor = ({ imageUrl, onTextChange }) => {
     const newText = {
       id: texts.length + 1,
       content: text,
-      position: { x: 0, y: 0 }, // Initial position
+      position: { x: 20, y: 20 }, // Initial position
       // ... (other styling properties)
+      font,
+      fontSize,
+      isBold,
+      isItalic,
+      isHighlighted,
+      textColor,
+      highlightColor,
+      highlightOpacity,
     };
 
     setTexts([...texts, newText]);
@@ -87,11 +95,19 @@ const Editor = ({ imageUrl, onTextChange }) => {
             <div
               className="text-overlay"
               style={{
-                color: "white",
+                color: t.textColor,
                 position: "absolute",
                 top: `${t.position.y}%`,
                 left: `${t.position.x}%`,
-                fontSize: "20px",
+                fontSize: `${t.fontSize}px`,
+                fontFamily: t.font,
+                fontWeight: t.isBold ? "bold" : "normal",
+                fontStyle: t.isItalic ? "italic" : "normal",
+                backgroundColor: t.isHighlighted
+                  ? `${t.highlightColor}${Math.round(
+                      t.highlightOpacity * 255
+                    ).toString(16)}`
+                  : "transparent",
                 textAlign: "center",
                 cursor: "move",
               }}
