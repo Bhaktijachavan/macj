@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./CoverPageDesigner.css";
-// CoverPageDesigner component
+
 function CoverPageDesigner() {
   const [selectedObjects, setSelectedObjects] = useState([]);
   const [outputContent, setOutputContent] = useState([]);
@@ -23,10 +23,56 @@ function CoverPageDesigner() {
     updatedOutput.splice(index, 1);
     setOutputContent(updatedOutput);
   };
+  const [isCoverPhotoChecked, setIsCoverPhotoChecked] = useState(false); // State to track the "Cover Photo" checkbox status
 
+  const handleCoverPhotoCheckboxChange = (event) => {
+    setIsCoverPhotoChecked(event.target.checked); // Update the state based on the checkbox status
+  };
+  // OutputComponent: A component to render different types of output
+  function OutputComponent({ type, properties, remove }) {
+    switch (type) {
+      case "button":
+        return (
+          <p className="btn" onClick={properties.onClick}>
+            {properties.label}
+          </p>
+        );
+      case "logo":
+        return (
+          <p className="logo" onClick={properties.onClick}>
+            {properties.label}
+          </p>
+        );
+      case "checkbox":
+        return (
+          <p className="checkbox" onClick={properties.onClick}>
+            {properties.label}
+          </p>
+        );
+      default:
+        return null;
+    }
+  }
   // Function to handle resizing, dragging, etc.
 
   const handleCheckboxChange = (event, label) => {
+    if (label === "Cover Photo") {
+      setIsCoverPageChecked(event.target.checked); // Update the state based on the checkbox status
+      if (event.target.checked) {
+        // If checked, add the draggable text
+        addObjectToOutput("draggableText", {
+          text: "Draggable Text",
+          id: "draggable-text",
+        });
+      } else {
+        // If unchecked, remove the draggable text
+        const updatedOutputContent = outputContent.filter(
+          (obj) => obj.type !== "draggableText"
+        );
+        setOutputContent(updatedOutputContent);
+      }
+    }
+
     if (event.target.checked) {
       setSelectedObjects([...selectedObjects, label]);
       addObjectToOutput("checkbox", { label: label });
@@ -40,33 +86,64 @@ function CoverPageDesigner() {
       );
       setOutputContent(updatedOutputContent);
     }
-
-    // Check which checkbox is clicked and add corresponding functionality
-    if (label === "Cover Photo") {
-      // Add button to output for "Cover Photo" checkbox
-      const buttonComponent = {
-        type: "button",
-        properties: {
-          label: "Cover Photo",
-          onClick: () => alert("Button for Cover Photo clicked"),
-        },
-      };
-      addObjectToOutput("button", buttonComponent.properties);
-    }
-    if (label === "Company Logo") {
-      // Add button to output for "Cover Photo" checkbox
-      const buttonComponent = {
-        type: "button",
-        properties: {
-          label: "Company Logo",
-          onClick: () => alert("Button for Cover Photo clicked"),
-        },
-      };
-      addObjectToOutput("logo", buttonComponent.properties);
-    }
-    // Add similar functionality for other checkboxes as needed
   };
 
+  // Check which checkbox is clicked and add corresponding functionality
+  function OutputComponent({ type, properties, remove }) {
+    if (type === "Cover Photo") {
+      return (
+        <p className="btn" onClick={properties.onClick}>
+          {properties.label}
+        </p>
+      );
+    } else if (type === "Company Logo") {
+      return (
+        <p className="logo" onClick={properties.onClick}>
+          {properties.label}
+        </p>
+      );
+    } else if (type === "Company Information") {
+      return (
+        <p className="checkbox" onClick={properties.onClick}>
+          {properties.label}
+        </p>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  // Add similar functionality for other checkboxes as needed
+  // DraggableInputField component
+
+  const DraggableInputField = () => {
+    // Implement draggable functionality here
+    return (
+      <div
+        className="draggable-input-field"
+        style={{ position: "absolute", top: 0, left: 0 }} // Adjust position as needed
+      >
+        <input type="text" className="draggable-input" />
+      </div>
+    );
+  };
+  // DraggableText component
+  function DraggableText({ text, id }) {
+    const handleDragStart = (event) => {
+      event.dataTransfer.setData("text/plain", event.target.id);
+    };
+
+    return (
+      <div
+        id={id}
+        draggable="true"
+        onDragStart={handleDragStart}
+        className="draggable-text"
+      >
+        {text}
+      </div>
+    );
+  }
   return (
     <>
       <div
@@ -116,7 +193,7 @@ function CoverPageDesigner() {
                     <input
                       type="checkbox"
                       onChange={(e) =>
-                        handleCheckboxChange(e, "  Inspection Details")
+                        handleCheckboxChange(e, " Inspection Details")
                       }
                     />
                     Inspection Details
@@ -304,14 +381,26 @@ function CoverPageDesigner() {
         {/* Output Column */}
         <div className="w-1/2 border p-4 border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here">
           <h2 className="text-2xl font-bold mb-4">Output</h2>
-          {outputContent.map((object, index) => (
-            <OutputComponent
-              key={index}
-              type={object.type}
-              properties={object.properties}
-              remove={() => removeObjectFromOutput(index)}
-            />
-          ))}
+          {outputContent.map((object, index) => {
+            if (object.type === "draggableText") {
+              return (
+                <DraggableText
+                  key={index}
+                  text={object.properties.text}
+                  id={object.properties.id}
+                />
+              );
+            } else {
+              return (
+                <OutputComponent
+                  key={index}
+                  type={object.type}
+                  properties={object.properties}
+                  remove={() => removeObjectFromOutput(index)}
+                />
+              );
+            }
+          })}
         </div>
       </div>
       <div className="contains-bottom-section-with-buttons-design-cover-page">
@@ -333,26 +422,7 @@ function CoverPageDesigner() {
     </>
   );
 }
-// OutputComponent: A component to render different types of output
-function OutputComponent({ type, properties, remove }) {
-  switch (type) {
-    case "button":
-      return (
-        <p className="btn" onClick={properties.onClick}>
-          {properties.label}
-        </p>
-      );
-    case "Company Logo":
-      return (
-        <p className="btn" onClick={properties.onClick}>
-          {properties.label}
-        </p>
-      );
-    // Add cases for other types of output components
-    default:
-      return null;
-  }
-}
+
 // DraggableComponent: A draggable and resizable component for the Output Column
 function DraggableComponent({ type, properties, updateObject, remove }) {
   // ... Implement the draggable and resizable logic using state and events
