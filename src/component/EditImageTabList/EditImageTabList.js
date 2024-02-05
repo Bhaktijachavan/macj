@@ -46,7 +46,7 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
     6: <DrawArrowContent imageUrl={uploadedImageUrl} />,
     7: <DrawRectangleContent imageUrl={uploadedImageUrl} />,
     8: <DrawOvalContent imageUrl={uploadedImageUrl} />,
-    9: <Editor />,
+    9: <Editor imageUrl={uploadedImageUrl} />,
     // ... (add other tab content components)
   };
 

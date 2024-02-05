@@ -1,23 +1,32 @@
-.editor-for-edit-images-tablist-section{
-    display: flex;
-    justify-content: center;
-    margin-top: 70px;
-
+.editor-for-edit-images-tablist-section {
+  display: flex;
+  justify-content: center;
+  /* margin-top: 70px; */
 }
-.button-for-editor{
-    background-color: #f3f2f1;
-    color: black;
-    border: 2px solid rgb(223, 222, 222);
-    border-radius: 5px; 
-    width: 100px;
-    height: 36px;
-    
-
+.button-for-editor {
+  background-color: #f3f2f1;
+  color: black;
+  border: 2px solid rgb(223, 222, 222);
+  border-radius: 5px;
+  width: 100px;
+  height: 36px;
 }
-.button-for-editor:hover{
-    background-color: #d7e9f7;
-    border-color: #005a9e;
+.button-for-editor:hover {
+  background-color: #d7e9f7;
+  border-color: #005a9e;
 }
-.editor-heading-close{
-    background-color: rgb(242, 236, 236);
+.editor-heading-close {
+  background-color: rgb(242, 236, 236);
+}
+.Editor-image-container-to-add-text {
+  position: relative;
+  width: auto;
+  cursor: crosshair;
+  padding: 20px;
+}
+.Editor-image-to-add-text {
+  display: block;
+  width: 100%;
+  height: 500px;
+  margin-top: 3em;
 }

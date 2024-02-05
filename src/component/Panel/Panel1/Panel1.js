@@ -5,9 +5,13 @@ import Footer from "../../Footer/Footer";
 import PanelHeader from "../PanelHeader/PanelHeader";
 import PannelComponent from "../PannelComponent/PannelComponent";
 import EditComments from "../../EditComments/EditComments";
+import MobileUpload from "./../../MobileUpload/MobileUpolad";
 
-function Panel1() {
+function Panel1({ imageUrl }) {
   const [ispopupOpenComment, setIspopupOpenComment] = useState(false);
+  const handleAddButtonClick = () => {};
+  const isAddModalVisible = () => {};
+  const handleModalClose = () => {};
 
   return (
     <>
