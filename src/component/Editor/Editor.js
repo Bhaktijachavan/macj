@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Editor.css";
 import Draggable from "react-draggable";
-const Editor = ({ imageUrl, onTextChange }) => {
+const Editor = ({ imageUrl, onTextChange, changes }) => {
   const [font, setFont] = useState("Arial");
   const [fontSize, setFontSize] = useState(16);
   const [isBold, setIsBold] = useState(false);
@@ -76,6 +76,7 @@ const Editor = ({ imageUrl, onTextChange }) => {
 
     setTexts([...texts, newText]);
     setText(""); // Clear the textarea after adding text
+    onTextChange([...texts, newText]);
   };
 
   return (
@@ -280,7 +281,6 @@ const Editor = ({ imageUrl, onTextChange }) => {
                     value={text}
                     onChange={(e) => {
                       setText(e.target.value);
-                      onTextChange(e.target.value); // Propagate the text change to the parent
                     }}
                   />
                 </div>

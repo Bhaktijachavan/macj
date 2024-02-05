@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "./AdjustBrightnessContent.css"; // You may need to create a CSS file for styling
+import "./AdjustBrightnessContent.css";
 
-const AdjustBrightnessContent = ({ imageUrl, text }) => {
+const AdjustBrightnessContent = ({ imageUrl, texts, changes }) => {
   const [brightness, setBrightness] = useState(100);
 
   const handleBrightnessChange = (event) => {
@@ -20,22 +20,31 @@ const AdjustBrightnessContent = ({ imageUrl, text }) => {
           alt="Preview"
           className="preview-image-brightness"
         />
-        {text && (
-          <div
-            className="text-overlay"
-            style={{
-              color: "white",
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              fontSize: "20px",
-              textAlign: "center",
-            }}
-          >
-            {text}
-          </div>
-        )}
+        {texts &&
+          texts.map((text) => (
+            <div
+              key={text.id}
+              className="text-overlay"
+              style={{
+                color: text.textColor,
+                position: "absolute",
+                top: `${text.position.y}%`,
+                left: `${text.position.x}%`,
+                fontSize: `${text.fontSize}px`,
+                fontFamily: text.font,
+                fontWeight: text.isBold ? "bold" : "normal",
+                fontStyle: text.isItalic ? "italic" : "normal",
+                backgroundColor: text.isHighlighted
+                  ? `${text.highlightColor}${Math.round(
+                      text.highlightOpacity * 255
+                    ).toString(16)}`
+                  : "transparent",
+                textAlign: "center",
+              }}
+            >
+              {text.content}
+            </div>
+          ))}
       </div>
       <div className="brightness-control">
         <label htmlFor="brightnessRange">Adjust Brightness</label>

@@ -31,8 +31,8 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
     onRequestClose();
     setIsTextEditorOpen(false); // Close the text editor when closing the main popup
   };
-  const handleTextChange = (newText) => {
-    setTextFromEditor(newText); // Update text state when it changes in Editor
+  const handleTextChange = (newTexts) => {
+    setTextFromEditor(newTexts); // Update text state when it changes in Editor
   };
   const tabNames = [
     "Crop Image",
@@ -52,7 +52,7 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
     2: (
       <AdjustBrightnessContent
         imageUrl={uploadedImageUrl}
-        text={textFromEditor}
+        texts={textFromEditor}
       />
     ),
     3: <AdjustContrastContent imageUrl={uploadedImageUrl} />,
