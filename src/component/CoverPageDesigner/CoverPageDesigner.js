@@ -1,21 +1,15 @@
 import React, { useState } from "react";
 import "./CoverPageDesigner.css";
+import OutputComponent from "./OutputComponent/OutputComponent";
+import DraggableText from "./DraggableText/DraggableText";
 
 function CoverPageDesigner() {
   const [selectedObjects, setSelectedObjects] = useState([]);
   const [outputContent, setOutputContent] = useState([]);
+  const [isCoverPhotoChecked, setIsCoverPhotoChecked] = useState(false);
 
   const addObjectToOutput = (objectType, properties) => {
     setOutputContent([...outputContent, { type: objectType, properties }]);
-  };
-
-  const updateObjectInOutput = (index, properties) => {
-    const updatedOutput = [...outputContent];
-    updatedOutput[index].properties = {
-      ...updatedOutput[index].properties,
-      ...properties,
-    };
-    setOutputContent(updatedOutput);
   };
 
   const removeObjectFromOutput = (index) => {
@@ -23,49 +17,16 @@ function CoverPageDesigner() {
     updatedOutput.splice(index, 1);
     setOutputContent(updatedOutput);
   };
-  const [isCoverPhotoChecked, setIsCoverPhotoChecked] = useState(false); // State to track the "Cover Photo" checkbox status
-
-  const handleCoverPhotoCheckboxChange = (event) => {
-    setIsCoverPhotoChecked(event.target.checked); // Update the state based on the checkbox status
-  };
-  // OutputComponent: A component to render different types of output
-  function OutputComponent({ type, properties, remove }) {
-    switch (type) {
-      case "button":
-        return (
-          <p className="btn" onClick={properties.onClick}>
-            {properties.label}
-          </p>
-        );
-      case "logo":
-        return (
-          <p className="logo" onClick={properties.onClick}>
-            {properties.label}
-          </p>
-        );
-      case "checkbox":
-        return (
-          <p className="checkbox" onClick={properties.onClick}>
-            {properties.label}
-          </p>
-        );
-      default:
-        return null;
-    }
-  }
-  // Function to handle resizing, dragging, etc.
 
   const handleCheckboxChange = (event, label) => {
     if (label === "Cover Photo") {
-      setIsCoverPageChecked(event.target.checked); // Update the state based on the checkbox status
+      setIsCoverPhotoChecked(event.target.checked);
       if (event.target.checked) {
-        // If checked, add the draggable text
         addObjectToOutput("draggableText", {
           text: "Draggable Text",
           id: "draggable-text",
         });
       } else {
-        // If unchecked, remove the draggable text
         const updatedOutputContent = outputContent.filter(
           (obj) => obj.type !== "draggableText"
         );
@@ -87,63 +48,6 @@ function CoverPageDesigner() {
       setOutputContent(updatedOutputContent);
     }
   };
-
-  // Check which checkbox is clicked and add corresponding functionality
-  function OutputComponent({ type, properties, remove }) {
-    if (type === "Cover Photo") {
-      return (
-        <p className="btn" onClick={properties.onClick}>
-          {properties.label}
-        </p>
-      );
-    } else if (type === "Company Logo") {
-      return (
-        <p className="logo" onClick={properties.onClick}>
-          {properties.label}
-        </p>
-      );
-    } else if (type === "Company Information") {
-      return (
-        <p className="checkbox" onClick={properties.onClick}>
-          {properties.label}
-        </p>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  // Add similar functionality for other checkboxes as needed
-  // DraggableInputField component
-
-  const DraggableInputField = () => {
-    // Implement draggable functionality here
-    return (
-      <div
-        className="draggable-input-field"
-        style={{ position: "absolute", top: 0, left: 0 }} // Adjust position as needed
-      >
-        <input type="text" className="draggable-input" />
-      </div>
-    );
-  };
-  // DraggableText component
-  function DraggableText({ text, id }) {
-    const handleDragStart = (event) => {
-      event.dataTransfer.setData("text/plain", event.target.id);
-    };
-
-    return (
-      <div
-        id={id}
-        draggable="true"
-        onDragStart={handleDragStart}
-        className="draggable-text"
-      >
-        {text}
-      </div>
-    );
-  }
   return (
     <>
       <div
@@ -405,7 +309,11 @@ function CoverPageDesigner() {
       </div>
       <div className="contains-bottom-section-with-buttons-design-cover-page">
         <div className="buttons-with-apply-export-import-discard-changes-apply">
-          <button className="button-for-footer-for-changes-in-cover-page">
+          <button
+            className="button-for-footer-forimport DraggableText from './DraggableText/DraggableText';
+-changes-in-cover-page"
+          >
+            import OutputComponent from './OutputComponent/OutputComponent';
             Apply Changes <br /> to Template Template
           </button>{" "}
           <button className="button-for-footer-for-changes-in-cover-page">
