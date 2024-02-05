@@ -47,3 +47,9 @@
   position: relative;
   cursor: pointer;
 }
+.Cover-Page-Design-Popup-ccc {
+  margin: 4em;
+  position: relative;
+  bottom: 9em;
+  z-index: 1;
+}
