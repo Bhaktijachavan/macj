@@ -22,6 +22,7 @@ import img15 from "../../Assets/icons/sync.png";
 import { Link } from "react-router-dom";
 import InternetLogin from "./../InternetLogin/InternetLogin";
 import BatchAddPhotos from "./../Photo/BatchAddPhotos/BatchAddPhotos";
+import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
 
 const Header = () => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
@@ -29,6 +30,9 @@ const Header = () => {
   const [editTemplatePopup, setEditTemplatePopup] = useState(false);
   const [internetLoginPopup, setInternetLoginPopup] = useState(false);
   const [batchAddPhotosPopup, setBatchAddPhotosPopup] = useState(false);
+  const [coverPageDesignPopup, setCoverPageDesignPopup] = useState(false);
+  const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] =
+    useState(false);
   const [activePopup, setActivePopup] = useState(null);
 
   const openOpenTemplatePopup = () => {
@@ -53,6 +57,12 @@ const Header = () => {
 
   const closeEditTemplatePopup = () => {
     setEditTemplatePopup(false);
+  };
+  const closeCoverPageDesignPopup = () => {
+    setCoverPageDesignPopup(false);
+  };
+  const openCoverPageDesignPopup = () => {
+    setCoverPageDesignPopup(true);
   };
 
   const fileInputRef = useRef(null);
@@ -201,20 +211,21 @@ const Header = () => {
               <ul
                 className="submenu w-36 absolute z-10 bg-white shadow mt-2"
                 style={{ lineHeight: "12px", fontSize: "13px" }}
+                onClick={openCoverPageDesignPopup}
               >
-                <Link to="/coverpagedesigner">
-                  <li
-                    className=" hover:bg-gray-200"
-                    style={{
-                      height: "2em",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    Cover Page Designer
-                  </li>
-                </Link>
+                {/* <Link to="/coverpagedesigner"> */}
+                <li
+                  className=" hover:bg-gray-200"
+                  style={{
+                    height: "2em",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  Cover Page Designer
+                </li>
+                {/* </Link> */}
               </ul>
             )}
           </div>
@@ -531,6 +542,12 @@ const Header = () => {
           <div className="popup m-0">
             {/* Render your EditTemplate component here */}
             <BatchAddPhotos onClose={closeBatchAddPhotosPopup} />
+          </div>
+        )}{" "}
+        {coverPageDesignPopup && (
+          <div className="popup Cover-Page-Design-Popup-ccc">
+            {/* Render your EditTemplate component here */}
+            <CoverPageDesigner onClose={closeCoverPageDesignPopup} />
           </div>
         )}
       </div>

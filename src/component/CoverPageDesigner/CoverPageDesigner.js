@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import "./CoverPageDesigner.css";
 import OutputComponent from "./OutputComponent/OutputComponent";
 import DraggableText from "./DraggableText/DraggableText";
+import CheckboxContent1 from "./CheckboxContent1/CheckboxContent1";
+import CheckboxContent2 from "./CheckboxContent2/CheckboxContent2";
+import DefaultContent from "./DefaultContent/DefaultContent";
 
-function CoverPageDesigner() {
+function CoverPageDesigner({ onClose }) {
   const [selectedObjects, setSelectedObjects] = useState([]);
   const [outputContent, setOutputContent] = useState([]);
   const [isCoverPhotoChecked, setIsCoverPhotoChecked] = useState(false);
+  const [selectedCheckboxContents, setSelectedCheckboxContents] = useState([]);
+  // State to track selected checkbox content
 
   const addObjectToOutput = (objectType, properties) => {
     setOutputContent([...outputContent, { type: objectType, properties }]);
@@ -18,23 +23,74 @@ function CoverPageDesigner() {
     setOutputContent(updatedOutput);
   };
 
+  // const handleCheckboxChange = (event, label) => {
+  //   const isChecked = event.target.checked;
+
+  //   // If checkbox is checked, add the content to the array
+  //   if (isChecked) {
+  //     const newContent = getContentForLabel(label);
+  //     setSelectedCheckboxContents([...selectedCheckboxContents, newContent]);
+  //   } else {
+  //     // If checkbox is unchecked, remove the content from the array
+  //     const updatedContents = selectedCheckboxContents.filter(
+  //       (content) => content.label !== label
+  //     );
+  //     setSelectedCheckboxContents(updatedContents);
+  //   }
+
+  //   // Logic to handle checkbox change
+  //   // You can set the selected checkbox content here
+  //   switch (label) {
+  //     case "Cover Photo":
+  //       setSelectedCheckboxContent(<CheckboxContent1 />);
+  //       break;
+  //     case "Company Logo":
+  //       setSelectedCheckboxContent(<CheckboxContent2 />);
+  //       break;
+  //     case "Company Information":
+  //       setSelectedCheckboxContent(<CheckboxContent2 />);
+  //       break;
+  //     case "Inspection Details":
+  //       setSelectedCheckboxContent(<CheckboxContent1 />);
+  //       break;
+  //     // Add more cases for other checkboxes if needed
+  //     default:
+  //       setSelectedCheckboxContent(null); // Reset if no checkbox is selected
+  //   }
+
+  //   // If checkbox is checked, add the content to the array
+  //   // Update other state as needed (e.g., selected objects, output content)
+  //   if (isChecked) {
+  //     setSelectedObjects([...selectedObjects, label]);
+  //     addObjectToOutput("checkbox", { label: label });
+  //   } else {
+  //     const updatedSelectedObjects = selectedObjects.filter(
+  //       (obj) => obj !== label
+  //     );
+  //     setSelectedObjects(updatedSelectedObjects);
+  //     const updatedOutputContent = outputContent.filter(
+  //       (obj) => obj.properties.label !== label
+  //     );
+  //     setOutputContent(updatedOutputContent);
+  //   }
+  // };
   const handleCheckboxChange = (event, label) => {
-    if (label === "Cover Photo") {
-      setIsCoverPhotoChecked(event.target.checked);
-      if (event.target.checked) {
-        addObjectToOutput("draggableText", {
-          text: "Draggable Text",
-          id: "draggable-text",
-        });
-      } else {
-        const updatedOutputContent = outputContent.filter(
-          (obj) => obj.type !== "draggableText"
-        );
-        setOutputContent(updatedOutputContent);
-      }
+    const isChecked = event.target.checked;
+
+    // If checkbox is checked, add the content to the array
+    if (isChecked) {
+      const newContent = getContentForLabel(label);
+      setSelectedCheckboxContents([...selectedCheckboxContents, newContent]);
+    } else {
+      // If checkbox is unchecked, remove the content from the array
+      const updatedContents = selectedCheckboxContents.filter(
+        (content) => content.label !== label
+      );
+      setSelectedCheckboxContents(updatedContents);
     }
 
-    if (event.target.checked) {
+    // Update other state as needed (e.g., selected objects, output content)
+    if (isChecked) {
       setSelectedObjects([...selectedObjects, label]);
       addObjectToOutput("checkbox", { label: label });
     } else {
@@ -48,10 +104,35 @@ function CoverPageDesigner() {
       setOutputContent(updatedOutputContent);
     }
   };
+
+  // Function to get content component for each label
+  const getContentForLabel = (label) => {
+    let content = null;
+    switch (label) {
+      case "Cover Photo":
+        content = <CheckboxContent1 />;
+        break;
+      case "Company Logo":
+        content = <CheckboxContent2 />;
+        break;
+      // Add more cases for other checkboxes if needed
+      default:
+        // Handle unknown labels here (e.g., return a default component)
+        content = <DefaultContent />;
+    }
+    return content;
+  };
+
   return (
     <>
+      <div className="cover-page-header-closer-btn">
+        <span className="cover-page-design-header-text">Cover Page Design</span>
+        <button onClick={onClose} className="close-button-cover-page-design">
+          X
+        </button>
+      </div>
       <div
-        className="flex justify-center gap-3 p-2 bg-gray-200"
+        className="flex justify-center gap-3 p-2 bg-gray-200 main-container-for-the-cover-page-designer-popup-page"
         // style={{ height: "100vh" }}
       >
         <div className="container-for-Object-and-control-section-for-design-cover-page-grid">
@@ -59,7 +140,7 @@ function CoverPageDesigner() {
           {/* <p>objects</p> */}{" "}
           <fieldset className="bordered-text">
             <legend className="tag-for-line-draw-through-text">Objects</legend>
-            <div className="contains-template-and-design-components-for-cover-page-design-OBJECTS bg-white">
+            <div className="contains-template-and-design-components-for-cover-page-design-OBJECTS ">
               {/* <h2 className="text-2xl font-bold mb-4">Objects</h2> */}
               {/* Template Components */}
               <fieldset className="bordered-text">
@@ -80,7 +161,7 @@ function CoverPageDesigner() {
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      onChange={(e) => handleCheckboxChange(e, " Company Logo")}
+                      onChange={(e) => handleCheckboxChange(e, "Company Logo")}
                     />
                     Company Logo
                   </label>
@@ -97,7 +178,7 @@ function CoverPageDesigner() {
                     <input
                       type="checkbox"
                       onChange={(e) =>
-                        handleCheckboxChange(e, " Inspection Details")
+                        handleCheckboxChange(e, "Inspection Details")
                       }
                     />
                     Inspection Details
@@ -121,7 +202,7 @@ function CoverPageDesigner() {
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      onChange={(e) => handleCheckboxChange(e, " Report Title")}
+                      onChange={(e) => handleCheckboxChange(e, "Report Title")}
                     />
                     Report Title
                   </label>
@@ -285,7 +366,10 @@ function CoverPageDesigner() {
         {/* Output Column */}
         <div className="w-1/2 border p-4 border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here">
           <h2 className="text-2xl font-bold mb-4">Output</h2>
-          {outputContent.map((object, index) => {
+          {selectedCheckboxContents.map((content, index) => (
+            <div key={index}>{content}</div>
+          ))}
+          {/* {outputContent.map((object, index) => {
             if (object.type === "draggableText") {
               return (
                 <DraggableText
@@ -304,16 +388,15 @@ function CoverPageDesigner() {
                 />
               );
             }
-          })}
+          })} */}
         </div>
       </div>
       <div className="contains-bottom-section-with-buttons-design-cover-page">
         <div className="buttons-with-apply-export-import-discard-changes-apply">
           <button
-            className="button-for-footer-forimport DraggableText from './DraggableText/DraggableText';
+            className="button-for-footer-forimport DefaultContent from './DefaultContent/DefaultContent';
 -changes-in-cover-page"
           >
-            import OutputComponent from './OutputComponent/OutputComponent';
             Apply Changes <br /> to Template Template
           </button>{" "}
           <button className="button-for-footer-for-changes-in-cover-page">
@@ -334,40 +417,46 @@ function CoverPageDesigner() {
 // DraggableComponent: A draggable and resizable component for the Output Column
 function DraggableComponent({ type, properties, updateObject, remove }) {
   // ... Implement the draggable and resizable logic using state and events
-  // return (
-  //   <div
-  //     className="border p-4 mb-4"
-  //     style={{
-  //       width: `${properties.width}px`,
-  //       height: `${properties.height}px`,
-  //       border: properties.border,
-  //       // ... Add more styles based on properties (e.g., position)
-  //     }}
-  //   >
-  //     {/* Display the content based on the type */}
-  //     {type === "text" && <span className="text-lg">{properties.text}</span>}
-  //     {type === "image" && (
-  //       <img
-  //         src={properties.src}
-  //         alt={properties.alt}
-  //         className="max-w-full h-auto"
-  //       />
-  //     )}
-  //     {type === "box" && <div className="w-full h-full bg-gray-200"></div>}
-  //     {/* ... Add more cases for other object types */}
-  //     {/* Add controls for resizing, moving, etc. */}
-  //     {/* <button className="btn" onClick={() => updateObject({ fontSize: 16 })}>Show Actual Font Size</button>
-  //           <button className="btn" onClick={() => updateObject({ zoom: 1.2 })}>Zoom In</button>
-  //           <button className="btn" onClick={() => updateObject({ zoom: 0.8 })}>Zoom Out</button> */}
-  //     {/* ... Add more controls as needed */}
-  //     <button className="btn" onClick={remove}>
-  //       Photo
-  //     </button>
-  //     <button className="btn" onClick={remove}>
-  //       Remove
-  //     </button>
-  //   </div>
-  // );
+  return (
+    <div
+      className="border p-4 mb-4"
+      style={{
+        width: `${properties.width}px`,
+        height: `${properties.height}px`,
+        border: properties.border,
+        // ... Add more styles based on properties (e.g., position)
+      }}
+    >
+      {/* Display the content based on the type */}
+      {type === "text" && <span className="text-lg">{properties.text}</span>}
+      {type === "image" && (
+        <img
+          src={properties.src}
+          alt={properties.alt}
+          className="max-w-full h-auto"
+        />
+      )}
+      {type === "box" && <div className="w-full h-full bg-gray-200"></div>}
+      {/* ... Add more cases for other object types */}
+      {/* Add controls for resizing, moving, etc. */}
+      <button className="btn" onClick={() => updateObject({ fontSize: 16 })}>
+        Show Actual Font Size
+      </button>
+      <button className="btn" onClick={() => updateObject({ zoom: 1.2 })}>
+        Zoom In
+      </button>
+      <button className="btn" onClick={() => updateObject({ zoom: 0.8 })}>
+        Zoom Out
+      </button>
+      {/* ... Add more controls as needed */}
+      <button className="btn" onClick={remove}>
+        Photo
+      </button>
+      <button className="btn" onClick={remove}>
+        Remove
+      </button>
+    </div>
+  );
 }
 
 export default CoverPageDesigner;

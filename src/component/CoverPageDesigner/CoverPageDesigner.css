@@ -1,3 +1,8 @@
+.main-container-for-the-cover-page-designer-popup-page {
+  position: relative;
+  z-index: 1;
+}
+
 .contains-template-and-design-components-for-cover-page-design-OBJECTS {
   display: flex;
   padding: 1em;
@@ -130,4 +135,27 @@ fieldset {
 .contains-the-list-of-selected-objects-and-thier-layer {
   line-height: 2em;
   padding: 1em;
+}
+
+.cover-page-header-closer-btn {
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(242, 236, 236);
+  border: solid 1px rgb(191, 189, 189);
+  padding: 1em 0 1em 1em;
+}
+.cover-page-design-header-text {
+  font-size: 12px;
+}
+.close-button-cover-page-design {
+  background-color: transparent;
+  border: none;
+  padding: 0 10px;
+}
+.close-button-cover-page-design:hover {
+  background-color: #e60000;
+  color: white;
+  height: 29px;
 }
