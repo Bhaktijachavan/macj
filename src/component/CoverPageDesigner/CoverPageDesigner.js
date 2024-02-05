@@ -393,10 +393,7 @@ function CoverPageDesigner({ onClose }) {
       </div>
       <div className="contains-bottom-section-with-buttons-design-cover-page">
         <div className="buttons-with-apply-export-import-discard-changes-apply">
-          <button
-            className="button-for-footer-forimport DefaultContent from './DefaultContent/DefaultContent';
--changes-in-cover-page"
-          >
+          <button className="button-for-footer-for-changes-in-cover-page">
             Apply Changes <br /> to Template Template
           </button>{" "}
           <button className="button-for-footer-for-changes-in-cover-page">
