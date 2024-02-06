@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import "./CoverPageDesigner.css";
+import React, { useState, useRef } from "react";
 import OutputComponent from "./OutputComponent/OutputComponent";
 import DraggableText from "./CompanyInfo/CompanyInfo";
 import CheckboxContent1 from "./CheckboxContent1/CheckboxContent1";
@@ -13,36 +12,83 @@ import ReportTitle from "./ReportTitle/ReportTitle";
 import InspectionSignature from "./Inspection Signature/InspectionSignature";
 import AgentPhoto from "./Agent Photo/AgentPhoto";
 import CompanyInfo from "./CompanyInfo/CompanyInfo";
+import EditableText from "./EditableText/EditableText";
+import "./CoverPageDesigner.css";
 
 function CoverPageDesigner({ onClose }) {
+  const fileInputRef = useRef(null);
   const [selectedObjects, setSelectedObjects] = useState([]);
   const [outputContent, setOutputContent] = useState([]);
   const [isCoverPhotoChecked, setIsCoverPhotoChecked] = useState(false);
   const [selectedCheckboxContents, setSelectedCheckboxContents] = useState([]);
-  // State to track selected checkbox content
-
-  // State and other functions...
-  const [isEditingText, setIsEditingText] = useState(false);
-  const [editedText, setEditedText] = useState("");
-
-  // Function to handle adding/editing text
-  const handleTextAddEdit = () => {
-    setIsEditingText(true);
-    // Fetch existing text from outputContent if needed
-    // Set the existing text to editedText state
-  };
-  const startTextEdit = (text) => {
-    setEditedText(text);
-  };
-  // Function to handle saving edited text
-  const handleTextSave = () => {
-    // Update outputContent with the edited text if needed
-    // You can also update other states or perform additional logic here
-    setIsEditingText(false);
-  };
+  const [editableTexts, setEditableTexts] = useState([]); // State to hold editable text elements
+  const [addedImages, setAddedImages] = useState([]); // State to hold added images
+  const [isAgentPhotoUploaded, setIsAgentPhotoUploaded] = useState(false);
+  const [isPageBordersChecked, setIsPageBordersChecked] = useState(false); // State to track whether "Page Borders" checkbox is checked
 
   const addObjectToOutput = (objectType, properties) => {
     setOutputContent([...outputContent, { type: objectType, properties }]);
+  };
+  const handleAddText = () => {
+    // Here you can implement logic to get the text to add, such as from a text input
+    // For demonstration purposes, I'll just set a static text
+    const newText = "Add new text here ...";
+
+    // Generate a unique identifier for the new text
+    const id = `text_${editableTexts.length + 1}`;
+
+    // Add the new editable text element to the state
+    setEditableTexts([...editableTexts, { id, text: newText }]);
+  };
+  // Modify the handleImageUpload function to set the state when an image is uploaded for Agent Photo
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0]; // Get the selected file
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file); // Convert the file to a data URL
+      reader.onloadend = () => {
+        // After reading the file, create a new image object
+        const newImage = {
+          id: `image_${addedImages.length + 1}`,
+          src: reader.result, // Use the data URL as image source
+          file: file, // Store the file object for later use
+          height: 100, // You can set default height and width here
+          width: 150,
+        };
+        // Add the new image to the state
+        setAddedImages([...addedImages, newImage]);
+
+        // Set the state to indicate that an image is uploaded for Agent Photo
+        setIsAgentPhotoUploaded(true);
+      };
+    }
+  };
+
+  const handleAddImage = () => {
+    // Here you can implement logic to get image properties, such as from a file input
+    // For demonstration purposes, I'll set static properties
+    const newImage = {
+      id: `image_${addedImages.length + 1}`,
+      src: "path/to/image.jpg", // Replace with the actual source path
+      height: 100, // Set the desired height
+      width: 150, // Set the desired width
+    };
+
+    // Add the new image element to the state
+    setAddedImages([...addedImages, newImage]);
+  };
+  // Modify the handleDeleteImage function to reset the state related to Agent Photo checkbox
+  const handleDeleteImage = (id) => {
+    // Remove the image with the specified id from the state
+    const updatedImages = addedImages.filter((image) => image.id !== id);
+    setAddedImages(updatedImages);
+
+    // Check if the deleted image corresponds to the Agent Photo
+    const deletedAgentPhoto = addedImages.find((image) => image.id === id);
+    if (deletedAgentPhoto) {
+      // Reset the state related to the Agent Photo checkbox
+      setIsAgentPhotoUploaded(false);
+    }
   };
 
   const removeObjectFromOutput = (index) => {
@@ -51,57 +97,6 @@ function CoverPageDesigner({ onClose }) {
     setOutputContent(updatedOutput);
   };
 
-  // const handleCheckboxChange = (event, label) => {
-  //   const isChecked = event.target.checked;
-
-  //   // If checkbox is checked, add the content to the array
-  //   if (isChecked) {
-  //     const newContent = getContentForLabel(label);
-  //     setSelectedCheckboxContents([...selectedCheckboxContents, newContent]);
-  //   } else {
-  //     // If checkbox is unchecked, remove the content from the array
-  //     const updatedContents = selectedCheckboxContents.filter(
-  //       (content) => content.label !== label
-  //     );
-  //     setSelectedCheckboxContents(updatedContents);
-  //   }
-
-  //   // Logic to handle checkbox change
-  //   // You can set the selected checkbox content here
-  //   switch (label) {
-  //     case "Cover Photo":
-  //       setSelectedCheckboxContent(<CheckboxContent1 />);
-  //       break;
-  //     case "Company Logo":
-  //       setSelectedCheckboxContent(<CheckboxContent2 />);
-  //       break;
-  //     case "Company Information":
-  //       setSelectedCheckboxContent(<CheckboxContent2 />);
-  //       break;
-  //     case "Inspection Details":
-  //       setSelectedCheckboxContent(<CheckboxContent1 />);
-  //       break;
-  //     // Add more cases for other checkboxes if needed
-  //     default:
-  //       setSelectedCheckboxContent(null); // Reset if no checkbox is selected
-  //   }
-
-  //   // If checkbox is checked, add the content to the array
-  //   // Update other state as needed (e.g., selected objects, output content)
-  //   if (isChecked) {
-  //     setSelectedObjects([...selectedObjects, label]);
-  //     addObjectToOutput("checkbox", { label: label });
-  //   } else {
-  //     const updatedSelectedObjects = selectedObjects.filter(
-  //       (obj) => obj !== label
-  //     );
-  //     setSelectedObjects(updatedSelectedObjects);
-  //     const updatedOutputContent = outputContent.filter(
-  //       (obj) => obj.properties.label !== label
-  //     );
-  //     setOutputContent(updatedOutputContent);
-  //   }
-  // };
   const handleCheckboxChange = (event, label) => {
     const isChecked = event.target.checked;
 
@@ -117,23 +112,19 @@ function CoverPageDesigner({ onClose }) {
       setSelectedCheckboxContents(updatedContents);
     }
 
-    // Update other state as needed (e.g., selected objects, output content)
-    if (isChecked) {
-      setSelectedObjects([...selectedObjects, label]);
-      addObjectToOutput("checkbox", { label: label });
+    // Ensure label is valid before proceeding
+    if (label) {
+      // If checkbox is checked, set the state accordingly
+      if (label === "Agent Photo") {
+        setIsAgentPhotoUploaded(isChecked);
+      } else {
+        // Handle other checkboxes as before
+      }
     } else {
-      const updatedSelectedObjects = selectedObjects.filter(
-        (obj) => obj !== label
-      );
-      setSelectedObjects(updatedSelectedObjects);
-      const updatedOutputContent = outputContent.filter(
-        (obj) => obj.properties.label !== label
-      );
-      setOutputContent(updatedOutputContent);
+      console.error("Invalid label:", label);
     }
   };
 
-  // Function to get content component for each label
   const getContentForLabel = (label) => {
     let content = null;
     switch (label) {
@@ -144,30 +135,30 @@ function CoverPageDesigner({ onClose }) {
         content = <CheckboxContent2 />;
         break;
       case "Company Information":
-        content = <CompanyInfo />;
+        content = <EditableText initialText="Company Information" />;
         break;
       case "Inspection Details":
-        content = <InspectionDetails />;
+        content = <EditableText initialText="Inspection Details" />;
         break;
       case "Agent Information":
-        content = <AgentInformation />;
+        content = <EditableText initialText="Agent Information" />;
         break;
       case "Cover Company":
-        content = <CoverCompany />;
+        content = <EditableText initialText="Cover Company" />;
         break;
       case "Report Title":
-        content = <ReportTitle />;
+        content = <EditableText initialText="Report Title" />;
         break;
       case "Inspection Signature":
-        content = <InspectionSignature />;
+        content = <EditableText initialText="Inspection Signature" />;
         break;
-      case "Agent Photo":
-        content = <AgentPhoto />;
-        break;
+      // case "Agent Photo":
+      //   content = <AgentPhoto />;
+      //   break;
       // Add more cases for other checkboxes if needed
-      default:
-        // Handle unknown labels here (e.g., return a default component)
-        content = <DefaultContent />;
+      // default:
+      //   // Handle unknown labels here (e.g., return a default component)
+      //   content = <DefaultContent />;
     }
     return content;
   };
@@ -267,7 +258,9 @@ function CoverPageDesigner({ onClose }) {
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
+                      onClick={() => fileInputRef.current.click()}
                       onChange={(e) => handleCheckboxChange(e, "Agent Photo")}
+                      disabled={isAgentPhotoUploaded} // Disable the checkbox if an image is already uploaded
                     />
                     Agent Photo
                   </label>
@@ -319,19 +312,19 @@ function CoverPageDesigner({ onClose }) {
                       >
                         Add Box
                       </button>
-                      <button className="btn" onClick={handleTextAddEdit}>
+                      <button className="btn" onClick={handleAddText}>
                         Add/Edit <br /> Text
                       </button>
-                      <button
-                        className="btn"
-                        onClick={() =>
-                          addObjectToOutput("image", {
-                            /* image properties */
-                          })
-                        }
-                      >
+                      <button onClick={() => fileInputRef.current.click()}>
                         Add Image
                       </button>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        onChange={handleImageUpload}
+                      />
                     </section>
                   </div>
                 </div>
@@ -406,49 +399,49 @@ function CoverPageDesigner({ onClose }) {
           </div>{" "}
         </fieldset>
         {/* Output Column */}
-        <div className="w-1/2 border p-4 border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here">
+        <div
+          className={`w-1/2 border p-4 border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here ${
+            isPageBordersChecked ? "with-borders" : ""
+          }`}
+          style={{ width: "50%" }}
+        >
           <h2 className="text-2xl font-bold mb-4">Output</h2>
-          {/* Display the text input field if editing text */}
-          {isEditingText ? (
-            <div className="edited-text-container">
-              <input
-                type="text"
-                value={editedText}
-                onChange={(e) => setEditedText(e.target.value)}
-                className="edited-text-input"
-              />
-              <button className="btn" onClick={handleTextSave}>
-                Save
-              </button>
-            </div>
-          ) : (
-            // Iterate over selectedCheckboxContents and wrap each component with Draggable
-            selectedCheckboxContents.map((content, index) => (
-              <Draggable key={index}>
-                <div onClick={startTextEdit}>{content}</div>
+          <div className="content-that-is-draggable-and-adjustable-within-div">
+            {/* Display the text input field if editing text */}
+            {selectedCheckboxContents.map((content, index) => (
+              <Draggable key={index} bounds="parent">
+                <div>{content}</div>
               </Draggable>
-            ))
-          )}
-          {/* {outputContent.map((object, index) => {
-            if (object.type === "draggableText") {
-              return (
-                <DraggableText
-                  key={index}
-                  text={object.properties.text}
-                  id={object.properties.id}
-                />
-              );
-            } else {
-              return (
-                <OutputComponent
-                  key={index}
-                  type={object.type}
-                  properties={object.properties}
-                  remove={() => removeObjectFromOutput(index)}
-                />
-              );
-            }
-          })} */}
+            ))}
+            {/* Display the text to be added */}
+            {/* Render editable text elements */}
+            {editableTexts.map(({ id, text }) => (
+              <Draggable bounds="parent">
+                <div key={id}>
+                  <EditableText initialText={text} />
+                </div>
+              </Draggable>
+            ))}
+            {addedImages.map(({ id, src, height, width }) => (
+              <Draggable bounds="parent">
+                <div
+                  key={id}
+                  className="contains-added-image-with-the-delete-button-ouput-section"
+                >
+                  <img
+                    src={src}
+                    alt={`Image ${id}`}
+                    height={height}
+                    width={width}
+                  />
+                  {/* Add a delete button to remove the image */}
+                  <button onClick={() => handleDeleteImage(id)}>
+                    Delete Image
+                  </button>
+                </div>
+              </Draggable>
+            ))}
+          </div>
         </div>
       </div>
       <div className="contains-bottom-section-with-buttons-design-cover-page">
@@ -462,57 +455,15 @@ function CoverPageDesigner({ onClose }) {
           <button className="button-for-footer-for-changes-in-cover-page">
             Import Layout <br /> from File
           </button>{" "}
-          <button className="button-for-footer-for-changes-in-cover-page">
+          <button
+            className="button-for-footer-for-changes-in-cover-page"
+            onClick={() => setAddedImages([])}
+          >
             Discard <br /> Changes
           </button>
         </div>
       </div>
     </>
-  );
-}
-
-// DraggableComponent: A draggable and resizable component for the Output Column
-function DraggableComponent({ type, properties, updateObject, remove }) {
-  // ... Implement the draggable and resizable logic using state and events
-  return (
-    <div
-      className="border p-4 mb-4"
-      style={{
-        width: `${properties.width}px`,
-        height: `${properties.height}px`,
-        border: properties.border,
-        // ... Add more styles based on properties (e.g., position)
-      }}
-    >
-      {/* Display the content based on the type */}
-      {type === "text" && <span className="text-lg">{properties.text}</span>}
-      {type === "image" && (
-        <img
-          src={properties.src}
-          alt={properties.alt}
-          className="max-w-full h-auto"
-        />
-      )}
-      {type === "box" && <div className="w-full h-full bg-gray-200"></div>}
-      {/* ... Add more cases for other object types */}
-      {/* Add controls for resizing, moving, etc. */}
-      <button className="btn" onClick={() => updateObject({ fontSize: 16 })}>
-        Show Actual Font Size
-      </button>
-      <button className="btn" onClick={() => updateObject({ zoom: 1.2 })}>
-        Zoom In
-      </button>
-      <button className="btn" onClick={() => updateObject({ zoom: 0.8 })}>
-        Zoom Out
-      </button>
-      {/* ... Add more controls as needed */}
-      <button className="btn" onClick={remove}>
-        Photo
-      </button>
-      <button className="btn" onClick={remove}>
-        Remove
-      </button>
-    </div>
   );
 }
 

@@ -160,5 +160,20 @@ fieldset {
   height: 29px;
 }
 .content-that-is-draggable-and-adjustable-within-div {
-  /* width: 100%; */
+  width: 100%;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.contains-added-image-with-the-delete-button-ouput-section {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+}
+.all-the-output-screen-with-all-the-changes-reflect-here {
+}
+.with-borders {
+  border: 5px solid black;
 }
