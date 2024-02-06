@@ -10,4 +10,22 @@
   height: 500px;
   margin-top: 3em;
 }
-
+.Buttons-undo-redo-conatainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1em;
+}
+.Buttons-undo-redo-yytytyt {
+  margin-left: 1em;
+  background-color: #f3f2f1;
+  color: black;
+  border: 2px solid rgb(191, 189, 189);
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0 10px 0 10px;
+}
+.Buttons-undo-redo-yytytyt:hover {
+  background-color: #d7e9f7;
+  border-color: #005a9e;
+}

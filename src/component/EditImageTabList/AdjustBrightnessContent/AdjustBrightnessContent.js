@@ -1,12 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./AdjustBrightnessContent.css";
+import Buttons from "./../../Photo/Buttons";
 
-const AdjustBrightnessContent = ({ imageUrl, texts, changes }) => {
+const AdjustBrightnessContent = ({ imageUrl, texts }) => {
   const [brightness, setBrightness] = useState(100);
+  const brightnessHistory = useRef([brightness]);
+  const historyIndex = useRef(0);
 
   const handleBrightnessChange = (event) => {
     const newBrightness = event.target.value;
     setBrightness(newBrightness);
+    // Add new brightness value to history
+    brightnessHistory.current.push(newBrightness);
+    // Move history index to the end
+    historyIndex.current = brightnessHistory.current.length - 1;
+  };
+
+  const handleUndo = () => {
+    if (historyIndex.current > 0) {
+      historyIndex.current -= 1;
+      const previousBrightness =
+        brightnessHistory.current[historyIndex.current];
+      setBrightness(previousBrightness);
+    }
+  };
+
+  const handleRedo = () => {
+    if (historyIndex.current < brightnessHistory.current.length - 1) {
+      historyIndex.current += 1;
+      const nextBrightness = brightnessHistory.current[historyIndex.current];
+      setBrightness(nextBrightness);
+    }
   };
 
   return (
@@ -56,6 +80,14 @@ const AdjustBrightnessContent = ({ imageUrl, texts, changes }) => {
           value={brightness}
           onChange={handleBrightnessChange}
         />
+      </div>
+      <div className="Buttons-undo-redo-container">
+        <button className="Buttons-undo-redo-yytytyt" onClick={handleUndo}>
+          Undo
+        </button>
+        <button className="Buttons-undo-redo-yytytyt" onClick={handleRedo}>
+          Redo
+        </button>
       </div>
     </div>
   );
