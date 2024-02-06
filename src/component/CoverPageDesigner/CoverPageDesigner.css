@@ -159,3 +159,6 @@ fieldset {
   color: white;
   height: 29px;
 }
+.content-that-is-draggable-and-adjustable-within-div {
+  /* width: 100%; */
+}

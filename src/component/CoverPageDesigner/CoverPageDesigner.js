@@ -1,10 +1,18 @@
 import React, { useState } from "react";
 import "./CoverPageDesigner.css";
 import OutputComponent from "./OutputComponent/OutputComponent";
-import DraggableText from "./DraggableText/DraggableText";
+import DraggableText from "./CompanyInfo/CompanyInfo";
 import CheckboxContent1 from "./CheckboxContent1/CheckboxContent1";
 import CheckboxContent2 from "./CheckboxContent2/CheckboxContent2";
 import DefaultContent from "./DefaultContent/DefaultContent";
+import Draggable from "react-draggable"; // Import Draggable component
+import InspectionDetails from "./InspectionDetails/InspectionDetails";
+import AgentInformation from "./AgentInformation/AgentInformation";
+import CoverCompany from "./CoverCompany/CoverCompany";
+import ReportTitle from "./ReportTitle/ReportTitle";
+import InspectionSignature from "./Inspection Signature/InspectionSignature";
+import AgentPhoto from "./Agent Photo/AgentPhoto";
+import CompanyInfo from "./CompanyInfo/CompanyInfo";
 
 function CoverPageDesigner({ onClose }) {
   const [selectedObjects, setSelectedObjects] = useState([]);
@@ -12,6 +20,26 @@ function CoverPageDesigner({ onClose }) {
   const [isCoverPhotoChecked, setIsCoverPhotoChecked] = useState(false);
   const [selectedCheckboxContents, setSelectedCheckboxContents] = useState([]);
   // State to track selected checkbox content
+
+  // State and other functions...
+  const [isEditingText, setIsEditingText] = useState(false);
+  const [editedText, setEditedText] = useState("");
+
+  // Function to handle adding/editing text
+  const handleTextAddEdit = () => {
+    setIsEditingText(true);
+    // Fetch existing text from outputContent if needed
+    // Set the existing text to editedText state
+  };
+  const startTextEdit = (text) => {
+    setEditedText(text);
+  };
+  // Function to handle saving edited text
+  const handleTextSave = () => {
+    // Update outputContent with the edited text if needed
+    // You can also update other states or perform additional logic here
+    setIsEditingText(false);
+  };
 
   const addObjectToOutput = (objectType, properties) => {
     setOutputContent([...outputContent, { type: objectType, properties }]);
@@ -114,6 +142,27 @@ function CoverPageDesigner({ onClose }) {
         break;
       case "Company Logo":
         content = <CheckboxContent2 />;
+        break;
+      case "Company Information":
+        content = <CompanyInfo />;
+        break;
+      case "Inspection Details":
+        content = <InspectionDetails />;
+        break;
+      case "Agent Information":
+        content = <AgentInformation />;
+        break;
+      case "Cover Company":
+        content = <CoverCompany />;
+        break;
+      case "Report Title":
+        content = <ReportTitle />;
+        break;
+      case "Inspection Signature":
+        content = <InspectionSignature />;
+        break;
+      case "Agent Photo":
+        content = <AgentPhoto />;
         break;
       // Add more cases for other checkboxes if needed
       default:
@@ -270,15 +319,8 @@ function CoverPageDesigner({ onClose }) {
                       >
                         Add Box
                       </button>
-                      <button
-                        className="btn"
-                        onClick={() =>
-                          addObjectToOutput("text", {
-                            /* text properties */
-                          })
-                        }
-                      >
-                        Add Text
+                      <button className="btn" onClick={handleTextAddEdit}>
+                        Add/Edit <br /> Text
                       </button>
                       <button
                         className="btn"
@@ -366,9 +408,27 @@ function CoverPageDesigner({ onClose }) {
         {/* Output Column */}
         <div className="w-1/2 border p-4 border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here">
           <h2 className="text-2xl font-bold mb-4">Output</h2>
-          {selectedCheckboxContents.map((content, index) => (
-            <div key={index}>{content}</div>
-          ))}
+          {/* Display the text input field if editing text */}
+          {isEditingText ? (
+            <div className="edited-text-container">
+              <input
+                type="text"
+                value={editedText}
+                onChange={(e) => setEditedText(e.target.value)}
+                className="edited-text-input"
+              />
+              <button className="btn" onClick={handleTextSave}>
+                Save
+              </button>
+            </div>
+          ) : (
+            // Iterate over selectedCheckboxContents and wrap each component with Draggable
+            selectedCheckboxContents.map((content, index) => (
+              <Draggable key={index}>
+                <div onClick={startTextEdit}>{content}</div>
+              </Draggable>
+            ))
+          )}
           {/* {outputContent.map((object, index) => {
             if (object.type === "draggableText") {
               return (
