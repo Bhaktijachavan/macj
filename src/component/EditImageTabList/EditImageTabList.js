@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./EditImageTabList.css";
-import editimgclose from "../Photo/icons/close_2997911.png";
+// import editimgclose from "../Photo/icons/close_2997911.png";
 import PropTypes from "prop-types";
 import Editor from "../Editor/Editor";
 import AdjustBrightnessContent from "./AdjustBrightnessContent/AdjustBrightnessContent";
@@ -12,18 +12,24 @@ import DrawLineContent from "./DrawLineContent/DrawLineContent";
 import DrawArrowContent from "./DrawArrowContent/DrawArrowContent";
 import DrawRectangleContent from "./DrawRectangleContent/DrawRectangleContent";
 import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
+import OverLayImage from "./OverLayImage/OverLayImage";
 
 const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const [activeTab, setActiveTab] = useState(1);
   const [textFromEditor, setTextFromEditor] = useState("");
   const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
+  const [editorKey, setEditorKey] = useState(1);
 
   const handleTabClick = (tabNumber) => {
     setActiveTab(tabNumber);
+    //   if (tabNumber === 9) {
+    //     setIsTextEditorOpen(true);
+    //   } else {
+    //     setIsTextEditorOpen(false);
+    //   }
+    // };
     if (tabNumber === 9) {
-      setIsTextEditorOpen(true);
-    } else {
-      setIsTextEditorOpen(false);
+      setEditorKey((prevKey) => prevKey + 1); // Increment key to create a new instance
     }
   };
 
@@ -60,8 +66,15 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
     5: <DrawLineContent imageUrl={uploadedImageUrl} />,
     6: <DrawArrowContent imageUrl={uploadedImageUrl} />,
     7: <DrawRectangleContent imageUrl={uploadedImageUrl} />,
-    8: <DrawOvalContent imageUrl={uploadedImageUrl} />,
-    9: <Editor imageUrl={uploadedImageUrl} onTextChange={handleTextChange} />,
+    8: <DrawOvalContent />,
+    9: (
+      <Editor
+        key={editorKey}
+        imageUrl={uploadedImageUrl}
+        onTextChange={handleTextChange}
+      />
+    ),
+    10: <OverLayImage imageUrl={uploadedImageUrl} />,
   };
 
   return (

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./AdjustBrightnessContent.css";
 
-const AdjustBrightnessContent = ({ imageUrl, texts, changes }) => {
+const AdjustBrightnessContent = ({ imageUrl, texts }) => {
   const [brightness, setBrightness] = useState(100);
 
   const handleBrightnessChange = (event) => {

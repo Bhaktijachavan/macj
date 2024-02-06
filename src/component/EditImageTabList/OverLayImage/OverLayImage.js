@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import "./CropImageContent.css";
+import "./OverLayImage.css";
 import PropTypes from "prop-types";
 
 const CropImageContent = ({ imageUrl, enteredText }) => {
@@ -13,7 +13,7 @@ const CropImageContent = ({ imageUrl, enteredText }) => {
   const onCropComplete = useCallback(
     async (_, croppedAreaPixels) => {
       try {
-        const croppedImg = await getCroppedImg(imageUrl, croppedAreaPixels);
+        const croppedImg = await getCroppedImg(imageUrl);
         setCroppedImage(croppedImg);
       } catch (e) {
         console.error("Error cropping image:", e);
@@ -55,12 +55,16 @@ const CropImageContent = ({ imageUrl, enteredText }) => {
   };
 
   return (
-    <div className="crop-image-container">
-      <div className="image-container">
-        <img src={imageUrl} alt="Original Image" className="original-image" />
+    <div className="Overlay-image-container">
+      <div className="image-container-sde">
+        <img
+          src={imageUrl}
+          alt="Original Image"
+          className="original-image-overlay"
+        />
       </div>
       {croppedImage && (
-        <div className="cropped-image-container">
+        <div className="Overlay-image-container">
           <p>Cropped Image:</p>
           <img src={croppedImage} alt="Cropped Image" />
         </div>
