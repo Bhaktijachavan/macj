@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import "./CropImageContent.css";
 import PropTypes from "prop-types";
 
-const CropImageContent = ({ imageUrl, enteredText }) => {
+const CropImageContent = ({ imageUrl, texts }) => {
   const [crop, setCrop] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [croppedImage, setCroppedImage] = useState(null);
 
@@ -45,9 +45,8 @@ const CropImageContent = ({ imageUrl, enteredText }) => {
           crop.width,
           crop.height
         );
-        ctx.font = "20px Arial"; // Adjust the font size and style as needed
-        ctx.fillStyle = "black"; // Set the text color
-        ctx.fillText(enteredText, 10, 30); // Adjust the position of the text
+        ctx.font = "20px Arial";
+        ctx.fillStyle = "black";
 
         resolve(canvas.toDataURL("image/jpeg"));
       };
@@ -58,6 +57,31 @@ const CropImageContent = ({ imageUrl, enteredText }) => {
     <div className="crop-image-container">
       <div className="image-container">
         <img src={imageUrl} alt="Original Image" className="original-image" />
+        {texts &&
+          texts.map((text) => (
+            <div
+              key={text.id}
+              className="text-overlay"
+              style={{
+                color: text.textColor,
+                position: "absolute",
+                top: `${text.position.y}%`,
+                left: `${text.position.x}%`,
+                fontSize: `${text.fontSize}px`,
+                fontFamily: text.font,
+                fontWeight: text.isBold ? "bold" : "normal",
+                fontStyle: text.isItalic ? "italic" : "normal",
+                backgroundColor: text.isHighlighted
+                  ? `${text.highlightColor}${Math.round(
+                      text.highlightOpacity * 255
+                    ).toString(16)}`
+                  : "transparent",
+                textAlign: "center",
+              }}
+            >
+              {text.content}
+            </div>
+          ))}
       </div>
       {croppedImage && (
         <div className="cropped-image-container">
@@ -65,6 +89,10 @@ const CropImageContent = ({ imageUrl, enteredText }) => {
           <img src={croppedImage} alt="Cropped Image" />
         </div>
       )}
+      <div className="Buttons-undo-redo-conatainer">
+        <button className="Buttons-undo-redo-yytytyt">Undo</button>
+        <button className="Buttons-undo-redo-yytytyt">Redo</button>
+      </div>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DrawRectangleContent.css";
 import PropTypes from "prop-types";
 
-const DrawRectangleContent = ({ imageUrl, lineWidth = 2 }) => {
+const DrawRectangleContent = ({ imageUrl, lineWidth = 2, texts }) => {
   const [rectangles, setRectangles] = useState([]);
   const [drawing, setDrawing] = useState(false);
   const rectangleRef = useRef(null);
@@ -78,6 +78,35 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2 }) => {
         onMouseUp={stopDrawing}
         onMouseOut={stopDrawing}
       />
+      {texts &&
+        texts.map((text) => (
+          <div
+            key={text.id}
+            className="text-overlay"
+            style={{
+              color: text.textColor,
+              position: "absolute",
+              top: `${text.position.y}%`,
+              left: `${text.position.x}%`,
+              fontSize: `${text.fontSize}px`,
+              fontFamily: text.font,
+              fontWeight: text.isBold ? "bold" : "normal",
+              fontStyle: text.isItalic ? "italic" : "normal",
+              backgroundColor: text.isHighlighted
+                ? `${text.highlightColor}${Math.round(
+                    text.highlightOpacity * 255
+                  ).toString(16)}`
+                : "transparent",
+              textAlign: "center",
+            }}
+          >
+            {text.content}
+          </div>
+        ))}
+      <div className="Buttons-undo-redo-conatainer">
+        <button className="Buttons-undo-redo-yytytyt">Undo</button>
+        <button className="Buttons-undo-redo-yytytyt">Redo</button>
+      </div>
     </div>
   );
 };

@@ -2,10 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DrawLineContent.css";
 import PropTypes from "prop-types";
 
-const DrawLineContent = ({ imageUrl }) => {
+const DrawLineContent = ({ imageUrl, texts}) => {
   const [lines, setLines] = useState([]);
   const [drawing, setDrawing] = useState(false);
   const canvasRef = useRef(null);
+  const linesHistory = useRef([]);
+  const historyIndex = useRef(-1);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -30,14 +32,16 @@ const DrawLineContent = ({ imageUrl }) => {
     e.preventDefault(); // Prevent default dragging behavior
     setDrawing(true);
     const { offsetX, offsetY } = e.nativeEvent;
-    setLines((prevLines) => [
-      ...prevLines,
-      {
-        start: { x: offsetX, y: offsetY },
-        end: { x: offsetX, y: offsetY },
-        color: "black",
-      },
-    ]);
+    const newLine = {
+      start: { x: offsetX, y: offsetY },
+      end: { x: offsetX, y: offsetY },
+      color: "black",
+    };
+    setLines((prevLines) => [...prevLines, newLine]);
+    // Add new line to history
+    linesHistory.current.splice(historyIndex.current + 1);
+    linesHistory.current.push([...lines]);
+    historyIndex.current++;
   };
 
   const draw = (e) => {
@@ -65,6 +69,20 @@ const DrawLineContent = ({ imageUrl }) => {
     context.closePath();
   };
 
+  const undo = () => {
+    if (historyIndex.current > 0) {
+      historyIndex.current--;
+      setLines(linesHistory.current[historyIndex.current]);
+    }
+  };
+
+  const redo = () => {
+    if (historyIndex.current < linesHistory.current.length - 1) {
+      historyIndex.current++;
+      setLines(linesHistory.current[historyIndex.current]);
+    }
+  };
+
   return (
     <>
       <div className="container-for-draw-line-content-component">
@@ -77,6 +95,39 @@ const DrawLineContent = ({ imageUrl }) => {
             onMouseUp={stopDrawing}
             onMouseOut={stopDrawing}
           />
+          {texts &&
+            texts.map((text) => (
+              <div
+                key={text.id}
+                className="text-overlay"
+                style={{
+                  color: text.textColor,
+                  position: "absolute",
+                  top: `${text.position.y}%`,
+                  left: `${text.position.x}%`,
+                  fontSize: `${text.fontSize}px`,
+                  fontFamily: text.font,
+                  fontWeight: text.isBold ? "bold" : "normal",
+                  fontStyle: text.isItalic ? "italic" : "normal",
+                  backgroundColor: text.isHighlighted
+                    ? `${text.highlightColor}${Math.round(
+                        text.highlightOpacity * 255
+                      ).toString(16)}`
+                    : "transparent",
+                  textAlign: "center",
+                }}
+              >
+                {text.content}
+              </div>
+            ))}
+        </div>
+        <div className="Buttons-undo-redo-container">
+          <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
+            Undo
+          </button>
+          <button className="Buttons-undo-redo-yytytyt" onClick={redo}>
+            Redo
+          </button>
         </div>
       </div>
     </>

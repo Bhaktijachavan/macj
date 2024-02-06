@@ -6,21 +6,16 @@
 }
 
 .tab-list-button {
-  padding: 10px;
+  padding: 15px;
   margin: 0;
   border: 1px solid #ccc;
   background-color: #f0f0f0;
   cursor: pointer;
   width: 100%;
   font-size: 14px;
-  height: 3rem;
+  height: 3.5rem;
 }
 
-.tab-list-active {
-  background-color: #ccc;
-  /* width: 5em; */
-  height: 3em;
-}
 .tab-list-content {
   width: 50.55em;
 }
@@ -68,14 +63,11 @@
 .undeo-redo-btns-after-tablist {
   display: flex;
   justify-content: center;
-  /* gap: 22px; */
+
   font-size: 12px;
   margin: 10px 0 10px 0;
 }
-/* .color-picker-heading-and-color-picker {
-  display: grid;
-  justify-content: center;
-} */
+
 .color-picker-heading {
   font-size: 12px;
 }
@@ -89,14 +81,14 @@
   gap: 0em;
   justify-content: center;
   align-items: center;
-  height: 6em;
+  height: 5em;
 }
 .undo-redo-button-and-color-picker-combine {
   background-color: rgb(229, 229, 229);
 }
-.undeo-redo-btns-after-tablist button {
-  width: 6em;
-  border: 1px solid #8080808f;
+.Btns-current-color {
+  width: 12em;
+
   border-radius: 3px;
 }
 .footer-for-Eidt-image-tabelist-btns {
@@ -121,4 +113,15 @@
   border-radius: 5px;
   cursor: pointer;
   padding: 0 10px 0 10px;
+}
+.footer-for-Eidt-image-tabelist-btns-container {
+  margin-left: 9em;
+  display: flex;
+  align-items: ec;
+  /* align-items: center; */
+  justify-content: center;
+  width: 24em;
+}
+.tab-list-active {
+  height: 3.5em;
 }

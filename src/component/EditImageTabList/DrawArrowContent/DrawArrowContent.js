@@ -2,10 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DrawArrowContent.css";
 import PropTypes from "prop-types";
 
-const DrawArrowContent = ({ imageUrl }) => {
+const DrawArrowContent = ({ imageUrl, texts }) => {
   const [arrows, setArrows] = useState([]);
   const [drawing, setDrawing] = useState(false);
   const arrowRef = useRef(null);
+  const arrowsHistory = useRef([]);
+  const historyIndex = useRef(-1);
 
   useEffect(() => {
     const arrowCanvas = arrowRef.current;
@@ -28,14 +30,16 @@ const DrawArrowContent = ({ imageUrl }) => {
     e.preventDefault();
     setDrawing(true);
     const { offsetX, offsetY } = e.nativeEvent;
-    setArrows((prevArrows) => [
-      ...prevArrows,
-      {
-        start: { x: offsetX, y: offsetY },
-        end: { x: offsetX, y: offsetY },
-        color: "black",
-      },
-    ]);
+    const newArrow = {
+      start: { x: offsetX, y: offsetY },
+      end: { x: offsetX, y: offsetY },
+      color: "black",
+    };
+    setArrows((prevArrows) => [...prevArrows, newArrow]);
+    // Add new arrow to history
+    arrowsHistory.current.splice(historyIndex.current + 1);
+    arrowsHistory.current.push([...arrows]);
+    historyIndex.current++;
   };
 
   const draw = (e) => {
@@ -79,6 +83,20 @@ const DrawArrowContent = ({ imageUrl }) => {
     context.closePath();
   };
 
+  const undo = () => {
+    if (historyIndex.current > 0) {
+      historyIndex.current--;
+      setArrows(arrowsHistory.current[historyIndex.current]);
+    }
+  };
+
+  const redo = () => {
+    if (historyIndex.current < arrowsHistory.current.length - 1) {
+      historyIndex.current++;
+      setArrows(arrowsHistory.current[historyIndex.current]);
+    }
+  };
+
   return (
     <div className="draw-arrow-container">
       <canvas
@@ -89,6 +107,39 @@ const DrawArrowContent = ({ imageUrl }) => {
         onMouseUp={stopDrawing}
         onMouseOut={stopDrawing}
       />
+      {texts &&
+        texts.map((text) => (
+          <div
+            key={text.id}
+            className="text-overlay"
+            style={{
+              color: text.textColor,
+              position: "absolute",
+              top: `${text.position.y}%`,
+              left: `${text.position.x}%`,
+              fontSize: `${text.fontSize}px`,
+              fontFamily: text.font,
+              fontWeight: text.isBold ? "bold" : "normal",
+              fontStyle: text.isItalic ? "italic" : "normal",
+              backgroundColor: text.isHighlighted
+                ? `${text.highlightColor}${Math.round(
+                    text.highlightOpacity * 255
+                  ).toString(16)}`
+                : "transparent",
+              textAlign: "center",
+            }}
+          >
+            {text.content}
+          </div>
+        ))}
+      <div className="Buttons-undo-redo-container">
+        <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
+          Undo
+        </button>
+        <button className="Buttons-undo-redo-yytytyt" onClick={redo}>
+          Redo
+        </button>
+      </div>
     </div>
   );
 };
