@@ -78,7 +78,7 @@ const DrawArrowContent = ({ imageUrl, texts }) => {
   };
 
   const drawArrow = (context, start, end, color) => {
-    const headSize = 10;
+    const headSize = 7;
     const angle = Math.atan2(end.y - start.y, end.x - start.x);
 
     context.beginPath();
@@ -98,7 +98,7 @@ const DrawArrowContent = ({ imageUrl, texts }) => {
     );
 
     context.strokeStyle = color;
-    context.lineWidth = 3;
+    context.lineWidth = 4;
     context.stroke();
     context.closePath();
   };
