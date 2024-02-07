@@ -24,7 +24,10 @@ function CoverPageDesigner({ onClose }) {
   const [editableTexts, setEditableTexts] = useState([]); // State to hold editable text elements
   const [addedImages, setAddedImages] = useState([]); // State to hold added images
   const [isAgentPhotoUploaded, setIsAgentPhotoUploaded] = useState(false);
-  const [isPageBordersChecked, setIsPageBordersChecked] = useState(false); // State to track whether "Page Borders" checkbox is checked
+  // State to track whether "Page Borders" checkbox is checked
+  const [isPageBordersChecked, setIsPageBordersChecked] = useState(false);
+  const [isBorderApplied, setIsBorderApplied] = useState(false);
+  const [fontSize, setFontSize] = useState(16); // Initial font size
 
   const addObjectToOutput = (objectType, properties) => {
     setOutputContent([...outputContent, { type: objectType, properties }]);
@@ -99,7 +102,16 @@ function CoverPageDesigner({ onClose }) {
 
   const handleCheckboxChange = (event, label) => {
     const isChecked = event.target.checked;
-
+    // Update the state based on the checkbox label
+    if (isChecked) {
+      setSelectedObjects([...selectedObjects, label]); // Add the label to selectedObjects if checkbox is checked
+    } else {
+      setSelectedObjects(selectedObjects.filter((obj) => obj !== label)); // Remove the label from selectedObjects if checkbox is unchecked
+    }
+    if (label === "Page Borders") {
+      setIsPageBordersChecked(isChecked);
+      setIsBorderApplied(isChecked); // Apply border if "Page Borders" checkbox is checked
+    }
     // If checkbox is checked, add the content to the array
     if (isChecked) {
       const newContent = getContentForLabel(label);
@@ -107,7 +119,8 @@ function CoverPageDesigner({ onClose }) {
     } else {
       // If checkbox is unchecked, remove the content from the array
       const updatedContents = selectedCheckboxContents.filter(
-        (content) => content.label !== label
+        // (content) => content.label !== label
+        (content) => content && content.label !== label // Check if content exists before accessing its label property
       );
       setSelectedCheckboxContents(updatedContents);
     }
@@ -125,6 +138,43 @@ function CoverPageDesigner({ onClose }) {
     }
   };
 
+  // const getContentForLabel = (label) => {
+  //   let content = null;
+  //   switch (label) {
+  //     case "Cover Photo":
+  //       content = <CheckboxContent1 />;
+  //       break;
+  //     case "Company Logo":
+  //       content = <CheckboxContent2 />;
+  //       break;
+  //     case "Company Information":
+  //       content = <EditableText initialText="Company Information" />;
+  //       break;
+  //     case "Inspection Details":
+  //       content = <EditableText initialText="Inspection Details" />;
+  //       break;
+  //     case "Agent Information":
+  //       content = <EditableText initialText="Agent Information" />;
+  //       break;
+  //     case "Cover Company":
+  //       content = <EditableText initialText="Cover Company" />;
+  //       break;
+  //     case "Report Title":
+  //       content = <EditableText initialText="Report Title" />;
+  //       break;
+  //     case "Inspection Signature":
+  //       content = <EditableText initialText="Inspection Signature" />;
+  //       break;
+  //     // case "Agent Photo":
+  //     //   content = <AgentPhoto />;
+  //     //   break;
+  //     // Add more cases for other checkboxes if needed
+  //     // default:
+  //     //   // Handle unknown labels here (e.g., return a default component)
+  //     //   content = <DefaultContent />;
+  //   }
+  //   return content;
+  // };
   const getContentForLabel = (label) => {
     let content = null;
     switch (label) {
@@ -135,34 +185,18 @@ function CoverPageDesigner({ onClose }) {
         content = <CheckboxContent2 />;
         break;
       case "Company Information":
-        content = <EditableText initialText="Company Information" />;
-        break;
       case "Inspection Details":
-        content = <EditableText initialText="Inspection Details" />;
-        break;
       case "Agent Information":
-        content = <EditableText initialText="Agent Information" />;
-        break;
       case "Cover Company":
-        content = <EditableText initialText="Cover Company" />;
-        break;
       case "Report Title":
-        content = <EditableText initialText="Report Title" />;
-        break;
       case "Inspection Signature":
-        content = <EditableText initialText="Inspection Signature" />;
+        content = <EditableText fontSize={fontSize} initialText={label} />;
         break;
-      // case "Agent Photo":
-      //   content = <AgentPhoto />;
-      //   break;
-      // Add more cases for other checkboxes if needed
-      // default:
-      //   // Handle unknown labels here (e.g., return a default component)
-      //   content = <DefaultContent />;
+      default:
+        content = null;
     }
     return content;
   };
-
   return (
     <>
       <div className="cover-page-header-closer-btn">
@@ -366,8 +400,21 @@ function CoverPageDesigner({ onClose }) {
                   <legend className="tag-for-line-draw-through-text">
                     Controls
                   </legend>
-                  <div className="contains-size-control-for-cover-page-design">
+                  {/* <div className="contains-size-control-for-cover-page-design">
                     Size Control
+                  </div> */}
+                  <div className="contains-size-control-for-cover-page-design">
+                    <label htmlFor="fontSize">Font Size:</label>
+                    <input
+                      type="range"
+                      id="fontSize"
+                      name="fontSize"
+                      min="10" // Minimum font size
+                      max="30" // Maximum font size
+                      value={fontSize}
+                      onChange={(e) => setFontSize(parseInt(e.target.value))}
+                    />
+                    <span>{fontSize}px</span>
                   </div>
                 </fieldset>{" "}
                 <fieldset className="bordered-text">
@@ -396,34 +443,37 @@ function CoverPageDesigner({ onClose }) {
                 <li key={index}>{obj}</li>
               ))}
             </ul>
-          </div>{" "}
+          </div>
         </fieldset>
         {/* Output Column */}
         <div
-          className={`w-1/2 border p-4 border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here ${
-            isPageBordersChecked ? "with-borders" : ""
-          }`}
+          className="w-1/4 border border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here"
           style={{ width: "50%" }}
         >
-          <h2 className="text-2xl font-bold mb-4">Output</h2>
-          <div className="content-that-is-draggable-and-adjustable-within-div">
+          {/* <h2 className="text-2xl font-bold mb-4">Output</h2> */}
+          <div
+            bounds="parent"
+            className={`content-that-is-draggable-and-adjustable-within-div ${
+              isBorderApplied ? "with-borders" : ""
+            }`}
+          >
             {/* Display the text input field if editing text */}
             {selectedCheckboxContents.map((content, index) => (
-              <Draggable key={index} bounds="parent">
+              <Draggable className="draggableeeee" key={index} bounds="parent">
                 <div>{content}</div>
               </Draggable>
             ))}
             {/* Display the text to be added */}
             {/* Render editable text elements */}
             {editableTexts.map(({ id, text }) => (
-              <Draggable bounds="parent">
-                <div key={id}>
+              <Draggable className="" bounds="parent">
+                <div className="draggableeeee" key={id}>
                   <EditableText initialText={text} />
                 </div>
               </Draggable>
             ))}
             {addedImages.map(({ id, src, height, width }) => (
-              <Draggable bounds="parent">
+              <Draggable className="draggableeeee" bounds="parent">
                 <div
                   key={id}
                   className="contains-added-image-with-the-delete-button-ouput-section"

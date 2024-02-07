@@ -161,10 +161,11 @@ fieldset {
 }
 .content-that-is-draggable-and-adjustable-within-div {
   width: 100%;
-  display: grid;
+  display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
+  flex-wrap: wrap;
 }
 .contains-added-image-with-the-delete-button-ouput-section {
   display: grid;
@@ -175,5 +176,9 @@ fieldset {
 .all-the-output-screen-with-all-the-changes-reflect-here {
 }
 .with-borders {
-  border: 5px solid black;
+  border: 2px solid black;
+}
+
+.react-draggable-dragged {
+  width: 10em;
 }
