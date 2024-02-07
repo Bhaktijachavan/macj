@@ -6,11 +6,11 @@
 }
 
 .canvas-for-draw-rectangle-content {
-  display: block;
-  width: 100%;
-  height: 500px;
-  margin-top: 3em;
-  border: 2px solid white;
+  /* display: block; */
+  /* width: 100%; */
+  /* height: 500px; */
+  margin-top: 2em;
+  /* border: 2px solid white; */
 }
 .Buttons-undo-redo-conatainer {
   display: flex;

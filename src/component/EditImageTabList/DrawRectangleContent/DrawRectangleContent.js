@@ -14,9 +14,29 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2, texts }) => {
     const image = new Image();
     image.src = imageUrl;
     image.onload = () => {
-      rectangleCanvas.width = image.width;
-      rectangleCanvas.height = image.height;
-      ctx.drawImage(image, 0, 0, image.width, image.height);
+      // Calculate the aspect ratio of the image
+      const aspectRatio = image.width / image.height;
+
+      // Set the canvas width and height based on the image dimensions
+      const maxWidth = 750; // Max width for the canvas
+      const maxHeight = 600; // Max height for the canvas
+      let canvasWidth = image.width;
+      let canvasHeight = image.height;
+
+      if (canvasWidth > maxWidth) {
+        canvasWidth = maxWidth;
+        canvasHeight = canvasWidth / aspectRatio;
+      }
+
+      if (canvasHeight > maxHeight) {
+        canvasHeight = maxHeight;
+        canvasWidth = canvasHeight * aspectRatio;
+      }
+
+      rectangleCanvas.width = canvasWidth;
+      rectangleCanvas.height = canvasHeight;
+
+      ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
 
       rectangles.forEach((rectangle) => {
         drawRectangle(
@@ -63,7 +83,7 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2, texts }) => {
     context.beginPath();
     context.rect(start.x, start.y, end.x - start.x, end.y - start.y);
     context.strokeStyle = color;
-    context.lineWidth = width;
+    context.lineWidth = 3;
     context.stroke();
     context.closePath();
   };

@@ -1,3 +1,4 @@
+// export default EditImageTabList;
 import React, { useState } from "react";
 import "./EditImageTabList.css";
 // import editimgclose from "../Photo/icons/close_2997911.png";
@@ -65,10 +66,10 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
     4: (
       <RotateClockwiseContent
         imageUrl={uploadedImageUrl}
-        texts={textFromEditor}
+        // texts={textFromEditor}
       />
     ),
-    5: <DrawLineContent imageUrl={uploadedImageUrl} texts={textFromEditor}  />,
+    5: <DrawLineContent imageUrl={uploadedImageUrl} texts={textFromEditor} />,
     6: <DrawArrowContent imageUrl={uploadedImageUrl} texts={textFromEditor} />,
     7: (
       <DrawRectangleContent
