@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import "./EditableText.css";
 
-const EditableText = ({ initialText }) => {
+const EditableText = ({ initialText, fontSize }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(initialText);
+  const textRef = useRef(null);
 
   const handleDoubleClick = () => {
     setIsEditing(true);
@@ -17,8 +19,24 @@ const EditableText = ({ initialText }) => {
     // Save the changes or perform any required actions here
   };
 
+  const handleSelectionChange = () => {
+    if (window.getSelection().toString() === text) {
+      textRef.current.style.fontSize = `${fontSize}px`;
+    } else {
+      textRef.current.style.fontSize = ""; // Reset font size if selection changes
+    }
+  };
+
+  const textStyle = {
+    fontSize: `${fontSize}px`, // Apply the font size dynamically
+  };
+
   return (
-    <div onDoubleClick={handleDoubleClick}>
+    <div
+      className="all-the-editable-text-in-the-component"
+      onDoubleClick={handleDoubleClick}
+      onMouseUp={handleSelectionChange}
+    >
       {isEditing ? (
         <input
           type="text"
@@ -27,7 +45,13 @@ const EditableText = ({ initialText }) => {
           onBlur={handleBlur}
         />
       ) : (
-        <span>{text}</span>
+        <p
+          className="text-that-passed-through-props"
+          ref={textRef}
+          style={textStyle}
+        >
+          {text}
+        </p>
       )}
     </div>
   );
