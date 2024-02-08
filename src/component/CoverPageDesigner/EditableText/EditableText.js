@@ -20,10 +20,13 @@ const EditableText = ({ initialText, fontSize }) => {
   };
 
   const handleSelectionChange = () => {
-    if (window.getSelection().toString() === text) {
-      textRef.current.style.fontSize = `${fontSize}px`;
-    } else {
-      textRef.current.style.fontSize = ""; // Reset font size if selection changes
+    if (textRef.current) {
+      // Check if textRef.current is not null
+      if (window.getSelection().toString() === text) {
+        textRef.current.style.fontSize = `${fontSize}px`;
+      } else {
+        textRef.current.style.fontSize = ""; // Reset font size if selection changes
+      }
     }
   };
 
