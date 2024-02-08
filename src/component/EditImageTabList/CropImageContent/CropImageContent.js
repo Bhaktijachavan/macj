@@ -6,8 +6,13 @@ const CropImageContent = ({ imageUrl, texts }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [rectangles, setRectangles] = useState([]);
   const [croppedImage, setCroppedImage] = useState(null);
+  const [isCropped, setIsCropped] = useState(false); // Track whether image is cropped or not
+  const [prevCanvasState, setPrevCanvasState] = useState(null); // Store previous canvas state
+  const [nextCanvasState, setNextCanvasState] = useState(null); // Store next canvas state
   const rectangleRef = useRef(null);
   const imageRef = useRef(null);
+  const canvasWidth = 700;
+  const canvasHeight = 570;
 
   useEffect(() => {
     const image = new Image();
@@ -16,9 +21,9 @@ const CropImageContent = ({ imageUrl, texts }) => {
     image.onload = () => {
       const canvas = rectangleRef.current;
       const ctx = canvas.getContext("2d");
-      canvas.width = image.width;
-      canvas.height = image.height;
-      ctx.drawImage(image, 0, 0);
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
+      ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
 
       rectangles.forEach((rect) => {
         if (rect.isSelecting) {
@@ -42,8 +47,18 @@ const CropImageContent = ({ imageUrl, texts }) => {
         ctx.lineWidth = 2;
         ctx.strokeRect(rect.startX, rect.startY, rect.width, rect.height);
       });
+
+      // Clear canvas and redraw cropped image if it exists
+      if (croppedImage) {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        const croppedImg = new Image();
+        croppedImg.src = croppedImage;
+        croppedImg.onload = () => {
+          ctx.drawImage(croppedImg, 0, 0);
+        };
+      }
     };
-  }, [imageUrl, rectangles]);
+  }, [imageUrl, rectangles, canvasWidth, canvasHeight, croppedImage]);
 
   const handleMouseDown = (e) => {
     const startX = e.nativeEvent.offsetX;
@@ -59,16 +74,30 @@ const CropImageContent = ({ imageUrl, texts }) => {
     const canvas = rectangleRef.current;
     const ctx = canvas.getContext("2d");
     const rect = rectangles[0];
-    const width = e.nativeEvent.offsetX - rect.startX;
-    const height = e.nativeEvent.offsetY - rect.startY;
+    const currentX = e.nativeEvent.offsetX;
+    const currentY = e.nativeEvent.offsetY;
+
+    // Calculate width and height based on current mouse position
+    const width = currentX - rect.startX;
+    const height = currentY - rect.startY;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(imageRef.current, 0, 0, canvasWidth, canvasHeight);
     ctx.fillStyle = "rgba(0, 0, 255, 0.5)";
-    ctx.fillRect(rect.startX, rect.startY, width, height);
+    ctx.fillRect(
+      Math.min(rect.startX, currentX),
+      Math.min(rect.startY, currentY),
+      Math.abs(width),
+      Math.abs(height)
+    );
     ctx.strokeStyle = "black";
     ctx.lineWidth = 2;
-    ctx.strokeRect(rect.startX, rect.startY, width, height);
+    ctx.strokeRect(
+      Math.min(rect.startX, currentX),
+      Math.min(rect.startY, currentY),
+      Math.abs(width),
+      Math.abs(height)
+    );
 
     setRectangles([
       {
@@ -99,19 +128,47 @@ const CropImageContent = ({ imageUrl, texts }) => {
     const canvas = rectangleRef.current;
     const ctx = canvas.getContext("2d");
     const croppedImageData = ctx.getImageData(
-      rect.startX,
-      rect.startY,
-      rect.width,
-      rect.height
+      Math.min(rect.startX, rect.startX + rect.width),
+      Math.min(rect.startY, rect.startY + rect.height),
+      Math.abs(rect.width),
+      Math.abs(rect.height)
     );
-
     const croppedCanvas = document.createElement("canvas");
     const croppedCtx = croppedCanvas.getContext("2d");
-    croppedCanvas.width = rect.width;
-    croppedCanvas.height = rect.height;
+    croppedCanvas.width = Math.abs(rect.width);
+    croppedCanvas.height = Math.abs(rect.height);
     croppedCtx.putImageData(croppedImageData, 0, 0);
 
+    // Save previous canvas state before cropping
+    setPrevCanvasState(ctx.getImageData(0, 0, canvasWidth, canvasHeight));
+
     setCroppedImage(croppedCanvas.toDataURL("image/jpeg"));
+    setIsCropped(true); // Set the cropped flag to true
+    setNextCanvasState(croppedImageData); // Store the next canvas state for redo
+  };
+
+  const handleUndo = () => {
+    // Restore previous canvas state
+    const canvas = rectangleRef.current;
+    const ctx = canvas.getContext("2d");
+    ctx.putImageData(prevCanvasState, 0, 0);
+
+    // Reset state
+    setIsCropped(false);
+    setCroppedImage(null);
+    setNextCanvasState(ctx.getImageData(0, 0, canvasWidth, canvasHeight)); // Update next state for redo
+  };
+
+  const handleRedo = () => {
+    // Restore next canvas state
+    const canvas = rectangleRef.current;
+    const ctx = canvas.getContext("2d");
+    ctx.putImageData(nextCanvasState, 0, 0);
+
+    // Reset state
+    setIsCropped(true);
+    setCroppedImage(canvas.toDataURL("image/jpeg"));
+    setPrevCanvasState(ctx.getImageData(0, 0, canvasWidth, canvasHeight)); // Update previous state for undo
   };
 
   return (
@@ -124,15 +181,18 @@ const CropImageContent = ({ imageUrl, texts }) => {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseOut={handleMouseOut}
-          width={800} // Adjust width as needed
-          height={600} // Adjust height as needed
+          width={canvasWidth}
+          height={canvasHeight}
+          style={{ display: isCropped ? "none" : "block" }}
         />
-        <img
-          ref={imageRef}
-          src={imageUrl}
-          alt="Original Image"
-          style={{ display: "none" }}
-        />
+        {isCropped ? null : ( // Check if the image is cropped
+          <img
+            ref={imageRef}
+            src={imageUrl}
+            alt="Original Image"
+            style={{ display: "none" }}
+          />
+        )}
         {texts &&
           texts.map((text) => (
             <div
@@ -160,16 +220,27 @@ const CropImageContent = ({ imageUrl, texts }) => {
           ))}
       </div>
       <div className="Buttons-undo-redo-conatainer">
-        <button className="Buttons-undo-redo-yytytyt" onClick={cropImage}>
-          Crop Image
-        </button>
+        {!croppedImage && (
+          <button className="Buttons-undo-redo-yytytyt" onClick={cropImage}>
+            Crop Image
+          </button>
+        )}
       </div>
       {croppedImage && (
         <div className="cropped-image-container">
-          <p>Cropped Image:</p>
+          {/* <p>Cropped Image:</p> */}
           <img src={croppedImage} alt="Cropped Image" />
         </div>
       )}
+
+      <div className="Buttons-undo-redo-container-ir">
+        <button className="Buttons-undo-redo-yytytyt" onClick={handleUndo}>
+          Undo
+        </button>
+        <button className="Buttons-undo-redo-yytytyt" onClick={handleRedo}>
+          Redo
+        </button>
+      </div>
     </div>
   );
 };
