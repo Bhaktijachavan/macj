@@ -48,8 +48,8 @@
   cursor: pointer;
 }
 .Cover-Page-Design-Popup-ccc {
-  margin: 4em;
+  margin: 0 4em 4em 4em;
   position: relative;
-  bottom: 9em;
+  bottom: 7em;
   z-index: 1;
 }
