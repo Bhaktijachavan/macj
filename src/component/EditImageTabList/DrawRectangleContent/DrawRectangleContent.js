@@ -6,6 +6,8 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2, texts }) => {
   const [rectangles, setRectangles] = useState([]);
   const [drawing, setDrawing] = useState(false);
   const rectangleRef = useRef(null);
+  const [history, setHistory] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(-1);
 
   useEffect(() => {
     const rectangleCanvas = rectangleRef.current;
@@ -14,9 +16,29 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2, texts }) => {
     const image = new Image();
     image.src = imageUrl;
     image.onload = () => {
-      rectangleCanvas.width = image.width;
-      rectangleCanvas.height = image.height;
-      ctx.drawImage(image, 0, 0, image.width, image.height);
+      // Calculate the aspect ratio of the image
+      const aspectRatio = image.width / image.height;
+
+      // Set the canvas width and height based on the image dimensions
+      const maxWidth = 750; // Max width for the canvas
+      const maxHeight = 600; // Max height for the canvas
+      let canvasWidth = image.width;
+      let canvasHeight = image.height;
+
+      if (canvasWidth > maxWidth) {
+        canvasWidth = maxWidth;
+        canvasHeight = canvasWidth / aspectRatio;
+      }
+
+      if (canvasHeight > maxHeight) {
+        canvasHeight = maxHeight;
+        canvasWidth = canvasHeight * aspectRatio;
+      }
+
+      rectangleCanvas.width = canvasWidth;
+      rectangleCanvas.height = canvasHeight;
+
+      ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
 
       rectangles.forEach((rectangle) => {
         drawRectangle(
@@ -34,8 +56,8 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2, texts }) => {
     e.preventDefault();
     setDrawing(true);
     const { offsetX, offsetY } = e.nativeEvent;
-    setRectangles((prevRectangles) => [
-      ...prevRectangles,
+    setRectanglesWithHistory([
+      ...rectangles,
       {
         start: { x: offsetX, y: offsetY },
         end: { x: offsetX, y: offsetY },
@@ -66,6 +88,32 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2, texts }) => {
     context.lineWidth = width;
     context.stroke();
     context.closePath();
+  };
+
+  const pushToHistory = (rectangles) => {
+    const newHistory = history.slice(0, currentIndex + 1);
+    newHistory.push(rectangles);
+    setHistory(newHistory);
+    setCurrentIndex(currentIndex + 1);
+  };
+
+  const setRectanglesWithHistory = (newRectangles) => {
+    setRectangles(newRectangles);
+    pushToHistory(newRectangles);
+  };
+
+  const undo = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+      setRectangles(history[currentIndex - 1]);
+    }
+  };
+
+  const redo = () => {
+    if (currentIndex < history.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setRectangles(history[currentIndex + 1]);
+    }
   };
 
   return (
@@ -104,8 +152,12 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2, texts }) => {
           </div>
         ))}
       <div className="Buttons-undo-redo-conatainer">
-        <button className="Buttons-undo-redo-yytytyt">Undo</button>
-        <button className="Buttons-undo-redo-yytytyt">Redo</button>
+        <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
+          Undo
+        </button>
+        <button className="Buttons-undo-redo-yytytyt" onClick={redo}>
+          Redo
+        </button>
       </div>
     </div>
   );

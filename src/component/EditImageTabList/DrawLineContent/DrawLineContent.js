@@ -2,13 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DrawLineContent.css";
 import PropTypes from "prop-types";
 
-const DrawLineContent = ({ imageUrl, texts}) => {
+const DrawLineContent = ({ imageUrl, texts }) => {
   const [lines, setLines] = useState([]);
   const [drawing, setDrawing] = useState(false);
   const canvasRef = useRef(null);
   const linesHistory = useRef([]);
   const historyIndex = useRef(-1);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -17,9 +16,29 @@ const DrawLineContent = ({ imageUrl, texts}) => {
     const image = new Image();
     image.src = imageUrl;
     image.onload = () => {
-      canvas.width = image.width;
-      canvas.height = image.height;
-      ctx.drawImage(image, 0, 0, image.width, image.height);
+      // Calculate the aspect ratio of the image
+      const aspectRatio = image.width / image.height;
+
+      // Set the canvas width and height based on the image dimensions
+      const maxWidth = 750; // Max width for the canvas
+      const maxHeight = 600; // Max height for the canvas
+      let canvasWidth = image.width;
+      let canvasHeight = image.height;
+
+      if (canvasWidth > maxWidth) {
+        canvasWidth = maxWidth;
+        canvasHeight = canvasWidth / aspectRatio;
+      }
+
+      if (canvasHeight > maxHeight) {
+        canvasHeight = maxHeight;
+        canvasWidth = canvasHeight * aspectRatio;
+      }
+
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
+
+      ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
 
       // Draw existing lines
       lines.forEach((line) => {
@@ -64,7 +83,7 @@ const DrawLineContent = ({ imageUrl, texts}) => {
     context.moveTo(start.x, start.y);
     context.lineTo(end.x, end.y);
     context.strokeStyle = color;
-    context.lineWidth = 5;
+    context.lineWidth = 3;
     context.stroke();
     context.closePath();
   };

@@ -16,9 +16,29 @@ const DrawArrowContent = ({ imageUrl, texts }) => {
     const image = new Image();
     image.src = imageUrl;
     image.onload = () => {
-      arrowCanvas.width = image.width;
-      arrowCanvas.height = image.height;
-      ctx.drawImage(image, 0, 0, image.width, image.height);
+      // Calculate the aspect ratio of the image
+      const aspectRatio = image.width / image.height;
+
+      // Set the canvas width and height based on the image dimensions
+      const maxWidth = 750; // Max width for the canvas
+      const maxHeight = 600; // Max height for the canvas
+      let canvasWidth = image.width;
+      let canvasHeight = image.height;
+
+      if (canvasWidth > maxWidth) {
+        canvasWidth = maxWidth;
+        canvasHeight = canvasWidth / aspectRatio;
+      }
+
+      if (canvasHeight > maxHeight) {
+        canvasHeight = maxHeight;
+        canvasWidth = canvasHeight * aspectRatio;
+      }
+
+      arrowCanvas.width = canvasWidth;
+      arrowCanvas.height = canvasHeight;
+
+      ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
 
       arrows.forEach((arrow) => {
         drawArrow(ctx, arrow.start, arrow.end, arrow.color);
@@ -58,7 +78,7 @@ const DrawArrowContent = ({ imageUrl, texts }) => {
   };
 
   const drawArrow = (context, start, end, color) => {
-    const headSize = 10;
+    const headSize = 7;
     const angle = Math.atan2(end.y - start.y, end.x - start.x);
 
     context.beginPath();
@@ -78,7 +98,7 @@ const DrawArrowContent = ({ imageUrl, texts }) => {
     );
 
     context.strokeStyle = color;
-    context.lineWidth = 8;
+    context.lineWidth = 4;
     context.stroke();
     context.closePath();
   };

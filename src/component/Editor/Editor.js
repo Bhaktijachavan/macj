@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "./Editor.css";
 import Draggable from "react-draggable";
-const Editor = ({ imageUrl, onTextChange, changes }) => {
+const Editor = ({ imageUrl, onTextChange }) => {
   const [font, setFont] = useState("Arial");
   const [fontSize, setFontSize] = useState(16);
   const [isBold, setIsBold] = useState(false);

@@ -8,9 +8,9 @@
 
 .canvas-for-draw-oval-content {
   display: block;
-  width: 100%;
-  height: 500px;
-  margin-top: 3em;
+  /* width: 100%;
+  height: 500px; */
+  margin-top: 2em;
 }
 .Buttons-undo-redo-conatainer {
   display: flex;
