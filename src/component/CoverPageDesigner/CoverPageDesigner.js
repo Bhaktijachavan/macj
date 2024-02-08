@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useReducer } from "react";
 import OutputComponent from "./OutputComponent/OutputComponent";
 import DraggableText from "./CompanyInfo/CompanyInfo";
 import CheckboxContent1 from "./CheckboxContent1/CheckboxContent1";
@@ -13,6 +13,7 @@ import InspectionSignature from "./Inspection Signature/InspectionSignature";
 import AgentPhoto from "./Agent Photo/AgentPhoto";
 import CompanyInfo from "./CompanyInfo/CompanyInfo";
 import EditableText from "./EditableText/EditableText";
+
 import "./CoverPageDesigner.css";
 
 function CoverPageDesigner({ onClose }) {
@@ -23,12 +24,12 @@ function CoverPageDesigner({ onClose }) {
   const [selectedCheckboxContents, setSelectedCheckboxContents] = useState([]);
   const [editableTexts, setEditableTexts] = useState([]); // State to hold editable text elements
   const [addedImages, setAddedImages] = useState([]); // State to hold added images
+  const [setContentT, setContentText] = useState([]); // State to hold added images
   const [isAgentPhotoUploaded, setIsAgentPhotoUploaded] = useState(false);
   // State to track whether "Page Borders" checkbox is checked
   const [isPageBordersChecked, setIsPageBordersChecked] = useState(false);
   const [isBorderApplied, setIsBorderApplied] = useState(false);
   const [fontSize, setFontSize] = useState(16); // Initial font size
-
   const addObjectToOutput = (objectType, properties) => {
     setOutputContent([...outputContent, { type: objectType, properties }]);
   };
@@ -190,12 +191,35 @@ function CoverPageDesigner({ onClose }) {
       case "Cover Company":
       case "Report Title":
       case "Inspection Signature":
-        content = <EditableText fontSize={fontSize} initialText={label} />;
+        content = <EditableText initialText={label} />;
         break;
       default:
         content = null;
     }
     return content;
+  };
+  const handleRemoveBoxTextImage = () => {
+    // Filter out selected objects from editableTexts array
+    const updatedTexts = editableTexts.filter(
+      ({ id }) => !selectedObjects.includes(id)
+    );
+
+    // Filter out selected objects from addedImages array
+    const updatedImages = addedImages.filter(
+      ({ id }) => !selectedObjects.includes(id)
+    );
+    // Filter out selected objects from addedImages array
+    const updatedContent = outputContent.filter(
+      ({ id }) => !editableTexts.includes(id)
+    );
+
+    // Update the state with the filtered arrays
+    setEditableTexts(updatedTexts);
+    setAddedImages(updatedImages);
+    setContentText(updatedContent);
+    // Clear the selected objects after removal
+    setSelectedObjects([]);
+    setSelectedCheckboxContents([]);
   };
   return (
     <>
@@ -336,16 +360,7 @@ function CoverPageDesigner({ onClose }) {
                   <div className="buttons-for-add-text-box-and-imagess">
                     <section className="section-for-btnss-of-text-add-imgs">
                       {/* Buttons for adding box, text, image, etc. */}
-                      <button
-                        className="btn"
-                        onClick={() =>
-                          addObjectToOutput("box", {
-                            /* box properties */
-                          })
-                        }
-                      >
-                        Add Box
-                      </button>
+                      <button className="btn">Add Box</button>
                       <button className="btn" onClick={handleAddText}>
                         Add/Edit <br /> Text
                       </button>
@@ -388,7 +403,10 @@ function CoverPageDesigner({ onClose }) {
                   <button className="btn-for-control-section-design-page">
                     Border Style
                   </button>
-                  <button className="btn-for-control-section-design-page">
+                  <button
+                    onClick={handleRemoveBoxTextImage}
+                    className="btn-for-control-section-design-page"
+                  >
                     Remove <br /> Box/Text/Image
                   </button>
                   {/* ... Add more controls for size and position */}
@@ -431,7 +449,7 @@ function CoverPageDesigner({ onClose }) {
             </div>
           </fieldset>
         </div>
-        {/* Layering Column */}{" "}
+        {/* Layering Column */}
         <fieldset className="bordered-text w-1/4">
           <legend className="tag-for-line-draw-through-text">Layers</legend>
           <div className="contains-the-list-of-selected-objects-and-thier-layer">
@@ -452,7 +470,6 @@ function CoverPageDesigner({ onClose }) {
         >
           {/* <h2 className="text-2xl font-bold mb-4">Output</h2> */}
           <div
-            bounds="parent"
             className={`content-that-is-draggable-and-adjustable-within-div ${
               isBorderApplied ? "with-borders" : ""
             }`}
@@ -463,7 +480,7 @@ function CoverPageDesigner({ onClose }) {
                 <div>{content}</div>
               </Draggable>
             ))}
-            {/* Display the text to be added */}
+
             {/* Render editable text elements */}
             {editableTexts.map(({ id, text }) => (
               <Draggable className="" bounds="parent">
