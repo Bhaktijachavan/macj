@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import './Panel2.css';
+import './Panel4.css';
 import Header from '../../Header/Header';
 import Footer from '../../Footer/Footer';
 import PanelHeader from '../PanelHeader/PanelHeader';
 
-function Panel2() {
+function Panel4() {
   const [selectedText, setSelectedText] = useState('');
   const [blackText, setBlackText] = useState('');
   const [redText, setRedText] = useState('');
@@ -127,23 +127,15 @@ function Panel2() {
         <Header />
       </div>
       <PanelHeader />
-      <div>
-        <div className="panel-heading text-center m-2">
-          Panel 2
-        </div>
-        <div className='pl-2 m-2'>
-          <div className="scroll-box4-panel2 bg-white">
-          </div>
-        </div>
-      </div>
+      
 
       <div>
         <div className="panel-heading text-center">
-          Panel 2
+          Panel 4
         </div>
         
-        <div className="container-panel2">
-          <div className="panel2">
+        <div className="container-panel4">
+          <div className="panel4">
 
             <div className="p-5">
               {['Good', 'Fair', 'Poor', 'N/A', 'None'].map((label, index) => (
@@ -161,7 +153,7 @@ function Panel2() {
               ))}
             </div>
 
-            <div className="scroll-box-panel2 p-4 bg-gray-100"
+            <div className="scroll-box-panel4 p-4 bg-gray-100"
               style={{ cursor: 'pointer' }}
               onMouseUp={handleTextSelection}>
               <p>Demo Panel color</p>
@@ -179,8 +171,8 @@ function Panel2() {
               <button className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-0 py-0 rounded">Show PDFs</button>
             </div>
 
-            <div className="container1-panel2">
-              <div className="scroll-box1-panel2" onClick={() => handleLineClick(index, 'black')}>
+            <div className="container1-panel4">
+              <div className="scroll-box1-panel4" onClick={() => handleLineClick(index, 'black')}>
                 {blackText.split('\n').map((line, index) => (
                   <div
                     key={index}
@@ -199,7 +191,7 @@ function Panel2() {
                 ))}
               </div>
 
-              <div className="scroll-box1-panel2" style={{ padding: '10px', color: 'red' }}>
+              <div className="scroll-box1-panel4" style={{ padding: '10px', color: 'red' }}>
                 {redText.split('\n').map((line, index) => (
                   <div
                     key={index}
@@ -219,36 +211,36 @@ function Panel2() {
               </div>
 
             </div>
-            <div className='panelupdown-panel2' >
-              <div className="button-container-panel2">
-                <button className="image-button-panel2" onClick={() => handleMoveUp(blackText, setBlackText)}>
+            <div className='panelupdown-panel4 ' >
+              <div className="button-container-panel4 mb-5">
+                <button className="image-button-panel4" onClick={() => handleMoveUp(blackText, setBlackText)}>
                   <img src="ic_up.png" alt="Button 1" width={20} />
                 </button>
 
-                <button className="image-button-panel2" onClick={() => handleMoveDown(blackText, setBlackText)}>
+                <button className="image-button-panel4" onClick={() => handleMoveDown(blackText, setBlackText)}>
                   <img src="ic_down.png" alt="Button 2" width={20} />
                 </button>
 
-                <button className="image-button-panel2" onClick={handleMoveDownRedBox}>
+                <button className="image-button-panel4" onClick={handleMoveDownRedBox}>
                   <img src="ic_down2.png" alt="Button 3" width={20} />
                 </button>
               </div>
 
-              <div className="button-container-panel2">
-                <button className="image-button-panel2" onClick={handleMoveUpBlackBox}>
+              <div className="button-container-panel4 mt-5">
+                <button className="image-button-panel4" onClick={handleMoveUpBlackBox}>
                   <img src="ic_up2.png" alt="Button 3" width={20} />
                 </button>
 
-                <button className="image-button-panel2" onClick={() => handleMoveUp(redText, setRedText)}>
+                <button className="image-button-panel4" onClick={() => handleMoveUp(redText, setRedText)}>
                   <img src="ic_up.png" alt="Button 1" width={20} />
                 </button>
 
-                <button className="image-button-panel2" onClick={() => handleMoveDown(redText, setRedText)}>
+                <button className="image-button-panel4" onClick={() => handleMoveDown(redText, setRedText)}>
                   <img src="ic_down.png" alt="Button 2" width={20} />
                 </button>
               </div>
             </div>
-            <div className="scroll-box3-panel2 p-4 bg-gray-100"></div>
+            <div className="scroll-box3-panel4 p-4 bg-gray-100"></div>
           </div>
         </div>
       </div>
@@ -260,4 +252,4 @@ function Panel2() {
   );
 }
 
-export default Panel2;
+export default Panel4;

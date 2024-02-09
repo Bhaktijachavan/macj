@@ -125,7 +125,7 @@ const PannelComponent = () => {
         <div className="container-panel2">
           <div className="panel2">
 
-            <div className="p-1">
+            <div className="p-5">
               {['Good', 'Fair', 'Poor', 'N/A', 'None'].map((label, index) => (
                 <div key={index} className="flex items-center mb-2 checkbox-container">
                   <input

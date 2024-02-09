@@ -23,6 +23,8 @@ import { Link } from "react-router-dom";
 import InternetLogin from "./../InternetLogin/InternetLogin";
 import BatchAddPhotos from "./../Photo/BatchAddPhotos/BatchAddPhotos";
 import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
+import ColorPalette from "./../ColorPalet/ColorPalet";
+import { EditTempContext } from "../../Context";
 
 const Header = () => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
@@ -34,6 +36,7 @@ const Header = () => {
   const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] =
     useState(false);
   const [activePopup, setActivePopup] = useState(null);
+  const [colorPaletPopup, setOpenColorPaletPopup] = useState(false);
 
   const openOpenTemplatePopup = () => {
     setOpenTemplatePopup(true);
@@ -42,7 +45,12 @@ const Header = () => {
   const closeOpenTemplatePopup = () => {
     setOpenTemplatePopup(false);
   };
-
+  const openColorPaletPopup = () => {
+    setOpenColorPaletPopup(true);
+  };
+  const closeColorPaletPopup = () => {
+    setOpenColorPaletPopup(false);
+  };
   const openSaveTemplatePopup = () => {
     setSaveTemplatePopup(true);
   };
@@ -133,6 +141,7 @@ const Header = () => {
       setEditTemplatePopup(false);
     };
   }, []);
+
   return (
     <>
       <div
@@ -368,6 +377,7 @@ const Header = () => {
             </li>
             <hr />
 
+            <Link to="/EditComments">
             <li className="list-for-header-section-main-nav">
               <p
                 onClick={() => openPopup("editComments")}
@@ -382,6 +392,7 @@ const Header = () => {
                 </div>
               </p>
             </li>
+            </Link>
 
             <li className="list-for-header-section-main-nav  border-r border-black-900">
               <a
@@ -471,19 +482,23 @@ const Header = () => {
             </li>
             <hr />
 
-            <Link to="/generateReport">
-              <li className="list-for-header-section-main-nav">
-                <a href="#" className="header2-tag-a">
-                  <div className="flex justify-center">
-                    <img src={img12} alt="" />
-                  </div>
-                  <div>
-                    Geneate
-                    <br /> report
-                  </div>
-                </a>
-              </li>
-            </Link>
+            {/* <Link to="/generateReport"> */}
+            <li className="list-for-header-section-main-nav">
+              <a
+                href="#"
+                className="header2-tag-a"
+                onClick={openColorPaletPopup}
+              >
+                <div className="flex justify-center">
+                  <img src={img12} alt="" />
+                </div>
+                <div>
+                  Geneate
+                  <br /> report
+                </div>
+              </a>
+            </li>
+            {/* </Link> */}
             <hr />
             <li className="list-for-header-section-main-nav">
               <a href="#" className="header2-tag-a">
@@ -548,6 +563,12 @@ const Header = () => {
           <div className="popup Cover-Page-Design-Popup-ccc">
             {/* Render your EditTemplate component here */}
             <CoverPageDesigner onClose={closeCoverPageDesignPopup} />
+          </div>
+        )}
+        {colorPaletPopup && (
+          <div className="popup Cover-Page-Design-Popup-ccc">
+            {/* Render your color palet component here */}
+            <ColorPalette onClose={closeColorPaletPopup} />
           </div>
         )}
       </div>

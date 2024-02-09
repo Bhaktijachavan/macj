@@ -29,14 +29,14 @@ body{
 }
 
 .scroll-box-panel2 {
-    width: 100vh;
+    width: 95vh;
     height: 30vh;
     border: solid black 1px;
-    margin-left: 10px;
+    margin-left: 50px;
 }
 
 .scroll-box1-panel2 {
-    width: 250px;
+    width: 210px;
     height: 120px;
 }
 
@@ -72,7 +72,8 @@ body{
 
   }
   .scroll-box4-panel2{
-    width: 189vh;
+    margin-left: 9%;
+    width: 170vh;
     height: 32vh;
     border: solid black 1px;
     padding-left: 10px;

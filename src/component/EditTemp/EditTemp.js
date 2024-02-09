@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useState, useEffect } from 'react';
 import { FaFolderOpen } from 'react-icons/fa';
 import OneDamage from "../EditTemp/OneDamage/OneDamage";
@@ -13,16 +13,60 @@ import Inspection from './Inspection/Inspection';
 import TwoSelection from './twoSelection/TwoSelection';
 import TwoDamage from './twoDamage/TwoDamage';
 import OneDamageSelection from './oneDamageSelection/OneDamageSelection';
-
+import { EditTempContext } from '../../Context';
 const EditTemp = ({ onClose }) => {
+    const [selectedSubItem, setSelectedSubItem] = useState(null);
+    const [meduData, setMenuData] = useState("");
+    const [formData, setFormData] = useState({
+        onetabName: '',
+        onedamagePanelName: '',
+    });
+    const [selectedTabName, setSelectedTabName] = useState('');
+    const handleTabNameChange = (event) => {
+        // Update the state or perform any other actions with the tabName
+        setSelectedTabName(event.target.value);
+        setOnedamagePanelName(event.target.value); // Add this line
+        console.log('Tab Name in Parent Component:', event.target.value);
+    };
+    const handleOneDamageDone = (formData) => {
+        // Handle the formData received from OneDamage
+        console.log('Received formData from OneDamage:', formData);
+        // Set the received data to state or perform any other actions
+        setFormData({
+            ...formData,
+            // You can update other state properties based on the received formData
+        });
+        const updatedMenuData = menuData.map((item) =>
+            item.menuname === selectedPanel
+                ? {
+                    ...item,
+                    subItems: item.subItems.map((subItem) =>
+                        subItem.submenuname === selectedSubItem.submenuname
+                            ? {
+                                ...subItem,
+                                tabName: formData.onetabName,
+                                onedamagePanelName: formData.onedamagePanelName,
+                            }
+                            : subItem
+                    ),
+                }
+                : item
+        );
+
+        // Update the menuData state
+        setMenuData(updatedMenuData);
+
+        // Close the popup or perform any other actions
+        setIsPopupOpen(false);
+    };
     const [selectedOption, setSelectedOption] = useState(null);
     // const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
-
     // Flag to indicate if a radio option is selected
     const [isRadioOptionSelected, setIsRadioOptionSelected] = useState(false);
-
-
+    const { setEditTempData } = useContext(EditTempContext)
+    const [item] = useState();
+    const [onetabNames, setOnetabNames] = useState([]);
     const [popupStates, setPopupStates] = useState({
         'Option 1': false,
         'Option 2': false,
@@ -31,7 +75,6 @@ const EditTemp = ({ onClose }) => {
         'Option 5': false,
         'Option 6': false,
     });
-
     const componentsMap = {
         'Option 1': OneDamage,
         'Option 2': twoDamage,
@@ -40,12 +83,49 @@ const EditTemp = ({ onClose }) => {
         'Option 5': oneDamageSelection,
         'Option 6': OneDamageTwoSelection,
     };
-
     const handleRadioChange = (event) => {
         const value = event.target.value;
         setSelectedOption(value);
+        localStorage.setItem('selectedPanel', value);
     };
-
+    const [selectedPanel, setSelectedPanel] = useState('');
+    const handlePanelSelect = (panelName) => {
+        setSelectedPanel(panelName);
+    };
+    // const handleSave = () => {
+    //     // Save the selected panel name to local storage
+    //     localStorage.setItem('selectedPanel', selectedPanel);
+    //   };
+    useEffect(() => {
+        const localStorageData = localStorage.getItem('oneDamageFormData');
+        try {
+            const parsedData = JSON.parse(localStorageData);
+            if (parsedData && parsedData.onetabName) {
+                // Check if the onetabName is not already in the array
+                if (!onetabNames.includes(parsedData.onetabName)) {
+                    setOnetabNames(prevOnetabNames => [...prevOnetabNames, parsedData.onetabName]);
+                }
+            }
+        } catch (error) {
+            console.error('Error parsing localStorage data:', error);
+        }
+    }
+    );
+    // Function to handle dynamic updates when new data is added to localStorage
+    const handleLocalStorageUpdate = () => {
+        const localStorageData = localStorage.getItem('oneDamageFormData');
+        try {
+            const parsedData = JSON.parse(localStorageData);
+            if (parsedData && parsedData.onetabName) {
+                // Check if the onetabName is not already in the array
+                if (!onetabNames.includes(parsedData.onetabName)) {
+                    setOnetabNames(prevOnetabNames => [...prevOnetabNames, parsedData.onetabName]);
+                }
+            }
+        } catch (error) {
+            console.error('Error parsing localStorage data:', error);
+        }
+    };
     useEffect(() => {
         // Check if the selectedOption exists and the corresponding popup state is false
         if (selectedOption && !popupStates[selectedOption]) {
@@ -54,25 +134,19 @@ const EditTemp = ({ onClose }) => {
             setSelectedOption('');
         }
     }, [popupStates]);
-
     const openPopup = () => {
         setPopupStates((prevState) => ({
             ...prevState,
             [selectedOption]: true,
         }));
     };
-
     const closePopup = () => {
         setPopupStates((prevState) => ({
             ...prevState,
             [selectedOption]: false,
-
         }));
         console.log("closing")
     };
-
-
-
     const handleCancel = () => {
         // Reset the selected option and close the popup
         setSelectedOption('');
@@ -82,29 +156,15 @@ const EditTemp = ({ onClose }) => {
         }));
         console.log('Cancel clicked');
     };
-
     const handleBack = () => {
-
         console.log('Back clicked');
     };
-
-
-    // const handleNext = () => {
-    //     // Handle next action
-    //     console.log('Next clicked');
-    //     openPopup();
-    // };
-
     const handleDone = () => {
         // Handle done action
         console.log('Done clicked');
         // console.log('Selected option:', selectedOption);
         closePopup();
     };
-
-
-
-
     // State variables
     const [inputText, setInputText] = useState('');
     const [displayText, setDisplayText] = useState('');
@@ -112,94 +172,73 @@ const EditTemp = ({ onClose }) => {
     const [menuName, setMenuName] = useState('');
     const [menuItem, setMenuItem] = useState('');
     const [items, setItems] = useState([]);
-
     const [selectedMenuItemIndex, setSelectedMenuItemIndex] = useState(null);
     const [selectedSubItemIndex, setSelectedSubItemIndex] = useState(null);
     const [lastSelectionType, setLastSelectionType] = useState('menu'); // 'menu' or 'menuItem'
     const [selectedMenuTitleIndex, setSelectedMenuTitleIndex] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-
     const [menuItems, setMenuItems] = useState([]);
-
+    const [onedamagePanelName, setOnedamagePanelName] = useState('');
     // Function to handle adding text
     const handleAddClick = () => {
         setDisplayText(inputText);
         setInputText('');
     };
-
     // Function to handle input change for new item name
     const handleInputChange = (event) => {
         setNewItemName(event.target.value);
     };
-
     // Function to handle input change for menu item
     const handleMenuItemChange = (event) => {
         setMenuItem(event.target.value);
     };
-
     // Function to handle selecting a menu item
     const handleSelectMenuItem = (index) => {
         setSelectedMenuItemIndex(index);
         setLastSelectionType(index === null ? 'menu' : 'menuItem');
         setShowPopup(true);
     };
-
     // Function to handle selecting a subitem
     const handleSelectSubItem = (subIndex) => {
         setSelectedSubItemIndex(subIndex);
         setShowPopup(true);
     };
-
     // Function to handle selecting a menu title
     const handleSelectMenuTitle = (index) => {
         setSelectedMenuTitleIndex(index);
         setSelectedMenuItemIndex(null);
         setSelectedSubItemIndex(null);
     };
-
-    // Function to handle adding a menu item or subitem
-    // State variable for controlling popup visibility
-    // const [isPopupVisible, setPopupVisible] = useState(false);
-    // Retrieve the string from localStorage
     const storedMenuData = localStorage.getItem('menuData');
-
-    // Parse the string to a JavaScript object
     const menuData = JSON.parse(storedMenuData);
-
-    // Now, `menuData` is an array of objects with the proper structure
     console.log(menuData);
-
-    // Use useEffect for localStorage
     useEffect(() => {
-        // Save to localStorage whenever 'items' changes
         localStorage.setItem('menuData', JSON.stringify(items));
-    }, [items]); // Dependency on 'items'
+        setEditTempData(items);
+    }, [items]);
     const handleAddMenuItem = (event) => {
         event.preventDefault();
-
         let updatedItems;
-
         if (lastSelectionType === 'menu' && selectedMenuTitleIndex !== null) {
-            // Add a new menu item
             updatedItems = [...items];
             const newItem = {
-                id: Date.now(), // Unique ID for the menu item
+                id: Date.now(),
                 menuname: menuItem,
                 subItems: [],
             };
             updatedItems[selectedMenuTitleIndex] = newItem;
-
             setMenuItem('');
             setLastSelectionType('menuItem');
         } else if (lastSelectionType === 'menuItem' && selectedMenuItemIndex !== null) {
-            // Add a new subitem to a menu item
             const selectedItem = items[selectedMenuItemIndex];
-            if (!selectedItem.subItems.includes(menuItem)) {
+            if (!selectedItem.subItems.find(item => item.submenuname === menuItem)) {
                 updatedItems = [...items];
                 const newSubItem = {
-                    id: Date.now(), // Unique ID for the subitem
+                    id: Date.now(),
                     submenuname: menuItem,
+                    radioBoxSelection: '', // Set your default value or leave it empty
+                    tabName: '', // Set your default value or leave it empty
                 };
                 updatedItems[selectedMenuItemIndex] = {
                     ...selectedItem,
@@ -208,11 +247,10 @@ const EditTemp = ({ onClose }) => {
                 setMenuItem('');
             }
         } else {
-            // Add a new menu if none selected
             updatedItems = [
                 ...items,
                 {
-                    id: Date.now(), // Unique ID for the menu item
+                    id: Date.now(),
                     menuname: menuItem,
                     subItems: [],
                 },
@@ -220,70 +258,42 @@ const EditTemp = ({ onClose }) => {
             setMenuItem('');
             setLastSelectionType('menu');
         }
-
-        // Update state
         setItems(updatedItems);
+        console.log("setitems : ", setItems);
     };
-    // State variable for controlling popup visibility
     const [isPopupVisible, setPopupVisible] = useState(false);
-
-    // Function to handle double click
     const handleDoubleClick = (index) => {
         setSelectedMenuItemIndex(index);
         setPopupVisible(true);
     };
-
-    // Function to close the popup
     const handleClosePopup = () => {
         setPopupVisible(false);
     };
-
-    // Function to handle OK button click in the popup
     const handleOkButtonClick = () => {
         setItems((prevItems) =>
-            prevItems.map((item) =>
-                item.id === selectedMenuItemIndex.id ? { ...item, menuname: newItemName } : item
+            prevItems.map((item, index) =>
+                index === selectedMenuItemIndex ? { ...item, menuname: newItemName } : item
             )
         );
         setPopupVisible(false);
-        console.log("rename", newItemName);
     };
-
-
-    // Function to handle removing a menu item or subitem
     const handleRemoveItem = () => {
         if (selectedSubItemIndex !== null) {
-            // Remove a submenu item
             setItems((prevItems) => {
                 const updatedItems = prevItems.map((menuItem) => {
-                    // Check if the menu item has subItems
                     if (menuItem.subItems && menuItem.subItems.length > 0) {
-                        // Filter out the selected submenu item
                         const updatedSubItems = menuItem.subItems.filter((_, index) => index !== selectedSubItemIndex);
-
-                        // Update the menu item with the modified submenu
                         return {
                             ...menuItem,
                             subItems: updatedSubItems,
                         };
                     }
-
-                    // If the menu item has no subItems, return it as is
                     return menuItem;
                 });
-
                 return updatedItems;
             });
         }
-
-        // Additional logic for other cases if needed
     };
-
-
-
-
-
-
     const handleCopyItems = () => {
         if (lastSelectionType === 'menu' && selectedMenuTitleIndex !== null) {
             const copiedMenu = { ...items[selectedMenuTitleIndex] };
@@ -293,20 +303,47 @@ const EditTemp = ({ onClose }) => {
             setItems((prevItems) => [...prevItems, copiedMenuItem]);
         }
     };
-
-
-    const openPopupInspection = () => {
-        console.log("popup open")
-        setIsPopupOpen(true);
-
-    };
-
+    // const openPopupInspection = (subItemId) => {
+    //     console.log("popup open")
+    //     setIsPopupOpen(true);
+    // };
     const handleClosePopupInspection = () => {
         console.log('popup close');
         setIsPopupOpen(false);
     };
-
-
+    const openPopupInspection = (subItemId, subItemName) => {
+        console.log("popup open");
+        console.log("Subitem ID:", subItemId);
+        console.log("Subitem Name:", subItemName);
+        setIsPopupOpen(true);
+    };
+    const handleAddButtonClick = () => {
+        if (selectedSubItemIndex !== null) {
+            // Retrieve the selected subitem
+            const selectedMenuItem = items[selectedMenuItemIndex];
+            const selectedSubItem = selectedMenuItem.subItems[selectedSubItemIndex];
+            // Update the items state with the new data
+            const updatedItems = [...items];
+            updatedItems[selectedMenuItemIndex] = {
+                ...selectedMenuItem,
+                subItems: [
+                    ...selectedMenuItem.subItems.slice(0, selectedSubItemIndex),
+                    {
+                        ...selectedSubItem,
+                        tabName: selectedTabName,
+                        onedamagePanelName: onedamagePanelName,
+                        // Add other properties from oneDamageFormData as needed
+                    },
+                    ...selectedMenuItem.subItems.slice(selectedSubItemIndex + 1),
+                ],
+            };
+            setItems(updatedItems);
+            // Open the corresponding popup based on the selected radio box
+            openPopupInspection(selectedSubItem.id, selectedSubItem.submenuname);
+        } else {
+            alert('Please select a subitem before clicking Add');
+        }
+    };
     // JSX for rendering the component
     return (
         <div className='Contant-edittemp'>
@@ -319,12 +356,10 @@ const EditTemp = ({ onClose }) => {
                         <p onClick={onClose} className="close-button-edittemp">X</p>
                     </div>
                 </div>
-
                 {/* Menu and Item Section */}
                 <div className='Menu-Item flex justify-center'>
                     {/* Menu Section */}
                     <div className='menu'>
-
                         <p className='p-menutitle-edittemp'>Menu</p>
                     </div>
                     {/* Item Section */}
@@ -332,7 +367,6 @@ const EditTemp = ({ onClose }) => {
                         <p className='p-itemtitle-edittemp'>Item</p>
                     </div>
                 </div>
-
                 {/* Menu Items */}
                 <div className='Menu-Item-edittemp'>
                     {/* Menu Box */}
@@ -359,7 +393,6 @@ const EditTemp = ({ onClose }) => {
                                         </p>
                                     </div>
                                 </div>
-
                                 {/* Menu Items List */}
                                 <div key={selectedMenuItemIndex}>
                                     <ul className='pl-10'>
@@ -376,9 +409,7 @@ const EditTemp = ({ onClose }) => {
                                                     }}
                                                 >
                                                     {item.menuname}{' '}
-                                                    {/* newItemName={newItemName} */}
                                                 </button>
-
                                                 {/* Popup for Renaming Menu Item */}
                                                 {isPopupVisible && index === selectedMenuItemIndex && (
                                                     <div className='Contant1-edittemp'>
@@ -400,9 +431,7 @@ const EditTemp = ({ onClose }) => {
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                 )}
-
                                                 {/* Render SubItems if Exist */}
                                                 {item.subItems.length > 0 && (
                                                     <ul>
@@ -432,14 +461,14 @@ const EditTemp = ({ onClose }) => {
                         </div>
                         {/* Additional Item Content Placeholder */}
                         <div className="box2-edittemp">
-                            <div className='item'>
-                                {/* Placeholder for additional item content */}
+                            <div className='item text-left'>
+                                {onetabNames.map((onetabName, index) => (
+                                    <p key={index}>{onetabName}</p>
+                                ))}
                             </div>
                         </div>
                     </div>
                 </div>
-
-                {/* Button Containers */}
                 <div className='Menu-Item-edittemp'>
                     {/* Menu Item Manipulation Buttons */}
                     <div className="button-container-edittemp">
@@ -463,10 +492,8 @@ const EditTemp = ({ onClose }) => {
                     {/* Item Manipulation Buttons */}
                     <div className="button-container-edittemp">
                         <div className="input-container-edittemp">
-
-                            <button className="btnM-edittemp" onClick={openPopupInspection}>Add</button>
+                            <button className="btnM-edittemp" onClick={handleAddButtonClick} subItemName={selectedSubItemIndex !== null ? items[selectedMenuItemIndex].subItems[selectedSubItemIndex]?.submenuname : ''}>Add</button>
                             {isPopupOpen && (
-
                                 // <Inspection/>
                                 <div className="dialog-inspection">
                                     <div className="dialog-header-inspection">
@@ -482,33 +509,31 @@ const EditTemp = ({ onClose }) => {
                                                 value="Option 1"
                                                 checked={selectedOption === 'Option 1'}
                                                 onChange={handleRadioChange}
+                                            // onClick={() => handlePanelSelect('Panel 1')}
                                             />
                                             1 Damage Panel
                                         </label>
-
-
                                         <label className='label2-inspection'>
                                             <input
                                                 type="radio"
                                                 name="options"
                                                 value="Option 2"
                                                 checked={selectedOption === 'Option 2'}
+                                                // onClick={() => handlePanelSelect('Panel 2')}
                                                 onChange={handleRadioChange}
                                             />
                                             2 Damage Panels
                                         </label>
-
                                         <label className='label3-inspection'>
                                             <input
                                                 type="radio"
                                                 name="options"
                                                 value="Option 3"
                                                 checked={selectedOption === 'Option 3'}
-                                                onChange={handleRadioChange}
+                                                onTabNameChange={handleTabNameChange}
                                             />
                                             1 Selection Panel
                                         </label>
-
                                         <label className='label4-inspection'>
                                             <input
                                                 type="radio"
@@ -519,7 +544,6 @@ const EditTemp = ({ onClose }) => {
                                             />
                                             2 Selection Panels
                                         </label>
-
                                         <label className='label-inspection'>
                                             <input
                                                 type="radio"
@@ -530,7 +554,6 @@ const EditTemp = ({ onClose }) => {
                                             />
                                             1 Damage Panel & 1 Selection Panel
                                         </label>
-
                                         <label className='label5-inspection'>
                                             <input
                                                 type="radio"
@@ -549,25 +572,22 @@ const EditTemp = ({ onClose }) => {
                                         <button className="back-button-inspection" onClick={handleBack}>
                                             Back
                                         </button>
-                                        {/* <button className="next-button-inspection" onClick={handleNext}>
+                                        <button className="back-button-inspection" onClick={handleBack}>
                                             Next
-                                        </button> */}
-                                        <button className="done-button-inspection" onClick={handleClosePopupInspection}>
+                                        </button>
+                                        <button className="done-button-inspection" >
                                             Done
                                         </button>
                                     </div>
-                                    {/* Render the popup based on the selected option */}
                                     {/* {popupStates[selectedOption] && React.createElement(componentsMap[selectedOption])} */}
-                                    {isPopupOpen && selectedOption === 'Option 1' && <OneDamage isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} onClose={() => setPopupStates({ ...popupStates, 'Option 1': false })} />}
+                                    {isPopupOpen && selectedOption === 'Option 1' && <OneDamage isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} onDone={handleOneDamageDone} onClose={() => setPopupStates({ ...popupStates, 'Option 1': false })} />}
                                     {isPopupOpen && selectedOption === 'Option 2' && <TwoDamage isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} onClose={() => setPopupStates({ ...popupStates, 'Option 2': false })} />}
                                     {isPopupOpen && selectedOption === 'Option 3' && <OneSelection isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} onClose={() => setPopupStates({ ...popupStates, 'Option 3': false })} />}
                                     {isPopupOpen && selectedOption === 'Option 4' && <TwoSelection isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} onClose={() => setPopupStates({ ...popupStates, 'Option 4': false })} />}
                                     {isPopupOpen && selectedOption === 'Option 5' && <OneDamageSelection isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} onClose={() => setPopupStates({ ...popupStates, 'Option 5': false })} />}
                                     {isPopupOpen && selectedOption === 'Option 6' && <OneDamageTwoSelection isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} onClose={() => setPopupStates({ ...popupStates, 'Option 6': false })} />}
-
                                 </div>
                             )}
-
                             <button className="btnM-edittemp">Remove</button>
                             <button className="btnM-edittemp">Move Up</button>
                             <button className="btnM-edittemp">Move Down</button>
@@ -575,12 +595,10 @@ const EditTemp = ({ onClose }) => {
                         </div>
                     </div>
                 </div>
-
                 {/* Explanation Paragraph */}
                 <div className='para1-edittemp'>
                     <p>Double click on a menu or inspection item to rename it. Move a menu by dragging and dropping an item to the new location Type into the box left of Add and click Add to add a new area or menu</p>
                 </div>
-
                 {/* Done Button */}
                 <div className="Donebtn-edittemp">
                     <button className="open-button-edittemp" onClick={onClose}>Done</button>
@@ -588,7 +606,5 @@ const EditTemp = ({ onClose }) => {
             </div>
         </div>
     );
-
 };
-
 export default EditTemp;
