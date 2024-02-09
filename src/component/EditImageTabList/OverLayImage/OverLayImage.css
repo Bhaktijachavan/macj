@@ -1,35 +1,109 @@
 /* CropImageContent.css */
 
-.image-container-sde {
-  position: relative;
-  width: auto;
-  cursor: crosshair;
-  padding: 20px;
-}
-
-.original-image-overlay {
-  display: block;
-  width: 100%;
-  height: 500px;
-  margin-top: 1em;
-  /* object-fit: cover; */
-}
-.Buttons-undo-redo-conatainer {
+.Overlay-Image-container-to-overlay-image-super-container {
+  width: 48em;
   display: flex;
-  align-items: center;
   justify-content: center;
-  margin-top: 1em;
+  align-items: center;
+  border: 2px solid black;
+  height: 38em;
 }
-.Buttons-undo-redo-yytytyt {
-  margin-left: 1em;
+.Overlay-for-edit-images-tablist-section-main-container {
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  background-color: #d3d3d3;
+  border: solid 1px rgb(191, 189, 189);
+  /* border: 2px solid black; */
+  width: 44em;
+  height: 26em;
+  position: absolute;
+}
+.Overlay-for-edit-images-tablist-section-header-container {
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(242, 236, 236);
+  border: solid 1px rgb(191, 189, 189);
+  padding: 0px 0 0 1em;
+  height: 2em;
+}
+.OverlayImage-close-image-x {
+  /* width: 10px;
+  height: 10px; */
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 34px;
+  height: 30px;
+}
+.OverlayImage-close-image-x:hover {
+  background-color: red;
+  color: white;
+}
+.paracontainer-para {
+  text-align: right;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 21px;
+}
+.button-continer-rotate-super-container {
+  /* margin-left: 8px; */
+  display: flex;
+  /* justify-content: center; */
+  gap: 8px;
+  height: 295px;
+  /* border: 2px solid; */
+  margin: 10px;
+}
+.Rotate-Button-to-rotate-Overlay-image {
   background-color: #f3f2f1;
   color: black;
   border: 2px solid rgb(191, 189, 189);
   border-radius: 5px;
   cursor: pointer;
-  padding: 0 10px 0 10px;
+  margin-top: 5px;
+  width: 6em;
 }
-.Buttons-undo-redo-yytytyt:hover {
+.Rotate-Button-to-rotate-Overlay-image:hover {
   background-color: #d7e9f7;
   border-color: #005a9e;
+}
+.photo-container-photo-is-reviewed {
+  border: 2px solid rgb(191, 189, 189);
+  height: 290px;
+  width: 578px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+.Buttons-to-add-overlay-image-ok-cancel-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  margin-top: 11px;
+}
+.ok-cancel-button-overlay-image {
+  padding-left: 32px;
+  padding-right: 32px;
+  background-color: #f3f2f1;
+  color: black;
+  border: 2px solid rgb(191, 189, 189);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.ok-cancel-button-overlay-image:hover {
+  background-color: #d7e9f7;
+  border-color: #005a9e;
+}
+.Rotate-Button-to-rotate-Overlay-image-container {
+  width: 96px;
+}
+.Overlay-Image-image-uploded {
+  width: auto;
+  height: 565px;
 }
