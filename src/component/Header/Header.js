@@ -19,44 +19,21 @@ import img13 from "../../Assets/icons/upload_report.png";
 import img14 from "../../Assets/icons/address_book.png";
 import img15 from "../../Assets/icons/sync.png";
 import { Link } from "react-router-dom";
-import { EditTempContext } from '../../Context';
-const SubmenuPopup = ({ isVisible, submenuItems, position, onClose }) => {
-  if (!isVisible) {
-    return null;
-  }
-  return (
-    <div className="submenu-popup absolute z-10 bg-white shadow mt-2" style={{ top: position.top, left: position.left, width: "180px", lineHeight: "12px" }}>
-      {submenuItems.map((subItem, index) => (
-        <Link to={subItem.link} key={index}>
-          <div className="py-2 px-4 hover:bg-gray-200" onClick={onClose}>
-            {subItem.submenuname}
-          </div>
-        </Link>
-      ))}
-    </div>
-  );
-};
+import InternetLogin from "./../InternetLogin/InternetLogin";
+import BatchAddPhotos from "./../Photo/BatchAddPhotos/BatchAddPhotos";
+import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
+
 const Header = () => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
   const [saveTemplatePopup, setSaveTemplatePopup] = useState(false);
   const [editTemplatePopup, setEditTemplatePopup] = useState(false);
-  const { editTempData, setEditTempData } = useContext(EditTempContext);
-  const [submenuPosition, setSubmenuPosition] = useState({ top: 0, left: 0 });
-  useEffect(() => {
-    console.log(editTempData);
-  }, [editTempData]);
-  const [activeMenu, setActiveMenu] = useState(null);
-  const handleMenuClick = (menuId) => {
-    setActiveMenu(activeMenu === menuId ? null : menuId);
-  };
-  const toggleSubMenu = (menuId, position) => {
-    setActiveMenu(activeMenu === menuId ? null : menuId);
-    setSubmenuPosition(position);
-    window.location.href = '/panel1';
-  };
-  const closeSubmenu = () => {
-    setActiveMenu(null);
-  };
+  const [internetLoginPopup, setInternetLoginPopup] = useState(false);
+  const [batchAddPhotosPopup, setBatchAddPhotosPopup] = useState(false);
+  const [coverPageDesignPopup, setCoverPageDesignPopup] = useState(false);
+  const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] =
+    useState(false);
+  const [activePopup, setActivePopup] = useState(null);
+
   const openOpenTemplatePopup = () => {
     setOpenTemplatePopup(true);
   };
@@ -75,6 +52,13 @@ const Header = () => {
   const closeEditTemplatePopup = () => {
     setEditTemplatePopup(false);
   };
+  const closeCoverPageDesignPopup = () => {
+    setCoverPageDesignPopup(false);
+  };
+  const openCoverPageDesignPopup = () => {
+    setCoverPageDesignPopup(true);
+  };
+
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const handleOpenInspectionClick = () => {
@@ -141,9 +125,35 @@ const Header = () => {
           </ul>
         </div>
         <div>
-          <ul>
-            <li className="ml-5">Report Setting</li>
-          </ul>
+          <div className="menu-item relative ml-4">
+            <div
+              className="main-label cursor-pointer"
+              onClick={() => handleMenuClick(2)}
+            >
+              Report Setting
+            </div>
+            {activeMenu === 2 && (
+              <ul
+                className="submenu w-36 absolute z-10 bg-white shadow mt-2"
+                style={{ lineHeight: "12px", fontSize: "13px" }}
+                onClick={openCoverPageDesignPopup}
+              >
+                {/* <Link to="/coverpagedesigner"> */}
+                <li
+                  className=" hover:bg-gray-200"
+                  style={{
+                    height: "2em",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  Cover Page Designer
+                </li>
+                {/* </Link> */}
+              </ul>
+            )}
+          </div>
         </div>
         <div className="menu-item relative ml-4">
           <div
@@ -436,6 +446,24 @@ const Header = () => {
           <div className="popup m-0">
             {/* Render your EditTemplate component here */}
             <EditTemp onClose={closeEditTemplatePopup} />
+          </div>
+        )}{" "}
+        {internetLoginPopup && (
+          <div className="popup m-0">
+            {/* Render your EditTemplate component here */}
+            <InternetLogin onClose={closeisInternetLoginPopup} />
+          </div>
+        )}
+        {batchAddPhotosPopup && (
+          <div className="popup m-0">
+            {/* Render your EditTemplate component here */}
+            <BatchAddPhotos onClose={closeBatchAddPhotosPopup} />
+          </div>
+        )}{" "}
+        {coverPageDesignPopup && (
+          <div className="popup Cover-Page-Design-Popup-ccc">
+            {/* Render your EditTemplate component here */}
+            <CoverPageDesigner onClose={closeCoverPageDesignPopup} />
           </div>
         )}
       </div>

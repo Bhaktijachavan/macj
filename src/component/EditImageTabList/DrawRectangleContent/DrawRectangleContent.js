@@ -2,10 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DrawRectangleContent.css";
 import PropTypes from "prop-types";
 
-const DrawRectangleContent = ({ imageUrl, lineWidth = 2 }) => {
+const DrawRectangleContent = ({ imageUrl, lineWidth = 2, texts }) => {
   const [rectangles, setRectangles] = useState([]);
   const [drawing, setDrawing] = useState(false);
   const rectangleRef = useRef(null);
+  const [history, setHistory] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(-1);
 
   useEffect(() => {
     const rectangleCanvas = rectangleRef.current;
@@ -14,9 +16,29 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2 }) => {
     const image = new Image();
     image.src = imageUrl;
     image.onload = () => {
-      rectangleCanvas.width = image.width;
-      rectangleCanvas.height = image.height;
-      ctx.drawImage(image, 0, 0, image.width, image.height);
+      // Calculate the aspect ratio of the image
+      const aspectRatio = image.width / image.height;
+
+      // Set the canvas width and height based on the image dimensions
+      const maxWidth = 750; // Max width for the canvas
+      const maxHeight = 600; // Max height for the canvas
+      let canvasWidth = image.width;
+      let canvasHeight = image.height;
+
+      if (canvasWidth > maxWidth) {
+        canvasWidth = maxWidth;
+        canvasHeight = canvasWidth / aspectRatio;
+      }
+
+      if (canvasHeight > maxHeight) {
+        canvasHeight = maxHeight;
+        canvasWidth = canvasHeight * aspectRatio;
+      }
+
+      rectangleCanvas.width = canvasWidth;
+      rectangleCanvas.height = canvasHeight;
+
+      ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
 
       rectangles.forEach((rectangle) => {
         drawRectangle(
@@ -34,8 +56,8 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2 }) => {
     e.preventDefault();
     setDrawing(true);
     const { offsetX, offsetY } = e.nativeEvent;
-    setRectangles((prevRectangles) => [
-      ...prevRectangles,
+    setRectanglesWithHistory([
+      ...rectangles,
       {
         start: { x: offsetX, y: offsetY },
         end: { x: offsetX, y: offsetY },
@@ -68,6 +90,32 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2 }) => {
     context.closePath();
   };
 
+  const pushToHistory = (rectangles) => {
+    const newHistory = history.slice(0, currentIndex + 1);
+    newHistory.push(rectangles);
+    setHistory(newHistory);
+    setCurrentIndex(currentIndex + 1);
+  };
+
+  const setRectanglesWithHistory = (newRectangles) => {
+    setRectangles(newRectangles);
+    pushToHistory(newRectangles);
+  };
+
+  const undo = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+      setRectangles(history[currentIndex - 1]);
+    }
+  };
+
+  const redo = () => {
+    if (currentIndex < history.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setRectangles(history[currentIndex + 1]);
+    }
+  };
+
   return (
     <div className="draw-rectangle-container">
       <canvas
@@ -78,6 +126,39 @@ const DrawRectangleContent = ({ imageUrl, lineWidth = 2 }) => {
         onMouseUp={stopDrawing}
         onMouseOut={stopDrawing}
       />
+      {texts &&
+        texts.map((text) => (
+          <div
+            key={text.id}
+            className="text-overlay"
+            style={{
+              color: text.textColor,
+              position: "absolute",
+              top: `${text.position.y}%`,
+              left: `${text.position.x}%`,
+              fontSize: `${text.fontSize}px`,
+              fontFamily: text.font,
+              fontWeight: text.isBold ? "bold" : "normal",
+              fontStyle: text.isItalic ? "italic" : "normal",
+              backgroundColor: text.isHighlighted
+                ? `${text.highlightColor}${Math.round(
+                    text.highlightOpacity * 255
+                  ).toString(16)}`
+                : "transparent",
+              textAlign: "center",
+            }}
+          >
+            {text.content}
+          </div>
+        ))}
+      <div className="Buttons-undo-redo-conatainer">
+        <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
+          Undo
+        </button>
+        <button className="Buttons-undo-redo-yytytyt" onClick={redo}>
+          Redo
+        </button>
+      </div>
     </div>
   );
 };

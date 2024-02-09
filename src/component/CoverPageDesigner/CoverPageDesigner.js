@@ -1,21 +1,98 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useReducer } from "react";
+import OutputComponent from "./OutputComponent/OutputComponent";
+import DraggableText from "./CompanyInfo/CompanyInfo";
+import CheckboxContent1 from "./CheckboxContent1/CheckboxContent1";
+import CheckboxContent2 from "./CheckboxContent2/CheckboxContent2";
+import DefaultContent from "./DefaultContent/DefaultContent";
+import Draggable from "react-draggable"; // Import Draggable component
+import InspectionDetails from "./InspectionDetails/InspectionDetails";
+import AgentInformation from "./AgentInformation/AgentInformation";
+import CoverCompany from "./CoverCompany/CoverCompany";
+import ReportTitle from "./ReportTitle/ReportTitle";
+import InspectionSignature from "./Inspection Signature/InspectionSignature";
+import AgentPhoto from "./Agent Photo/AgentPhoto";
+import CompanyInfo from "./CompanyInfo/CompanyInfo";
+import EditableText from "./EditableText/EditableText";
+
 import "./CoverPageDesigner.css";
-// CoverPageDesigner component
-function CoverPageDesigner() {
+
+function CoverPageDesigner({ onClose }) {
+  const fileInputRef = useRef(null);
   const [selectedObjects, setSelectedObjects] = useState([]);
   const [outputContent, setOutputContent] = useState([]);
-
+  const [isCoverPhotoChecked, setIsCoverPhotoChecked] = useState(false);
+  const [selectedCheckboxContents, setSelectedCheckboxContents] = useState([]);
+  const [editableTexts, setEditableTexts] = useState([]); // State to hold editable text elements
+  const [addedImages, setAddedImages] = useState([]); // State to hold added images
+  const [setContentT, setContentText] = useState([]); // State to hold added images
+  const [isAgentPhotoUploaded, setIsAgentPhotoUploaded] = useState(false);
+  // State to track whether "Page Borders" checkbox is checked
+  const [isPageBordersChecked, setIsPageBordersChecked] = useState(false);
+  const [isBorderApplied, setIsBorderApplied] = useState(false);
+  const [fontSize, setFontSize] = useState(16); // Initial font size
   const addObjectToOutput = (objectType, properties) => {
     setOutputContent([...outputContent, { type: objectType, properties }]);
   };
+  const handleAddText = () => {
+    // Here you can implement logic to get the text to add, such as from a text input
+    // For demonstration purposes, I'll just set a static text
+    const newText = "Add new text here ...";
 
-  const updateObjectInOutput = (index, properties) => {
-    const updatedOutput = [...outputContent];
-    updatedOutput[index].properties = {
-      ...updatedOutput[index].properties,
-      ...properties,
+    // Generate a unique identifier for the new text
+    const id = `text_${editableTexts.length + 1}`;
+
+    // Add the new editable text element to the state
+    setEditableTexts([...editableTexts, { id, text: newText }]);
+  };
+  // Modify the handleImageUpload function to set the state when an image is uploaded for Agent Photo
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0]; // Get the selected file
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file); // Convert the file to a data URL
+      reader.onloadend = () => {
+        // After reading the file, create a new image object
+        const newImage = {
+          id: `image_${addedImages.length + 1}`,
+          src: reader.result, // Use the data URL as image source
+          file: file, // Store the file object for later use
+          height: 100, // You can set default height and width here
+          width: 150,
+        };
+        // Add the new image to the state
+        setAddedImages([...addedImages, newImage]);
+
+        // Set the state to indicate that an image is uploaded for Agent Photo
+        setIsAgentPhotoUploaded(true);
+      };
+    }
+  };
+
+  const handleAddImage = () => {
+    // Here you can implement logic to get image properties, such as from a file input
+    // For demonstration purposes, I'll set static properties
+    const newImage = {
+      id: `image_${addedImages.length + 1}`,
+      src: "path/to/image.jpg", // Replace with the actual source path
+      height: 100, // Set the desired height
+      width: 150, // Set the desired width
     };
-    setOutputContent(updatedOutput);
+
+    // Add the new image element to the state
+    setAddedImages([...addedImages, newImage]);
+  };
+  // Modify the handleDeleteImage function to reset the state related to Agent Photo checkbox
+  const handleDeleteImage = (id) => {
+    // Remove the image with the specified id from the state
+    const updatedImages = addedImages.filter((image) => image.id !== id);
+    setAddedImages(updatedImages);
+
+    // Check if the deleted image corresponds to the Agent Photo
+    const deletedAgentPhoto = addedImages.find((image) => image.id === id);
+    if (deletedAgentPhoto) {
+      // Reset the state related to the Agent Photo checkbox
+      setIsAgentPhotoUploaded(false);
+    }
   };
 
   const removeObjectFromOutput = (index) => {
@@ -24,53 +101,136 @@ function CoverPageDesigner() {
     setOutputContent(updatedOutput);
   };
 
-  // Function to handle resizing, dragging, etc.
-
   const handleCheckboxChange = (event, label) => {
-    if (event.target.checked) {
-      setSelectedObjects([...selectedObjects, label]);
-      addObjectToOutput("checkbox", { label: label });
+    const isChecked = event.target.checked;
+    // Update the state based on the checkbox label
+    if (isChecked) {
+      setSelectedObjects([...selectedObjects, label]); // Add the label to selectedObjects if checkbox is checked
     } else {
-      const updatedSelectedObjects = selectedObjects.filter(
-        (obj) => obj !== label
+      setSelectedObjects(selectedObjects.filter((obj) => obj !== label)); // Remove the label from selectedObjects if checkbox is unchecked
+    }
+    if (label === "Page Borders") {
+      setIsPageBordersChecked(isChecked);
+      setIsBorderApplied(isChecked); // Apply border if "Page Borders" checkbox is checked
+    }
+    // If checkbox is checked, add the content to the array
+    if (isChecked) {
+      const newContent = getContentForLabel(label);
+      setSelectedCheckboxContents([...selectedCheckboxContents, newContent]);
+    } else {
+      // If checkbox is unchecked, remove the content from the array
+      const updatedContents = selectedCheckboxContents.filter(
+        // (content) => content.label !== label
+        (content) => content && content.label !== label // Check if content exists before accessing its label property
       );
-      setSelectedObjects(updatedSelectedObjects);
-      const updatedOutputContent = outputContent.filter(
-        (obj) => obj.properties.label !== label
-      );
-      setOutputContent(updatedOutputContent);
+      setSelectedCheckboxContents(updatedContents);
     }
 
-    // Check which checkbox is clicked and add corresponding functionality
-    if (label === "Cover Photo") {
-      // Add button to output for "Cover Photo" checkbox
-      const buttonComponent = {
-        type: "button",
-        properties: {
-          label: "Cover Photo",
-          onClick: () => alert("Button for Cover Photo clicked"),
-        },
-      };
-      addObjectToOutput("button", buttonComponent.properties);
+    // Ensure label is valid before proceeding
+    if (label) {
+      // If checkbox is checked, set the state accordingly
+      if (label === "Agent Photo") {
+        setIsAgentPhotoUploaded(isChecked);
+      } else {
+        // Handle other checkboxes as before
+      }
+    } else {
+      console.error("Invalid label:", label);
     }
-    if (label === "Company Logo") {
-      // Add button to output for "Cover Photo" checkbox
-      const buttonComponent = {
-        type: "button",
-        properties: {
-          label: "Company Logo",
-          onClick: () => alert("Button for Cover Photo clicked"),
-        },
-      };
-      addObjectToOutput("logo", buttonComponent.properties);
-    }
-    // Add similar functionality for other checkboxes as needed
   };
 
+  // const getContentForLabel = (label) => {
+  //   let content = null;
+  //   switch (label) {
+  //     case "Cover Photo":
+  //       content = <CheckboxContent1 />;
+  //       break;
+  //     case "Company Logo":
+  //       content = <CheckboxContent2 />;
+  //       break;
+  //     case "Company Information":
+  //       content = <EditableText initialText="Company Information" />;
+  //       break;
+  //     case "Inspection Details":
+  //       content = <EditableText initialText="Inspection Details" />;
+  //       break;
+  //     case "Agent Information":
+  //       content = <EditableText initialText="Agent Information" />;
+  //       break;
+  //     case "Cover Company":
+  //       content = <EditableText initialText="Cover Company" />;
+  //       break;
+  //     case "Report Title":
+  //       content = <EditableText initialText="Report Title" />;
+  //       break;
+  //     case "Inspection Signature":
+  //       content = <EditableText initialText="Inspection Signature" />;
+  //       break;
+  //     // case "Agent Photo":
+  //     //   content = <AgentPhoto />;
+  //     //   break;
+  //     // Add more cases for other checkboxes if needed
+  //     // default:
+  //     //   // Handle unknown labels here (e.g., return a default component)
+  //     //   content = <DefaultContent />;
+  //   }
+  //   return content;
+  // };
+  const getContentForLabel = (label) => {
+    let content = null;
+    switch (label) {
+      case "Cover Photo":
+        content = <CheckboxContent1 />;
+        break;
+      case "Company Logo":
+        content = <CheckboxContent2 />;
+        break;
+      case "Company Information":
+      case "Inspection Details":
+      case "Agent Information":
+      case "Cover Company":
+      case "Report Title":
+      case "Inspection Signature":
+        content = <EditableText initialText={label} />;
+        break;
+      default:
+        content = null;
+    }
+    return content;
+  };
+  const handleRemoveBoxTextImage = () => {
+    // Filter out selected objects from editableTexts array
+    const updatedTexts = editableTexts.filter(
+      ({ id }) => !selectedObjects.includes(id)
+    );
+
+    // Filter out selected objects from addedImages array
+    const updatedImages = addedImages.filter(
+      ({ id }) => !selectedObjects.includes(id)
+    );
+    // Filter out selected objects from addedImages array
+    const updatedContent = outputContent.filter(
+      ({ id }) => !editableTexts.includes(id)
+    );
+
+    // Update the state with the filtered arrays
+    setEditableTexts(updatedTexts);
+    setAddedImages(updatedImages);
+    setContentText(updatedContent);
+    // Clear the selected objects after removal
+    setSelectedObjects([]);
+    setSelectedCheckboxContents([]);
+  };
   return (
     <>
+      <div className="cover-page-header-closer-btn">
+        <span className="cover-page-design-header-text">Cover Page Design</span>
+        <button onClick={onClose} className="close-button-cover-page-design">
+          X
+        </button>
+      </div>
       <div
-        className="flex justify-center gap-3 p-2 bg-gray-200"
+        className="flex justify-center gap-3 p-2 bg-gray-200 main-container-for-the-cover-page-designer-popup-page"
         // style={{ height: "100vh" }}
       >
         <div className="container-for-Object-and-control-section-for-design-cover-page-grid">
@@ -78,7 +238,7 @@ function CoverPageDesigner() {
           {/* <p>objects</p> */}{" "}
           <fieldset className="bordered-text">
             <legend className="tag-for-line-draw-through-text">Objects</legend>
-            <div className="contains-template-and-design-components-for-cover-page-design-OBJECTS bg-white">
+            <div className="contains-template-and-design-components-for-cover-page-design-OBJECTS ">
               {/* <h2 className="text-2xl font-bold mb-4">Objects</h2> */}
               {/* Template Components */}
               <fieldset className="bordered-text">
@@ -99,7 +259,7 @@ function CoverPageDesigner() {
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      onChange={(e) => handleCheckboxChange(e, " Company Logo")}
+                      onChange={(e) => handleCheckboxChange(e, "Company Logo")}
                     />
                     Company Logo
                   </label>
@@ -116,7 +276,7 @@ function CoverPageDesigner() {
                     <input
                       type="checkbox"
                       onChange={(e) =>
-                        handleCheckboxChange(e, "  Inspection Details")
+                        handleCheckboxChange(e, "Inspection Details")
                       }
                     />
                     Inspection Details
@@ -140,7 +300,7 @@ function CoverPageDesigner() {
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      onChange={(e) => handleCheckboxChange(e, " Report Title")}
+                      onChange={(e) => handleCheckboxChange(e, "Report Title")}
                     />
                     Report Title
                   </label>
@@ -156,7 +316,9 @@ function CoverPageDesigner() {
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
+                      onClick={() => fileInputRef.current.click()}
                       onChange={(e) => handleCheckboxChange(e, "Agent Photo")}
+                      disabled={isAgentPhotoUploaded} // Disable the checkbox if an image is already uploaded
                     />
                     Agent Photo
                   </label>
@@ -198,36 +360,20 @@ function CoverPageDesigner() {
                   <div className="buttons-for-add-text-box-and-imagess">
                     <section className="section-for-btnss-of-text-add-imgs">
                       {/* Buttons for adding box, text, image, etc. */}
-                      <button
-                        className="btn"
-                        onClick={() =>
-                          addObjectToOutput("box", {
-                            /* box properties */
-                          })
-                        }
-                      >
-                        Add Box
+                      <button className="btn">Add Box</button>
+                      <button className="btn" onClick={handleAddText}>
+                        Add/Edit <br /> Text
                       </button>
-                      <button
-                        className="btn"
-                        onClick={() =>
-                          addObjectToOutput("text", {
-                            /* text properties */
-                          })
-                        }
-                      >
-                        Add Text
-                      </button>
-                      <button
-                        className="btn"
-                        onClick={() =>
-                          addObjectToOutput("image", {
-                            /* image properties */
-                          })
-                        }
-                      >
+                      <button onClick={() => fileInputRef.current.click()}>
                         Add Image
                       </button>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        onChange={handleImageUpload}
+                      />
                     </section>
                   </div>
                 </div>
@@ -257,7 +403,10 @@ function CoverPageDesigner() {
                   <button className="btn-for-control-section-design-page">
                     Border Style
                   </button>
-                  <button className="btn-for-control-section-design-page">
+                  <button
+                    onClick={handleRemoveBoxTextImage}
+                    className="btn-for-control-section-design-page"
+                  >
                     Remove <br /> Box/Text/Image
                   </button>
                   {/* ... Add more controls for size and position */}
@@ -269,8 +418,21 @@ function CoverPageDesigner() {
                   <legend className="tag-for-line-draw-through-text">
                     Controls
                   </legend>
-                  <div className="contains-size-control-for-cover-page-design">
+                  {/* <div className="contains-size-control-for-cover-page-design">
                     Size Control
+                  </div> */}
+                  <div className="contains-size-control-for-cover-page-design">
+                    <label htmlFor="fontSize">Font Size:</label>
+                    <input
+                      type="range"
+                      id="fontSize"
+                      name="fontSize"
+                      min="10" // Minimum font size
+                      max="30" // Maximum font size
+                      value={fontSize}
+                      onChange={(e) => setFontSize(parseInt(e.target.value))}
+                    />
+                    <span>{fontSize}px</span>
                   </div>
                 </fieldset>{" "}
                 <fieldset className="bordered-text">
@@ -287,7 +449,7 @@ function CoverPageDesigner() {
             </div>
           </fieldset>
         </div>
-        {/* Layering Column */}{" "}
+        {/* Layering Column */}
         <fieldset className="bordered-text w-1/4">
           <legend className="tag-for-line-draw-through-text">Layers</legend>
           <div className="contains-the-list-of-selected-objects-and-thier-layer">
@@ -299,19 +461,54 @@ function CoverPageDesigner() {
                 <li key={index}>{obj}</li>
               ))}
             </ul>
-          </div>{" "}
+          </div>
         </fieldset>
         {/* Output Column */}
-        <div className="w-1/2 border p-4 border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here">
-          <h2 className="text-2xl font-bold mb-4">Output</h2>
-          {outputContent.map((object, index) => (
-            <OutputComponent
-              key={index}
-              type={object.type}
-              properties={object.properties}
-              remove={() => removeObjectFromOutput(index)}
-            />
-          ))}
+        <div
+          className="w-1/4 border border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here"
+          style={{ width: "50%" }}
+        >
+          {/* <h2 className="text-2xl font-bold mb-4">Output</h2> */}
+          <div
+            className={`content-that-is-draggable-and-adjustable-within-div ${
+              isBorderApplied ? "with-borders" : ""
+            }`}
+          >
+            {/* Display the text input field if editing text */}
+            {selectedCheckboxContents.map((content, index) => (
+              <Draggable className="draggableeeee" key={index} bounds="parent">
+                <div>{content}</div>
+              </Draggable>
+            ))}
+
+            {/* Render editable text elements */}
+            {editableTexts.map(({ id, text }) => (
+              <Draggable className="" bounds="parent">
+                <div className="draggableeeee" key={id}>
+                  <EditableText initialText={text} />
+                </div>
+              </Draggable>
+            ))}
+            {addedImages.map(({ id, src, height, width }) => (
+              <Draggable className="draggableeeee" bounds="parent">
+                <div
+                  key={id}
+                  className="contains-added-image-with-the-delete-button-ouput-section"
+                >
+                  <img
+                    src={src}
+                    alt={`Image ${id}`}
+                    height={height}
+                    width={width}
+                  />
+                  {/* Add a delete button to remove the image */}
+                  <button onClick={() => handleDeleteImage(id)}>
+                    Delete Image
+                  </button>
+                </div>
+              </Draggable>
+            ))}
+          </div>
         </div>
       </div>
       <div className="contains-bottom-section-with-buttons-design-cover-page">
@@ -325,71 +522,16 @@ function CoverPageDesigner() {
           <button className="button-for-footer-for-changes-in-cover-page">
             Import Layout <br /> from File
           </button>{" "}
-          <button className="button-for-footer-for-changes-in-cover-page">
+          <button
+            className="button-for-footer-for-changes-in-cover-page"
+            onClick={() => setAddedImages([])}
+          >
             Discard <br /> Changes
           </button>
         </div>
       </div>
     </>
   );
-}
-// OutputComponent: A component to render different types of output
-function OutputComponent({ type, properties, remove }) {
-  switch (type) {
-    case "button":
-      return (
-        <p className="btn" onClick={properties.onClick}>
-          {properties.label}
-        </p>
-      );
-    case "Company Logo":
-      return (
-        <p className="btn" onClick={properties.onClick}>
-          {properties.label}
-        </p>
-      );
-    // Add cases for other types of output components
-    default:
-      return null;
-  }
-}
-// DraggableComponent: A draggable and resizable component for the Output Column
-function DraggableComponent({ type, properties, updateObject, remove }) {
-  // ... Implement the draggable and resizable logic using state and events
-  // return (
-  //   <div
-  //     className="border p-4 mb-4"
-  //     style={{
-  //       width: `${properties.width}px`,
-  //       height: `${properties.height}px`,
-  //       border: properties.border,
-  //       // ... Add more styles based on properties (e.g., position)
-  //     }}
-  //   >
-  //     {/* Display the content based on the type */}
-  //     {type === "text" && <span className="text-lg">{properties.text}</span>}
-  //     {type === "image" && (
-  //       <img
-  //         src={properties.src}
-  //         alt={properties.alt}
-  //         className="max-w-full h-auto"
-  //       />
-  //     )}
-  //     {type === "box" && <div className="w-full h-full bg-gray-200"></div>}
-  //     {/* ... Add more cases for other object types */}
-  //     {/* Add controls for resizing, moving, etc. */}
-  //     {/* <button className="btn" onClick={() => updateObject({ fontSize: 16 })}>Show Actual Font Size</button>
-  //           <button className="btn" onClick={() => updateObject({ zoom: 1.2 })}>Zoom In</button>
-  //           <button className="btn" onClick={() => updateObject({ zoom: 0.8 })}>Zoom Out</button> */}
-  //     {/* ... Add more controls as needed */}
-  //     <button className="btn" onClick={remove}>
-  //       Photo
-  //     </button>
-  //     <button className="btn" onClick={remove}>
-  //       Remove
-  //     </button>
-  //   </div>
-  // );
 }
 
 export default CoverPageDesigner;

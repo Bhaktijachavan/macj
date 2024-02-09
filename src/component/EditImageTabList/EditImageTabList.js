@@ -1,6 +1,7 @@
+// export default EditImageTabList;
 import React, { useState } from "react";
 import "./EditImageTabList.css";
-import editimgclose from "../Photo/icons/close_2997911.png";
+// import editimgclose from "../Photo/icons/close_2997911.png";
 import PropTypes from "prop-types";
 import Editor from "../Editor/Editor";
 import AdjustBrightnessContent from "./AdjustBrightnessContent/AdjustBrightnessContent";
@@ -12,18 +13,30 @@ import DrawLineContent from "./DrawLineContent/DrawLineContent";
 import DrawArrowContent from "./DrawArrowContent/DrawArrowContent";
 import DrawRectangleContent from "./DrawRectangleContent/DrawRectangleContent";
 import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
+import OverLayImage from "./OverLayImage/OverLayImage";
+import { ImageProvider } from "./ImageContext";
 
 const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const [activeTab, setActiveTab] = useState(1);
+  const [textFromEditor, setTextFromEditor] = useState("");
+  const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
+  const [editorKey, setEditorKey] = useState(1);
 
   const handleTabClick = (tabNumber) => {
     setActiveTab(tabNumber);
+
+    if (tabNumber === 9) {
+      setEditorKey((prevKey) => prevKey + 1); // Increment key to create a new instance
+    }
   };
 
   const handleClosePopup = () => {
     onRequestClose();
+    setIsTextEditorOpen(false); // Close the text editor when closing the main popup
   };
-
+  const handleTextChange = (newTexts) => {
+    setTextFromEditor(newTexts); // Update text state when it changes in Editor
+  };
   const tabNames = [
     "Crop Image",
     "Adjust Brightness",
@@ -38,16 +51,42 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   ];
 
   const tabContentComponents = {
-    1: <CropImageContent imageUrl={uploadedImageUrl} />,
-    2: <AdjustBrightnessContent imageUrl={uploadedImageUrl} />,
-    3: <AdjustContrastContent imageUrl={uploadedImageUrl} />,
-    4: <RotateClockwiseContent imageUrl={uploadedImageUrl} />,
-    5: <DrawLineContent imageUrl={uploadedImageUrl} />,
-    6: <DrawArrowContent imageUrl={uploadedImageUrl} />,
-    7: <DrawRectangleContent imageUrl={uploadedImageUrl} />,
-    8: <DrawOvalContent imageUrl={uploadedImageUrl} />,
-    9: <Editor imageUrl={uploadedImageUrl} />,
-    // ... (add other tab content components)
+    1: <CropImageContent imageUrl={uploadedImageUrl} texts={textFromEditor} />,
+    2: (
+      <AdjustBrightnessContent
+        imageUrl={uploadedImageUrl}
+        texts={textFromEditor}
+      />
+    ),
+    3: (
+      <AdjustContrastContent
+        imageUrl={uploadedImageUrl}
+        texts={textFromEditor}
+      />
+    ),
+    4: (
+      <RotateClockwiseContent
+        imageUrl={uploadedImageUrl}
+        // texts={textFromEditor}
+      />
+    ),
+    5: <DrawLineContent imageUrl={uploadedImageUrl} texts={textFromEditor} />,
+    6: <DrawArrowContent imageUrl={uploadedImageUrl} texts={textFromEditor} />,
+    7: (
+      <DrawRectangleContent
+        imageUrl={uploadedImageUrl}
+        texts={textFromEditor}
+      />
+    ),
+    8: <DrawOvalContent imageUrl={uploadedImageUrl} texts={textFromEditor} />,
+    9: (
+      <Editor
+        key={editorKey}
+        imageUrl={uploadedImageUrl}
+        onTextChange={handleTextChange}
+      />
+    ),
+    10: <OverLayImage imageUrl={uploadedImageUrl} texts={textFromEditor} />,
   };
 
   return (
@@ -81,11 +120,12 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
                 ))}
                 <div className="undo-redo-button-and-color-picker-combine">
                   <section className="undeo-redo-btns-after-tablist">
-                    <button>Undo</button>
-                    <button>Redo</button>
+                    <button className="Btns-current-color">
+                      Current Color
+                    </button>
                   </section>
                   <section className="color-picker-heading-and-color-picker">
-                    <p className="color-picker-heading">Current Color</p>
+                    {/* <p className="color-picker-heading">Current Color</p> */}
                     <button className="color-pickkkker"></button>
                   </section>
                 </div>
@@ -107,12 +147,14 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
               </div>
             </div>
             <div className="footer-for-Eidt-image-tabelist-btns">
-              <button className="footer-for-Eidt-image-tabelist-btns-save-and-discard">
-                Save Changes
-              </button>
-              <button className="footer-for-Eidt-image-tabelist-btns-save-and-discard">
-                Discard Changes
-              </button>
+              <div className="footer-for-Eidt-image-tabelist-btns-container">
+                <button className="footer-for-Eidt-image-tabelist-btns-save-and-discard">
+                  Save Changes
+                </button>
+                <button className="footer-for-Eidt-image-tabelist-btns-save-and-discard">
+                  Discard Changes
+                </button>
+              </div>
             </div>
           </div>
         </div>

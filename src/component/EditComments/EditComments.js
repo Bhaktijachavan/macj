@@ -82,7 +82,7 @@ const EditComments = ({ onClose }) => {
                 <option value="option2">Option 2</option>
                 {/* Add more options as needed */}
               </select>
-        </div>
+            </div>
 
             {/* Label, Description, and Textbox */}
             <div className="">

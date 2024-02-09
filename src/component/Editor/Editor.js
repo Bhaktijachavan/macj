@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./Editor.css";
-const Editor = ({ imageUrl }) => {
+import Draggable from "react-draggable";
+const Editor = ({ imageUrl, onTextChange }) => {
   const [font, setFont] = useState("Arial");
   const [fontSize, setFontSize] = useState(16);
   const [isBold, setIsBold] = useState(false);
@@ -11,6 +12,9 @@ const Editor = ({ imageUrl }) => {
   const [highlightOpacity, setHighlightOpacity] = useState(1);
   const [text, setText] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(true);
+  const [texts, setTexts] = useState([]);
+  const changesHistory = useRef([]);
+  const historyIndex = useRef(-1);
 
   const handleFontChange = (event) => {
     setFont(event.target.value);
@@ -43,9 +47,57 @@ const Editor = ({ imageUrl }) => {
   const handleHighlightOpacityChange = (event) => {
     setHighlightOpacity(event.target.value);
   };
+
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
+  const handleDragStop = (e, data, id) => {
+    // Update the position of the text when dragging stops
+    setTexts((prevTexts) => {
+      return prevTexts.map((t) =>
+        t.id === id ? { ...t, position: { x: data.x, y: data.y } } : t
+      );
+    });
+  };
+
+  const handleAddText = () => {
+    // Create a new text object and add it to the texts array
+    const newText = {
+      id: texts.length + 1,
+      content: text,
+      position: { x: 20, y: 20 }, // Initial position
+      // ... (other styling properties)
+      font,
+      fontSize,
+      isBold,
+      isItalic,
+      isHighlighted,
+      textColor,
+      highlightColor,
+      highlightOpacity,
+    };
+
+    setTexts([...texts, newText]);
+    setText(""); // Clear the textarea after adding text
+    changesHistory.current.splice(historyIndex.current + 1);
+    changesHistory.current.push([...texts]);
+    historyIndex.current++;
+    onTextChange([...texts, newText]);
+  };
+  const undo = () => {
+    if (historyIndex.current > 0) {
+      historyIndex.current--;
+      setTexts(changesHistory.current[historyIndex.current]);
+    }
+  };
+
+  const redo = () => {
+    if (historyIndex.current < changesHistory.current.length - 1) {
+      historyIndex.current++;
+      setTexts(changesHistory.current[historyIndex.current]);
+    }
+  };
+
   return (
     <>
       <div className="Editor-image-container-to-add-text">
@@ -54,17 +106,39 @@ const Editor = ({ imageUrl }) => {
           alt="Original Image"
           className="Editor-image-to-add-text"
         />
+        {texts.map((t) => (
+          <Draggable
+            key={t.id}
+            defaultPosition={{ x: t.position.x, y: t.position.y }}
+            onStop={handleDragStop}
+          >
+            <div
+              className="text-overlay"
+              style={{
+                color: t.textColor,
+                position: "absolute",
+                top: `${t.position.y}%`,
+                left: `${t.position.x}%`,
+                fontSize: `${t.fontSize}px`,
+                fontFamily: t.font,
+                fontWeight: t.isBold ? "bold" : "normal",
+                fontStyle: t.isItalic ? "italic" : "normal",
+                backgroundColor: t.isHighlighted
+                  ? `${t.highlightColor}${Math.round(
+                      t.highlightOpacity * 255
+                    ).toString(16)}`
+                  : "transparent",
+                textAlign: "center",
+                cursor: "move",
+              }}
+            >
+              {t.content}
+            </div>
+          </Draggable>
+        ))}
         {isPopupOpen && (
           <div className="editor-for-edit-images-tablist-section ">
             <div
-              // style={{
-              //   display: "flex",
-              //   height: "100%",
-              //   alignItems: "center",
-              //   justifyContent: "center",
-              //   width: "60%",
-              //   backgroundColor: "#F2F1EC",
-              // }}
               style={{
                 position: "absolute",
                 top: "50%",
@@ -224,12 +298,19 @@ const Editor = ({ imageUrl }) => {
                       boxSizing: "border-box",
                     }}
                     value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={(e) => {
+                      setText(e.target.value);
+                    }}
                   />
                 </div>
                 <div className=" flex justify-center gap-5 py-2 bg-gray-200">
                   <div>
-                    <button className="button-for-editor px-2">Ok</button>
+                    <button
+                      className="button-for-editor px-2"
+                      onClick={handleAddText}
+                    >
+                      Ok
+                    </button>
                   </div>
                   <div>
                     <button
@@ -244,6 +325,14 @@ const Editor = ({ imageUrl }) => {
             </div>
           </div>
         )}
+      </div>
+      <div className="Buttons-undo-redo-conatainer">
+        <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
+          Undo
+        </button>
+        <button className="Buttons-undo-redo-yytytyt" onClick={redo}>
+          Redo
+        </button>
       </div>
     </>
   );

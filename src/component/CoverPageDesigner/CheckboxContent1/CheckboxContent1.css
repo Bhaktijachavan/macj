@@ -1,0 +1,11 @@
+.content-for-the-cover-photo-check-box {
+  border: 3px solid black;
+  justify-content: center;
+  text-align: center;
+  /* font-size: 20px; */
+  font-weight: bold;
+  width: 10em;
+  height: 7em;
+  align-items: center;
+  display: flex;
+}

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 import "./Book.css";
 import "./Style.css";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
-import imageCompression from 'browser-image-compression';
+import imageCompression from "browser-image-compression";
 
 const Book = () => {
   // const [lastName, setLastName] = useState("");
@@ -19,7 +19,7 @@ const Book = () => {
   const [selectedAgentId, setSelectedAgentId] = useState(null);
 
   const [selectedImage, setSelectedImage] = useState(
-    localStorage.getItem('uploadedImage') || null
+    localStorage.getItem("uploadedImage") || null
   );
 
   const [WorkFax, setWorkFax] = useState("");
@@ -79,9 +79,8 @@ const Book = () => {
     setSelectedFile(null);
   };
 
-
   useEffect(() => {
-    const existingData = JSON.parse(localStorage.getItem('formData')) || [];
+    const existingData = JSON.parse(localStorage.getItem("formData")) || [];
     setTableData(existingData);
   }, []);
 
@@ -118,28 +117,34 @@ const Book = () => {
     setFormData((prevData) => ({ entries: [...prevData.entries, newData] }));
 
     // Save the updated data to localStorage
-    const dataToSave = JSON.stringify({ formData: { entries: [...formData.entries, newData] } });
-    localStorage.setItem('yourDataKey', dataToSave);
+    const dataToSave = JSON.stringify({
+      formData: { entries: [...formData.entries, newData] },
+    });
+    localStorage.setItem("yourDataKey", dataToSave);
   };
-
 
   const clearLocalStorage = (agentId) => {
     // Remove the specific agent's data from localStorage
-    const storedData = JSON.parse(localStorage.getItem('formData')) || [];
+    const storedData = JSON.parse(localStorage.getItem("formData")) || [];
     const updatedData = storedData.filter((data) => data.id !== agentId);
-    localStorage.setItem('formData', JSON.stringify(updatedData));
+    localStorage.setItem("formData", JSON.stringify(updatedData));
 
     // Update the table data
     const updatedTableData = tableData.filter((data) => data.id !== agentId);
     setTableData(updatedTableData);
 
     // Clear the form data for the selected agent
-    setFormData({ id: '', agentlastname: '', firstName: '', Company: '', workPhone: '' });
+    setFormData({
+      id: "",
+      agentlastname: "",
+      firstName: "",
+      Company: "",
+      workPhone: "",
+    });
 
     // Clear the selectedAgentId
     setSelectedAgentId(null);
   };
-
 
   const clearForm = () => {
     setFormData({
@@ -173,7 +178,7 @@ const Book = () => {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
 
-    if (file && file.type.startsWith('image/')) {
+    if (file && file.type.startsWith("image/")) {
       try {
         // Compress the image before converting to data URL
         const compressedFile = await imageCompression(file, {
@@ -187,17 +192,16 @@ const Book = () => {
           setSelectedImage(imageUrl);
 
           // Save imageUrl to localStorage
-          localStorage.setItem('uploadedImage', imageUrl);
+          localStorage.setItem("uploadedImage", imageUrl);
         };
         reader.readAsDataURL(compressedFile);
       } catch (error) {
-        console.error('Error compressing the image:', error);
+        console.error("Error compressing the image:", error);
       }
     } else {
-      console.error('Please select a valid image file.');
+      console.error("Please select a valid image file.");
     }
   };
-
 
   return (
     <div className="main-container-book">
@@ -209,7 +213,9 @@ const Book = () => {
         <div class="basis-1/1">
           <div className="box1-book flex ml-5 ">
             <form className="formcont-book ">
-              <h1 className="text-book text-lg">Real Estate Agent Information</h1>
+              <h1 className="text-book text-lg">
+                Real Estate Agent Information
+              </h1>
 
               <div className="form-group-book">
                 <label htmlFor="inputlastname" className="label-book">
@@ -221,7 +227,9 @@ const Book = () => {
                   id="agentlastname"
                   value={formData.agentlastname}
                   style={{ width: "12%" }}
-                  onChange={(e) => setFormData({ ...formData, agentlastname: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, agentlastname: e.target.value })
+                  }
                 />
 
                 <label
@@ -237,7 +245,9 @@ const Book = () => {
                   id="firstName"
                   value={formData.firstName}
                   style={{ width: "12%", marginLeft: "5px" }}
-                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, firstName: e.target.value })
+                  }
                 />
               </div>
               <div className="form-group-book">
@@ -250,7 +260,9 @@ const Book = () => {
                   id="Company"
                   value={formData.Company}
                   style={{ width: "12%" }}
-                  onChange={(e) => setFormData({ ...formData, Company: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, Company: e.target.value })
+                  }
                 />
               </div>
 
@@ -283,7 +295,6 @@ const Book = () => {
                   onChange={(e) => setWorkFax(e.target.value)}
                 />
               </div> */}
-
 
               {/* <div className="flex ">
                 <div>
@@ -512,7 +523,11 @@ const Book = () => {
               <div className="photoupload-book">
                 <div className="bg-white ml-5 mt-10 mr-5 w-40 h-48 border-2 border-dashed border-gray-400 flex items-center justify-center px-3">
                   {selectedImage ? (
-                    <img src={selectedImage} alt="Selected" className="max-h-full max-w-full" />
+                    <img
+                      src={selectedImage}
+                      alt="Selected"
+                      className="max-h-full max-w-full"
+                    />
                   ) : (
                     <p className="text-gray-600">Agent Photo</p>
                   )}
@@ -539,9 +554,9 @@ const Book = () => {
                         // Clear the selected image
                         setSelectedImage(null);
                         // Clear the file input value
-                        document.getElementById('imageInput').value = '';
+                        document.getElementById("imageInput").value = "";
                         // Remove imageUrl from localStorage
-                        localStorage.removeItem('uploadedImage');
+                        localStorage.removeItem("uploadedImage");
                       }}
                     >
                       Cancel
@@ -550,8 +565,6 @@ const Book = () => {
                 </div>
               </div>
             </div>
-
-
           </div>
         </div>
         <div className="border-l border-black"></div>
@@ -560,7 +573,7 @@ const Book = () => {
           style={{ hight: "45%" }}
         >
           <div className="">
-            <table className="table-auto border border-black ml-5 mt-2 " >
+            <table className="table-auto border border-black ml-5 mt-2 ">
               <thead>
                 <tr>
                   <td
@@ -592,11 +605,27 @@ const Book = () => {
 
               <tbody>
                 {tableData.map((data) => (
-                  <tr key={data.id} onClick={() => setSelectedAgentId(data.id)} className={`cursor-pointer ${selectedAgentId === data.id ? 'bg-blue-500 text-white' : ''}`}>
-                    <td style={{ border: '1px solid black' }}>{data.agentlastname}</td>
-                    <td style={{ border: '1px solid black' }}>{data.firstName}</td>
-                    <td style={{ border: '1px solid black' }}>{data.Company}</td>
-                    <td style={{ border: '1px solid black' }}>{data.workPhone}</td>
+                  <tr
+                    key={data.id}
+                    onClick={() => setSelectedAgentId(data.id)}
+                    className={`cursor-pointer ${
+                      selectedAgentId === data.id
+                        ? "bg-blue-500 text-white"
+                        : ""
+                    }`}
+                  >
+                    <td style={{ border: "1px solid black" }}>
+                      {data.agentlastname}
+                    </td>
+                    <td style={{ border: "1px solid black" }}>
+                      {data.firstName}
+                    </td>
+                    <td style={{ border: "1px solid black" }}>
+                      {data.Company}
+                    </td>
+                    <td style={{ border: "1px solid black" }}>
+                      {data.workPhone}
+                    </td>
                     {/* Optionally include a button here if you want it per row */}
                   </tr>
                 ))}
@@ -614,8 +643,10 @@ const Book = () => {
           </button> */}
           <button
             className="border border-black bg-gray-300 hover:bg-blue-100 w-60 h-6 rounded"
-
-            onClick={handleSave}>Save</button>
+            onClick={handleSave}
+          >
+            Save
+          </button>
           <button className="border border-black bg-gray-300 hover:bg-blue-100 w-60 h-6 rounded">
             Export Contacts
           </button>

@@ -2,10 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DrawArrowContent.css";
 import PropTypes from "prop-types";
 
-const DrawArrowContent = ({ imageUrl }) => {
+const DrawArrowContent = ({ imageUrl, texts }) => {
   const [arrows, setArrows] = useState([]);
   const [drawing, setDrawing] = useState(false);
   const arrowRef = useRef(null);
+  const arrowsHistory = useRef([]);
+  const historyIndex = useRef(-1);
 
   useEffect(() => {
     const arrowCanvas = arrowRef.current;
@@ -14,9 +16,29 @@ const DrawArrowContent = ({ imageUrl }) => {
     const image = new Image();
     image.src = imageUrl;
     image.onload = () => {
-      arrowCanvas.width = image.width;
-      arrowCanvas.height = image.height;
-      ctx.drawImage(image, 0, 0, image.width, image.height);
+      // Calculate the aspect ratio of the image
+      const aspectRatio = image.width / image.height;
+
+      // Set the canvas width and height based on the image dimensions
+      const maxWidth = 750; // Max width for the canvas
+      const maxHeight = 600; // Max height for the canvas
+      let canvasWidth = image.width;
+      let canvasHeight = image.height;
+
+      if (canvasWidth > maxWidth) {
+        canvasWidth = maxWidth;
+        canvasHeight = canvasWidth / aspectRatio;
+      }
+
+      if (canvasHeight > maxHeight) {
+        canvasHeight = maxHeight;
+        canvasWidth = canvasHeight * aspectRatio;
+      }
+
+      arrowCanvas.width = canvasWidth;
+      arrowCanvas.height = canvasHeight;
+
+      ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
 
       arrows.forEach((arrow) => {
         drawArrow(ctx, arrow.start, arrow.end, arrow.color);
@@ -28,14 +50,16 @@ const DrawArrowContent = ({ imageUrl }) => {
     e.preventDefault();
     setDrawing(true);
     const { offsetX, offsetY } = e.nativeEvent;
-    setArrows((prevArrows) => [
-      ...prevArrows,
-      {
-        start: { x: offsetX, y: offsetY },
-        end: { x: offsetX, y: offsetY },
-        color: "black",
-      },
-    ]);
+    const newArrow = {
+      start: { x: offsetX, y: offsetY },
+      end: { x: offsetX, y: offsetY },
+      color: "black",
+    };
+    setArrows((prevArrows) => [...prevArrows, newArrow]);
+    // Add new arrow to history
+    arrowsHistory.current.splice(historyIndex.current + 1);
+    arrowsHistory.current.push([...arrows]);
+    historyIndex.current++;
   };
 
   const draw = (e) => {
@@ -54,7 +78,7 @@ const DrawArrowContent = ({ imageUrl }) => {
   };
 
   const drawArrow = (context, start, end, color) => {
-    const headSize = 10;
+    const headSize = 7;
     const angle = Math.atan2(end.y - start.y, end.x - start.x);
 
     context.beginPath();
@@ -74,9 +98,23 @@ const DrawArrowContent = ({ imageUrl }) => {
     );
 
     context.strokeStyle = color;
-    context.lineWidth = 8;
+    context.lineWidth = 4;
     context.stroke();
     context.closePath();
+  };
+
+  const undo = () => {
+    if (historyIndex.current > 0) {
+      historyIndex.current--;
+      setArrows(arrowsHistory.current[historyIndex.current]);
+    }
+  };
+
+  const redo = () => {
+    if (historyIndex.current < arrowsHistory.current.length - 1) {
+      historyIndex.current++;
+      setArrows(arrowsHistory.current[historyIndex.current]);
+    }
   };
 
   return (
@@ -89,6 +127,39 @@ const DrawArrowContent = ({ imageUrl }) => {
         onMouseUp={stopDrawing}
         onMouseOut={stopDrawing}
       />
+      {texts &&
+        texts.map((text) => (
+          <div
+            key={text.id}
+            className="text-overlay"
+            style={{
+              color: text.textColor,
+              position: "absolute",
+              top: `${text.position.y}%`,
+              left: `${text.position.x}%`,
+              fontSize: `${text.fontSize}px`,
+              fontFamily: text.font,
+              fontWeight: text.isBold ? "bold" : "normal",
+              fontStyle: text.isItalic ? "italic" : "normal",
+              backgroundColor: text.isHighlighted
+                ? `${text.highlightColor}${Math.round(
+                    text.highlightOpacity * 255
+                  ).toString(16)}`
+                : "transparent",
+              textAlign: "center",
+            }}
+          >
+            {text.content}
+          </div>
+        ))}
+      <div className="Buttons-undo-redo-container">
+        <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
+          Undo
+        </button>
+        <button className="Buttons-undo-redo-yytytyt" onClick={redo}>
+          Redo
+        </button>
+      </div>
     </div>
   );
 };
