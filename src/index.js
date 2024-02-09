@@ -3,14 +3,14 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import Context from "./Context";
+import { ContextProvider } from "./Context";  // Import named export
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Context>
+    <ContextProvider> {/* Use named export here */}
       <App />
-    </Context>
+    </ContextProvider>
   </React.StrictMode>
 );
 

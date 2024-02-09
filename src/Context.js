@@ -1,14 +1,27 @@
-import React, { createContext } from "react";
+import React, { createContext, useContext, useState } from "react";
+// import EditTemp from "./component/EditTemp/EditTemp";
 
-export const Store = createContext();
+export const EditTempContext = createContext();
 
-const Context = ({ children }) => {
-  const [AddressBook, SetAddressBook] = React.useState([]);
+export const ContextProvider = ({ children }) => {
+  const [addressBook, setAddressBook] = useState([]);
+  const [editTempData, setEditTempData] = useState([]);
+  
+
+  const contextValues = {
+    addressBook,
+    setAddressBook,
+    editTempData,
+    setEditTempData,
+  };
+
   return (
-    <Store.Provider value={{ AddressBook, SetAddressBook }}>
+    <EditTempContext.Provider value={contextValues}>
       {children}
-    </Store.Provider>
+    </EditTempContext.Provider>
   );
 };
 
-export default Context;
+const useEditTempContext = () => {
+  return useContext(EditTempContext);
+};

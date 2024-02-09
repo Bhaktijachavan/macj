@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './OneSelection.css';
 
-function OneSelection({ setIsPopupOpen, isPopupOpen, onClose }) {
+function OneSelection({ setIsPopupOpen, isPopupOpen, onClose, onTabNameChange }) {
   const [formData, setFormData] = useState({
     tabName_2nd: '',
     selectionPanelName: '',
@@ -16,42 +16,29 @@ function OneSelection({ setIsPopupOpen, isPopupOpen, onClose }) {
   };
 
   const handleCancel = () => {
-    // Add functionality for cancel button if needed
-    console.log('Cancel button clicked');
     setIsPopupOpen(false);
   };
 
   const handleBack = () => {
-    // Add functionality for back button if needed
-  
-    onClose(); // Call the onClose function passed from the parent
+    onClose();
   };
-
-  // const handleNext = () => {
-  //   // Add functionality for next button if needed
-  //   console.log('Next button clicked');
-  // };
 
   const handleDone = () => {
-    // Add functionality for done button if needed
-    setIsPopupOpen(false)
+    setIsPopupOpen(false);
     console.log('Done button clicked');
+    // Pass the tabName to the parent component using the callback prop
+    onTabNameChange(formData.tabName_2nd);
   };
-
-
 
   return (
     <div className="form-container-oneselection">
-      {/* <h2 className='h2-onedamage'>Creating A Page With 1 Damage Panel</h2> */}
-      <p className='p-oneselection'>Creating A Page With 1 Selection Panel.The Selection Panel Name is what will appear on the report.</p>
-      {/* <form onSubmit={handleSubmit}> */}
+      <p className='p-oneselection'>Creating A Page With 1 Selection Panel. The Selection Panel Name is what will appear on the report.</p>
       <div className='label-container-oneselection'>
         <label className='label-oneselection' htmlFor="field1">Tab Name:</label>
         <input
           className='input1-oneselection'
           type="text"
           name="tabName_2nd"
-          //   placeholder="Enter your first value"
           value={formData.tabName_2nd}
           onChange={handleInputChange}
           required
@@ -63,7 +50,6 @@ function OneSelection({ setIsPopupOpen, isPopupOpen, onClose }) {
           className='input-oneselection'
           type="text"
           name="selectionPanelName"
-          //   placeholder="Enter your second value"
           value={formData.selectionPanelName}
           onChange={handleInputChange}
           required
@@ -76,14 +62,10 @@ function OneSelection({ setIsPopupOpen, isPopupOpen, onClose }) {
         <button type="button" className="back-button-oneselection" onClick={handleBack}>
           Back
         </button>
-        {/* <button type="button" className="next-button-oneselection" onClick={handleNext}>
-          Next
-        </button> */}
-        <button type="submit" className="done-button-oneselection" onClick={handleDone}>
+        <button type="button" className="done-button-oneselection" onClick={handleDone}>
           Done
         </button>
       </div>
-      {/* </form> */}
     </div>
   );
 }
