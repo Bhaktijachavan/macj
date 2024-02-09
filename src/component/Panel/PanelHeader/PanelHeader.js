@@ -34,9 +34,31 @@ const PanelHeader = () => {
                     </Link>
                 </div>
                 <div>
-                    <ul>
-                        <li className="ml-5">Panel 4</li>
-                    </ul>
+                    <Link to="/panel4">
+                        <div>
+                            <ul>
+                                <li className="ml-5">Panel 4</li>
+                            </ul>
+                        </div>
+                    </Link>
+                </div>
+                <div>
+                    <Link to="/panel5">
+                        <div>
+                            <ul>
+                                <li className="ml-5">Panel 5</li>
+                            </ul>
+                        </div>
+                    </Link>
+                </div>
+                <div>
+                    <Link to="/panel6">
+                        <div>
+                            <ul>
+                                <li className="ml-5">Panel 6</li>
+                            </ul>
+                        </div>
+                    </Link>
                 </div>
             </div>
         </>

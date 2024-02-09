@@ -1,0 +1,18 @@
+body{
+    background-color: #fee4c3;
+}
+.container-panel2 {
+    display: flex;
+    /* justify-content: center; */
+    
+    
+}
+.scroll-box4-panel5{
+    margin-left: 10%;
+    width: 170vh;
+    height: 69vh;
+    border: solid black 1px;
+    padding-left: 10px;
+    justify-content: center;
+
+  }
