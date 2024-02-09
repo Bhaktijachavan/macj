@@ -7,7 +7,7 @@ import ColorPicker from "./ColorPicker";
 import Header from "./../Header/Header";
 import Footer from "./../Footer/Footer";
 
-const ColorPalette = () => {
+const ColorPalette = ({ onClose }) => {
   // State for row colors
   const [rowColors, setRowColors] = useState([
     {
@@ -196,7 +196,7 @@ const ColorPalette = () => {
             <span className="px-3">Print Settings</span>
             <span
               className="cursor-pointer px-3 hover:bg-red-500 hover:text-white  "
-              onClick={handleClose}
+              onClick={onClose}
             >
               X
             </span>

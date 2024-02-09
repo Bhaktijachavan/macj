@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 import InternetLogin from "./../InternetLogin/InternetLogin";
 import BatchAddPhotos from "./../Photo/BatchAddPhotos/BatchAddPhotos";
 import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
+import ColorPalette from "../ColorPalet/ColorPalet";
 
 const Header = () => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
@@ -33,6 +34,9 @@ const Header = () => {
   const [coverPageDesignPopup, setCoverPageDesignPopup] = useState(false);
   const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] =
     useState(false);
+
+  const [colorPaletPopup, setOpenColorPaletPopup] = useState(false);
+
   const [activePopup, setActivePopup] = useState(null);
 
   const openOpenTemplatePopup = () => {
@@ -41,6 +45,12 @@ const Header = () => {
 
   const closeOpenTemplatePopup = () => {
     setOpenTemplatePopup(false);
+  };
+  const openColorPaletPopup = () => {
+    setOpenColorPaletPopup(true);
+  };
+  const closeColorPaletPopup = () => {
+    setOpenColorPaletPopup(false);
   };
 
   const openSaveTemplatePopup = () => {
@@ -471,19 +481,23 @@ const Header = () => {
             </li>
             <hr />
 
-            <Link to="/generateReport">
-              <li className="list-for-header-section-main-nav">
-                <a href="#" className="header2-tag-a">
-                  <div className="flex justify-center">
-                    <img src={img12} alt="" />
-                  </div>
-                  <div>
-                    Geneate
-                    <br /> report
-                  </div>
-                </a>
-              </li>
-            </Link>
+            {/* <Link to="/generateReport"> */}
+            <li className="list-for-header-section-main-nav">
+              <a
+                href="#"
+                className="header2-tag-a"
+                onClick={openColorPaletPopup}
+              >
+                <div className="flex justify-center">
+                  <img src={img12} alt="" />
+                </div>
+                <div>
+                  Geneate
+                  <br /> report
+                </div>
+              </a>
+            </li>
+            {/* </Link> */}
             <hr />
             <li className="list-for-header-section-main-nav">
               <a href="#" className="header2-tag-a">
@@ -522,7 +536,7 @@ const Header = () => {
         )}
         {saveTemplatePopup && (
           <div className="popup">
-            {/* Render your OpenTemplate component here */}
+            {/* Render your save template component here */}
             <SaveTemp onClose={closeSaveTemplatePopup} />
           </div>
         )}
@@ -534,20 +548,26 @@ const Header = () => {
         )}{" "}
         {internetLoginPopup && (
           <div className="popup m-0">
-            {/* Render your EditTemplate component here */}
+            {/* Render your internet login component here */}
             <InternetLogin onClose={closeisInternetLoginPopup} />
           </div>
         )}
         {batchAddPhotosPopup && (
           <div className="popup m-0">
-            {/* Render your EditTemplate component here */}
+            {/* Render your batch add photos component here */}
             <BatchAddPhotos onClose={closeBatchAddPhotosPopup} />
           </div>
         )}{" "}
         {coverPageDesignPopup && (
           <div className="popup Cover-Page-Design-Popup-ccc">
-            {/* Render your EditTemplate component here */}
+            {/* Render your cover page designer component here */}
             <CoverPageDesigner onClose={closeCoverPageDesignPopup} />
+          </div>
+        )}{" "}
+        {colorPaletPopup && (
+          <div className="popup Cover-Page-Design-Popup-ccc">
+            {/* Render your color palet component here */}
+            <ColorPalette onClose={closeColorPaletPopup} />
           </div>
         )}
       </div>
