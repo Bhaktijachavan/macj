@@ -1,9 +1,8 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
 import "./Header.css";
 import OpenTemp from "../OpenTemp/OpenTemp";
 import EditTemp from "../EditTemp/EditTemp";
 import SaveTemp from "../SaveTemp/SaveTemp";
-
 import img1 from "../../Assets/icons/open_inspection.png";
 import img2 from "../../Assets/icons/save_inspection.png";
 import img3 from "../../Assets/icons/open_template.png";
@@ -20,55 +19,73 @@ import img13 from "../../Assets/icons/upload_report.png";
 import img14 from "../../Assets/icons/address_book.png";
 import img15 from "../../Assets/icons/sync.png";
 import { Link } from "react-router-dom";
-import InternetLogin from "./../InternetLogin/InternetLogin";
-import BatchAddPhotos from "./../Photo/BatchAddPhotos/BatchAddPhotos";
-
+import { EditTempContext } from '../../Context';
+const SubmenuPopup = ({ isVisible, submenuItems, position, onClose }) => {
+  if (!isVisible) {
+    return null;
+  }
+  return (
+    <div className="submenu-popup absolute z-10 bg-white shadow mt-2" style={{ top: position.top, left: position.left, width: "180px", lineHeight: "12px" }}>
+      {submenuItems.map((subItem, index) => (
+        <Link to={subItem.link} key={index}>
+          <div className="py-2 px-4 hover:bg-gray-200" onClick={onClose}>
+            {subItem.submenuname}
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+};
 const Header = () => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
   const [saveTemplatePopup, setSaveTemplatePopup] = useState(false);
   const [editTemplatePopup, setEditTemplatePopup] = useState(false);
-  const [internetLoginPopup, setInternetLoginPopup] = useState(false);
-  const [batchAddPhotosPopup, setBatchAddPhotosPopup] = useState(false);
-  const [activePopup, setActivePopup] = useState(null);
-
+  const { editTempData, setEditTempData } = useContext(EditTempContext);
+  const [submenuPosition, setSubmenuPosition] = useState({ top: 0, left: 0 });
+  useEffect(() => {
+    console.log(editTempData);
+  }, [editTempData]);
+  const [activeMenu, setActiveMenu] = useState(null);
+  const handleMenuClick = (menuId) => {
+    setActiveMenu(activeMenu === menuId ? null : menuId);
+  };
+  const toggleSubMenu = (menuId, position) => {
+    setActiveMenu(activeMenu === menuId ? null : menuId);
+    setSubmenuPosition(position);
+    window.location.href = '/panel1';
+  };
+  const closeSubmenu = () => {
+    setActiveMenu(null);
+  };
   const openOpenTemplatePopup = () => {
     setOpenTemplatePopup(true);
   };
-
   const closeOpenTemplatePopup = () => {
     setOpenTemplatePopup(false);
   };
-
   const openSaveTemplatePopup = () => {
     setSaveTemplatePopup(true);
   };
-
   const closeSaveTemplatePopup = () => {
     setSaveTemplatePopup(false);
   };
-
   const openEditTemplatePopup = () => {
     setEditTemplatePopup(true);
   };
-
   const closeEditTemplatePopup = () => {
     setEditTemplatePopup(false);
   };
-
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
-
   const handleOpenInspectionClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
-
   const handleSaveInspectionClick = () => {
     if (selectedFile) {
       // Perform save operation using the selectedFile
@@ -80,49 +97,8 @@ const Header = () => {
       console.log("Please select a file for inspection.");
     }
   };
-
-  const [activeMenu, setActiveMenu] = useState(null);
-
-  const handleMenuClick = (menuId) => {
-    setActiveMenu(activeMenu === menuId ? null : menuId);
-  };
-
-  // const [activePopup, setActivePopup] = useState(null);
-
-  const openPopup = (popupId) => {
-    console.log(`Opening ${popupId} popup`);
-    setActivePopup(popupId);
-  };
-
-  const closePopup = () => {
-    console.log("Closing popup");
-    setActivePopup(null);
-  };
-
-  const openisInternetLoginPopup = () => {
-    setInternetLoginPopup(true);
-  };
-  const closeisInternetLoginPopup = () => {
-    setInternetLoginPopup(false);
-  };
-  const closeBatchAddPhotosPopup = () => {
-    setBatchAddPhotosPopup(false);
-  };
-  const openBatchAddPhotosPopup = () => {
-    setBatchAddPhotosPopup(true);
-  };
-  const internetLogin = () => {
-    console.log("Login Popup Clicked");
-  };
-
-  // Reset the Batch Add Photos popup state when component unmounts
-  useEffect(() => {
-    return () => {
-      setBatchAddPhotosPopup(false);
-      setInternetLoginPopup(false);
-      setEditTemplatePopup(false);
-    };
-  }, []);
+  // Add a conditional check for editTempData
+  const editTempArray = editTempData || [];
   return (
     <>
       <div
@@ -133,157 +109,106 @@ const Header = () => {
           <div
             className="main-label cursor-pointer"
             onClick={() => handleMenuClick(0)}
-          >
-            Edit
-          </div>
+          ></div>
           {activeMenu === 0 && (
             <ul
-              className="submenu w-36 absolute z-10 bg-white shadow mt-2"
-              style={{
-                lineHeight: "24px",
-                fontSize: "13px",
-                textAlign: "center",
-              }}
+              className="submenu absolute z-10 bg-white shadow mt-2 w-48 leading-tight"
+              style={{ width: "180px", lineHeight: "12px" }}
             >
-              <li className="hover:bg-gray-200">Open Inspection</li>
-              <li className="hover:bg-gray-200">Save Inspection</li>
-              <li className="hover:bg-gray-200">Open Template</li>
-              <li className="hover:bg-gray-200">Save Template</li>
+              <li className="py-2 px-4 hover:bg-gray-200 text-xs">
+                Open Inspection
+              </li>
+              <li className="py-2 px-4 hover:bg-gray-200 text-xs">
+                Save Inspection
+              </li>
+              <li className="py-2 px-4 hover:bg-gray-200 text-xs">
+                Open Template
+              </li>
+              <li className="py-2 px-4 hover:bg-gray-200 text-xs">
+                Save Template
+              </li>
             </ul>
           )}
         </div>
-        {/* <div>
+        <div>
           <ul>
             <li className="ml-5">Edit</li>
           </ul>
-        </div> */}
+        </div>
         <div>
-          {/* <ul onClick={internetLogin}>
+          <ul>
             <li className="ml-5">Internet</li>
-            {isInternetLoginPopup && <InternetLogin />}
-          </ul> */}
-          <div
-            className="main-label cursor-pointer ml-4"
-            onClick={() => handleMenuClick(1)}
-          >
-            Internet
-          </div>
-          {activeMenu === 1 && (
-            <ul
-              className="submenu w-36 left-12 absolute z-10 bg-white shadow mt-2"
-              style={{ fontSize: "13px" }}
-              onClick={setInternetLoginPopup}
-            >
-              <li
-                className=" hover:bg-gray-200"
-                style={{
-                  height: "2em",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                Internet Login
-              </li>
-              {/* {isInternetLoginPopup && <InternetLogin />} */}
-            </ul>
-          )}
+          </ul>
         </div>
         <div>
-          <div className="menu-item relative ml-4">
-            <div
-              className="main-label cursor-pointer"
-              onClick={() => handleMenuClick(2)}
-            >
-              Report Setting
-            </div>
-            {activeMenu === 2 && (
-              <ul
-                className="submenu w-36 absolute z-10 bg-white shadow mt-2"
-                style={{ lineHeight: "12px", fontSize: "13px" }}
-              >
-                <Link to="/coverpagedesigner">
-                  <li
-                    className=" hover:bg-gray-200"
-                    style={{
-                      height: "2em",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    Cover Page Designer
-                  </li>
-                </Link>
-              </ul>
-            )}
-          </div>
+          <ul>
+            <li className="ml-5">Report Setting</li>
+          </ul>
         </div>
-
         <div className="menu-item relative ml-4">
           <div
             className="main-label cursor-pointer"
-            onClick={() => handleMenuClick(3)}
+            onClick={() => handleMenuClick(1)}
           >
             General information
           </div>
-          {activeMenu === 3 && (
+          {activeMenu === 1 && (
             <ul
-              className="submenu w-36 absolute z-10 bg-white shadow mt-2"
-              style={{
-                lineHeight: "24px",
-                fontSize: "13px",
-                textAlign: "Center",
-              }}
+              className="submenu absolute z-10 bg-white shadow mt-2"
+              style={{ width: "180px", lineHeight: "12px" }}
             >
               <Link to="/panel1">
-                <li className=" hover:bg-gray-200">Wall</li>
+                <li className="py-2 px-4 hover:bg-gray-200">Wall</li>
               </Link>
-              <li className=" hover:bg-gray-200">Batch Add Photos</li>
-              <li className=" hover:bg-gray-200">Clear All Photos</li>
+              <li className="py-2 px-4 hover:bg-gray-200">Batch Add Photos</li>
+              <li className="py-2 px-4 hover:bg-gray-200">Clear All Photos</li>
             </ul>
           )}
         </div>
-
         <div className="menu-item relative ml-4">
           <div
             className="main-label cursor-pointer"
-            onClick={() => handleMenuClick(4)}
+            onClick={() => handleMenuClick(2)}
           >
             Photos
           </div>
-          {activeMenu === 4 && (
+          {activeMenu === 2 && (
             <ul
-              className="submenu w-36  absolute z-10 bg-white shadow mt-2"
-              style={{
-                lineHeight: "34px",
-                fontSize: "13px",
-                textAlign: "Center",
-              }}
+              className="submenu absolute z-10 bg-white shadow mt-2"
+              style={{ width: "180px", lineHeight: "12px" }}
             >
               <Link to="/photoreview">
-                <li className=" hover:bg-gray-200">Add Review Photos</li>
+                <li className="py-2 px-4 hover:bg-gray-200">
+                  Add Review Photos
+                </li>
               </Link>
-              {/* <Link to="/batchaddphotos"> */}
-              <li
-                className=" hover:bg-gray-200"
-                onClick={setBatchAddPhotosPopup}
-              >
-                Batch Add Photos
-              </li>
-              {/* </Link> */}
-              <li className=" hover:bg-gray-200">Clear All Photos</li>
+              <Link to="/batchaddphotos">
+                <li className="py-2 px-4 hover:bg-gray-200">
+                  Batch Add Photos
+                </li>
+              </Link>
+              <li className="py-2 px-4 hover:bg-gray-200">Clear All Photos</li>
             </ul>
           )}
         </div>
-
         <div>
           <ul>
             <li className="ml-5">About</li>
           </ul>
         </div>
+        <div>
+          <div>
+          <ul className="flex ml-5 gap-5">
+              {editTempArray.map((edit) => (
+                <li key={edit.id} className="menu-item" onClick={(e) => toggleSubMenu(edit.id, { top: e.clientY, left: e.clientX })}>
+                  {edit.menuname}
+                  <SubmenuPopup isVisible={activeMenu === edit.id} submenuItems={edit.subItems} position={submenuPosition} onClose={closeSubmenu} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
-
       <div
         className="header text-sm border-b-2 border-black"
         style={{ backgroundColor: "#f7f7f7" }}
@@ -356,22 +281,19 @@ const Header = () => {
               </a>
             </li>
             <hr />
-
-            <li className="list-for-header-section-main-nav">
-              <p
-                onClick={() => openPopup("editComments")}
-                className="header2-tag-a"
-              >
-                <div className="flex justify-center">
-                  <img src={img5} alt="" />
-                </div>
-                <div>
-                  Edit <br />
-                  Comments
-                </div>
-              </p>
-            </li>
-
+            <Link to="/EditComments">
+              <li className="list-for-header-section-main-nav">
+                <a href="#" className="header2-tag-a">
+                  <div className="flex justify-center">
+                    <img src={img5} alt="" />
+                  </div>
+                  <div>
+                    Edit <br />
+                    Comments
+                  </div>
+                </a>
+              </li>
+            </Link>
             <li className="list-for-header-section-main-nav  border-r border-black-900">
               <a
                 href="#"
@@ -399,7 +321,6 @@ const Header = () => {
                 </a>
               </li>
             </Link>
-
             <hr />
             <Link to="/">
               <li className="list-for-header-section-main-nav border-r border-black-900">
@@ -427,7 +348,6 @@ const Header = () => {
                 </a>
               </li>
             </Link>
-
             <Link to="/contractpage">
               <li className="list-for-header-section-main-nav  border-r border-black-900">
                 <a href="#" className="header2-tag-a">
@@ -459,7 +379,6 @@ const Header = () => {
               </a>
             </li>
             <hr />
-
             <Link to="/generateReport">
               <li className="list-for-header-section-main-nav">
                 <a href="#" className="header2-tag-a">
@@ -474,32 +393,30 @@ const Header = () => {
               </li>
             </Link>
             <hr />
-            <li className="list-for-header-section-main-nav">
+            <Link to="/mobileUpload">
+              <li className="list-for-header-section-main-nav">
+                <a href="#" className="header2-tag-a">
+                  <div className="flex justify-center">
+                    <img src={img15} alt="" />
+                  </div>
+                  <div>
+                    Mobile
+                    <br /> Sync
+                  </div>
+                </a>
+              </li>
+            </Link>
+            <li className="list-for-header-section-main-nav  border-r border-black-900">
               <a href="#" className="header2-tag-a">
-                {/* <div className="flex justify-center">
-                  <img src={img15} alt="" />
+                <div className="flex justify-center">
+                  <img src={img13} alt="" />
                 </div>
                 <div>
-                  Mobile
-                  <br /> Sync
-                </div> */}
-                <Link to="/mobilesync">
-                  <li className="list-for-header-section-main-nav">
-                    <a href="#" className="header2-tag-a p-0">
-                      <div className="flex justify-center">
-                        <img src={img15} alt="" />
-                      </div>
-                      <div>
-                        Mobile
-                        <br />
-                        Sync
-                      </div>
-                    </a>
-                  </li>
-                </Link>
+                  Upload
+                  <br /> report
+                </div>
               </a>
             </li>
-
             <hr />
           </ul>
         </nav>
@@ -520,22 +437,9 @@ const Header = () => {
             {/* Render your EditTemplate component here */}
             <EditTemp onClose={closeEditTemplatePopup} />
           </div>
-        )}{" "}
-        {internetLoginPopup && (
-          <div className="popup m-0">
-            {/* Render your EditTemplate component here */}
-            <InternetLogin onClose={closeisInternetLoginPopup} />
-          </div>
-        )}
-        {batchAddPhotosPopup && (
-          <div className="popup m-0">
-            {/* Render your EditTemplate component here */}
-            <BatchAddPhotos onClose={closeBatchAddPhotosPopup} />
-          </div>
         )}
       </div>
     </>
   );
 };
-
 export default Header;

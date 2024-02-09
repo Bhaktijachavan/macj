@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid'; // Import uuid
 import './OneDamage.css';
-
-function OneDamage({ setIsPopupOpen, isPopupOpen, onClose }) {
+function OneDamage({ setIsPopupOpen, onClose, subItemName, onDone }) {
+  const localStorageKey = 'oneDamageFormData';
   const [formData, setFormData] = useState({
-    tabName: '',
-    damagePanelName: '',
+    onetabId: '',
+    onetabName: '',
+    onedamagePanelId: '',
+    onedamagePanelName: '',
   });
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -14,44 +16,31 @@ function OneDamage({ setIsPopupOpen, isPopupOpen, onClose }) {
       [name]: value,
     }));
   };
-
   const handleCancel = () => {
-    // Add functionality for cancel button if needed
     console.log('Cancel button clicked');
     setIsPopupOpen(false);
   };
-
   const handleBack = () => {
-    // Add functionality for back button if needed
     console.log('Back button clicked');
-
-    onClose(); // Call the onClose function passed from the parent
+    onClose();
   };
-
-  // const handleNext = () => {
-  //   // Add functionality for next button if needed
-  //   console.log('Next button clicked');
-  // };
-
   const handleDone = () => {
-    // Save the form data to localStorage
-    localStorage.setItem('formData', JSON.stringify(formData));
+    const updatedFormData = {
+      ...formData,
+      onetabId: uuidv4(), // Generate unique ID for Tab Name
+      onedamagePanelId: uuidv4(),
+    };
+    onDone(updatedFormData); // Generate unique ID for Damage Panel Name
+    localStorage.setItem(localStorageKey, JSON.stringify(updatedFormData));
     console.log('Done button clicked');
     setIsPopupOpen(false);
-  
   };
-
-  // Access the stored data when the component mounts
-  React.useEffect(() => {
-    // Retrieve the stored data from localStorage
-    const storedFormData = localStorage.getItem('formData');
-
-    // Check if the data exists before updating the state
+  useEffect(() => {
+    const storedFormData = localStorage.getItem(localStorageKey);
     if (storedFormData) {
       setFormData(JSON.parse(storedFormData));
     }
   }, []);
-
   return (
     <div className="form-container-onedamage">
       <p className='p-onedamage'>Creating A Page With 1 Damage Panel. The Damage Panel Name is what will appear on the report.</p>
@@ -60,8 +49,8 @@ function OneDamage({ setIsPopupOpen, isPopupOpen, onClose }) {
         <input
           className='input1-onedamage'
           type="text"
-          name="tabName"
-          value={formData.tabName}
+          name="onetabName"
+          value={formData.onetabName}
           onChange={handleInputChange}
           required
         />
@@ -71,8 +60,8 @@ function OneDamage({ setIsPopupOpen, isPopupOpen, onClose }) {
         <input
           className='input-onedamage'
           type="text"
-          name="damagePanelName"
-          value={formData.damagePanelName}
+          name="onedamagePanelName"
+          value={formData.onedamagePanelName}
           onChange={handleInputChange}
           required
         />
@@ -84,9 +73,6 @@ function OneDamage({ setIsPopupOpen, isPopupOpen, onClose }) {
         <button type="button" className="back-button-onedamage" onClick={handleBack}>
           Back
         </button>
-        {/* <button type="button" className="next-button-onedamage" onClick={handleNext}>
-          Next
-        </button> */}
         <button type="button" className="done-button-onedamage" onClick={handleDone}>
           Done
         </button>
@@ -94,5 +80,4 @@ function OneDamage({ setIsPopupOpen, isPopupOpen, onClose }) {
     </div>
   );
 }
-
 export default OneDamage;
