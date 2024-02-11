@@ -377,6 +377,7 @@ const Header = () => {
             </li>
             <hr />
 
+            <Link to="/EditComments">
             <li className="list-for-header-section-main-nav">
               <p
                 onClick={() => openPopup("editComments")}
@@ -391,6 +392,7 @@ const Header = () => {
                 </div>
               </p>
             </li>
+            </Link>
 
             <li className="list-for-header-section-main-nav  border-r border-black-900">
               <a

@@ -1,85 +1,78 @@
+
 body{
     background-color: #fee4c3;
 }
-.container-panel3 {
+.container-panel4 {
     display: flex;
     /* justify-content: center; */
     
     
 }
 
-.panel3 {
+.panel4 {
     display: flex;
     align-items: center;
     margin: 7px;
     /* margin-top: -2%; */
 }
 
-.button-column-panel3 {
+.button-column-panel4 {
     display: flex;
     flex-direction: column;
 }
 
-.scroll-box-panel3,
-.scroll-box1-panel3 {
+.scroll-box-panel4,
+.scroll-box1-panel4 {
     margin: 5px;
     overflow-y: scroll; /* Enable vertical scrollbar */
     border: solid thin black; /* Border for visibility */
     background-color: white;
 }
 
-.scroll-box-panel3 {
+.scroll-box-panel4 {
     width: 95vh;
-    height: 30vh;
+    height: 69vh;
     border: solid black 1px;
     margin-left: 50px;
 }
 
-.scroll-box1-panel3 {
+.scroll-box1-panel4 {
     width: 210px;
-    height: 120px;
+    height: 34vh;
 }
 
-.button-container-panel3 {
+.button-container-panel4 {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.image-button-panel3 {
+.image-button-panel4 {
     margin: 7px;
-    padding: 2px;
+    padding: 5px;
     border: 1px solid black;
     background: none;
     cursor: pointer;
 }
 
-.panelupdown-panel3{
+.panelupdown-panel4{
     display: flex;
     flex-direction: column;
 }
 
-.checkbox-list-panel3 {
+.checkbox-list-panel4 {
     display: flex;
     flex-direction: column;
     margin-left: 30px;
     margin-right: 10px;
   }
-  .scroll-box3-panel3{
+  .scroll-box3-panel4{
     width: 25vh;
-    height: 30vh;
+    height: 69vh;
     border: solid black 1px;
 
   }
-  .scroll-box4-panel3{
-    margin-left: 9%;
-    width: 75vh;
-    height: 32vh;
-    border: solid black 1px;
-    padding-left: 10px;
-    justify-content: center;
 
-  }
 @media screen and (max-width: 1200px) {
     .scroll-box {
         width: 95vw;
