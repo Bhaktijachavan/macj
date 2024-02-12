@@ -1,7 +1,5 @@
-// export default EditImageTabList;
 import React, { useState } from "react";
 import "./EditImageTabList.css";
-// import editimgclose from "../Photo/icons/close_2997911.png";
 import PropTypes from "prop-types";
 import Editor from "../Editor/Editor";
 import AdjustBrightnessContent from "./AdjustBrightnessContent/AdjustBrightnessContent";
@@ -9,34 +7,57 @@ import AdjustContrastContent from "./AdjustContrast/AdjustContrastContent";
 import RotateClockwiseContent from "./RotateClockwiseContent/RotateClockwiseContent";
 import CropImageContent from "./CropImageContent/CropImageContent";
 import DrawLineContent from "./DrawLineContent/DrawLineContent";
-// import imageUrl from "../../Assets/icons/download.jpeg";
 import DrawArrowContent from "./DrawArrowContent/DrawArrowContent";
 import DrawRectangleContent from "./DrawRectangleContent/DrawRectangleContent";
 import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
 import OverLayImage from "./OverLayImage/OverLayImage";
-import { ImageProvider } from "./ImageContext";
 
 const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const [activeTab, setActiveTab] = useState(1);
   const [textFromEditor, setTextFromEditor] = useState("");
-  const [isTextEditorOpen, setIsTextEditorOpen] = useState(false);
   const [editorKey, setEditorKey] = useState(1);
+  const [brightness, setBrightness] = useState(100);
+  const [contrast, setContrast] = useState(100);
+  const [rotationAngle, setRotationAngle] = useState(0);
+  const [drawnArrows, setDrawnArrows] = useState([]);
+  const [drawnLines, setDrawnLines] = useState([]);
+
+  const handleDrawnLines = (lines) => {
+    setDrawnLines(lines);
+  };
+
+  const handleDrawnArrows = (arrows) => {
+    setDrawnArrows(arrows);
+  };
+
+  const handleBrightnessChange = (newBrightness) => {
+    setBrightness(newBrightness);
+  };
+
+  const handleRotateClockwise = (newRotate) => {
+    setRotationAngle(newRotate);
+  };
+
+  const handleContrastChange = (newContrast) => {
+    setContrast(newContrast);
+  };
 
   const handleTabClick = (tabNumber) => {
     setActiveTab(tabNumber);
 
     if (tabNumber === 9) {
-      setEditorKey((prevKey) => prevKey + 1); // Increment key to create a new instance
+      setEditorKey((prevKey) => prevKey + 1);
     }
   };
 
   const handleClosePopup = () => {
     onRequestClose();
-    setIsTextEditorOpen(false); // Close the text editor when closing the main popup
   };
+
   const handleTextChange = (newTexts) => {
-    setTextFromEditor(newTexts); // Update text state when it changes in Editor
+    setTextFromEditor(newTexts);
   };
+
   const tabNames = [
     "Crop Image",
     "Adjust Brightness",
@@ -51,42 +72,113 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   ];
 
   const tabContentComponents = {
-    1: <CropImageContent imageUrl={uploadedImageUrl} texts={textFromEditor} />,
+    1: (
+      <CropImageContent
+        imageUrl={uploadedImageUrl}
+        texts={textFromEditor}
+        brightness={brightness}
+        contrast={contrast}
+        drawnArrows={drawnArrows}
+        drawnLines={drawnLines}
+      />
+    ),
     2: (
       <AdjustBrightnessContent
         imageUrl={uploadedImageUrl}
         texts={textFromEditor}
+        brightness={brightness}
+        contrast={contrast}
+        drawnArrows={drawnArrows}
+        drawnLines={drawnLines}
+        onBrightnessChange={handleBrightnessChange}
       />
     ),
     3: (
       <AdjustContrastContent
         imageUrl={uploadedImageUrl}
         texts={textFromEditor}
+        contrast={contrast}
+        brightness={brightness}
+        drawnArrows={drawnArrows}
+        drawnLines={drawnLines}
+        onContrastChange={handleContrastChange}
       />
     ),
     4: (
       <RotateClockwiseContent
         imageUrl={uploadedImageUrl}
-        // texts={textFromEditor}
+        texts={textFromEditor}
+        rotationAngle={rotationAngle}
+        contrast={contrast}
+        brightness={brightness}
+        drawnArrows={drawnArrows}
+        drawnLines={drawnLines}
+        onRotateClockwise={handleRotateClockwise}
       />
     ),
-    5: <DrawLineContent imageUrl={uploadedImageUrl} texts={textFromEditor} />,
-    6: <DrawArrowContent imageUrl={uploadedImageUrl} texts={textFromEditor} />,
+    5: (
+      <DrawLineContent
+        imageUrl={uploadedImageUrl}
+        texts={textFromEditor}
+        brightness={brightness}
+        contrast={contrast}
+        drawnArrows={drawnArrows}
+        drawnLines={drawnLines}
+        onDrawLines={handleDrawnLines}
+      />
+    ),
+    6: (
+      <DrawArrowContent
+        imageUrl={uploadedImageUrl}
+        texts={textFromEditor}
+        contrast={contrast}
+        brightness={brightness}
+        drawnArrows={drawnArrows}
+        drawnLines={drawnLines}
+        onDrawArrow={handleDrawnArrows}
+      />
+    ),
     7: (
       <DrawRectangleContent
         imageUrl={uploadedImageUrl}
         texts={textFromEditor}
+        brightness={brightness}
+        contrast={contrast}
+        drawnArrows={drawnArrows}
+        drawnLines={drawnLines}
       />
     ),
-    8: <DrawOvalContent imageUrl={uploadedImageUrl} texts={textFromEditor} />,
+    8: (
+      <DrawOvalContent
+        imageUrl={uploadedImageUrl}
+        texts={textFromEditor}
+        brightness={brightness}
+        contrast={contrast}
+        drawnArrows={drawnArrows}
+        drawnLines={drawnLines}
+      />
+    ),
     9: (
       <Editor
         key={editorKey}
         imageUrl={uploadedImageUrl}
         onTextChange={handleTextChange}
+        brightness={brightness}
+        contrast={contrast}
+        drawnArrows={drawnArrows}
+        drawnLines={drawnLines}
       />
     ),
-    10: <OverLayImage imageUrl={uploadedImageUrl} texts={textFromEditor} />,
+    10: (
+      <OverLayImage
+        imageUrl={uploadedImageUrl}
+        texts={textFromEditor}
+        brightness={brightness}
+        contrast={contrast}
+        drawnArrows={drawnArrows}
+        drawnLines={drawnLines}
+      />
+    ),
   };
 
   return (
@@ -125,7 +217,6 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
                     </button>
                   </section>
                   <section className="color-picker-heading-and-color-picker">
-                    {/* <p className="color-picker-heading">Current Color</p> */}
                     <button className="color-pickkkker"></button>
                   </section>
                 </div>
@@ -166,6 +257,7 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
 EditImageTabList.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onRequestClose: PropTypes.func.isRequired,
+  uploadedImageUrl: PropTypes.string.isRequired,
 };
 
 export default EditImageTabList;

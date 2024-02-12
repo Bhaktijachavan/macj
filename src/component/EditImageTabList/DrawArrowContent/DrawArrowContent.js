@@ -2,8 +2,16 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DrawArrowContent.css";
 import PropTypes from "prop-types";
 
-const DrawArrowContent = ({ imageUrl, texts }) => {
-  const [arrows, setArrows] = useState([]);
+const DrawArrowContent = ({
+  imageUrl,
+  texts,
+  onDrawArrow,
+  drawnArrows,
+  brightness,
+  contrast,
+  drawnLines,
+}) => {
+  const [arrows, setArrows] = useState(drawnArrows); // Initialize state with drawnArrows
   const [drawing, setDrawing] = useState(false);
   const arrowRef = useRef(null);
   const arrowsHistory = useRef([]);
@@ -39,12 +47,13 @@ const DrawArrowContent = ({ imageUrl, texts }) => {
       arrowCanvas.height = canvasHeight;
 
       ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+      arrowCanvas.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
 
       arrows.forEach((arrow) => {
         drawArrow(ctx, arrow.start, arrow.end, arrow.color);
       });
     };
-  }, [imageUrl, arrows]);
+  }, [imageUrl, arrows, brightness, contrast]);
 
   const startDrawing = (e) => {
     e.preventDefault();
@@ -75,6 +84,8 @@ const DrawArrowContent = ({ imageUrl, texts }) => {
 
   const stopDrawing = () => {
     setDrawing(false);
+    // Pass the drawn arrows to the parent component
+    onDrawArrow(arrows);
   };
 
   const drawArrow = (context, start, end, color) => {
@@ -152,6 +163,31 @@ const DrawArrowContent = ({ imageUrl, texts }) => {
             {text.content}
           </div>
         ))}
+      {drawnLines &&
+        drawnLines.map((line, index) => (
+          <svg
+            key={index}
+            width={`${Math.abs(line.end.x - line.start.x)}px`}
+            height={`${Math.abs(line.end.y - line.start.y)}px`}
+            viewBox={`0 0 ${Math.abs(line.end.x - line.start.x)} ${Math.abs(
+              line.end.y - line.start.y
+            )}`}
+            style={{
+              position: "absolute",
+              top: `${Math.min(line.start.y, line.end.y)}px`,
+              left: `${Math.min(line.start.x, line.end.x)}px`,
+            }}
+          >
+            <line
+              x1={Math.abs(line.start.x - Math.min(line.start.x, line.end.x))}
+              y1={Math.abs(line.start.y - Math.min(line.start.y, line.end.y))}
+              x2={Math.abs(line.end.x - Math.min(line.start.x, line.end.x))}
+              y2={Math.abs(line.end.y - Math.min(line.start.y, line.end.y))}
+              style={{ stroke: line.color, strokeWidth: "4" }}
+            />
+          </svg>
+        ))}
+
       <div className="Buttons-undo-redo-container">
         <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
           Undo
@@ -166,6 +202,10 @@ const DrawArrowContent = ({ imageUrl, texts }) => {
 
 DrawArrowContent.propTypes = {
   imageUrl: PropTypes.string.isRequired,
+  onDrawArrow: PropTypes.func.isRequired,
+  brightness: PropTypes.number.isRequired,
+  contrast: PropTypes.number.isRequired,
+  drawnArrows: PropTypes.array.isRequired, // Add prop type for drawn arrows
 };
 
 export default DrawArrowContent;
