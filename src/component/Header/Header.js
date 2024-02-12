@@ -37,6 +37,9 @@ const Header = () => {
     useState(false);
   const [activePopup, setActivePopup] = useState(null);
   const [colorPaletPopup, setOpenColorPaletPopup] = useState(false);
+  const [pastedText, setPastedText] = useState("");
+  const [value, setValue] = React.useState("");
+  const ref = useRef(null);
 
   const openOpenTemplatePopup = () => {
     setOpenTemplatePopup(true);
@@ -142,6 +145,32 @@ const Header = () => {
     };
   }, []);
 
+  const handleCopy = () => {
+    // Get the selected text
+    const selectedText = window.getSelection().toString();
+    // Copy the selected text to the clipboard
+    navigator.clipboard
+      .writeText(selectedText)
+      .then(() => {
+        console.log("Text copied:", selectedText);
+      })
+      .catch((error) => {
+        console.error("Error copying text:", error);
+      });
+  };
+
+  const handlePaste = () => {
+    // Paste the text from the clipboard
+    navigator.clipboard
+      .readText()
+      .then((text) => {
+        setPastedText(text);
+        console.log("Pasted text:", text);
+      })
+      .catch((error) => {
+        console.error("Error pasting text:", error);
+      });
+  };
   return (
     <>
       <div
@@ -378,20 +407,20 @@ const Header = () => {
             <hr />
 
             <Link to="/EditComments">
-            <li className="list-for-header-section-main-nav">
-              <p
-                onClick={() => openPopup("editComments")}
-                className="header2-tag-a"
-              >
-                <div className="flex justify-center">
-                  <img src={img5} alt="" />
-                </div>
-                <div>
-                  Edit <br />
-                  Comments
-                </div>
-              </p>
-            </li>
+              <li className="list-for-header-section-main-nav">
+                <p
+                  onClick={() => openPopup("editComments")}
+                  className="header2-tag-a"
+                >
+                  <div className="flex justify-center">
+                    <img src={img5} alt="" />
+                  </div>
+                  <div>
+                    Edit <br />
+                    Comments
+                  </div>
+                </p>
+              </li>
             </Link>
 
             <li className="list-for-header-section-main-nav  border-r border-black-900">
@@ -465,7 +494,7 @@ const Header = () => {
             </Link>
             <hr />
             <li className="list-for-header-section-main-nav">
-              <a href="#" className="header2-tag-a">
+              <a href="#" className="header2-tag-a" onClick={handleCopy}>
                 <div className="flex justify-center">
                   <img src={img10} alt="" />
                 </div>
@@ -473,7 +502,17 @@ const Header = () => {
               </a>
             </li>
             <li className="list-for-header-section-main-nav  border-r border-black-900">
-              <a href="#" className="header2-tag-a">
+              <a
+                href="#"
+                className="header2-tag-a"
+                onClick={(e) => {
+                  let paste = (e.clipboardData || window.clipboardData).getData(
+                    "Text"
+                  );
+                  setValue(paste);
+                }}
+                // onClick={handlePaste}
+              >
                 <div className="flex justify-center">
                   <img src={img11} alt="" />
                 </div>
