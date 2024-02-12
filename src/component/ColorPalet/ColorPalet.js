@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import moveUpButtonImg from "../../Assets/icons/ic_up.png";
 import moveDownButtonImg from "../../Assets/icons/ic_down.png";
 import inheritButtonImg from "../../Assets/icons/sync.png";
@@ -34,35 +34,7 @@ const ColorPalette = ({ onClose }) => {
   ]);
 
   // State for table data
-  const [dummyData, setDummyData] = useState([
-    {
-      id: 1,
-      sectionName: "Bedroom",
-      sectionTitleFont: "",
-      headerFont: "",
-      footerFont: "",
-      sectionIcon: "",
-      tocFont: "",
-    },
-    {
-      id: 2,
-      sectionName: "Kitchen",
-      sectionTitleFont: "",
-      headerFont: "",
-      footerFont: "",
-      sectionIcon: "",
-      tocFont: "",
-    },
-    {
-      id: 3,
-      sectionName: "Laundry",
-      sectionTitleFont: "",
-      headerFont: "",
-      footerFont: "",
-      sectionIcon: "",
-      tocFont: "",
-    },
-  ]);
+  const [dummyData, setDummyData] = useState([]);
 
   // State for selected row
   const [selectedRow, setSelectedRow] = useState(null);
@@ -165,23 +137,50 @@ const ColorPalette = ({ onClose }) => {
   };
 
   // Function to open the color picker
-  const openColorPicker = (index, event) => {
-    setSelectedColorIndex(index);
+  // const openColorPicker = (index, event) => {
+  //   setSelectedColorIndex(index);
 
-    // Calculate position relative to the document
-    const rect = event.target.getBoundingClientRect();
-    const top = rect.bottom + window.scrollY;
-    const left = rect.left + window.scrollX;
+  //   // Calculate position relative to the document
+  //   const rect = event.target.getBoundingClientRect();
+  //   const top = rect.bottom + window.scrollY;
+  //   const left = rect.left + window.scrollX;
 
-    setColorPickerPosition({ top, left });
-    setIsModalOpen(true);
-  };
-
+  //   setColorPickerPosition({ top, left });
+  //   setIsModalOpen(true);
+  // };
+  const [menuData, setMenuData] = useState([]);
   // Function to close the color picker
   const closeColorPicker = () => {
     setIsModalOpen(false);
   };
+  useEffect(() => {
+    // Retrieve data from local storage when the component mounts
+    const storedMenuData = localStorage.getItem("menuData");
+    const parsedMenuData = JSON.parse(storedMenuData) || [];
+    setMenuData(parsedMenuData);
 
+    // Assuming you want to use parsedMenuData as dummyData, update the state
+    setDummyData(parsedMenuData);
+  }, []);
+
+  useEffect(() => {
+    // Additional useEffect to listen for changes in local storage
+    const handleLocalStorageChange = () => {
+      const storedMenuData = localStorage.getItem("menuData");
+      const parsedMenuData = JSON.parse(storedMenuData) || [];
+
+      // Update the state with the new data from local storage
+      setDummyData(parsedMenuData);
+    };
+
+    // Listen for changes in local storage
+    window.addEventListener("storage", handleLocalStorageChange);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("storage", handleLocalStorageChange);
+    };
+  }, []);
   return (
     <>
       <div>
@@ -252,20 +251,18 @@ const ColorPalette = ({ onClose }) => {
                     {dummyData.map((data, index) => (
                       <tr
                         key={index}
-                        className={
-                          selectAll || selectedRow === index
-                            ? "bg-gray-200"
-                            : ""
-                        }
+                        className={selectAll || selectedRow === index ? "bg-gray-200" : ""}
                         onClick={() => handleRowClick(index, 0)}
                       >
-                        <td className="border p-2">{data.sectionName}</td>
+                        <td className="border p-2">{menuData[index]?.subItems[0]?.submenuname}</td>
+                        {/* Access the data from menuData using the same index */}
+
                         <td className="border p-2"></td>
                         <td className="border p-2">
                           <input
                             type="checkbox"
                             checked={data.print}
-                            onChange={() => {}}
+                            onChange={() => { }}
                           />
                         </td>
                         <td className="border p-2">
@@ -320,10 +317,10 @@ const ColorPalette = ({ onClose }) => {
                           <div>
                             <input
                               type="color"
-                              onClick={(e) => openColorPicker(index, e)}
+                            // onClick={(e) => openColorPicker(index, e)}
                             />
 
-                            {isModalOpen && (
+                            {/* {isModalOpen && (
                               <div
                                 className="z-10"
                                 style={{
@@ -338,7 +335,7 @@ const ColorPalette = ({ onClose }) => {
                                   selectedColorIndex={selectedColorIndex}
                                 />
                               </div>
-                            )}
+                            )} */}
                           </div>
                         </td>
                         <td className="border p-2"></td>
@@ -441,6 +438,11 @@ const ColorPalette = ({ onClose }) => {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="flex justify-end mr-20 ">
+            <button className="border-2 border-black py-1 px-2">
+              close
+            </button>
           </div>
         </div>
       </div>
