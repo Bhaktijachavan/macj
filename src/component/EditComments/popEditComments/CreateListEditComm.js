@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./CreateListEditComm.css";
 import AddListPopUp from "./AddListPopUp.js";
+import AddCommentsPopUp from "./AddCommentsPopUp.js"
 
 const CreateListEditComm = ({ onClose }) => {
   const [text1, setText1] = useState("");
@@ -10,13 +11,15 @@ const CreateListEditComm = ({ onClose }) => {
 
   const handleAddListClick = () => {
     setAddListPopUp(true);
-    setIsAddCommentsPopUp(true);
   };
 
   const handlePopUpClose = () => {
     setAddListPopUp(false);
     setIsAddCommentsPopUp(false);
   };
+  const handleAddCommPopopClick = () =>{
+    setIsAddCommentsPopUp(true);
+  }
 
   return (
     <div>
@@ -106,14 +109,14 @@ const CreateListEditComm = ({ onClose }) => {
                       <div>
                         <div
                           className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer"
-                          onClick={handleAddListClick}
+                          onClick={handleAddCommPopopClick}
                         >
                           <li>
                             Add <br /> Comments
                           </li>
                         </div>
 
-                        {/* {isAddCommentsPopUp && <AddCommentsPopUp onClose={handlePopUpClose} />} */}
+                        {isAddCommentsPopUp && <AddCommentsPopUp onClose={handlePopUpClose} />}
                       </div>
                       <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
                         <li>

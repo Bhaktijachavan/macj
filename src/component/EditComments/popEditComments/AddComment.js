@@ -8,6 +8,7 @@ import img6 from "../../../Assets/icons/gallery.png";
 import img7 from "../../../Assets/icons/remove.png";
 import CreateListEditComm from './CreateListEditComm';
 
+
 const AddComment = ({ onClose }) => {
     const [isCreateListVisiable, setIsCreateListVisiable] = useState(false)
     const [isBold, setIsBold] = useState(false);
