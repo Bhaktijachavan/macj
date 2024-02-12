@@ -1,34 +1,27 @@
 import React from 'react';
-import "./AddListPopUp.css";
+import "./AddCommentsPopUp.css";
+import InspectionSignature from './../../CoverPageDesigner/Inspection Signature/InspectionSignature';
 
-const AddListPopUp = ({ onClose }) => {
+const AddCommentsPopUp = ({ onClose }) => {
     return (
         <div>
-            <div className='Contant-addlistpopup'>
-                <div className='template-card-addlistpopup'>
-                    <div className="template-selector-addlistpopup">
-                        <span className='selecteditaddlistpopup'>Select A Template</span>
-                        <button onClick={onClose} className="close-button-addlistpopup">X</button>
+            <div className='Contant-addCommentsPopUp'>
+                <div className='template-card-addCommentsPopUp'>
+                    <div className="template-selector-addCommentsPopUp">
+                        <span className='selecteditaddCommentsPopUp'>Select A Template</span>
+                        <button onClick={onClose} className="close-button-addCommentsPopUp">X</button>
                     </div>
-                    <div className='pt-7'>
-                        <div className='Title-Addpopup'>
-                            <p className='text-sm'>Enter the name of your new list</p>
-                            <p className='text-sm'>
-                                Do not include &lt;&lt;&gt;&gt;, the program adds them automatically to help the list name stand out within comments
-                            </p>
+                    <div className='pt-8'>
+                        <div className='Title-addCommentsPopUp'>
+                            <p className='text-sm text-center pl-2'>Enter the new comment name to add to this list </p>
+                            
                         </div>
-                        <div className='flex p-2 justify-center gap-2'>
-                            <div>
-                            <input type="text" placeholder="Enter new list" class="w-72 px-1 py-1 border rounded"/>
-                            </div>
-                            <div>
-                            <select className="w-28 px-1 py-1 border rounded">
-                                <option value="option1">Option 1</option>
-                                <option value="option2">Option 2</option>
-                                <option value="option3">Option 3</option>
-                            </select>
-                            </div>    
-                        </div>
+                        <div className='p-2'>
+                        <div>
+                            <input type="text" placeholder="Enter new list" class="w-72 px-1 py-1 border rounded text-left"/>
+                        </div> 
+                    </div>
+                    
 
                         <div> <div className='text-center'>
                             <button className="btn-editcomm mr-2 w-24 text-sm">Ok</button>
