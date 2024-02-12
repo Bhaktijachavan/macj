@@ -10,6 +10,7 @@ const OverLayImage = ({ imageUrl, onTextChange }) => {
   const fileInputRef = useRef(null); // Reference to the file input element
   const historyIndex = useRef(-1);
   const [rotationAngle, setRotationAngle] = useState(0);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
@@ -58,6 +59,14 @@ const OverLayImage = ({ imageUrl, onTextChange }) => {
           alt="Original Image"
           className="Overlay-Image-image-uploded"
         />
+        {uploadedPhoto && (
+          <img
+            src={uploadedPhoto}
+            alt="Uploaded"
+            className="Overlay-Image-overlay"
+            style={{ transform: `rotate(${rotationAngle}deg)` }}
+          />
+        )}
         {isPopupOpen && (
           <div className="Overlay-for-edit-images-tablist-section-main-container ">
             <div className=" Overlay-for-edit-images-tablist-section-header-container">

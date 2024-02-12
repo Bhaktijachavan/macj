@@ -28,7 +28,6 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
     if (tabNumber === 9) {
       setEditorKey((prevKey) => prevKey + 1); // Increment key to create a new instance
     }
-   
   };
 
   const handleClosePopup = () => {

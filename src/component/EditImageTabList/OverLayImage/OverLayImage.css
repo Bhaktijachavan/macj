@@ -1,12 +1,11 @@
-/* CropImageContent.css */
-
 .Overlay-Image-container-to-overlay-image-super-container {
   width: 48em;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px solid black;
+  /* border: 2px solid black; */
   height: 38em;
+  position: relative;
 }
 .Overlay-for-edit-images-tablist-section-main-container {
   /* display: flex;
@@ -60,6 +59,11 @@
   /* border: 2px solid; */
   margin: 10px;
 }
+.Overlay-Image-image-uploded {
+  width: 100%; /* Ensure that the original image fills the container */
+  height: auto; /* Maintain the aspect ratio of the original image */
+  display: block; /* Ensure that the image behaves as a block element */
+}
 .Rotate-Button-to-rotate-Overlay-image {
   background-color: #f3f2f1;
   color: black;
@@ -106,4 +110,14 @@
 .Overlay-Image-image-uploded {
   width: auto;
   height: 565px;
+}
+
+.Overlay-Image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  opacity: 1;
+  pointer-events: none;
 }
