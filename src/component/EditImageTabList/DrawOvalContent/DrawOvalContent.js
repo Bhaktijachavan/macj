@@ -2,19 +2,56 @@ import React, { useState, useRef, useEffect } from "react";
 import "./DrawOvalContent.css";
 import PropTypes from "prop-types";
 
-const DrawOvalContent = ({ imageUrl, lineWidth = 8, texts }) => {
-  const [ovals, setOvals] = useState([]);
+const DrawOvalContent = ({
+  imageUrl,
+  lineWidth = 8,
+  texts,
+  drawnArrows,
+  brightness,
+  contrast,
+  drawnLines,
+  drawnOvals,
+  onDrawOvals,
+  drawnRectangles,
+  croppedImageUrl,
+}) => {
+  const [ovals, setOvals] = useState(drawnOvals);
   const [drawing, setDrawing] = useState(false);
   const ovalRef = useRef(null);
   const ovalsHistory = useRef([]);
   const historyIndex = useRef(-1);
+  const [imageSrc, setImageSrc] = useState("");
+
+  useEffect(() => {
+    const handleKeydown = (event) => {
+      if (event.ctrlKey && event.key === "z") {
+        undo();
+      } else if (event.ctrlKey && event.key === "y") {
+        redo();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+    };
+  }, []); // Empty dependency array to run only once
+
+  useEffect(() => {
+    if (croppedImageUrl) {
+      setImageSrc(croppedImageUrl);
+    } else {
+      setImageSrc(imageUrl); // Set to original image URL
+    }
+  }, [croppedImageUrl]);
 
   useEffect(() => {
     const ovalCanvas = ovalRef.current;
     const ctx = ovalCanvas.getContext("2d");
 
     const image = new Image();
-    image.src = imageUrl;
+    image.src = imageSrc;
     image.onload = () => {
       // Calculate the aspect ratio of the image
       const aspectRatio = image.width / image.height;
@@ -39,12 +76,13 @@ const DrawOvalContent = ({ imageUrl, lineWidth = 8, texts }) => {
       ovalCanvas.height = canvasHeight;
 
       ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+      ovalCanvas.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
 
       ovals.forEach((oval) => {
         drawOval(ctx, oval.start, oval.end, oval.color, lineWidth);
       });
     };
-  }, [imageUrl, ovals, lineWidth]);
+  }, [imageSrc, ovals, lineWidth, brightness, contrast]);
 
   const startDrawing = (e) => {
     e.preventDefault();
@@ -75,6 +113,7 @@ const DrawOvalContent = ({ imageUrl, lineWidth = 8, texts }) => {
 
   const stopDrawing = () => {
     setDrawing(false);
+    onDrawOvals(ovals);
   };
 
   const drawOval = (context, start, end, color, width) => {
@@ -140,6 +179,137 @@ const DrawOvalContent = ({ imageUrl, lineWidth = 8, texts }) => {
             {text.content}
           </div>
         ))}
+      {drawnArrows &&
+        drawnArrows.map((arrow, index) => {
+          // Calculate the angle of the arrow
+          const angle = Math.atan2(
+            arrow.end.y - arrow.start.y,
+            arrow.end.x - arrow.start.x
+          );
+          // Calculate the length of the arrowhead lines
+          const arrowheadLength = 10;
+          // Calculate the coordinates of the arrowhead
+          const arrowheadX1 =
+            arrow.end.x - arrowheadLength * Math.cos(angle - Math.PI / 6);
+          const arrowheadY1 =
+            arrow.end.y - arrowheadLength * Math.sin(angle - Math.PI / 6);
+          const arrowheadX2 =
+            arrow.end.x - arrowheadLength * Math.cos(angle + Math.PI / 6);
+          const arrowheadY2 =
+            arrow.end.y - arrowheadLength * Math.sin(angle + Math.PI / 6);
+
+          return (
+            <div
+              key={index}
+              className="drawn-arrow"
+              style={{
+                position: "absolute",
+                top: `${Math.min(arrow.start.y, arrow.end.y)}px`,
+                left: `${Math.min(arrow.start.x, arrow.end.x)}px`,
+              }}
+            >
+              <svg
+                width={`${Math.abs(arrow.end.x - arrow.start.x)}px`}
+                height={`${Math.abs(arrow.end.y - arrow.start.y)}px`}
+                viewBox={`0 0 ${Math.abs(
+                  arrow.end.x - arrow.start.x
+                )} ${Math.abs(arrow.end.y - arrow.start.y)}`}
+              >
+                <line
+                  x1={Math.abs(
+                    arrow.start.x - Math.min(arrow.start.x, arrow.end.x)
+                  )}
+                  y1={Math.abs(
+                    arrow.start.y - Math.min(arrow.start.y, arrow.end.y)
+                  )}
+                  x2={Math.abs(
+                    arrow.end.x - Math.min(arrow.start.x, arrow.end.x)
+                  )}
+                  y2={Math.abs(
+                    arrow.end.y - Math.min(arrow.start.y, arrow.end.y)
+                  )}
+                  style={{ stroke: arrow.color, strokeWidth: "4" }}
+                />
+                {/* Arrowhead */}
+                <line
+                  x1={arrowheadX1 - Math.min(arrow.start.x, arrow.end.x)}
+                  y1={arrowheadY1 - Math.min(arrow.start.y, arrow.end.y)}
+                  x2={arrow.end.x - Math.min(arrow.start.x, arrow.end.x)}
+                  y2={arrow.end.y - Math.min(arrow.start.y, arrow.end.y)}
+                  style={{ stroke: arrow.color, strokeWidth: "2" }}
+                />
+                <line
+                  x1={arrowheadX2 - Math.min(arrow.start.x, arrow.end.x)}
+                  y1={arrowheadY2 - Math.min(arrow.start.y, arrow.end.y)}
+                  x2={arrow.end.x - Math.min(arrow.start.x, arrow.end.x)}
+                  y2={arrow.end.y - Math.min(arrow.start.y, arrow.end.y)}
+                  style={{ stroke: arrow.color, strokeWidth: "2" }}
+                />
+              </svg>
+            </div>
+          );
+        })}
+      {drawnLines &&
+        drawnLines.map((line, index) => (
+          <svg
+            key={index}
+            width={`${Math.abs(line.end.x - line.start.x)}px`}
+            height={`${Math.abs(line.end.y - line.start.y)}px`}
+            viewBox={`0 0 ${Math.abs(line.end.x - line.start.x)} ${Math.abs(
+              line.end.y - line.start.y
+            )}`}
+            style={{
+              position: "absolute",
+              top: `${Math.min(line.start.y, line.end.y)}px`,
+              left: `${Math.min(line.start.x, line.end.x)}px`,
+            }}
+          >
+            <line
+              x1={Math.abs(line.start.x - Math.min(line.start.x, line.end.x))}
+              y1={Math.abs(line.start.y - Math.min(line.start.y, line.end.y))}
+              x2={Math.abs(line.end.x - Math.min(line.start.x, line.end.x))}
+              y2={Math.abs(line.end.y - Math.min(line.start.y, line.end.y))}
+              style={{ stroke: line.color, strokeWidth: "4" }}
+            />
+          </svg>
+        ))}
+      {drawnRectangles &&
+        drawnRectangles.map((rectangle, index) => {
+          return (
+            <svg
+              key={index}
+              width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
+              height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
+              viewBox={`0 0 ${Math.abs(
+                rectangle.end.x - rectangle.start.x
+              )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
+              style={{
+                position: "absolute",
+                top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
+                left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+              }}
+            >
+              <rect
+                x={Math.abs(
+                  rectangle.start.x -
+                    Math.min(rectangle.start.x, rectangle.end.x)
+                )}
+                y={Math.abs(
+                  rectangle.start.y -
+                    Math.min(rectangle.start.y, rectangle.end.y)
+                )}
+                width={Math.abs(rectangle.end.x - rectangle.start.x)}
+                height={Math.abs(rectangle.end.y - rectangle.start.y)}
+                style={{
+                  stroke: rectangle.color,
+                  strokeWidth: "4",
+                  fill: "none",
+                }}
+              />
+            </svg>
+          );
+        })}
+
       <div className="Buttons-undo-redo-conatainer">
         <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
           Undo
@@ -155,6 +325,8 @@ const DrawOvalContent = ({ imageUrl, lineWidth = 8, texts }) => {
 DrawOvalContent.propTypes = {
   imageUrl: PropTypes.string.isRequired,
   lineWidth: PropTypes.number,
+  drawnOval: PropTypes.array.isRequired,
+  onDrawOvals: PropTypes.func.isRequired,
 };
 
 export default DrawOvalContent;

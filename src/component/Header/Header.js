@@ -25,6 +25,8 @@ import BatchAddPhotos from "./../Photo/BatchAddPhotos/BatchAddPhotos";
 import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
 import ColorPalette from "./../ColorPalet/ColorPalet";
 import { EditTempContext } from "../../Context";
+import SaveTPZ from "./../SaveTemp/TPZ/SaveTPZ";
+import OpenTPZ from "./../SaveTemp/TPZ/OpenTPZ";
 
 const Header = ({ onButtonClick }) => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
@@ -268,7 +270,6 @@ const Header = ({ onButtonClick }) => {
             )}
           </div>
         </div>
-
         <div className="menu-item relative ml-4">
           <div
             className="main-label cursor-pointer"
@@ -293,7 +294,6 @@ const Header = ({ onButtonClick }) => {
             </ul>
           )}
         </div>
-
         <div className="menu-item relative ml-4">
           <div
             className="main-label cursor-pointer"
@@ -325,14 +325,12 @@ const Header = ({ onButtonClick }) => {
             </ul>
           )}
         </div>
-
         <div>
           <ul>
             <li className="ml-5">About</li>
           </ul>
         </div>
       </div>
-
       <div
         className="header text-sm border-b-2 border-black"
         style={{ backgroundColor: "#f7f7f7" }}
@@ -374,36 +372,13 @@ const Header = ({ onButtonClick }) => {
               </a>
             </li>
             <hr />
-            <li className="list-for-header-section-main-nav">
-              <a
-                href="#"
-                onClick={openOpenTemplatePopup}
-                className="header2-tag-a"
-              >
-                <div className="flex justify-center">
-                  <img src={img3} alt="" />
-                </div>
-                <div>
-                  Open
-                  <br /> Template
-                </div>
-              </a>
-            </li>
-            <li className="list-for-header-section-main-nav  border-r border-black-900">
-              <a
-                href="#report-settings"
-                onClick={openSaveTemplatePopup}
-                className="header2-tag-a"
-              >
-                <div className="flex justify-center">
-                  <img src={img4} alt="" />
-                </div>
-                <div>
-                  Save
-                  <br /> Template
-                </div>
-              </a>
-            </li>
+            <div>
+              <OpenTPZ />
+            </div>
+            <div>
+              {/* Your other JSX elements */}
+              <SaveTPZ />
+            </div>
             <hr />
 
             {/* <Link to="/EditComments"> */}
@@ -451,7 +426,6 @@ const Header = ({ onButtonClick }) => {
                 </a>
               </li>
             </Link>
-
             <hr />
             <Link to="/">
               <li className="list-for-header-section-main-nav border-r border-black-900">
@@ -479,7 +453,6 @@ const Header = ({ onButtonClick }) => {
                 </a>
               </li>
             </Link>
-
             <Link to="/contractpage">
               <li className="list-for-header-section-main-nav  border-r border-black-900">
                 <a href="#" className="header2-tag-a">
@@ -521,7 +494,6 @@ const Header = ({ onButtonClick }) => {
               </a>
             </li>
             <hr />
-
             {/* <Link to="/generateReport"> */}
             <li className="list-for-header-section-main-nav">
               <a
@@ -565,7 +537,6 @@ const Header = ({ onButtonClick }) => {
                 </Link>
               </a>
             </li>
-
             <hr />
           </ul>
         </nav>
@@ -615,5 +586,4 @@ const Header = ({ onButtonClick }) => {
     </>
   );
 };
-
 export default Header;
