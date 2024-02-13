@@ -1,0 +1,44 @@
+.close-button-and-login-header-for-popup-box-about-us {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2em 0 0.2em 1em;
+  align-items: center;
+  background-color: rgb(242, 236, 236);
+}
+
+.close-btn-about-us-popup {
+  width: 2em;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.close-btn-about-us-popup:hover {
+  background-color: red;
+  cursor: pointer;
+  color: white;
+}
+.width-set-for-the-about-us-macj-page {
+  width: 50em;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.container-for-the-about-us-macj-project {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 9%;
+}
+.first-section-of-the-info-text {
+  text-align: center;
+  display: grid;
+  gap: 1em;
+  padding: 1em 0 1em 0;
+}
+.all-the-content-with-the-text-container {
+  background-color: rgb(229, 229, 229);
+}
+.second-section-of-the-info-text {
+  display: grid;
+  gap: 1em;
+  padding: 0 1em 1em 1em;
+}
