@@ -29,7 +29,8 @@ function CoverPageDesigner({ onClose }) {
   // State to track whether "Page Borders" checkbox is checked
   const [isPageBordersChecked, setIsPageBordersChecked] = useState(false);
   const [isBorderApplied, setIsBorderApplied] = useState(false);
-  const [fontSize, setFontSize] = useState(16); // Initial font size
+  const [fontSize, setFontSize] = useState(16);
+  const [isHovered, setIsHovered] = useState(false);
   const addObjectToOutput = (objectType, properties) => {
     setOutputContent([...outputContent, { type: objectType, properties }]);
   };
@@ -139,43 +140,7 @@ function CoverPageDesigner({ onClose }) {
     }
   };
 
-  // const getContentForLabel = (label) => {
-  //   let content = null;
-  //   switch (label) {
-  //     case "Cover Photo":
-  //       content = <CheckboxContent1 />;
-  //       break;
-  //     case "Company Logo":
-  //       content = <CheckboxContent2 />;
-  //       break;
-  //     case "Company Information":
-  //       content = <EditableText initialText="Company Information" />;
-  //       break;
-  //     case "Inspection Details":
-  //       content = <EditableText initialText="Inspection Details" />;
-  //       break;
-  //     case "Agent Information":
-  //       content = <EditableText initialText="Agent Information" />;
-  //       break;
-  //     case "Cover Company":
-  //       content = <EditableText initialText="Cover Company" />;
-  //       break;
-  //     case "Report Title":
-  //       content = <EditableText initialText="Report Title" />;
-  //       break;
-  //     case "Inspection Signature":
-  //       content = <EditableText initialText="Inspection Signature" />;
-  //       break;
-  //     // case "Agent Photo":
-  //     //   content = <AgentPhoto />;
-  //     //   break;
-  //     // Add more cases for other checkboxes if needed
-  //     // default:
-  //     //   // Handle unknown labels here (e.g., return a default component)
-  //     //   content = <DefaultContent />;
-  //   }
-  //   return content;
-  // };
+
   const getContentForLabel = (label) => {
     let content = null;
     switch (label) {
@@ -200,27 +165,48 @@ function CoverPageDesigner({ onClose }) {
   };
   const handleRemoveBoxTextImage = () => {
     // Filter out selected objects from editableTexts array
-    const updatedTexts = editableTexts.filter(
-      ({ id }) => !selectedObjects.includes(id)
-    );
+    const updatedTexts = editableTexts.filter(({ id }) => !selectedObjects.includes(id));
 
     // Filter out selected objects from addedImages array
-    const updatedImages = addedImages.filter(
-      ({ id }) => !selectedObjects.includes(id)
-    );
-    // Filter out selected objects from addedImages array
-    const updatedContent = outputContent.filter(
-      ({ id }) => !editableTexts.includes(id)
-    );
+    const updatedImages = addedImages.filter(({ id }) => !selectedObjects.includes(id));
+
+    // Filter out selected objects from outputContent array
+    const updatedContent = outputContent.filter(({ id }) => !selectedObjects.includes(id));
 
     // Update the state with the filtered arrays
     setEditableTexts(updatedTexts);
     setAddedImages(updatedImages);
-    setContentText(updatedContent);
+    setOutputContent(updatedContent);
+
     // Clear the selected objects after removal
     setSelectedObjects([]);
     setSelectedCheckboxContents([]);
   };
+
+  const handleMouseOver = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const handleDelete = (id) => {
+    // Filter out the selected object from various states based on its id
+    const updatedTexts = editableTexts.filter((text) => text.id !== id);
+    const updatedImages = addedImages.filter((image) => image.id !== id);
+    const updatedContents = outputContent.filter((content) => content.id !== id);
+
+    // Update the state with the filtered arrays
+    setEditableTexts(updatedTexts);
+    setAddedImages(updatedImages);
+    setOutputContent(updatedContents);
+
+    // Clear the selected objects after removal
+    setSelectedObjects([]);
+    setSelectedCheckboxContents([]);
+  };
+
   return (
     <>
       <div className="cover-page-header-closer-btn">
@@ -231,7 +217,7 @@ function CoverPageDesigner({ onClose }) {
       </div>
       <div
         className="flex justify-center gap-3 p-2 bg-gray-200 main-container-for-the-cover-page-designer-popup-page"
-        // style={{ height: "100vh" }}
+      // style={{ height: "100vh" }}
       >
         <div className="container-for-Object-and-control-section-for-design-cover-page-grid">
           {/* Objects Column */}
@@ -465,36 +451,69 @@ function CoverPageDesigner({ onClose }) {
         </fieldset>
         {/* Output Column */}
         <div
-          className="w-1/4 border border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here"
+          className={`w-1/4 border border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here ${isBorderApplied ? "with-borders" : ""
+            }`}
           style={{ width: "50%" }}
         >
           {/* <h2 className="text-2xl font-bold mb-4">Output</h2> */}
-          <div
-            className={`content-that-is-draggable-and-adjustable-within-div ${
-              isBorderApplied ? "with-borders" : ""
-            }`}
-          >
+
+          <div className="content-that-is-draggable-and-adjustable-within-div">
             {/* Display the text input field if editing text */}
             {selectedCheckboxContents.map((content, index) => (
-              <Draggable className="draggableeeee" key={index} bounds="parent">
-                <div>{content}</div>
+              <Draggable
+                key={index}
+                bounds="parent"
+                className={`draggableeeee cursor-pointer ${isHovered ? 'hovered' : ''}`}
+                style={{
+                  border: selectedObjects.includes(content.id) ? '2px solid red !important' : 'none',
+                  padding: '5px !important',
+                  borderRadius: '5px !important',
+                }}
+                onMouseOver={handleMouseOver}
+                onMouseLeave={handleMouseLeave}
+              >
+                <div>
+                  {content}
+                  {isHovered && (
+                    <div
+                      className="delete-icon"
+                      onClick={() => handleDelete(content.id)}
+                    >
+                      🗑️
+                    </div>
+                  )}
+                </div>
               </Draggable>
             ))}
-
             {/* Render editable text elements */}
             {editableTexts.map(({ id, text }) => (
-              <Draggable className="" bounds="parent">
-                <div className="draggableeeee" key={id}>
+              <Draggable
+                key={id}
+                bounds="parent"
+                className="draggableeeee"
+                style={{
+                  border: selectedObjects.includes(id) ? '2px solid #007BFF' : 'none',
+                  padding: '5px',
+                  borderRadius: '5px',
+                }}
+              >
+                <div>
                   <EditableText initialText={text} />
                 </div>
               </Draggable>
             ))}
             {addedImages.map(({ id, src, height, width }) => (
-              <Draggable className="draggableeeee" bounds="parent">
-                <div
-                  key={id}
-                  className="contains-added-image-with-the-delete-button-ouput-section"
-                >
+              <Draggable
+                key={id}
+                bounds="parent"
+                className="draggableeeee"
+                style={{
+                  border: selectedObjects.includes(id) ? '2px solid #007BFF' : 'none',
+                  padding: '5px',
+                  borderRadius: '5px',
+                }}
+              >
+                <div>
                   <img
                     src={src}
                     alt={`Image ${id}`}
@@ -530,6 +549,7 @@ function CoverPageDesigner({ onClose }) {
           </button>
         </div>
       </div>
+
     </>
   );
 }

@@ -31,18 +31,18 @@ const EditTemp = ({ onClose }) => {
     const updatedMenuData = menuData.map((item) =>
       item.menuname
         ? {
-            ...item,
-            subItems: item.subItems.map((subItem, index) =>
-              index === selectedSubItemIndex
-                ? {
-                    ...subItem,
-                    radioBoxSelection: "oneDamagePanal",
-                    tabName: formData.onetabName,
-                    onedamagePanelName: formData.onedamagePanelName,
-                  }
-                : subItem
-            ),
-          }
+          ...item,
+          subItems: item.subItems.map((subItem, index) =>
+            index === selectedSubItemIndex
+              ? {
+                ...subItem,
+                radioBoxSelection: "oneDamagePanal",
+                tabName: formData.onetabName,
+                onedamagePanelName: formData.onedamagePanelName,
+              }
+              : subItem
+          ),
+        }
         : item
     );
     console.log("updated menudata", updatedMenuData);
@@ -50,6 +50,30 @@ const EditTemp = ({ onClose }) => {
     setIsPopupOpen(false);
   };
 
+
+
+  useEffect(() => {
+    console.log('Component mounted');
+
+    // Retrieve data from local storage
+    const localStorageData = localStorage.getItem('twoDamageFormData');
+    console.log('LocalStorage Data:', localStorageData);
+
+    try {
+      const parsedData = JSON.parse(localStorageData);
+      console.log('Parsed Data:', parsedData);
+
+      if (parsedData) {
+        // Access the data and use it as needed
+        console.log('Retrieved data from local storage:', parsedData);
+        // Do something with the retrieved data
+      } else {
+        console.log('No data found in local storage.');
+      }
+    } catch (error) {
+      console.error('Error parsing localStorage data:', error);
+    }
+  }, [])
   const [selectedOption, setSelectedOption] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [isRadioOptionSelected, setIsRadioOptionSelected] = useState(false);
@@ -354,11 +378,10 @@ const EditTemp = ({ onClose }) => {
                     <FaFolderOpen className="mr-2 inline-block" size={18} />
                   </div>
                   <div
-                    className={`Menu-Item ${
-                      selectedMenuTitleIndex === null
-                        ? "selected-menu-title"
-                        : ""
-                    }`}
+                    className={`Menu-Item ${selectedMenuTitleIndex === null
+                      ? "selected-menu-title"
+                      : ""
+                      }`}
                     onClick={() => handleSelectMenuTitle(null)}
                   >
                     <p
@@ -377,9 +400,8 @@ const EditTemp = ({ onClose }) => {
                       <li key={index}>
                         <button
                           onDoubleClick={() => handleDoubleClick(index)}
-                          className={`Menu-Item ${
-                            selectedMenuItemIndex === index ? "clicked" : ""
-                          }`}
+                          className={`Menu-Item ${selectedMenuItemIndex === index ? "clicked" : ""
+                            }`}
                           onClick={() => handleSelectMenuItem(index)}
                           style={{
                             backgroundColor:
@@ -435,11 +457,10 @@ const EditTemp = ({ onClose }) => {
                             {item.subItems.map((subItem, subIndex) => (
                               <li
                                 key={subIndex}
-                                className={`${
-                                  selectedSubItemIndex === subIndex
-                                    ? "selected-subitem-edittemp"
-                                    : ""
-                                }`}
+                                className={`${selectedSubItemIndex === subIndex
+                                  ? "selected-subitem-edittemp"
+                                  : ""
+                                  }`}
                               >
                                 <button
                                   onClick={() => handleSelectSubItem(subIndex)}
@@ -503,8 +524,8 @@ const EditTemp = ({ onClose }) => {
                 subItemName={
                   selectedSubItemIndex !== null
                     ? items[selectedMenuItemIndex].subItems[
-                        selectedSubItemIndex
-                      ]?.submenuname
+                      selectedSubItemIndex
+                    ]?.submenuname
                     : ""
                 }
               >
@@ -549,7 +570,8 @@ const EditTemp = ({ onClose }) => {
                         name="options"
                         value="Option 3"
                         checked={selectedOption === "Option 3"}
-                        onTabNameChange={handleTabNameChange}
+                        onChange={handleRadioChange}
+
                       />
                       1 Selection Panel
                     </label>
