@@ -26,7 +26,7 @@ import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
 import ColorPalette from "./../ColorPalet/ColorPalet";
 import { EditTempContext } from "../../Context";
 
-const Header = () => {
+const Header = ({ onButtonClick }) => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
   const [saveTemplatePopup, setSaveTemplatePopup] = useState(false);
   const [editTemplatePopup, setEditTemplatePopup] = useState(false);
@@ -406,22 +406,23 @@ const Header = () => {
             </li>
             <hr />
 
-            <Link to="/EditComments">
-              <li className="list-for-header-section-main-nav">
-                <p
-                  onClick={() => openPopup("editComments")}
-                  className="header2-tag-a"
-                >
-                  <div className="flex justify-center">
-                    <img src={img5} alt="" />
-                  </div>
-                  <div>
-                    Edit <br />
-                    Comments
-                  </div>
-                </p>
-              </li>
-            </Link>
+            {/* <Link to="/EditComments"> */}
+            <li className="list-for-header-section-main-nav">
+              <button
+                // onClick={() => openPopup("editComments")}
+                onClick={onButtonClick}
+                className="header2-tag-a"
+              >
+                <div className="flex justify-center">
+                  <img src={img5} alt="" />
+                </div>
+                <div>
+                  Edit <br />
+                  Comments
+                </div>
+              </button>
+            </li>
+            {/* </Link> */}
 
             <li className="list-for-header-section-main-nav  border-r border-black-900">
               <a
