@@ -9,10 +9,15 @@ const CropImageContent = ({
   brightness,
   contrast,
   drawnLines,
+  drawnOvals,
+  drawnRectangles,
+  onCrop,
+  croppedImageUrl,
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [rectangles, setRectangles] = useState([]);
-  const [croppedImage, setCroppedImage] = useState(null);
+  // const [croppedImage, setCroppedImage] = useState(null);
+  const [croppedImage, setCroppedImage] = useState(croppedImageUrl);
   const [isCropped, setIsCropped] = useState(false); // Track whether image is cropped or not
   const [prevCanvasState, setPrevCanvasState] = useState(null); // Store previous canvas state
   const [nextCanvasState, setNextCanvasState] = useState(null); // Store next canvas state
@@ -58,15 +63,28 @@ const CropImageContent = ({
 
       // Clear canvas and redraw cropped image if it exists
       if (croppedImage) {
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         const croppedImg = new Image();
         croppedImg.src = croppedImage;
         croppedImg.onload = () => {
+          ctx.clearRect(0, 0, canvasWidth, canvasHeight);
           ctx.drawImage(croppedImg, 0, 0);
         };
+        // if (croppedImageUrl) {
+        //   setCroppedImage(croppedImageUrl);
+        // } else {
+        //   setCroppedImage(imageUrl); // Set to original image URL
+        // }
       }
     };
-  }, [imageUrl, rectangles, canvasWidth, canvasHeight, croppedImage]);
+  }, [
+    imageUrl,
+    rectangles,
+    brightness,
+    contrast,
+    croppedImage,
+    canvasWidth,
+    canvasHeight,
+  ]);
 
   const handleMouseDown = (e) => {
     const startX = e.nativeEvent.offsetX;
@@ -150,9 +168,10 @@ const CropImageContent = ({
     // Save previous canvas state before cropping
     setPrevCanvasState(ctx.getImageData(0, 0, canvasWidth, canvasHeight));
 
-    setCroppedImage(croppedCanvas.toDataURL("image/jpeg"));
+    onCrop(croppedCanvas.toDataURL("image/jpeg"));
     setIsCropped(true); // Set the cropped flag to true
     setNextCanvasState(croppedImageData); // Store the next canvas state for redo
+    // onCrop(croppedCanvas.toDataURL("image/jpeg"));
   };
 
   const handleUndo = () => {
@@ -193,14 +212,22 @@ const CropImageContent = ({
           height={canvasHeight}
           style={{ display: isCropped ? "none" : "block" }}
         />
-        {isCropped ? null : ( // Check if the image is cropped
+        {/* {isCropped ? (
           <img
-            ref={imageRef}
-            src={imageUrl}
-            alt="Original Image"
-            style={{ display: "none" }}
+            // src={croppedImageUrl}
+            // alt="Cropped Image"
+            style={{ maxWidth: "100%", height: "auto" }}
           />
-        )}
+        ) : ( */}
+        <img
+          className="image-container"
+          ref={imageRef}
+          src={imageUrl}
+          // src={croppedImageUrl}
+          alt="Original Image"
+          style={{ display: "none" }}
+        />
+        {/* )} */}
         {texts &&
           texts.map((text) => (
             <div
@@ -320,18 +347,89 @@ const CropImageContent = ({
               />
             </svg>
           ))}
+        {drawnOvals &&
+          drawnOvals.map((oval, index) => {
+            const centerX =
+              Math.min(oval.start.x, oval.end.x) +
+              Math.abs(oval.end.x - oval.start.x) / 2;
+            const centerY =
+              Math.min(oval.start.y, oval.end.y) +
+              Math.abs(oval.end.y - oval.start.y) / 2;
+            const radiusX = Math.abs(oval.end.x - oval.start.x) / 2;
+            const radiusY = Math.abs(oval.end.y - oval.start.y) / 2;
+
+            return (
+              <svg
+                key={index}
+                width={`${Math.abs(oval.end.x - oval.start.x)}px`}
+                height={`${Math.abs(oval.end.y - oval.start.y)}px`}
+                viewBox={`0 0 ${Math.abs(oval.end.x - oval.start.x)} ${Math.abs(
+                  oval.end.y - oval.start.y
+                )}`}
+                style={{
+                  position: "absolute",
+                  top: `${Math.min(oval.start.y, oval.end.y)}px`,
+                  left: `${Math.min(oval.start.x, oval.end.x)}px`,
+                }}
+              >
+                <ellipse
+                  cx={radiusX}
+                  cy={radiusY}
+                  rx={radiusX}
+                  ry={radiusY}
+                  style={{ stroke: oval.color, strokeWidth: "4", fill: "none" }}
+                />
+              </svg>
+            );
+          })}
+        {drawnRectangles &&
+          drawnRectangles.map((rectangle, index) => {
+            return (
+              <svg
+                key={index}
+                width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
+                height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
+                viewBox={`0 0 ${Math.abs(
+                  rectangle.end.x - rectangle.start.x
+                )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
+                style={{
+                  position: "absolute",
+                  top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
+                  left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+                }}
+              >
+                <rect
+                  x={Math.abs(
+                    rectangle.start.x -
+                      Math.min(rectangle.start.x, rectangle.end.x)
+                  )}
+                  y={Math.abs(
+                    rectangle.start.y -
+                      Math.min(rectangle.start.y, rectangle.end.y)
+                  )}
+                  width={Math.abs(rectangle.end.x - rectangle.start.x)}
+                  height={Math.abs(rectangle.end.y - rectangle.start.y)}
+                  style={{
+                    stroke: rectangle.color,
+                    strokeWidth: "4",
+                    fill: "none",
+                  }}
+                />
+              </svg>
+            );
+          })}
       </div>
       <div className="Buttons-undo-redo-conatainer">
-        {!croppedImage && (
+        {!isCropped && (
           <button className="Buttons-undo-redo-yytytyt" onClick={cropImage}>
             Crop Image
           </button>
         )}
       </div>
-      {croppedImage && (
+      {isCropped && (
         <div className="cropped-image-container">
           {/* <p>Cropped Image:</p> */}
-          <img src={croppedImage} alt="Cropped Image" />
+          <img src={croppedImageUrl} alt="Cropped Image" />
         </div>
       )}
 
@@ -349,6 +447,9 @@ const CropImageContent = ({
 
 CropImageContent.propTypes = {
   imageUrl: PropTypes.string.isRequired,
+  onCrop: PropTypes.func.isRequired,
+  // croppedImageUrl: PropTypes.array.isRequired,
+  croppedImageUrl: PropTypes.string,
 };
 
 export default CropImageContent;

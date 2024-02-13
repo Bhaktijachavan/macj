@@ -10,9 +10,13 @@ const AdjustContrastContent = ({
   brightness,
   drawnArrows,
   drawnLines,
+  drawnOvals,
+  drawnRectangles,
+  croppedImageUrl,
 }) => {
   const contrastHistory = useRef([contrast]);
   const historyIndex = useRef(0);
+  const [imageSrc, setImageSrc] = useState("");
 
   useEffect(() => {
     const handleKeydown = (event) => {
@@ -28,7 +32,15 @@ const AdjustContrastContent = ({
     return () => {
       window.removeEventListener("keydown", handleKeydown);
     };
-  }, []);
+  }, []); // Empty dependency array to run only once
+
+  useEffect(() => {
+    if (croppedImageUrl) {
+      setImageSrc(croppedImageUrl);
+    } else {
+      setImageSrc(imageUrl); // Set to original image URL
+    }
+  }, [croppedImageUrl]);
 
   const handleContrastChange = (event) => {
     const newContrast = event.target.value;
@@ -59,7 +71,7 @@ const AdjustContrastContent = ({
         className="image-container-adjust-contrast"
         style={{ filter: `contrast(${contrast}%) brightness(${brightness}%) ` }}
       >
-        <img src={imageUrl} alt="Preview" className="preview-image-contrast" />
+        <img src={imageSrc} alt="Preview" className="preview-image-contrast" />
         {texts &&
           texts.map((text) => (
             <div
@@ -179,6 +191,77 @@ const AdjustContrastContent = ({
               />
             </svg>
           ))}
+        {drawnOvals &&
+          drawnOvals.map((oval, index) => {
+            const centerX =
+              Math.min(oval.start.x, oval.end.x) +
+              Math.abs(oval.end.x - oval.start.x) / 2;
+            const centerY =
+              Math.min(oval.start.y, oval.end.y) +
+              Math.abs(oval.end.y - oval.start.y) / 2;
+            const radiusX = Math.abs(oval.end.x - oval.start.x) / 2;
+            const radiusY = Math.abs(oval.end.y - oval.start.y) / 2;
+
+            return (
+              <svg
+                key={index}
+                width={`${Math.abs(oval.end.x - oval.start.x)}px`}
+                height={`${Math.abs(oval.end.y - oval.start.y)}px`}
+                viewBox={`0 0 ${Math.abs(oval.end.x - oval.start.x)} ${Math.abs(
+                  oval.end.y - oval.start.y
+                )}`}
+                style={{
+                  position: "absolute",
+                  top: `${Math.min(oval.start.y, oval.end.y)}px`,
+                  left: `${Math.min(oval.start.x, oval.end.x)}px`,
+                }}
+              >
+                <ellipse
+                  cx={radiusX}
+                  cy={radiusY}
+                  rx={radiusX}
+                  ry={radiusY}
+                  style={{ stroke: oval.color, strokeWidth: "4", fill: "none" }}
+                />
+              </svg>
+            );
+          })}
+        {drawnRectangles &&
+          drawnRectangles.map((rectangle, index) => {
+            return (
+              <svg
+                key={index}
+                width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
+                height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
+                viewBox={`0 0 ${Math.abs(
+                  rectangle.end.x - rectangle.start.x
+                )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
+                style={{
+                  position: "absolute",
+                  top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
+                  left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+                }}
+              >
+                <rect
+                  x={Math.abs(
+                    rectangle.start.x -
+                      Math.min(rectangle.start.x, rectangle.end.x)
+                  )}
+                  y={Math.abs(
+                    rectangle.start.y -
+                      Math.min(rectangle.start.y, rectangle.end.y)
+                  )}
+                  width={Math.abs(rectangle.end.x - rectangle.start.x)}
+                  height={Math.abs(rectangle.end.y - rectangle.start.y)}
+                  style={{
+                    stroke: rectangle.color,
+                    strokeWidth: "4",
+                    fill: "none",
+                  }}
+                />
+              </svg>
+            );
+          })}
       </div>
       <div className="contrast-control">
         <label htmlFor="contrastRange">Adjust Contrast</label>

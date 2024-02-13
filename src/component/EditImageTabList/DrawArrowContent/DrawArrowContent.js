@@ -10,19 +10,47 @@ const DrawArrowContent = ({
   brightness,
   contrast,
   drawnLines,
+  drawnOvals,
+  drawnRectangles,
+  croppedImageUrl,
 }) => {
   const [arrows, setArrows] = useState(drawnArrows); // Initialize state with drawnArrows
   const [drawing, setDrawing] = useState(false);
   const arrowRef = useRef(null);
   const arrowsHistory = useRef([]);
   const historyIndex = useRef(-1);
+  const [imageSrc, setImageSrc] = useState("");
+
+  useEffect(() => {
+    const handleKeydown = (event) => {
+      if (event.ctrlKey && event.key === "z") {
+        undo();
+      } else if (event.ctrlKey && event.key === "y") {
+        redo();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+    };
+  }, []); // Empty dependency array to run only once
+
+  useEffect(() => {
+    if (croppedImageUrl) {
+      setImageSrc(croppedImageUrl);
+    } else {
+      setImageSrc(imageUrl); // Set to original image URL
+    }
+  }, [croppedImageUrl]);
 
   useEffect(() => {
     const arrowCanvas = arrowRef.current;
     const ctx = arrowCanvas.getContext("2d");
 
     const image = new Image();
-    image.src = imageUrl;
+    image.src = imageSrc;
     image.onload = () => {
       // Calculate the aspect ratio of the image
       const aspectRatio = image.width / image.height;
@@ -53,7 +81,7 @@ const DrawArrowContent = ({
         drawArrow(ctx, arrow.start, arrow.end, arrow.color);
       });
     };
-  }, [imageUrl, arrows, brightness, contrast]);
+  }, [imageSrc, arrows, brightness, contrast]);
 
   const startDrawing = (e) => {
     e.preventDefault();
@@ -62,7 +90,7 @@ const DrawArrowContent = ({
     const newArrow = {
       start: { x: offsetX, y: offsetY },
       end: { x: offsetX, y: offsetY },
-      color: "black",
+      color: "yellow",
     };
     setArrows((prevArrows) => [...prevArrows, newArrow]);
     // Add new arrow to history
@@ -187,6 +215,77 @@ const DrawArrowContent = ({
             />
           </svg>
         ))}
+      {drawnOvals &&
+        drawnOvals.map((oval, index) => {
+          const centerX =
+            Math.min(oval.start.x, oval.end.x) +
+            Math.abs(oval.end.x - oval.start.x) / 2;
+          const centerY =
+            Math.min(oval.start.y, oval.end.y) +
+            Math.abs(oval.end.y - oval.start.y) / 2;
+          const radiusX = Math.abs(oval.end.x - oval.start.x) / 2;
+          const radiusY = Math.abs(oval.end.y - oval.start.y) / 2;
+
+          return (
+            <svg
+              key={index}
+              width={`${Math.abs(oval.end.x - oval.start.x)}px`}
+              height={`${Math.abs(oval.end.y - oval.start.y)}px`}
+              viewBox={`0 0 ${Math.abs(oval.end.x - oval.start.x)} ${Math.abs(
+                oval.end.y - oval.start.y
+              )}`}
+              style={{
+                position: "absolute",
+                top: `${Math.min(oval.start.y, oval.end.y)}px`,
+                left: `${Math.min(oval.start.x, oval.end.x)}px`,
+              }}
+            >
+              <ellipse
+                cx={radiusX}
+                cy={radiusY}
+                rx={radiusX}
+                ry={radiusY}
+                style={{ stroke: oval.color, strokeWidth: "4", fill: "none" }}
+              />
+            </svg>
+          );
+        })}
+      {drawnRectangles &&
+        drawnRectangles.map((rectangle, index) => {
+          return (
+            <svg
+              key={index}
+              width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
+              height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
+              viewBox={`0 0 ${Math.abs(
+                rectangle.end.x - rectangle.start.x
+              )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
+              style={{
+                position: "absolute",
+                top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
+                left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+              }}
+            >
+              <rect
+                x={Math.abs(
+                  rectangle.start.x -
+                    Math.min(rectangle.start.x, rectangle.end.x)
+                )}
+                y={Math.abs(
+                  rectangle.start.y -
+                    Math.min(rectangle.start.y, rectangle.end.y)
+                )}
+                width={Math.abs(rectangle.end.x - rectangle.start.x)}
+                height={Math.abs(rectangle.end.y - rectangle.start.y)}
+                style={{
+                  stroke: rectangle.color,
+                  strokeWidth: "4",
+                  fill: "none",
+                }}
+              />
+            </svg>
+          );
+        })}
 
       <div className="Buttons-undo-redo-container">
         <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
@@ -205,7 +304,7 @@ DrawArrowContent.propTypes = {
   onDrawArrow: PropTypes.func.isRequired,
   brightness: PropTypes.number.isRequired,
   contrast: PropTypes.number.isRequired,
-  drawnArrows: PropTypes.array.isRequired, // Add prop type for drawn arrows
+  drawnArrows: PropTypes.array.isRequired,
 };
 
 export default DrawArrowContent;

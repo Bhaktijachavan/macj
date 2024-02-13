@@ -10,19 +10,48 @@ const DrawOvalContent = ({
   brightness,
   contrast,
   drawnLines,
+  drawnOvals,
+  onDrawOvals,
+  drawnRectangles,
+  croppedImageUrl,
 }) => {
-  const [ovals, setOvals] = useState([]);
+  const [ovals, setOvals] = useState(drawnOvals);
   const [drawing, setDrawing] = useState(false);
   const ovalRef = useRef(null);
   const ovalsHistory = useRef([]);
   const historyIndex = useRef(-1);
+  const [imageSrc, setImageSrc] = useState("");
+
+  useEffect(() => {
+    const handleKeydown = (event) => {
+      if (event.ctrlKey && event.key === "z") {
+        undo();
+      } else if (event.ctrlKey && event.key === "y") {
+        redo();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+    };
+  }, []); // Empty dependency array to run only once
+
+  useEffect(() => {
+    if (croppedImageUrl) {
+      setImageSrc(croppedImageUrl);
+    } else {
+      setImageSrc(imageUrl); // Set to original image URL
+    }
+  }, [croppedImageUrl]);
 
   useEffect(() => {
     const ovalCanvas = ovalRef.current;
     const ctx = ovalCanvas.getContext("2d");
 
     const image = new Image();
-    image.src = imageUrl;
+    image.src = imageSrc;
     image.onload = () => {
       // Calculate the aspect ratio of the image
       const aspectRatio = image.width / image.height;
@@ -53,7 +82,7 @@ const DrawOvalContent = ({
         drawOval(ctx, oval.start, oval.end, oval.color, lineWidth);
       });
     };
-  }, [imageUrl, ovals, lineWidth, brightness, contrast]);
+  }, [imageSrc, ovals, lineWidth, brightness, contrast]);
 
   const startDrawing = (e) => {
     e.preventDefault();
@@ -84,6 +113,7 @@ const DrawOvalContent = ({
 
   const stopDrawing = () => {
     setDrawing(false);
+    onDrawOvals(ovals);
   };
 
   const drawOval = (context, start, end, color, width) => {
@@ -243,6 +273,42 @@ const DrawOvalContent = ({
             />
           </svg>
         ))}
+      {drawnRectangles &&
+        drawnRectangles.map((rectangle, index) => {
+          return (
+            <svg
+              key={index}
+              width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
+              height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
+              viewBox={`0 0 ${Math.abs(
+                rectangle.end.x - rectangle.start.x
+              )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
+              style={{
+                position: "absolute",
+                top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
+                left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+              }}
+            >
+              <rect
+                x={Math.abs(
+                  rectangle.start.x -
+                    Math.min(rectangle.start.x, rectangle.end.x)
+                )}
+                y={Math.abs(
+                  rectangle.start.y -
+                    Math.min(rectangle.start.y, rectangle.end.y)
+                )}
+                width={Math.abs(rectangle.end.x - rectangle.start.x)}
+                height={Math.abs(rectangle.end.y - rectangle.start.y)}
+                style={{
+                  stroke: rectangle.color,
+                  strokeWidth: "4",
+                  fill: "none",
+                }}
+              />
+            </svg>
+          );
+        })}
 
       <div className="Buttons-undo-redo-conatainer">
         <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
@@ -259,6 +325,8 @@ const DrawOvalContent = ({
 DrawOvalContent.propTypes = {
   imageUrl: PropTypes.string.isRequired,
   lineWidth: PropTypes.number,
+  drawnOval: PropTypes.array.isRequired,
+  onDrawOvals: PropTypes.func.isRequired,
 };
 
 export default DrawOvalContent;
