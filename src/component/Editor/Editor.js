@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./Editor.css";
 import Draggable from "react-draggable";
 const Editor = ({
@@ -8,6 +8,9 @@ const Editor = ({
   brightness,
   contrast,
   drawnLines,
+  drawnOvals,
+  drawnRectangles,
+  croppedImageUrl,
 }) => {
   const [font, setFont] = useState("Arial");
   const [fontSize, setFontSize] = useState(16);
@@ -22,6 +25,31 @@ const Editor = ({
   const [texts, setTexts] = useState([]);
   const changesHistory = useRef([]);
   const historyIndex = useRef(-1);
+  const [imageSrc, setImageSrc] = useState("");
+
+  useEffect(() => {
+    const handleKeydown = (event) => {
+      if (event.ctrlKey && event.key === "z") {
+        redo();
+      } else if (event.ctrlKey && event.key === "y") {
+        redo();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeydown);
+    };
+  }, []); // Empty dependency array to run only once
+
+  useEffect(() => {
+    if (croppedImageUrl) {
+      setImageSrc(croppedImageUrl);
+    } else {
+      setImageSrc(imageUrl); // Set to original image URL
+    }
+  }, [croppedImageUrl]);
 
   const handleFontChange = (event) => {
     setFont(event.target.value);
@@ -109,7 +137,7 @@ const Editor = ({
     <>
       <div className="Editor-image-container-to-add-text">
         <img
-          src={imageUrl}
+          src={imageSrc}
           alt="Original Image"
           className="Editor-image-to-add-text"
           style={{
@@ -216,6 +244,43 @@ const Editor = ({
               </div>
             );
           })}
+        {drawnRectangles &&
+          drawnRectangles.map((rectangle, index) => {
+            return (
+              <svg
+                key={index}
+                width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
+                height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
+                viewBox={`0 0 ${Math.abs(
+                  rectangle.end.x - rectangle.start.x
+                )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
+                style={{
+                  position: "absolute",
+                  top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
+                  left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+                }}
+              >
+                <rect
+                  x={Math.abs(
+                    rectangle.start.x -
+                      Math.min(rectangle.start.x, rectangle.end.x)
+                  )}
+                  y={Math.abs(
+                    rectangle.start.y -
+                      Math.min(rectangle.start.y, rectangle.end.y)
+                  )}
+                  width={Math.abs(rectangle.end.x - rectangle.start.x)}
+                  height={Math.abs(rectangle.end.y - rectangle.start.y)}
+                  style={{
+                    stroke: rectangle.color,
+                    strokeWidth: "4",
+                    fill: "none",
+                  }}
+                />
+              </svg>
+            );
+          })}
+
         {drawnLines &&
           drawnLines.map((line, index) => (
             <svg
@@ -240,6 +305,41 @@ const Editor = ({
               />
             </svg>
           ))}
+        {drawnOvals &&
+          drawnOvals.map((oval, index) => {
+            const centerX =
+              Math.min(oval.start.x, oval.end.x) +
+              Math.abs(oval.end.x - oval.start.x) / 2;
+            const centerY =
+              Math.min(oval.start.y, oval.end.y) +
+              Math.abs(oval.end.y - oval.start.y) / 2;
+            const radiusX = Math.abs(oval.end.x - oval.start.x) / 2;
+            const radiusY = Math.abs(oval.end.y - oval.start.y) / 2;
+
+            return (
+              <svg
+                key={index}
+                width={`${Math.abs(oval.end.x - oval.start.x)}px`}
+                height={`${Math.abs(oval.end.y - oval.start.y)}px`}
+                viewBox={`0 0 ${Math.abs(oval.end.x - oval.start.x)} ${Math.abs(
+                  oval.end.y - oval.start.y
+                )}`}
+                style={{
+                  position: "absolute",
+                  top: `${Math.min(oval.start.y, oval.end.y)}px`,
+                  left: `${Math.min(oval.start.x, oval.end.x)}px`,
+                }}
+              >
+                <ellipse
+                  cx={radiusX}
+                  cy={radiusY}
+                  rx={radiusX}
+                  ry={radiusY}
+                  style={{ stroke: oval.color, strokeWidth: "4", fill: "none" }}
+                />
+              </svg>
+            );
+          })}
 
         {isPopupOpen && (
           <div className="editor-for-edit-images-tablist-section ">

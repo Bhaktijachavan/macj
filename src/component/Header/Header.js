@@ -19,56 +19,29 @@ import img12 from "../../Assets/icons/generate_report.png";
 import img13 from "../../Assets/icons/upload_report.png";
 import img14 from "../../Assets/icons/address_book.png";
 import img15 from "../../Assets/icons/sync.png";
-import { Link, useNavigate } from "react-router-dom";
-import { EditTempContext } from '../../Context';
+import { Link } from "react-router-dom";
+import InternetLogin from "./../InternetLogin/InternetLogin";
+import BatchAddPhotos from "./../Photo/BatchAddPhotos/BatchAddPhotos";
+import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
+import ColorPalette from "./../ColorPalet/ColorPalet";
+import { EditTempContext } from "../../Context";
+import SaveTPZ from "./../SaveTemp/TPZ/SaveTPZ";
+import OpenTPZ from "./../SaveTemp/TPZ/OpenTPZ";
 
-
-const SubmenuPopup = ({ isVisible, submenuItems, position, onClose }) => {
-  if (!isVisible) {
-    return null;
-  }
-
-
-  return (
-    <div className="submenu-popup absolute z-10 bg-white shadow mt-2" style={{ top: position.top, left: position.left, width: "180px", lineHeight: "12px" }}>
-      {submenuItems.map((subItem, index) => (
-        <Link to={subItem.link} key={index}>
-          <div className="py-2 px-4 hover:bg-gray-200" onClick={onClose}>
-            {subItem.submenuname}
-          </div>
-        </Link>
-      ))}
-    </div>
-  );
-};
-
-
-
-const Header = () => {
+const Header = ({ onButtonClick }) => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
   const [saveTemplatePopup, setSaveTemplatePopup] = useState(false);
   const [editTemplatePopup, setEditTemplatePopup] = useState(false);
-  const { editTempData, setEditTempData } = useContext(EditTempContext);
-  const [submenuPosition, setSubmenuPosition] = useState({ top: 0, left: 0 });
-
-  useEffect(() => {
-    console.log(editTempData);
-  }, [editTempData]);
-
-  const [activeMenu, setActiveMenu] = useState(null);
-
-  const handleMenuClick = (menuId) => {
-    setActiveMenu(activeMenu === menuId ? null : menuId);
-  };
-
-  const toggleSubMenu = (menuId, position) => {
-    setActiveMenu(activeMenu === menuId ? null : menuId);
-    setSubmenuPosition(position);
-  };
-
-  const closeSubmenu = () => {
-    setActiveMenu(null);
-  };
+  const [internetLoginPopup, setInternetLoginPopup] = useState(false);
+  const [batchAddPhotosPopup, setBatchAddPhotosPopup] = useState(false);
+  const [coverPageDesignPopup, setCoverPageDesignPopup] = useState(false);
+  const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] =
+    useState(false);
+  const [activePopup, setActivePopup] = useState(null);
+  const [colorPaletPopup, setOpenColorPaletPopup] = useState(false);
+  const [pastedText, setPastedText] = useState("");
+  const [value, setValue] = React.useState("");
+  const ref = useRef(null);
 
   const openOpenTemplatePopup = () => {
     setOpenTemplatePopup(true);
@@ -119,18 +92,76 @@ const Header = () => {
       console.log("Please select a file for inspection.");
     }
   };
-  const navigate = useNavigate();
-  // Add a conditional check for editTempData
-  const editTempArray = editTempData || [];
-  const handleLiClick = () => {
-    // Perform any additional logic if needed
-    // For example, close the submenu before navigating
-    closeSubmenu();
 
-    // Navigate to the desired page
-    navigate('/panel1'); // Replace '/panel1' with your desired route
+  const [activeMenu, setActiveMenu] = useState(null);
+
+  const handleMenuClick = (menuId) => {
+    setActiveMenu(activeMenu === menuId ? null : menuId);
   };
 
+  // const [activePopup, setActivePopup] = useState(null);
+
+  const openPopup = (popupId) => {
+    console.log(`Opening ${popupId} popup`);
+    setActivePopup(popupId);
+  };
+
+  const closePopup = () => {
+    console.log("Closing popup");
+    setActivePopup(null);
+  };
+
+  const openisInternetLoginPopup = () => {
+    setInternetLoginPopup(true);
+  };
+  const closeisInternetLoginPopup = () => {
+    setInternetLoginPopup(false);
+  };
+  const closeBatchAddPhotosPopup = () => {
+    setBatchAddPhotosPopup(false);
+  };
+  const openBatchAddPhotosPopup = () => {
+    setBatchAddPhotosPopup(true);
+  };
+  const internetLogin = () => {
+    console.log("Login Popup Clicked");
+  };
+
+  // Reset the Batch Add Photos popup state when component unmounts
+  useEffect(() => {
+    return () => {
+      setBatchAddPhotosPopup(false);
+      setInternetLoginPopup(false);
+      setEditTemplatePopup(false);
+    };
+  }, []);
+
+  const handleCopy = () => {
+    // Get the selected text
+    const selectedText = window.getSelection().toString();
+    // Copy the selected text to the clipboard
+    navigator.clipboard
+      .writeText(selectedText)
+      .then(() => {
+        console.log("Text copied:", selectedText);
+      })
+      .catch((error) => {
+        console.error("Error copying text:", error);
+      });
+  };
+
+  const handlePaste = () => {
+    // Paste the text from the clipboard
+    navigator.clipboard
+      .readText()
+      .then((text) => {
+        setPastedText(text);
+        console.log("Pasted text:", text);
+      })
+      .catch((error) => {
+        console.error("Error pasting text:", error);
+      });
+  };
   return (
     <>
       <div
@@ -301,25 +332,20 @@ const Header = () => {
               </a>
             </li>
             <hr />
+            <div>
+              <OpenTPZ />
+            </div>
+            <div>
+              {/* Your other JSX elements */}
+              <SaveTPZ />
+            </div>
+            <hr />
+
+            {/* <Link to="/EditComments"> */}
             <li className="list-for-header-section-main-nav">
-              <a
-                href="#"
-                onClick={openOpenTemplatePopup}
-                className="header2-tag-a"
-              >
-                <div className="flex justify-center">
-                  <img src={img3} alt="" />
-                </div>
-                <div>
-                  Open
-                  <br /> Template
-                </div>
-              </a>
-            </li>
-            <li className="list-for-header-section-main-nav  border-r border-black-900">
-              <a
-                href="#report-settings"
-                onClick={openSaveTemplatePopup}
+              <button
+                // onClick={() => openPopup("editComments")}
+                onClick={onButtonClick}
                 className="header2-tag-a"
               >
                 <div className="flex justify-center">
@@ -329,22 +355,10 @@ const Header = () => {
                   Save
                   <br /> Template
                 </div>
-              </a>
+              </button>
             </li>
-            <hr />
-            <Link to="/EditComments">
-              <li className="list-for-header-section-main-nav">
-                <a href="#" className="header2-tag-a">
-                  <div className="flex justify-center">
-                    <img src={img5} alt="" />
-                  </div>
-                  <div>
-                    Edit <br />
-                    Comments
-                  </div>
-                </a>
-              </li>
-            </Link>
+            {/* </Link> */}
+
             <li className="list-for-header-section-main-nav  border-r border-black-900">
               <a
                 href="#"
@@ -416,7 +430,7 @@ const Header = () => {
             </Link>
             <hr />
             <li className="list-for-header-section-main-nav">
-              <a href="#" className="header2-tag-a">
+              <a href="#" className="header2-tag-a" onClick={handleCopy}>
                 <div className="flex justify-center">
                   <img src={img10} alt="" />
                 </div>
@@ -424,7 +438,17 @@ const Header = () => {
               </a>
             </li>
             <li className="list-for-header-section-main-nav  border-r border-black-900">
-              <a href="#" className="header2-tag-a">
+              <a
+                href="#"
+                className="header2-tag-a"
+                onClick={(e) => {
+                  let paste = (e.clipboardData || window.clipboardData).getData(
+                    "Text"
+                  );
+                  setValue(paste);
+                }}
+                // onClick={handlePaste}
+              >
                 <div className="flex justify-center">
                   <img src={img11} alt="" />
                 </div>

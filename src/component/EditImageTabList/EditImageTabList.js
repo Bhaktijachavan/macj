@@ -16,12 +16,30 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const [activeTab, setActiveTab] = useState(1);
   const [textFromEditor, setTextFromEditor] = useState("");
   const [editorKey, setEditorKey] = useState(1);
+
   const [brightness, setBrightness] = useState(100);
   const [contrast, setContrast] = useState(100);
   const [rotationAngle, setRotationAngle] = useState(0);
   const [drawnArrows, setDrawnArrows] = useState([]);
   const [drawnLines, setDrawnLines] = useState([]);
+  const [drawnRectangles, setRectangle] = useState([]);
+  const [drawnOvals, setOval] = useState([]);
+  const [croppedImageUrl, setCroppedImage] = useState(null);
 
+  const handleCrop = (croppedImageData) => {
+    // Store cropped image data in state
+    setCroppedImage(croppedImageData);
+  };
+  const handleImageCrop = (croppedImageData) => {
+    setCroppedImage(croppedImageData);
+  };
+
+  const handleDrawnRectangle = (rectangles) => {
+    setRectangle(rectangles);
+  };
+  const handleDrawnOval = (ovals) => {
+    setOval(ovals);
+  };
   const handleDrawnLines = (lines) => {
     setDrawnLines(lines);
   };
@@ -80,103 +98,137 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
         contrast={contrast}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
+        drawnOvals={drawnOvals}
+        drawnRectangles={drawnRectangles}
+        onImageCrop={handleImageCrop}
+        onCrop={handleCrop}
+        croppedImageUrl={croppedImageUrl}
       />
     ),
     2: (
       <AdjustBrightnessContent
         imageUrl={uploadedImageUrl}
+        croppedImageUrl={croppedImageUrl}
         texts={textFromEditor}
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
+        drawnOvals={drawnOvals}
+        drawnRectangles={drawnRectangles}
         onBrightnessChange={handleBrightnessChange}
       />
     ),
     3: (
       <AdjustContrastContent
         imageUrl={uploadedImageUrl}
+        croppedImageUrl={croppedImageUrl}
         texts={textFromEditor}
         contrast={contrast}
         brightness={brightness}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
+        drawnOvals={drawnOvals}
+        drawnRectangles={drawnRectangles}
         onContrastChange={handleContrastChange}
       />
     ),
     4: (
       <RotateClockwiseContent
         imageUrl={uploadedImageUrl}
+        croppedImageUrl={croppedImageUrl}
         texts={textFromEditor}
         rotationAngle={rotationAngle}
         contrast={contrast}
         brightness={brightness}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
+        drawnOvals={drawnOvals}
+        drawnRectangles={drawnRectangles}
         onRotateClockwise={handleRotateClockwise}
       />
     ),
     5: (
       <DrawLineContent
         imageUrl={uploadedImageUrl}
+        croppedImageUrl={croppedImageUrl}
         texts={textFromEditor}
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
+        drawnOvals={drawnOvals}
+        drawnRectangles={drawnRectangles}
         onDrawLines={handleDrawnLines}
       />
     ),
     6: (
       <DrawArrowContent
         imageUrl={uploadedImageUrl}
+        croppedImageUrl={croppedImageUrl}
         texts={textFromEditor}
         contrast={contrast}
         brightness={brightness}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
+        drawnOvals={drawnOvals}
+        drawnRectangles={drawnRectangles}
         onDrawArrow={handleDrawnArrows}
       />
     ),
     7: (
       <DrawRectangleContent
         imageUrl={uploadedImageUrl}
+        croppedImageUrl={croppedImageUrl}
         texts={textFromEditor}
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
+        drawnRectangles={drawnRectangles}
+        drawnOvals={drawnOvals}
+        onDrawRectangles={handleDrawnRectangle}
       />
     ),
     8: (
       <DrawOvalContent
         imageUrl={uploadedImageUrl}
+        croppedImageUrl={croppedImageUrl}
         texts={textFromEditor}
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
+        drawnOvals={drawnOvals}
+        drawnRectangles={drawnRectangles}
+        onDrawOvals={handleDrawnOval}
       />
     ),
     9: (
       <Editor
         key={editorKey}
         imageUrl={uploadedImageUrl}
+        croppedImageUrl={croppedImageUrl}
         onTextChange={handleTextChange}
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
+        drawnOvals={drawnOvals}
+        drawnRectangles={drawnRectangles}
       />
     ),
     10: (
       <OverLayImage
         imageUrl={uploadedImageUrl}
+        croppedImageUrl={croppedImageUrl}
         texts={textFromEditor}
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
+        drawnOvals={drawnOvals}
+        drawnRectangles={drawnRectangles}
       />
     ),
   };
