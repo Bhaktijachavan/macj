@@ -12,6 +12,7 @@
     "cross-env": "^7.0.3",
     "crypto-js": "^4.2.0",
     "image-compressor": "^2.0.3",
+    "lodash": "^4.17.21",
     "postcss": "^8.4.33",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
