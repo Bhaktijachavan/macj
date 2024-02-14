@@ -27,7 +27,6 @@ import ColorPalette from "./../ColorPalet/ColorPalet";
 import { EditTempContext } from "../../Context";
 import SaveTPZ from "./../SaveTemp/TPZ/SaveTPZ";
 import OpenTPZ from "./../SaveTemp/TPZ/OpenTPZ";
-import AboutUsMacj from "../AboutUsMacj/AboutUsMacj";
 
 const Header = ({ onButtonClick }) => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
@@ -36,13 +35,13 @@ const Header = ({ onButtonClick }) => {
   const [internetLoginPopup, setInternetLoginPopup] = useState(false);
   const [batchAddPhotosPopup, setBatchAddPhotosPopup] = useState(false);
   const [coverPageDesignPopup, setCoverPageDesignPopup] = useState(false);
-  const [aboutUsPagePopup, setAboutUsPagePopup] = useState(false);
   const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] =
     useState(false);
   const [activePopup, setActivePopup] = useState(null);
   const [colorPaletPopup, setOpenColorPaletPopup] = useState(false);
   const [pastedText, setPastedText] = useState("");
   const [value, setValue] = React.useState("");
+  const [aboutUsPagePopup, setAboutUsPagePopup] = useState(false);
   const ref = useRef(null);
 
   const openOpenTemplatePopup = () => {
@@ -80,13 +79,6 @@ const Header = ({ onButtonClick }) => {
     setCoverPageDesignPopup(true);
   };
 
-  // About US Popup
-  const openAboutUsPopup = () => {
-    setAboutUsPagePopup(true);
-  };
-  const closeAboutUsPopup = () => {
-    setAboutUsPagePopup(false);
-  };
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -147,6 +139,12 @@ const Header = ({ onButtonClick }) => {
     console.log("Login Popup Clicked");
   };
 
+  const openAboutUsPopup = () => {
+    setAboutUsPagePopup(true);
+  };
+  const closeAboutUsPopup = () => {
+    setAboutUsPagePopup(false);
+  };
   // Reset the Batch Add Photos popup state when component unmounts
   useEffect(() => {
     return () => {
@@ -494,7 +492,7 @@ const Header = ({ onButtonClick }) => {
                   );
                   setValue(paste);
                 }}
-                // onClick={handlePaste}
+              // onClick={handlePaste}
               >
                 <div className="flex justify-center">
                   <img src={img11} alt="" />
@@ -589,12 +587,6 @@ const Header = ({ onButtonClick }) => {
           <div className="popup Cover-Page-Design-Popup-ccc">
             {/* Render your color palet component here */}
             <ColorPalette onClose={closeColorPaletPopup} />
-          </div>
-        )}{" "}
-        {aboutUsPagePopup && (
-          <div className="popup Cover-Page-Design-Popup-ccc">
-            {/* Render your color palet component here */}
-            <AboutUsMacj onClose={closeAboutUsPopup} />
           </div>
         )}
       </div>
