@@ -342,7 +342,7 @@ const OverLayImage = ({
                 <button>Ok</button>
               </div>
               <div className="ok-cancel-button-overlay-image">
-                <button>Cancel</button>
+                <button onClick={handleClosePopup}>Cancel</button>
               </div>
             </div>
           </div>
