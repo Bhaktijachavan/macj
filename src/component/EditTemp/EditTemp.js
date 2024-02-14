@@ -14,6 +14,7 @@ import TwoSelection from "./twoSelection/TwoSelection";
 import TwoDamage from "./twoDamage/TwoDamage";
 import OneDamageSelection from "./oneDamageSelection/OneDamageSelection";
 import { EditTempContext } from "../../Context";
+import _ from "lodash";
 const EditTemp = ({ onClose }) => {
   const [selectedSubItem, setSelectedSubItem] = useState(null);
   const [meduData, setMenuData] = useState("");
@@ -24,56 +25,75 @@ const EditTemp = ({ onClose }) => {
     setOnedamagePanelName(event.target.value); // Add this line
     console.log("Tab Name in Parent Component:", event.target.value);
   };
+
   const handleOneDamageDone = (formData) => {
     console.log("Received formData from OneDamage:", formData);
     console.log("selected sub id ", selectedSubItemIndex);
 
-    const updatedMenuData = menuData.map((item) =>
-      item.menuname
+    // Retrieve the menu data from localStorage
+    const storedMenuData = localStorage.getItem("menuData");
+    const menu = JSON.parse(storedMenuData);
+
+    // Map over the menu and update the selected sub-item
+    const updatedMenu = menu.map((item, index) =>
+      index === selectedMenuItemIndex
         ? {
-          ...item,
-          subItems: item.subItems.map((subItem, index) =>
-            index === selectedSubItemIndex
-              ? {
-                ...subItem,
-                radioBoxSelection: "oneDamagePanal",
-                tabName: formData.onetabName,
-                onedamagePanelName: formData.onedamagePanelName,
-              }
-              : subItem
-          ),
-        }
+            ...item,
+            subItems: item.subItems.map((subItem, subIndex) =>
+              subIndex === selectedSubItemIndex
+                ? {
+                    ...subItem,
+                    radioBoxSelection: "oneDamagePanal",
+                    tabName: formData.onetabName,
+                    onedamagePanelName: formData.onedamagePanelName,
+                  }
+                : subItem
+            ),
+          }
         : item
     );
-    console.log("updated menudata", updatedMenuData);
-    setMenuData(updatedMenuData);
+
+    // Merge the original menu object with the updated menu object
+    const mergedMenu = {
+      ...menu,
+      ...updatedMenu,
+    };
+
+    console.log("Merged menu data:", mergedMenu);
+
+    // Convert the merged menu object to a JSON string
+    const mergedMenuString = JSON.stringify(mergedMenu);
+
+    // Update localStorage with the merged menu data
+    localStorage.setItem("menuData", mergedMenuString);
+
+    // Update state and close the popup
+    setMenuData(mergedMenu);
     setIsPopupOpen(false);
   };
 
-
-
   useEffect(() => {
-    console.log('Component mounted');
+    console.log("Component mounted");
 
     // Retrieve data from local storage
-    const localStorageData = localStorage.getItem('twoDamageFormData');
-    console.log('LocalStorage Data:', localStorageData);
+    const localStorageData = localStorage.getItem("twoDamageFormData");
+    console.log("LocalStorage Data:", localStorageData);
 
     try {
       const parsedData = JSON.parse(localStorageData);
-      console.log('Parsed Data:', parsedData);
+      console.log("Parsed Data:", parsedData);
 
       if (parsedData) {
         // Access the data and use it as needed
-        console.log('Retrieved data from local storage:', parsedData);
+        console.log("Retrieved data from local storage:", parsedData);
         // Do something with the retrieved data
       } else {
-        console.log('No data found in local storage.');
+        console.log("No data found in local storage.");
       }
     } catch (error) {
-      console.error('Error parsing localStorage data:', error);
+      console.error("Error parsing localStorage data:", error);
     }
-  }, [])
+  }, []);
   const [selectedOption, setSelectedOption] = useState(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [isRadioOptionSelected, setIsRadioOptionSelected] = useState(false);
@@ -378,10 +398,11 @@ const EditTemp = ({ onClose }) => {
                     <FaFolderOpen className="mr-2 inline-block" size={18} />
                   </div>
                   <div
-                    className={`Menu-Item ${selectedMenuTitleIndex === null
-                      ? "selected-menu-title"
-                      : ""
-                      }`}
+                    className={`Menu-Item ${
+                      selectedMenuTitleIndex === null
+                        ? "selected-menu-title"
+                        : ""
+                    }`}
                     onClick={() => handleSelectMenuTitle(null)}
                   >
                     <p
@@ -400,8 +421,9 @@ const EditTemp = ({ onClose }) => {
                       <li key={index}>
                         <button
                           onDoubleClick={() => handleDoubleClick(index)}
-                          className={`Menu-Item ${selectedMenuItemIndex === index ? "clicked" : ""
-                            }`}
+                          className={`Menu-Item ${
+                            selectedMenuItemIndex === index ? "clicked" : ""
+                          }`}
                           onClick={() => handleSelectMenuItem(index)}
                           style={{
                             backgroundColor:
@@ -457,10 +479,11 @@ const EditTemp = ({ onClose }) => {
                             {item.subItems.map((subItem, subIndex) => (
                               <li
                                 key={subIndex}
-                                className={`${selectedSubItemIndex === subIndex
-                                  ? "selected-subitem-edittemp"
-                                  : ""
-                                  }`}
+                                className={`${
+                                  selectedSubItemIndex === subIndex
+                                    ? "selected-subitem-edittemp"
+                                    : ""
+                                }`}
                               >
                                 <button
                                   onClick={() => handleSelectSubItem(subIndex)}
@@ -524,8 +547,8 @@ const EditTemp = ({ onClose }) => {
                 subItemName={
                   selectedSubItemIndex !== null
                     ? items[selectedMenuItemIndex].subItems[
-                      selectedSubItemIndex
-                    ]?.submenuname
+                        selectedSubItemIndex
+                      ]?.submenuname
                     : ""
                 }
               >
@@ -571,7 +594,6 @@ const EditTemp = ({ onClose }) => {
                         value="Option 3"
                         checked={selectedOption === "Option 3"}
                         onChange={handleRadioChange}
-
                       />
                       1 Selection Panel
                     </label>

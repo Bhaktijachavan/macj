@@ -6,7 +6,6 @@ export const EditTempContext = createContext();
 export const ContextProvider = ({ children }) => {
   const [addressBook, setAddressBook] = useState([]);
   const [editTempData, setEditTempData] = useState([]);
-  
 
   const contextValues = {
     addressBook,
@@ -22,6 +21,6 @@ export const ContextProvider = ({ children }) => {
   );
 };
 
-const useEditTempContext = () => {
+export const useEditTempContext = () => {
   return useContext(EditTempContext);
 };
