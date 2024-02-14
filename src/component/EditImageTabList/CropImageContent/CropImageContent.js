@@ -219,14 +219,15 @@ const CropImageContent = ({
             style={{ maxWidth: "100%", height: "auto" }}
           />
         ) : ( */}
-        <img
-          className="image-container"
-          ref={imageRef}
-          src={imageUrl}
-          // src={croppedImageUrl}
-          alt="Original Image"
-          style={{ display: "none" }}
-        />
+        <div className="image-container">
+          <img
+            ref={imageRef}
+            src={imageUrl}
+            // src={croppedImageUrl}
+            alt="Original Image"
+            style={{ display: "none" }}
+          />
+        </div>
         {/* )} */}
         {texts &&
           texts.map((text) => (
