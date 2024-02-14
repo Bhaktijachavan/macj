@@ -138,12 +138,13 @@ li.list-icon-status-online {
   left: 43%;
   font-size: 13px;
   transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 9px;
+  background-color: rgb(229, 229, 229);
+  /* padding: 9px; */
   border: 1px solid #ccc;
-  z-index: 1000;
+  /* z-index: 1000; */
   text-align: center;
   width: 43em;
+  height: 11em;
   border-radius: 6px;
 }
 .section-of-cancel-and-confirm-deletion-of-decument {
@@ -164,3 +165,25 @@ li.list-icon-status-online {
 /* .btn-for-cancel-and-confirm-insert-pdf-section:hover {
   background-color: rgb(135 207 235 / 34%);
 } */
+
+.close-btn-confirmation-modal-pdf {
+  width: 2em;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.close-btn-confirmation-modal-pdf:hover {
+  background-color: red;
+  cursor: pointer;
+  color: white;
+}
+.title-and-the-on-close-button-pdf-modal {
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(242, 236, 236);
+  padding: 0 0 0 1em;
+  height: 2em;
+  align-items: center;
+  background-color: rgb(242, 236, 236);
+}
