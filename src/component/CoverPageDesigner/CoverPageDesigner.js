@@ -31,6 +31,49 @@ function CoverPageDesigner({ onClose }) {
   const [isBorderApplied, setIsBorderApplied] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const [isHovered, setIsHovered] = useState(false);
+
+
+
+
+  // Export state function
+  const exportState = () => {
+    const exportedState = {
+      outputContent,
+      selectedObjects,
+      editableTexts,
+      addedImages,
+    };
+    const jsonString = JSON.stringify(exportedState);
+    console.log(jsonString);
+  };
+
+  // Import state function
+  const importState = (jsonString) => {
+    try {
+      const importedState = JSON.parse(jsonString);
+      setOutputContent(importedState.outputContent || []);
+      setSelectedObjects(importedState.selectedObjects || []);
+      setEditableTexts(importedState.editableTexts || []);
+      setAddedImages(importedState.addedImages || []);
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+    }
+  };
+
+  // Handle file import
+  const handleFileImport = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onloadend = () => {
+        const importedJsonString = reader.result;
+        importState(importedJsonString);
+      };
+    }
+  };
+
+
   const addObjectToOutput = (objectType, properties) => {
     setOutputContent([...outputContent, { type: objectType, properties }]);
   };
@@ -535,10 +578,10 @@ function CoverPageDesigner({ onClose }) {
           <button className="button-for-footer-for-changes-in-cover-page">
             Apply Changes <br /> to Template Template
           </button>{" "}
-          <button className="button-for-footer-for-changes-in-cover-page">
+          <button onClick={exportState} className="button-for-footer-for-changes-in-cover-page">
             Export Layout to a <br /> File for Future Use
           </button>{" "}
-          <button className="button-for-footer-for-changes-in-cover-page">
+          <button onClick={() => fileInputRef.current.click()} className="button-for-footer-for-changes-in-cover-page">
             Import Layout <br /> from File
           </button>{" "}
           <button
