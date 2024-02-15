@@ -1,0 +1,175 @@
+.close-button-and-application-header-for-popup-box {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 0 1em;
+  align-items: center;
+  background-color: rgb(242, 236, 236);
+}
+
+.close-btn-application-setting-popup {
+  width: 2em;
+  height: 31px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.close-btn-application-setting-popup:hover {
+  background-color: red;
+  cursor: pointer;
+  color: white;
+}
+.tablist-section-for-the-controls-and-appearance {
+}
+.container-for-the-application-setting-popup-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.width-set-for-the-application-setting-popup {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width: 50%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  z-index: 9999; /* Ensure the popup is above other elements */
+}
+.horizontal-tab-list-application-setting {
+  background-color: rgb(229, 229, 229);
+  display: flex;
+  border-bottom: 1px solid #8080804a;
+}
+.active-tab-list-application-setting {
+  width: 6em;
+  height: 2.5em;
+  text-align: center;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.tab-content-area-application-setting {
+  background-color: rgb(229, 229, 229);
+  padding: 1em;
+  font-size: 15px;
+}
+.main-para-secton-for-the-control-tab {
+  text-align: center;
+  padding: 0 4em;
+}
+.main-para-secton-for-the-Appearance-tab {
+  padding: 0 4em;
+  text-align: center;
+}
+.avtive-tab-content-for-control-section {
+  display: grid;
+  gap: 1em;
+}
+.avtive-tab-content-for-Appearance-section {
+  display: grid;
+  gap: 1em;
+}
+.checkbox-container-application-setting {
+  display: grid;
+  gap: 0.3em;
+}
+.for-the-check-boxes-and-content {
+  display: flex;
+  gap: 1em;
+}
+.for-the-check-boxes-and-content > input {
+  width: 1em;
+}
+/* Style for the active tab */
+.tab-item.active-tab {
+  border-bottom: 3px solid blue; /* Add blue border to the bottom of the active tab */
+}
+.count-button-control-section-application {
+  display: flex;
+  width: 6em;
+  justify-content: space-around;
+  border: 1px solid grey;
+  align-items: center;
+  height: 30px;
+  font-size: 13px;
+}
+.fa-fa-chevron-up {
+  width: 1em;
+}
+.fa-fa-chevron-down {
+  width: 1em;
+}
+.arrow-section-control-section-application {
+  display: grid;
+  align-items: center;
+  border-left: 1px solid grey;
+  justify-content: center;
+  /* text-align: center; */
+  width: 2em;
+}
+.count-section {
+  width: 4em;
+  text-align: center;
+}
+.for-the-counter-boxes-and-content {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1em;
+}
+.ok-button-application-setting {
+  width: 6em;
+  font-size: 12px;
+  border: 1px solid gray;
+  border-radius: 3px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.ok-button-application-setting:hover {
+  background-color: rgb(135 207 235 / 49%);
+}
+.ok-btn-for-the-application-panel {
+  display: flex;
+  justify-content: end;
+}
+.for-the-check-boxes-and-content-with-color-pallet {
+  display: flex;
+  justify-content: space-between;
+}
+.for-the-check-boxes-and-content-with-color-pallet > input {
+  width: 4em;
+}
+#check-box-and-color-palet-inputtt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+#check-box-and-color-palet-inputtt > input {
+  width: 1em;
+  height: 1em;
+}
+.contains-all-the-radio-button-text-section {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 1em;
+}
+.section-contains-radio-btn-and-text {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 6px;
+}
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+.section-contains-radio-btn-and-text > input {
+  width: 1em;
+  height: 1em;
+}
