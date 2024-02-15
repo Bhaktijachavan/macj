@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 import moveUpButtonImg from "../../Assets/icons/ic_up.png";
 import moveDownButtonImg from "../../Assets/icons/ic_down.png";
 import inheritButtonImg from "../../Assets/icons/sync.png";
 import selectIconsButtonImg from "../../Assets/icons/open_inspection.png";
-import ColorPicker from "./ColorPicker";
+
 import Header from "./../Header/Header";
 import Footer from "./../Footer/Footer";
+import ColorPicker from "./ColorPicker";
 
 const ColorPalette = ({ onClose }) => {
   // State for row colors
@@ -64,9 +68,9 @@ const ColorPalette = ({ onClose }) => {
 
   // Function to handle close
 
-  const handleClose = () => {
+  // const handleClose = () => {
     // Handle close logic here
-  };
+  // };
 
   // Function to handle row click
   const handleRowClick = (index, columnIndex) => {
@@ -181,6 +185,40 @@ const ColorPalette = ({ onClose }) => {
       window.removeEventListener("storage", handleLocalStorageChange);
     };
   }, []);
+
+  const pdf = new jsPDF();
+  pdf.autoTableInitialize();
+  
+  // Function to handle close and generate PDF
+  const handleClose = () => {
+    // Generate a PDF
+    const pdf = new jsPDF();
+    pdf.autoTableInitialize();
+  
+    // Add content to the PDF
+    pdf.text("Color Palette Report", 20, 20);
+    pdf.autoTable({
+      head: [
+        ["Section Name", "Border", "Header Background", /* ... other columns */]
+      ],
+      body: dummyData.map((data) => ([
+        data.sectionName,
+        data.border,
+        data.headerBackground,
+        // ... populate other columns based on your data structure
+      ])),
+    });
+  
+    // Save or open the generated PDF
+    pdf.save("color_palette_report.pdf");
+  
+    // Close the ColorPalette component
+    onClose();
+  };
+  
+
+  // ..
+
   return (
     <>
       <div>
@@ -227,7 +265,7 @@ const ColorPalette = ({ onClose }) => {
                       <th className="border font-semibold p-2">Section name</th>
                       <th className="border font-semibold p-2">
                         Section title font
-                      </th>
+                      </th>``
                       <th className="border font-semibold p-2">Print</th>
                       <th className="border font-semibold p-2 color-column">
                         Border
@@ -439,11 +477,11 @@ const ColorPalette = ({ onClose }) => {
               </div>
             </div>
           </div>
-          <div className="flex justify-end mr-20 ">
-            <button className="border-2 border-black py-1 px-2">
-              close
-            </button>
-          </div>
+          <div className="flex justify-end mr-20">
+          <button className="border-2 border-black py-1 px-2" onClick={handleClose}>
+            Generate PDF & Close
+          </button>
+        </div>
         </div>
       </div>
       <div>
