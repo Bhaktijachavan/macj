@@ -118,7 +118,7 @@ const PhotoReview = () => {
               )}
               {!uploadedFiles[index] && (
                 <p className="Drag-Drop-Box-Para">
-                  You can directly drag & drop a file here to add
+                  The Selected File will Appear Here !
                 </p>
               )}
             </div>

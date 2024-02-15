@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import './OneSelection.css';
 
-function OneSelection({ setIsPopupOpen, isPopupOpen, onClose, onTabNameChange }) {
+function OneSelection({ setIsPopupOpen, isPopupOpen, onClose, onTabNameChangeselection }) {
   const [formData, setFormData] = useState({
-    tabName_2nd: '',
+    tabName_oneselection: '',
     selectionPanelName: '',
   });
 
@@ -27,7 +27,17 @@ function OneSelection({ setIsPopupOpen, isPopupOpen, onClose, onTabNameChange })
     setIsPopupOpen(false);
     console.log('Done button clicked');
     // Pass the tabName to the parent component using the callback prop
-    onTabNameChange(formData.tabName_2nd);
+    // onTabNameChangeselection(formData.tabName_oneselection);
+
+    // Save form data to local storage with a key related to the component name
+    const localData = {
+      tabName_oneselection: formData.tabName_oneselection,
+      oneselectionPanelName: formData.selectionPanelName,
+    };
+    localStorage.setItem('oneSelectionFormData', JSON.stringify(localData));
+
+    // Log the stored data to the console
+    console.log('Stored data in local storage:', localData);
   };
 
   return (
@@ -38,8 +48,8 @@ function OneSelection({ setIsPopupOpen, isPopupOpen, onClose, onTabNameChange })
         <input
           className='input1-oneselection'
           type="text"
-          name="tabName_2nd"
-          value={formData.tabName_2nd}
+          name="tabName_oneselection"
+          value={formData.tabName_oneselection}
           onChange={handleInputChange}
           required
         />

@@ -14,6 +14,7 @@
     "image-compressor": "^2.0.3",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.1",
+    "lodash": "^4.17.21",
     "postcss": "^8.4.33",
     "react": "^18.2.0",
     "react-color": "^2.19.3",

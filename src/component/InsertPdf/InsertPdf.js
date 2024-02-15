@@ -6,10 +6,13 @@ import Footer from "./../Footer/Footer";
 const ConfirmationModal = ({ title, message, onConfirm, onCancel }) => {
   return (
     <div className="modal-for-the-confirmation-of-deletion-of-document">
-      <p className="mb-4">
+      <p className="title-and-the-on-close-button-pdf-modal">
         <p className="flex">{title}</p>
+        <p className="close-btn-confirmation-modal-pdf" onClick={onCancel}>
+          X
+        </p>
       </p>
-      <p className="mb-4">{message}</p>
+      <p className="p-4 ">{message}</p>
       <div className="section-of-cancel-and-confirm-deletion-of-decument">
         <button
           className="btn-for-cancel-and-confirm-insert-pdf-section"

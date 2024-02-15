@@ -25,10 +25,10 @@ import BatchAddPhotos from "./../Photo/BatchAddPhotos/BatchAddPhotos";
 import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
 import ColorPalette from "./../ColorPalet/ColorPalet";
 import { EditTempContext } from "../../Context";
-import SaveTPZ from './../SaveTemp/TPZ/SaveTPZ';
-import OpenTPZ from './../SaveTemp/TPZ/OpenTPZ';
+import SaveTPZ from "./../SaveTemp/TPZ/SaveTPZ";
+import OpenTPZ from "./../SaveTemp/TPZ/OpenTPZ";
 
-const Header = () => {
+const Header = ({ onButtonClick }) => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
   const [saveTemplatePopup, setSaveTemplatePopup] = useState(false);
   const [editTemplatePopup, setEditTemplatePopup] = useState(false);
@@ -39,6 +39,10 @@ const Header = () => {
     useState(false);
   const [activePopup, setActivePopup] = useState(null);
   const [colorPaletPopup, setOpenColorPaletPopup] = useState(false);
+  const [pastedText, setPastedText] = useState("");
+  const [value, setValue] = React.useState("");
+  const [aboutUsPagePopup, setAboutUsPagePopup] = useState(false);
+  const ref = useRef(null);
 
   const openOpenTemplatePopup = () => {
     setOpenTemplatePopup(true);
@@ -135,6 +139,12 @@ const Header = () => {
     console.log("Login Popup Clicked");
   };
 
+  const openAboutUsPopup = () => {
+    setAboutUsPagePopup(true);
+  };
+  const closeAboutUsPopup = () => {
+    setAboutUsPagePopup(false);
+  };
   // Reset the Batch Add Photos popup state when component unmounts
   useEffect(() => {
     return () => {
@@ -143,6 +153,33 @@ const Header = () => {
       setEditTemplatePopup(false);
     };
   }, []);
+
+  const handleCopy = () => {
+    // Get the selected text
+    const selectedText = window.getSelection().toString();
+    // Copy the selected text to the clipboard
+    navigator.clipboard
+      .writeText(selectedText)
+      .then(() => {
+        console.log("Text copied:", selectedText);
+      })
+      .catch((error) => {
+        console.error("Error copying text:", error);
+      });
+  };
+
+  const handlePaste = () => {
+    // Paste the text from the clipboard
+    navigator.clipboard
+      .readText()
+      .then((text) => {
+        setPastedText(text);
+        console.log("Pasted text:", text);
+      })
+      .catch((error) => {
+        console.error("Error pasting text:", error);
+      });
+  };
   return (
     <>
       <div
@@ -296,7 +333,7 @@ const Header = () => {
           )}
         </div>
         <div>
-          <ul>
+          <ul onClick={openAboutUsPopup}>
             <li className="ml-5">About</li>
           </ul>
         </div>
@@ -342,16 +379,20 @@ const Header = () => {
               </a>
             </li>
             <hr />
-       <div><OpenTPZ/></div>
             <div>
-            {/* Your other JSX elements */}
-            <SaveTPZ />
-          </div>
+              <OpenTPZ />
+            </div>
+            <div>
+              {/* Your other JSX elements */}
+              <SaveTPZ />
+            </div>
             <hr />
-            <Link to="/EditComments">
+
+            {/* <Link to="/EditComments"> */}
             <li className="list-for-header-section-main-nav">
-              <p
-                onClick={() => openPopup("editComments")}
+              <button
+                // onClick={() => openPopup("editComments")}
+                onClick={onButtonClick}
                 className="header2-tag-a"
               >
                 <div className="flex justify-center">
@@ -361,9 +402,10 @@ const Header = () => {
                   Edit <br />
                   Comments
                 </div>
-              </p>
+              </button>
             </li>
-            </Link>
+            {/* </Link> */}
+
             <li className="list-for-header-section-main-nav  border-r border-black-900">
               <a
                 href="#"
@@ -433,7 +475,7 @@ const Header = () => {
             </Link>
             <hr />
             <li className="list-for-header-section-main-nav">
-              <a href="#" className="header2-tag-a">
+              <a href="#" className="header2-tag-a" onClick={handleCopy}>
                 <div className="flex justify-center">
                   <img src={img10} alt="" />
                 </div>
@@ -441,7 +483,17 @@ const Header = () => {
               </a>
             </li>
             <li className="list-for-header-section-main-nav  border-r border-black-900">
-              <a href="#" className="header2-tag-a">
+              <a
+                href="#"
+                className="header2-tag-a"
+                onClick={(e) => {
+                  let paste = (e.clipboardData || window.clipboardData).getData(
+                    "Text"
+                  );
+                  setValue(paste);
+                }}
+              // onClick={handlePaste}
+              >
                 <div className="flex justify-center">
                   <img src={img11} alt="" />
                 </div>
