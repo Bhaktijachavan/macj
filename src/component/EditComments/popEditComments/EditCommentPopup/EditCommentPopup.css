@@ -1,0 +1,97 @@
+.close-button-and-edit-comment-popup-header-for-popup-box {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2em 0 0.2em 1em;
+  align-items: center;
+  background-color: rgb(242, 236, 236);
+}
+
+.close-btn-edit-comment-popup {
+  width: 2em;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.close-btn-edit-comment-popup:hover {
+  background-color: red;
+  cursor: pointer;
+  color: white;
+}
+.width-set-for-edit-comment-popup-enter-comment-text {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width: 80%;
+  height: 26%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  z-index: 9999;
+}
+.drop-down-for-edit-comment-popup {
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.open-button-editcomm-edit-comment-popup {
+  font-size: 14px;
+  width: 71px;
+  height: 24px;
+  background-color: #f3f2f1;
+  color: black;
+  border: 2px solid rgb(191, 189, 189);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.open-button-editcomm-edit-comment-popup:hover {
+  background-color: #d7e9f7;
+  border-color: #005a9e;
+}
+
+.cancel-button-editcomm-edit-comment-popup {
+  font-size: 14px;
+  width: 71px;
+  height: 24px;
+  background-color: #f3f2f1;
+  color: black;
+  border: 2px solid rgb(191, 189, 189);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancel-button-editcomm-edit-comment-popup:hover {
+  background-color: #d7e9f7;
+  border-color: #005a9e;
+}
+.button-container-editcomm-edit-comment-popup {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+.contains-header-drop-downs-ok-cancl-btn-for-edit-comment-popup {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 1em;
+  padding-top: 1em;
+}
+.input-box-for-edit-comment-popup-box-for-update-comment {
+  border: 1px solid #2882a694;
+  width: 40em;
+  padding-left: 1em;
+}
+.input-box-and-the-update-message-for-edit-comment {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  /* height: 100%; */
+  text-align: left;
+  padding-top: 0.5em;
+  gap: 0.5em;
+}

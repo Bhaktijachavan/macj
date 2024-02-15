@@ -1,0 +1,89 @@
+.close-button-and-insert-list-popup-header-for-popup-box {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2em 0 0.2em 1em;
+  align-items: center;
+  background-color: rgb(242, 236, 236);
+}
+
+.close-btn-insert-list-popup {
+  width: 2em;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.close-btn-insert-list-popup:hover {
+  background-color: red;
+  cursor: pointer;
+  color: white;
+}
+.width-set-for-insert-list-popup-enter-comment-text {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width: 50%;
+  height: 30%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  z-index: 9999; /* Ensure the popup is above other elements */
+}
+.drop-down-for-insert-list-popup {
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.selected-drop-down-list-with-question {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding-top: 0.5em;
+  gap: 0.5em;
+}
+.open-button-editcomm-insert-list-popup {
+  font-size: 14px;
+  width: 71px;
+  height: 24px;
+  background-color: #f3f2f1;
+  color: black;
+  border: 2px solid rgb(191, 189, 189);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.open-button-editcomm-insert-list-popup:hover {
+  background-color: #d7e9f7;
+  border-color: #005a9e;
+}
+
+.cancel-button-editcomm-insert-list-popup {
+  font-size: 14px;
+  width: 71px;
+  height: 24px;
+  background-color: #f3f2f1;
+  color: black;
+  border: 2px solid rgb(191, 189, 189);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cancel-button-editcomm-insert-list-popup:hover {
+  background-color: #d7e9f7;
+  border-color: #005a9e;
+}
+.button-container-editcomm-insert-list-popup {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+}
+.contains-header-drop-downs-ok-cancl-btn-for-insert-list-popup {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 1em;
+}

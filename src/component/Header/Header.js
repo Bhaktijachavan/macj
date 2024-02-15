@@ -27,6 +27,7 @@ import ColorPalette from "./../ColorPalet/ColorPalet";
 import { EditTempContext } from "../../Context";
 import SaveTPZ from "./../SaveTemp/TPZ/SaveTPZ";
 import OpenTPZ from "./../SaveTemp/TPZ/OpenTPZ";
+import AboutUsMacj from "./../AboutUsMacj/AboutUsMacj";
 
 const Header = ({ onButtonClick }) => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
@@ -492,7 +493,7 @@ const Header = ({ onButtonClick }) => {
                   );
                   setValue(paste);
                 }}
-              // onClick={handlePaste}
+                // onClick={handlePaste}
               >
                 <div className="flex justify-center">
                   <img src={img11} alt="" />
@@ -587,6 +588,12 @@ const Header = ({ onButtonClick }) => {
           <div className="popup Cover-Page-Design-Popup-ccc">
             {/* Render your color palet component here */}
             <ColorPalette onClose={closeColorPaletPopup} />
+          </div>
+        )}{" "}
+        {aboutUsPagePopup && (
+          <div className="popup Cover-Page-Design-Popup-ccc">
+            {/* Render your color palet component here */}
+            <AboutUsMacj onClose={closeAboutUsPopup} />
           </div>
         )}
       </div>
