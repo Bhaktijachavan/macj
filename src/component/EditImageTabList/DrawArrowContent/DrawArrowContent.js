@@ -56,8 +56,8 @@ const DrawArrowContent = ({
       const aspectRatio = image.width / image.height;
 
       // Set the canvas width and height based on the image dimensions
-      const maxWidth = 750; // Max width for the canvas
-      const maxHeight = 600; // Max height for the canvas
+      const maxWidth = 780; // Max width for the canvas
+      const maxHeight = 576; // Max height for the canvas
       let canvasWidth = image.width;
       let canvasHeight = image.height;
 
@@ -155,137 +155,192 @@ const DrawArrowContent = ({
       setArrows(arrowsHistory.current[historyIndex.current]);
     }
   };
+  // Helper function to calculate bounding box of drawn arrows
+  const calculateBoundingBox = (arrows) => {
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
 
+    arrows.forEach((arrow) => {
+      const { start, end } = arrow;
+      minX = Math.min(minX, start.x, end.x);
+      minY = Math.min(minY, start.y, end.y);
+      maxX = Math.max(maxX, start.x, end.x);
+      maxY = Math.max(maxY, start.y, end.y);
+    });
+
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    return { minX, minY, width, height };
+  };
+  // Inside the useEffect for drawn lines
+  useEffect(() => {
+    const { minX, minY, width, height } = calculateBoundingBox(arrows);
+
+    drawnLines.forEach((line, index) => {
+      const lineStyle = {
+        stroke: line.color,
+        strokeWidth: "4",
+        position: "absolute",
+        left: `${minX}px`,
+        top: `${minY}px`,
+        width: `${width}px`,
+        height: `${height}px`,
+      };
+
+      return (
+        <svg
+          key={index}
+          width={width}
+          height={height}
+          viewBox={`0 0 ${width} ${height}`}
+          style={lineStyle}
+        >
+          <line
+            x1={line.start.x - minX}
+            y1={line.start.y - minY}
+            x2={line.end.x - minX}
+            y2={line.end.y - minY}
+            style={{ stroke: line.color, strokeWidth: "4" }}
+          />
+        </svg>
+      );
+    });
+  }, [arrows, drawnLines]);
   return (
-    <div className="draw-arrow-container">
-      <canvas
-        className="canvas-for-draw-arrow-content"
-        ref={arrowRef}
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={stopDrawing}
-        onMouseOut={stopDrawing}
-      />
-      {texts &&
-        texts.map((text) => (
-          <div
-            key={text.id}
-            className="text-overlay"
-            style={{
-              color: text.textColor,
-              position: "absolute",
-              top: `${text.position.y}%`,
-              left: `${text.position.x}%`,
-              fontSize: `${text.fontSize}px`,
-              fontFamily: text.font,
-              fontWeight: text.isBold ? "bold" : "normal",
-              fontStyle: text.isItalic ? "italic" : "normal",
-              backgroundColor: text.isHighlighted
-                ? `${text.highlightColor}${Math.round(
-                    text.highlightOpacity * 255
-                  ).toString(16)}`
-                : "transparent",
-              textAlign: "center",
-            }}
-          >
-            {text.content}
-          </div>
-        ))}
-      {drawnLines &&
-        drawnLines.map((line, index) => (
-          <svg
-            key={index}
-            width={`${Math.abs(line.end.x - line.start.x)}px`}
-            height={`${Math.abs(line.end.y - line.start.y)}px`}
-            viewBox={`0 0 ${Math.abs(line.end.x - line.start.x)} ${Math.abs(
-              line.end.y - line.start.y
-            )}`}
-            style={{
-              position: "absolute",
-              top: `${Math.min(line.start.y, line.end.y)}px`,
-              left: `${Math.min(line.start.x, line.end.x)}px`,
-            }}
-          >
-            <line
-              x1={Math.abs(line.start.x - Math.min(line.start.x, line.end.x))}
-              y1={Math.abs(line.start.y - Math.min(line.start.y, line.end.y))}
-              x2={Math.abs(line.end.x - Math.min(line.start.x, line.end.x))}
-              y2={Math.abs(line.end.y - Math.min(line.start.y, line.end.y))}
-              style={{ stroke: line.color, strokeWidth: "4" }}
-            />
-          </svg>
-        ))}
-      {drawnOvals &&
-        drawnOvals.map((oval, index) => {
-          const centerX =
-            Math.min(oval.start.x, oval.end.x) +
-            Math.abs(oval.end.x - oval.start.x) / 2;
-          const centerY =
-            Math.min(oval.start.y, oval.end.y) +
-            Math.abs(oval.end.y - oval.start.y) / 2;
-          const radiusX = Math.abs(oval.end.x - oval.start.x) / 2;
-          const radiusY = Math.abs(oval.end.y - oval.start.y) / 2;
-
-          return (
+    <div className="draw-arrow-main-container">
+      <div className="draw-line-container">
+        <canvas
+          className="canvas-for-draw-arrow-content"
+          ref={arrowRef}
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+          onMouseOut={stopDrawing}
+        />
+        {texts &&
+          texts.map((text) => (
+            <div
+              key={text.id}
+              className="text-overlay"
+              style={{
+                color: text.textColor,
+                position: "absolute",
+                top: `${text.position.y}%`,
+                left: `${text.position.x}%`,
+                fontSize: `${text.fontSize}px`,
+                fontFamily: text.font,
+                fontWeight: text.isBold ? "bold" : "normal",
+                fontStyle: text.isItalic ? "italic" : "normal",
+                backgroundColor: text.isHighlighted
+                  ? `${text.highlightColor}${Math.round(
+                      text.highlightOpacity * 255
+                    ).toString(16)}`
+                  : "transparent",
+                textAlign: "center",
+              }}
+            >
+              {text.content}
+            </div>
+          ))}
+        {drawnLines &&
+          drawnLines.map((line, index) => (
             <svg
               key={index}
-              width={`${Math.abs(oval.end.x - oval.start.x)}px`}
-              height={`${Math.abs(oval.end.y - oval.start.y)}px`}
-              viewBox={`0 0 ${Math.abs(oval.end.x - oval.start.x)} ${Math.abs(
-                oval.end.y - oval.start.y
+              width={`${Math.abs(line.end.x - line.start.x)}px`}
+              height={`${Math.abs(line.end.y - line.start.y)}px`}
+              viewBox={`0 0 ${Math.abs(line.end.x - line.start.x)} ${Math.abs(
+                line.end.y - line.start.y
               )}`}
               style={{
                 position: "absolute",
-                top: `${Math.min(oval.start.y, oval.end.y)}px`,
-                left: `${Math.min(oval.start.x, oval.end.x)}px`,
+                top: `${Math.min(line.start.y, line.end.y)}px`,
+                left: `${Math.min(line.start.x, line.end.x)}px`,
               }}
             >
-              <ellipse
-                cx={radiusX}
-                cy={radiusY}
-                rx={radiusX}
-                ry={radiusY}
-                style={{ stroke: oval.color, strokeWidth: "4", fill: "none" }}
+              <line
+                x1={Math.abs(line.start.x - Math.min(line.start.x, line.end.x))}
+                y1={Math.abs(line.start.y - Math.min(line.start.y, line.end.y))}
+                x2={Math.abs(line.end.x - Math.min(line.start.x, line.end.x))}
+                y2={Math.abs(line.end.y - Math.min(line.start.y, line.end.y))}
+                style={{ stroke: line.color, strokeWidth: "4" }}
               />
             </svg>
-          );
-        })}
-      {drawnRectangles &&
-        drawnRectangles.map((rectangle, index) => {
-          return (
-            <svg
-              key={index}
-              width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
-              height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
-              viewBox={`0 0 ${Math.abs(
-                rectangle.end.x - rectangle.start.x
-              )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
-              style={{
-                position: "absolute",
-                top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
-                left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
-              }}
-            >
-              <rect
-                x={Math.abs(
-                  rectangle.start.x -
-                    Math.min(rectangle.start.x, rectangle.end.x)
-                )}
-                y={Math.abs(
-                  rectangle.start.y -
-                    Math.min(rectangle.start.y, rectangle.end.y)
-                )}
-                width={Math.abs(rectangle.end.x - rectangle.start.x)}
-                height={Math.abs(rectangle.end.y - rectangle.start.y)}
+          ))}
+        {drawnOvals &&
+          drawnOvals.map((oval, index) => {
+            const centerX =
+              Math.min(oval.start.x, oval.end.x) +
+              Math.abs(oval.end.x - oval.start.x) / 2;
+            const centerY =
+              Math.min(oval.start.y, oval.end.y) +
+              Math.abs(oval.end.y - oval.start.y) / 2;
+            const radiusX = Math.abs(oval.end.x - oval.start.x) / 2;
+            const radiusY = Math.abs(oval.end.y - oval.start.y) / 2;
+
+            return (
+              <svg
+                key={index}
+                width={`${Math.abs(oval.end.x - oval.start.x)}px`}
+                height={`${Math.abs(oval.end.y - oval.start.y)}px`}
+                viewBox={`0 0 ${Math.abs(oval.end.x - oval.start.x)} ${Math.abs(
+                  oval.end.y - oval.start.y
+                )}`}
                 style={{
-                  stroke: rectangle.color,
-                  strokeWidth: "4",
-                  fill: "none",
+                  // position: "absolute",
+                  top: `${Math.min(oval.start.y, oval.end.y)}px`,
+                  left: `${Math.min(oval.start.x, oval.end.x)}px`,
                 }}
-              />
-            </svg>
-          );
-        })}
+              >
+                <ellipse
+                  cx={radiusX}
+                  cy={radiusY}
+                  rx={radiusX}
+                  ry={radiusY}
+                  style={{ stroke: oval.color, strokeWidth: "4", fill: "none" }}
+                />
+              </svg>
+            );
+          })}
+        {drawnRectangles &&
+          drawnRectangles.map((rectangle, index) => {
+            return (
+              <svg
+                key={index}
+                width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
+                height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
+                viewBox={`0 0 ${Math.abs(
+                  rectangle.end.x - rectangle.start.x
+                )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
+                style={{
+                  position: "absolute",
+                  top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
+                  left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+                }}
+              >
+                <rect
+                  x={Math.abs(
+                    rectangle.start.x -
+                      Math.min(rectangle.start.x, rectangle.end.x)
+                  )}
+                  y={Math.abs(
+                    rectangle.start.y -
+                      Math.min(rectangle.start.y, rectangle.end.y)
+                  )}
+                  width={Math.abs(rectangle.end.x - rectangle.start.x)}
+                  height={Math.abs(rectangle.end.y - rectangle.start.y)}
+                  style={{
+                    stroke: rectangle.color,
+                    strokeWidth: "4",
+                    fill: "none",
+                  }}
+                />
+              </svg>
+            );
+          })}
+      </div>
 
       <div className="Buttons-undo-redo-container">
         <button className="Buttons-undo-redo-yytytyt" onClick={undo}>

@@ -23,8 +23,10 @@ const CropImageContent = ({
   const [nextCanvasState, setNextCanvasState] = useState(null); // Store next canvas state
   const rectangleRef = useRef(null);
   const imageRef = useRef(null);
-  const canvasWidth = 700;
-  const canvasHeight = 570;
+  const maxWidth = 780;
+  const maxHeight = 576;
+  const canvasWidth = maxWidth;
+  const canvasHeight = maxHeight;
 
   useEffect(() => {
     const image = new Image();
@@ -219,7 +221,7 @@ const CropImageContent = ({
             style={{ maxWidth: "100%", height: "auto" }}
           />
         ) : ( */}
-        <div className="image-container">
+        <div className="image-conatainer-for-crop-image-uityr">
           <img
             ref={imageRef}
             src={imageUrl}

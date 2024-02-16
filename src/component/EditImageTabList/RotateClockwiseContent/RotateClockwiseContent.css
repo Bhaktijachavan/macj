@@ -1,35 +1,30 @@
 .rotate-clockwise-container {
-  /* border: 2px solid; */
-  /* margin: 3em;
-  height: 409px;
-  width: 764px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden; */
   border: 2px solid;
-  /* margin: 3em; */
   height: 37em;
-  width: 739px;
+  flex-direction: column;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  width: 50em;
+  overflow-y: auto;
 }
 
 .image-container-rotate-clockwise-eee-rrrr {
-  /* border: 2px solid red; */
-  width: auto;
-  /* height: 100%; */
+  position: relative;
+  border: 2px solid;
+  max-width: 780px;
+  max-height: 576px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  /* width: 776px;
+  height: 576px; */
 }
 
 .preview-image-rotate {
-  max-width: 100%; /* Ensure the image doesn't exceed its container */
-  max-height: 100%; /* Ensure the image doesn't exceed its container */
+  display: block;
+  max-width: 776px;
+  max-height: 576px;
   transition: transform 0.3s ease;
 }
 .rotate-clockwise-control {

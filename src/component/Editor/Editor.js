@@ -11,6 +11,8 @@ const Editor = ({
   drawnOvals,
   drawnRectangles,
   croppedImageUrl,
+
+  textsWithPositions,
 }) => {
   const [font, setFont] = useState("Arial");
   const [fontSize, setFontSize] = useState(16);
@@ -23,6 +25,7 @@ const Editor = ({
   const [text, setText] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(true);
   const [texts, setTexts] = useState([]);
+  const nextTextId = useRef(1);
   const changesHistory = useRef([]);
   const historyIndex = useRef(-1);
   const [imageSrc, setImageSrc] = useState("");
@@ -42,6 +45,10 @@ const Editor = ({
       window.removeEventListener("keydown", handleKeydown);
     };
   }, []); // Empty dependency array to run only once
+  useEffect(() => {
+    // Update the texts state when textsWithPositions changes
+    setTexts(textsWithPositions);
+  }, []);
 
   useEffect(() => {
     if (croppedImageUrl) {
@@ -86,22 +93,19 @@ const Editor = ({
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
-  const handleDragStop = (e, data, id) => {
-    // Update the position of the text when dragging stops
-    setTexts((prevTexts) => {
-      return prevTexts.map((t) =>
-        t.id === id ? { ...t, position: { x: data.x, y: data.y } } : t
-      );
-    });
+  const handleDragStop = (id, newPosition) => {
+    const updatedTexts = texts.map((text) =>
+      text.id === id ? { ...text, position: newPosition } : text
+    );
+    setTexts(updatedTexts);
+    onTextChange(updatedTexts);
   };
-
   const handleAddText = () => {
     // Create a new text object and add it to the texts array
     const newText = {
-      id: texts.length + 1,
+      id: nextTextId.current,
       content: text,
       position: { x: 20, y: 20 }, // Initial position
-      // ... (other styling properties)
       font,
       fontSize,
       isBold,
@@ -112,12 +116,13 @@ const Editor = ({
       highlightOpacity,
     };
 
-    setTexts([...texts, newText]);
+    setTexts((prevTexts) => [...prevTexts, newText]);
+    onTextChange((prevTextsWithPositions) => [
+      ...prevTextsWithPositions,
+      newText,
+    ]);
+    nextTextId.current++;
     setText(""); // Clear the textarea after adding text
-    changesHistory.current.splice(historyIndex.current + 1);
-    changesHistory.current.push([...texts]);
-    historyIndex.current++;
-    onTextChange([...texts, newText]);
   };
   const undo = () => {
     if (historyIndex.current > 0) {
@@ -135,211 +140,224 @@ const Editor = ({
 
   return (
     <>
-      <div className="Editor-image-container-to-add-text">
-        <img
-          src={imageSrc}
-          alt="Original Image"
-          className="Editor-image-to-add-text"
-          style={{
-            filter: `brightness(${brightness}%) contrast(${contrast}%)`,
-          }}
-        />
-        {texts.map((t) => (
-          <Draggable
-            key={t.id}
-            defaultPosition={{ x: t.position.x, y: t.position.y }}
-            onStop={handleDragStop}
-          >
-            <div
-              className="text-overlay"
-              style={{
-                color: t.textColor,
-                position: "absolute",
-                top: `${t.position.y}%`,
-                left: `${t.position.x}%`,
-                fontSize: `${t.fontSize}px`,
-                fontFamily: t.font,
-                fontWeight: t.isBold ? "bold" : "normal",
-                fontStyle: t.isItalic ? "italic" : "normal",
-                backgroundColor: t.isHighlighted
-                  ? `${t.highlightColor}${Math.round(
-                      t.highlightOpacity * 255
-                    ).toString(16)}`
-                  : "transparent",
-                textAlign: "center",
-                cursor: "move",
-              }}
+      <div className="Editor-image-main-container-to-add-text">
+        <div className="Editor-image-container-to-add-text">
+          <img
+            src={imageSrc}
+            alt="Original Image"
+            className="Editor-image-to-add-text"
+            style={{
+              filter: `brightness(${brightness}%) contrast(${contrast}%)`,
+            }}
+          />
+          {texts.map((text) => (
+            <Draggable
+              bounds="parent"
+              key={text.id}
+              defaultPosition={{ x: text.position.x, y: text.position.y }}
+              onStop={(e, data) =>
+                handleDragStop(text.id, { x: data.x, y: data.y })
+              }
             >
-              {t.content}
-            </div>
-          </Draggable>
-        ))}
-        {drawnArrows &&
-          drawnArrows.map((arrow, index) => {
-            // Calculate the angle of the arrow
-            const angle = Math.atan2(
-              arrow.end.y - arrow.start.y,
-              arrow.end.x - arrow.start.x
-            );
-            // Calculate the length of the arrowhead lines
-            const arrowheadLength = 10;
-            // Calculate the coordinates of the arrowhead
-            const arrowheadX1 =
-              arrow.end.x - arrowheadLength * Math.cos(angle - Math.PI / 6);
-            const arrowheadY1 =
-              arrow.end.y - arrowheadLength * Math.sin(angle - Math.PI / 6);
-            const arrowheadX2 =
-              arrow.end.x - arrowheadLength * Math.cos(angle + Math.PI / 6);
-            const arrowheadY2 =
-              arrow.end.y - arrowheadLength * Math.sin(angle + Math.PI / 6);
-
-            return (
               <div
-                key={index}
-                className="drawn-arrow"
+                className="text-overlay"
                 style={{
+                  color: text.textColor,
                   position: "absolute",
-                  top: `${Math.min(arrow.start.y, arrow.end.y)}px`,
-                  left: `${Math.min(arrow.start.x, arrow.end.x)}px`,
+                  top: `${text.position.y}%`,
+                  left: `${text.position.x}%`,
+                  fontSize: `${text.fontSize}px`,
+                  fontFamily: text.font,
+                  fontWeight: text.isBold ? "bold" : "normal",
+                  fontStyle: text.isItalic ? "italic" : "normal",
+                  backgroundColor: text.isHighlighted
+                    ? `${text.highlightColor}${Math.round(
+                        text.highlightOpacity * 255
+                      ).toString(16)}`
+                    : "transparent",
+                  textAlign: "center",
+                  cursor: "move",
                 }}
               >
-                <svg
-                  width={`${Math.abs(arrow.end.x - arrow.start.x)}px`}
-                  height={`${Math.abs(arrow.end.y - arrow.start.y)}px`}
-                  viewBox={`0 0 ${Math.abs(
-                    arrow.end.x - arrow.start.x
-                  )} ${Math.abs(arrow.end.y - arrow.start.y)}`}
+                {text.content}
+              </div>
+            </Draggable>
+          ))}
+          {drawnArrows &&
+            drawnArrows.map((arrow, index) => {
+              // Calculate the angle of the arrow
+              const angle = Math.atan2(
+                arrow.end.y - arrow.start.y,
+                arrow.end.x - arrow.start.x
+              );
+              // Calculate the length of the arrowhead lines
+              const arrowheadLength = 10;
+              // Calculate the coordinates of the arrowhead
+              const arrowheadX1 =
+                arrow.end.x - arrowheadLength * Math.cos(angle - Math.PI / 6);
+              const arrowheadY1 =
+                arrow.end.y - arrowheadLength * Math.sin(angle - Math.PI / 6);
+              const arrowheadX2 =
+                arrow.end.x - arrowheadLength * Math.cos(angle + Math.PI / 6);
+              const arrowheadY2 =
+                arrow.end.y - arrowheadLength * Math.sin(angle + Math.PI / 6);
+
+              return (
+                <div
+                  key={index}
+                  className="drawn-arrow"
+                  style={{
+                    position: "absolute",
+                    top: `${Math.min(arrow.start.y, arrow.end.y)}px`,
+                    left: `${Math.min(arrow.start.x, arrow.end.x)}px`,
+                  }}
                 >
-                  <line
-                    x1={Math.abs(
-                      arrow.start.x - Math.min(arrow.start.x, arrow.end.x)
+                  <svg
+                    width={`${Math.abs(arrow.end.x - arrow.start.x)}px`}
+                    height={`${Math.abs(arrow.end.y - arrow.start.y)}px`}
+                    viewBox={`0 0 ${Math.abs(
+                      arrow.end.x - arrow.start.x
+                    )} ${Math.abs(arrow.end.y - arrow.start.y)}`}
+                  >
+                    <line
+                      x1={Math.abs(
+                        arrow.start.x - Math.min(arrow.start.x, arrow.end.x)
+                      )}
+                      y1={Math.abs(
+                        arrow.start.y - Math.min(arrow.start.y, arrow.end.y)
+                      )}
+                      x2={Math.abs(
+                        arrow.end.x - Math.min(arrow.start.x, arrow.end.x)
+                      )}
+                      y2={Math.abs(
+                        arrow.end.y - Math.min(arrow.start.y, arrow.end.y)
+                      )}
+                      style={{ stroke: arrow.color, strokeWidth: "4" }}
+                    />
+                    {/* Arrowhead */}
+                    <line
+                      x1={arrowheadX1 - Math.min(arrow.start.x, arrow.end.x)}
+                      y1={arrowheadY1 - Math.min(arrow.start.y, arrow.end.y)}
+                      x2={arrow.end.x - Math.min(arrow.start.x, arrow.end.x)}
+                      y2={arrow.end.y - Math.min(arrow.start.y, arrow.end.y)}
+                      style={{ stroke: arrow.color, strokeWidth: "2" }}
+                    />
+                    <line
+                      x1={arrowheadX2 - Math.min(arrow.start.x, arrow.end.x)}
+                      y1={arrowheadY2 - Math.min(arrow.start.y, arrow.end.y)}
+                      x2={arrow.end.x - Math.min(arrow.start.x, arrow.end.x)}
+                      y2={arrow.end.y - Math.min(arrow.start.y, arrow.end.y)}
+                      style={{ stroke: arrow.color, strokeWidth: "2" }}
+                    />
+                  </svg>
+                </div>
+              );
+            })}
+          {drawnRectangles &&
+            drawnRectangles.map((rectangle, index) => {
+              return (
+                <svg
+                  key={index}
+                  width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
+                  height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
+                  viewBox={`0 0 ${Math.abs(
+                    rectangle.end.x - rectangle.start.x
+                  )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
+                  style={{
+                    position: "absolute",
+                    top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
+                    left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+                  }}
+                >
+                  <rect
+                    x={Math.abs(
+                      rectangle.start.x -
+                        Math.min(rectangle.start.x, rectangle.end.x)
                     )}
-                    y1={Math.abs(
-                      arrow.start.y - Math.min(arrow.start.y, arrow.end.y)
+                    y={Math.abs(
+                      rectangle.start.y -
+                        Math.min(rectangle.start.y, rectangle.end.y)
                     )}
-                    x2={Math.abs(
-                      arrow.end.x - Math.min(arrow.start.x, arrow.end.x)
-                    )}
-                    y2={Math.abs(
-                      arrow.end.y - Math.min(arrow.start.y, arrow.end.y)
-                    )}
-                    style={{ stroke: arrow.color, strokeWidth: "4" }}
-                  />
-                  {/* Arrowhead */}
-                  <line
-                    x1={arrowheadX1 - Math.min(arrow.start.x, arrow.end.x)}
-                    y1={arrowheadY1 - Math.min(arrow.start.y, arrow.end.y)}
-                    x2={arrow.end.x - Math.min(arrow.start.x, arrow.end.x)}
-                    y2={arrow.end.y - Math.min(arrow.start.y, arrow.end.y)}
-                    style={{ stroke: arrow.color, strokeWidth: "2" }}
-                  />
-                  <line
-                    x1={arrowheadX2 - Math.min(arrow.start.x, arrow.end.x)}
-                    y1={arrowheadY2 - Math.min(arrow.start.y, arrow.end.y)}
-                    x2={arrow.end.x - Math.min(arrow.start.x, arrow.end.x)}
-                    y2={arrow.end.y - Math.min(arrow.start.y, arrow.end.y)}
-                    style={{ stroke: arrow.color, strokeWidth: "2" }}
+                    width={Math.abs(rectangle.end.x - rectangle.start.x)}
+                    height={Math.abs(rectangle.end.y - rectangle.start.y)}
+                    style={{
+                      stroke: rectangle.color,
+                      strokeWidth: "4",
+                      fill: "none",
+                    }}
                   />
                 </svg>
-              </div>
-            );
-          })}
-        {drawnRectangles &&
-          drawnRectangles.map((rectangle, index) => {
-            return (
+              );
+            })}
+
+          {drawnLines &&
+            drawnLines.map((line, index) => (
               <svg
                 key={index}
-                width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
-                height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
-                viewBox={`0 0 ${Math.abs(
-                  rectangle.end.x - rectangle.start.x
-                )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
-                style={{
-                  position: "absolute",
-                  top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
-                  left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
-                }}
-              >
-                <rect
-                  x={Math.abs(
-                    rectangle.start.x -
-                      Math.min(rectangle.start.x, rectangle.end.x)
-                  )}
-                  y={Math.abs(
-                    rectangle.start.y -
-                      Math.min(rectangle.start.y, rectangle.end.y)
-                  )}
-                  width={Math.abs(rectangle.end.x - rectangle.start.x)}
-                  height={Math.abs(rectangle.end.y - rectangle.start.y)}
-                  style={{
-                    stroke: rectangle.color,
-                    strokeWidth: "4",
-                    fill: "none",
-                  }}
-                />
-              </svg>
-            );
-          })}
-
-        {drawnLines &&
-          drawnLines.map((line, index) => (
-            <svg
-              key={index}
-              width={`${Math.abs(line.end.x - line.start.x)}px`}
-              height={`${Math.abs(line.end.y - line.start.y)}px`}
-              viewBox={`0 0 ${Math.abs(line.end.x - line.start.x)} ${Math.abs(
-                line.end.y - line.start.y
-              )}`}
-              style={{
-                position: "absolute",
-                top: `${Math.min(line.start.y, line.end.y)}px`,
-                left: `${Math.min(line.start.x, line.end.x)}px`,
-              }}
-            >
-              <line
-                x1={Math.abs(line.start.x - Math.min(line.start.x, line.end.x))}
-                y1={Math.abs(line.start.y - Math.min(line.start.y, line.end.y))}
-                x2={Math.abs(line.end.x - Math.min(line.start.x, line.end.x))}
-                y2={Math.abs(line.end.y - Math.min(line.start.y, line.end.y))}
-                style={{ stroke: line.color, strokeWidth: "4" }}
-              />
-            </svg>
-          ))}
-        {drawnOvals &&
-          drawnOvals.map((oval, index) => {
-            const centerX =
-              Math.min(oval.start.x, oval.end.x) +
-              Math.abs(oval.end.x - oval.start.x) / 2;
-            const centerY =
-              Math.min(oval.start.y, oval.end.y) +
-              Math.abs(oval.end.y - oval.start.y) / 2;
-            const radiusX = Math.abs(oval.end.x - oval.start.x) / 2;
-            const radiusY = Math.abs(oval.end.y - oval.start.y) / 2;
-
-            return (
-              <svg
-                key={index}
-                width={`${Math.abs(oval.end.x - oval.start.x)}px`}
-                height={`${Math.abs(oval.end.y - oval.start.y)}px`}
-                viewBox={`0 0 ${Math.abs(oval.end.x - oval.start.x)} ${Math.abs(
-                  oval.end.y - oval.start.y
+                width={`${Math.abs(line.end.x - line.start.x)}px`}
+                height={`${Math.abs(line.end.y - line.start.y)}px`}
+                viewBox={`0 0 ${Math.abs(line.end.x - line.start.x)} ${Math.abs(
+                  line.end.y - line.start.y
                 )}`}
                 style={{
                   position: "absolute",
-                  top: `${Math.min(oval.start.y, oval.end.y)}px`,
-                  left: `${Math.min(oval.start.x, oval.end.x)}px`,
+                  top: `${Math.min(line.start.y, line.end.y)}px`,
+                  left: `${Math.min(line.start.x, line.end.x)}px`,
                 }}
               >
-                <ellipse
-                  cx={radiusX}
-                  cy={radiusY}
-                  rx={radiusX}
-                  ry={radiusY}
-                  style={{ stroke: oval.color, strokeWidth: "4", fill: "none" }}
+                <line
+                  x1={Math.abs(
+                    line.start.x - Math.min(line.start.x, line.end.x)
+                  )}
+                  y1={Math.abs(
+                    line.start.y - Math.min(line.start.y, line.end.y)
+                  )}
+                  x2={Math.abs(line.end.x - Math.min(line.start.x, line.end.x))}
+                  y2={Math.abs(line.end.y - Math.min(line.start.y, line.end.y))}
+                  style={{ stroke: line.color, strokeWidth: "4" }}
                 />
               </svg>
-            );
-          })}
+            ))}
+          {drawnOvals &&
+            drawnOvals.map((oval, index) => {
+              const centerX =
+                Math.min(oval.start.x, oval.end.x) +
+                Math.abs(oval.end.x - oval.start.x) / 2;
+              const centerY =
+                Math.min(oval.start.y, oval.end.y) +
+                Math.abs(oval.end.y - oval.start.y) / 2;
+              const radiusX = Math.abs(oval.end.x - oval.start.x) / 2;
+              const radiusY = Math.abs(oval.end.y - oval.start.y) / 2;
+
+              return (
+                <svg
+                  key={index}
+                  width={`${Math.abs(oval.end.x - oval.start.x)}px`}
+                  height={`${Math.abs(oval.end.y - oval.start.y)}px`}
+                  viewBox={`0 0 ${Math.abs(
+                    oval.end.x - oval.start.x
+                  )} ${Math.abs(oval.end.y - oval.start.y)}`}
+                  style={{
+                    position: "absolute",
+                    top: `${Math.min(oval.start.y, oval.end.y)}px`,
+                    left: `${Math.min(oval.start.x, oval.end.x)}px`,
+                  }}
+                >
+                  <ellipse
+                    cx={radiusX}
+                    cy={radiusY}
+                    rx={radiusX}
+                    ry={radiusY}
+                    style={{
+                      stroke: oval.color,
+                      strokeWidth: "4",
+                      fill: "none",
+                    }}
+                  />
+                </svg>
+              );
+            })}
+        </div>
 
         {isPopupOpen && (
           <div className="editor-for-edit-images-tablist-section ">
@@ -347,7 +365,7 @@ const Editor = ({
               style={{
                 position: "absolute",
                 top: "50%",
-                left: "50%",
+                left: "57.6%",
                 transform: "translate(-50%, -50%)",
                 zIndex: 1,
               }}

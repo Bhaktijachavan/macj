@@ -1,11 +1,11 @@
 .Overlay-Image-container-to-overlay-image-super-container {
-  width: 48em;
+  border: 2px solid;
+  height: 42em;
+  flex-direction: column;
   display: flex;
-  justify-content: center;
   align-items: center;
-  /* border: 2px solid black; */
-  height: 38em;
-  position: relative;
+  justify-content: center;
+  width: 50em;
 }
 .Overlay-for-edit-images-tablist-section-main-container {
   /* display: flex;
@@ -60,9 +60,9 @@
   margin: 10px;
 }
 .Overlay-Image-image-uploded {
-  width: 100%; /* Ensure that the original image fills the container */
-  height: auto; /* Maintain the aspect ratio of the original image */
-  display: block; /* Ensure that the image behaves as a block element */
+  display: block;
+  max-width: 776px;
+  max-height: 576px;
 }
 .Rotate-Button-to-rotate-Overlay-image {
   background-color: #f3f2f1;
@@ -107,10 +107,6 @@
 .Rotate-Button-to-rotate-Overlay-image-container {
   width: 96px;
 }
-.Overlay-Image-image-uploded {
-  width: auto;
-  height: 565px;
-}
 
 .Overlay-Image-overlay {
   position: absolute;
@@ -119,5 +115,16 @@
   width: 100%;
   height: auto;
   opacity: 1;
-  pointer-events: none;
+  cursor: crosshair;
+}
+
+.Overlay-Image-container-to-overlay-image-container {
+  position: relative;
+  overflow: hidden; /* Hide overflow */
+  border: 2px solid;
+  max-width: 776px;
+  max-height: 576px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

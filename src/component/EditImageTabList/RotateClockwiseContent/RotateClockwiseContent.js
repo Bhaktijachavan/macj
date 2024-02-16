@@ -71,7 +71,7 @@ const RotateClockwiseContent = ({
 
   return (
     <>
-      <div className="rotate-clockwise-container">
+      <div className="rotate-clockwise-container" bounds="parent">
         <div
           className="image-container-rotate-clockwise-eee-rrrr"
           style={{

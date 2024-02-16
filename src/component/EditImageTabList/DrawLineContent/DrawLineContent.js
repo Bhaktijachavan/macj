@@ -55,8 +55,8 @@ const DrawLineContent = ({
       const aspectRatio = image.width / image.height;
 
       // Set the canvas width and height based on the image dimensions
-      const maxWidth = 750; // Max width for the canvas
-      const maxHeight = 600; // Max height for the canvas
+      const maxWidth = 776; // Max width for the canvas
+      const maxHeight = 576; // Max height for the canvas
       let canvasWidth = image.width;
       let canvasHeight = image.height;
 

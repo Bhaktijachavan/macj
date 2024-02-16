@@ -1,4 +1,27 @@
-.editor-for-edit-images-tablist-section {
+.Editor-image-main-container-to-add-text {
+  border: 2px solid;
+  height: 42em;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50em;
+}
+.Editor-image-container-to-add-text {
+  position: relative;
+  border: 2px solid;
+  max-width: 776px;
+  max-height: 576px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.Editor-image-to-add-text {
+  display: block;
+  max-width: 776px;
+  max-height: 576px;
+}
+.Bu .editor-for-edit-images-tablist-section {
   display: flex;
   justify-content: center;
   /* margin-top: 70px; */
@@ -18,19 +41,8 @@
 .editor-heading-close {
   background-color: rgb(242, 236, 236);
 }
-.Editor-image-container-to-add-text {
-  position: relative;
-  width: auto;
-  cursor: crosshair;
-  padding: 20px;
-}
-.Editor-image-to-add-text {
-  display: block;
-  width: 100%;
-  height: 555px;
-  margin-top: 1em;
-}
-.Buttons-undo-redo-conatainer {
+
+ttons-undo-redo-conatainer {
   display: flex;
   align-items: center;
   justify-content: center;
