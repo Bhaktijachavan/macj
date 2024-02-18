@@ -1,11 +1,12 @@
 .Overlay-Image-container-to-overlay-image-super-container {
   border: 2px solid;
-  height: 42em;
+  height: 37em;
   flex-direction: column;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 50em;
+  overflow-y: auto;
 }
 .Overlay-for-edit-images-tablist-section-main-container {
   /* display: flex;

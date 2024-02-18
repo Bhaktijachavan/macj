@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 const DrawArrowContent = ({
   imageUrl,
-  texts,
+  textsWithPositions,
   onDrawArrow,
   drawnArrows,
   brightness,
@@ -13,13 +13,19 @@ const DrawArrowContent = ({
   drawnOvals,
   drawnRectangles,
   croppedImageUrl,
+  rotationAngle,
+  arrowColor,
 }) => {
-  const [arrows, setArrows] = useState(drawnArrows); // Initialize state with drawnArrows
+  const [arrows, setArrows] = useState(drawnArrows);
   const [drawing, setDrawing] = useState(false);
   const arrowRef = useRef(null);
-  const arrowsHistory = useRef([]);
-  const historyIndex = useRef(-1);
+  const arrowsHistory = useRef([drawnArrows]);
+  const historyIndex = useRef(0);
   const [imageSrc, setImageSrc] = useState("");
+
+  useEffect(() => {
+    arrowsHistory.current.push(drawnArrows); // Add the initial state to the history
+  }, []); // Empty dependency array to run only once
 
   useEffect(() => {
     const handleKeydown = (event) => {
@@ -75,7 +81,6 @@ const DrawArrowContent = ({
       arrowCanvas.height = canvasHeight;
 
       ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
-      arrowCanvas.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
 
       arrows.forEach((arrow) => {
         drawArrow(ctx, arrow.start, arrow.end, arrow.color);
@@ -90,13 +95,14 @@ const DrawArrowContent = ({
     const newArrow = {
       start: { x: offsetX, y: offsetY },
       end: { x: offsetX, y: offsetY },
-      color: "yellow",
+      color: arrowColor,
     };
-    setArrows((prevArrows) => [...prevArrows, newArrow]);
+
     // Add new arrow to history
     arrowsHistory.current.splice(historyIndex.current + 1);
     arrowsHistory.current.push([...arrows]);
     historyIndex.current++;
+    setArrows((prevArrows) => [...prevArrows, newArrow]);
   };
 
   const draw = (e) => {
@@ -108,6 +114,7 @@ const DrawArrowContent = ({
       updatedArrows[lastIndex].end = { x: offsetX, y: offsetY };
       return updatedArrows;
     });
+    arrowsHistory.current[historyIndex.current] = [...arrows];
   };
 
   const stopDrawing = () => {
@@ -210,26 +217,32 @@ const DrawArrowContent = ({
     });
   }, [arrows, drawnLines]);
   return (
-    <div className="draw-arrow-main-container">
-      <div className="draw-line-container">
-        <canvas
-          className="canvas-for-draw-arrow-content"
-          ref={arrowRef}
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseOut={stopDrawing}
-        />
-        {texts &&
-          texts.map((text) => (
+    <>
+      <div className="draw-arrow-main-container">
+        <div
+          className="draw-line-container"
+          style={{
+            filter: `contrast(${contrast}%) brightness(${brightness}%) `,
+            transform: `rotate(${rotationAngle}deg)`,
+          }}
+        >
+          <canvas
+            className="canvas-for-draw-arrow-content"
+            ref={arrowRef}
+            onMouseDown={startDrawing}
+            onMouseMove={draw}
+            onMouseUp={stopDrawing}
+            onMouseOut={stopDrawing}
+          />
+          {textsWithPositions.map((text) => (
             <div
               key={text.id}
               className="text-overlay"
               style={{
                 color: text.textColor,
                 position: "absolute",
-                top: `${text.position.y}%`,
-                left: `${text.position.x}%`,
+                top: `${text.position.y}px`,
+                left: `${text.position.x}px`,
                 fontSize: `${text.fontSize}px`,
                 fontFamily: text.font,
                 fontWeight: text.isBold ? "bold" : "normal",
@@ -240,108 +253,120 @@ const DrawArrowContent = ({
                     ).toString(16)}`
                   : "transparent",
                 textAlign: "center",
+                pointerEvents: "none", // Disable pointer events so that clicks pass through the text overlay to the image
               }}
             >
               {text.content}
             </div>
           ))}
-        {drawnLines &&
-          drawnLines.map((line, index) => (
-            <svg
-              key={index}
-              width={`${Math.abs(line.end.x - line.start.x)}px`}
-              height={`${Math.abs(line.end.y - line.start.y)}px`}
-              viewBox={`0 0 ${Math.abs(line.end.x - line.start.x)} ${Math.abs(
-                line.end.y - line.start.y
-              )}`}
-              style={{
-                position: "absolute",
-                top: `${Math.min(line.start.y, line.end.y)}px`,
-                left: `${Math.min(line.start.x, line.end.x)}px`,
-              }}
-            >
-              <line
-                x1={Math.abs(line.start.x - Math.min(line.start.x, line.end.x))}
-                y1={Math.abs(line.start.y - Math.min(line.start.y, line.end.y))}
-                x2={Math.abs(line.end.x - Math.min(line.start.x, line.end.x))}
-                y2={Math.abs(line.end.y - Math.min(line.start.y, line.end.y))}
-                style={{ stroke: line.color, strokeWidth: "4" }}
-              />
-            </svg>
-          ))}
-        {drawnOvals &&
-          drawnOvals.map((oval, index) => {
-            const centerX =
-              Math.min(oval.start.x, oval.end.x) +
-              Math.abs(oval.end.x - oval.start.x) / 2;
-            const centerY =
-              Math.min(oval.start.y, oval.end.y) +
-              Math.abs(oval.end.y - oval.start.y) / 2;
-            const radiusX = Math.abs(oval.end.x - oval.start.x) / 2;
-            const radiusY = Math.abs(oval.end.y - oval.start.y) / 2;
-
-            return (
+          {drawnLines &&
+            drawnLines.map((line, index) => (
               <svg
                 key={index}
-                width={`${Math.abs(oval.end.x - oval.start.x)}px`}
-                height={`${Math.abs(oval.end.y - oval.start.y)}px`}
-                viewBox={`0 0 ${Math.abs(oval.end.x - oval.start.x)} ${Math.abs(
-                  oval.end.y - oval.start.y
+                width={`${Math.abs(line.end.x - line.start.x)}px`}
+                height={`${Math.abs(line.end.y - line.start.y)}px`}
+                viewBox={`0 0 ${Math.abs(line.end.x - line.start.x)} ${Math.abs(
+                  line.end.y - line.start.y
                 )}`}
                 style={{
-                  // position: "absolute",
-                  top: `${Math.min(oval.start.y, oval.end.y)}px`,
-                  left: `${Math.min(oval.start.x, oval.end.x)}px`,
-                }}
-              >
-                <ellipse
-                  cx={radiusX}
-                  cy={radiusY}
-                  rx={radiusX}
-                  ry={radiusY}
-                  style={{ stroke: oval.color, strokeWidth: "4", fill: "none" }}
-                />
-              </svg>
-            );
-          })}
-        {drawnRectangles &&
-          drawnRectangles.map((rectangle, index) => {
-            return (
-              <svg
-                key={index}
-                width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
-                height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
-                viewBox={`0 0 ${Math.abs(
-                  rectangle.end.x - rectangle.start.x
-                )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
-                style={{
                   position: "absolute",
-                  top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
-                  left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+                  top: `${Math.min(line.start.y, line.end.y)}px`,
+                  left: `${Math.min(line.start.x, line.end.x)}px`,
+                  pointerEvents: "none", // Allow pointer events to pass through
                 }}
               >
-                <rect
-                  x={Math.abs(
-                    rectangle.start.x -
-                      Math.min(rectangle.start.x, rectangle.end.x)
+                <line
+                  x1={Math.abs(
+                    line.start.x - Math.min(line.start.x, line.end.x)
                   )}
-                  y={Math.abs(
-                    rectangle.start.y -
-                      Math.min(rectangle.start.y, rectangle.end.y)
+                  y1={Math.abs(
+                    line.start.y - Math.min(line.start.y, line.end.y)
                   )}
-                  width={Math.abs(rectangle.end.x - rectangle.start.x)}
-                  height={Math.abs(rectangle.end.y - rectangle.start.y)}
-                  style={{
-                    stroke: rectangle.color,
-                    strokeWidth: "4",
-                    fill: "none",
-                  }}
+                  x2={Math.abs(line.end.x - Math.min(line.start.x, line.end.x))}
+                  y2={Math.abs(line.end.y - Math.min(line.start.y, line.end.y))}
+                  style={{ stroke: line.color, strokeWidth: "4" }}
                 />
               </svg>
-            );
-          })}
-      </div>
+            ))}
+          {drawnOvals &&
+            drawnOvals.map((oval, index) => {
+              const centerX =
+                Math.min(oval.start.x, oval.end.x) +
+                Math.abs(oval.end.x - oval.start.x) / 2;
+              const centerY =
+                Math.min(oval.start.y, oval.end.y) +
+                Math.abs(oval.end.y - oval.start.y) / 2;
+              const radiusX = Math.abs(oval.end.x - oval.start.x) / 2;
+              const radiusY = Math.abs(oval.end.y - oval.start.y) / 2;
 
+              return (
+                <svg
+                  key={index}
+                  width={`${Math.abs(oval.end.x - oval.start.x)}px`}
+                  height={`${Math.abs(oval.end.y - oval.start.y)}px`}
+                  viewBox={`0 0 ${Math.abs(
+                    oval.end.x - oval.start.x
+                  )} ${Math.abs(oval.end.y - oval.start.y)}`}
+                  style={{
+                    position: "absolute",
+                    top: `${Math.min(oval.start.y, oval.end.y)}px`,
+                    left: `${Math.min(oval.start.x, oval.end.x)}px`,
+                    pointerEvents: "none", // Allow pointer events to pass through
+                  }}
+                >
+                  <ellipse
+                    cx={radiusX}
+                    cy={radiusY}
+                    rx={radiusX}
+                    ry={radiusY}
+                    style={{
+                      stroke: oval.color,
+                      strokeWidth: "4",
+                      fill: "none",
+                    }}
+                  />
+                </svg>
+              );
+            })}
+          {drawnRectangles &&
+            drawnRectangles.map((rectangle, index) => {
+              return (
+                <svg
+                  key={index}
+                  width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
+                  height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
+                  viewBox={`0 0 ${Math.abs(
+                    rectangle.end.x - rectangle.start.x
+                  )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
+                  style={{
+                    position: "absolute",
+                    top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
+                    left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+                    pointerEvents: "none", // Allow pointer events to pass through
+                  }}
+                >
+                  <rect
+                    x={Math.abs(
+                      rectangle.start.x -
+                        Math.min(rectangle.start.x, rectangle.end.x)
+                    )}
+                    y={Math.abs(
+                      rectangle.start.y -
+                        Math.min(rectangle.start.y, rectangle.end.y)
+                    )}
+                    width={Math.abs(rectangle.end.x - rectangle.start.x)}
+                    height={Math.abs(rectangle.end.y - rectangle.start.y)}
+                    style={{
+                      stroke: rectangle.color,
+                      strokeWidth: "4",
+                      fill: "none",
+                    }}
+                  />
+                </svg>
+              );
+            })}
+        </div>
+      </div>
       <div className="Buttons-undo-redo-container">
         <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
           Undo
@@ -350,7 +375,7 @@ const DrawArrowContent = ({
           Redo
         </button>
       </div>
-    </div>
+    </>
   );
 };
 

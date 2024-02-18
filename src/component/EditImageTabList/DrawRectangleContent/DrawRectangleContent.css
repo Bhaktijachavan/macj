@@ -1,11 +1,12 @@
 .draw-rectangle-main-container {
   border: 2px solid;
-  height: 42em;
+  height: 37em;
   flex-direction: column;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 50em;
+  overflow-y: auto;
 }
 .draw-rectangle-container {
   position: relative;
@@ -15,6 +16,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: crosshair;
 }
 
 .canvas-for-draw-rectangle-content {

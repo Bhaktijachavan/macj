@@ -13,25 +13,27 @@ const OverLayImage = ({
   croppedImageUrl,
   overLayImage,
   onOverlayChange,
+  rotationAngle,
 }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(true);
-  const [overLay, setOverLay] = useState(overLayImage);
+  const [OverLay, setOverLay] = useState(overLayImage);
 
-  const changesHistory = useRef([]);
   const [uploadedPhoto, setUploadedPhoto] = useState(null);
   const fileInputRef = useRef(null);
-  const historyIndex = useRef(-1);
-  const [rotationAngle, setRotationAngle] = useState(0);
+
+  const [rotationAngles, setRotationAngle] = useState(0);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [imageSrc, setImageSrc] = useState("");
   const [isOkClicked, setIsOkClicked] = useState();
+  const [history, setHistory] = useState([]);
+  const [currentHistoryIndex, setCurrentHistoryIndex] = useState(0);
 
   useEffect(() => {
     const handleKeydown = (event) => {
       if (event.ctrlKey && event.key === "z") {
-        undo();
+        handleUndo();
       } else if (event.ctrlKey && event.key === "y") {
-        redo();
+        handleRedo();
       }
     };
 
@@ -56,10 +58,14 @@ const OverLayImage = ({
 
   const handleOkButton = () => {
     setIsPopupOpen(false);
-    // setIsOkClicked(true);
     if (uploadedPhoto) {
+      // Push the current state to history before updating
+      const newHistory = history.slice(0, currentHistoryIndex + 1);
+      setHistory([...newHistory, uploadedPhoto]);
+      setCurrentHistoryIndex(newHistory.length);
       // Pass the updated overlay image to the parent component
       onOverlayChange(uploadedPhoto);
+      setOverLay(uploadedPhoto);
     }
     setIsOkClicked(true);
   };
@@ -81,62 +87,64 @@ const OverLayImage = ({
     }
   };
 
-  const undo = () => {
-    if (historyIndex.current > 0) {
-      historyIndex.current--;
-      setOverLay(changesHistory.current[historyIndex.current]);
+  const handleRotateClockwise = () => {
+    const newRotationAngle = (rotationAngles + 90) % 360;
+    setRotationAngle(newRotationAngle);
+  };
+  const handleUndo = () => {
+    if (currentHistoryIndex > 0) {
+      setCurrentHistoryIndex(currentHistoryIndex - 1);
+      setOverLay(history[currentHistoryIndex - 1]);
     }
   };
 
-  const redo = () => {
-    if (historyIndex.current < changesHistory.current.length - 1) {
-      historyIndex.current++;
-      setOverLay(changesHistory.current[historyIndex.current]);
+  const handleRedo = () => {
+    if (currentHistoryIndex < history.length - 1) {
+      setCurrentHistoryIndex(currentHistoryIndex + 1);
+      setOverLay(history[currentHistoryIndex + 1]);
     }
-  };
-  const handleRotateClockwise = () => {
-    const newRotationAngle = (rotationAngle + 90) % 360;
-    setRotationAngle(newRotationAngle);
-    // Add new rotation angle to history
   };
 
   return (
     <>
       <div className="Overlay-Image-container-to-overlay-image-super-container">
-        <div className="Overlay-Image-container-to-overlay-image-container">
+        <div
+          className="Overlay-Image-container-to-overlay-image-container"
+          style={{
+            filter: `contrast(${contrast}%) brightness(${brightness}%) `,
+            transform: `rotate(${rotationAngle}deg)`,
+          }}
+        >
           <img
             src={imageSrc}
             alt="Original Image"
             className="Overlay-Image-image-uploded"
-            style={{
-              filter: `brightness(${brightness}%) contrast(${contrast}%) `,
-            }}
           />
-          {textsWithPositions &&
-            textsWithPositions.map((text) => (
-              <div
-                key={text.id}
-                className="text-overlay"
-                style={{
-                  color: text.textColor,
-                  position: "absolute",
-                  top: `${text.position.y}%`,
-                  left: `${text.position.x}%`,
-                  fontSize: `${text.fontSize}px`,
-                  fontFamily: text.font,
-                  fontWeight: text.isBold ? "bold" : "normal",
-                  fontStyle: text.isItalic ? "italic" : "normal",
-                  backgroundColor: text.isHighlighted
-                    ? `${text.highlightColor}${Math.round(
-                        text.highlightOpacity * 255
-                      ).toString(16)}`
-                    : "transparent",
-                  textAlign: "center",
-                }}
-              >
-                {text.content}
-              </div>
-            ))}
+          {textsWithPositions.map((text) => (
+            <div
+              key={text.id}
+              className="text-overlay"
+              style={{
+                color: text.textColor,
+                position: "absolute",
+                top: `${text.position.y}px`,
+                left: `${text.position.x}px`,
+                fontSize: `${text.fontSize}px`,
+                fontFamily: text.font,
+                fontWeight: text.isBold ? "bold" : "normal",
+                fontStyle: text.isItalic ? "italic" : "normal",
+                backgroundColor: text.isHighlighted
+                  ? `${text.highlightColor}${Math.round(
+                      text.highlightOpacity * 255
+                    ).toString(16)}`
+                  : "transparent",
+                textAlign: "center",
+                pointerEvents: "none", // Disable pointer events so that clicks pass through the text overlay to the image
+              }}
+            >
+              {text.content}
+            </div>
+          ))}
           {drawnArrows &&
             drawnArrows.map((arrow, index) => {
               // Calculate the angle of the arrow
@@ -313,7 +321,6 @@ const OverLayImage = ({
             })}
           {isOkClicked && uploadedPhoto && (
             <Draggable
-              // bounds="parent"
               defaultPosition={{ x: position.x, y: position.y }}
               onStop={(e, data) => setPosition({ x: data.x, y: data.y })}
             >
@@ -321,19 +328,12 @@ const OverLayImage = ({
                 src={uploadedPhoto}
                 alt="Uploaded"
                 className="Overlay-Image-overlay"
-                style={{ transform: `rotate(${rotationAngle}deg)` }}
+                style={{ transform: `rotate(${rotationAngles}deg)` }}
               />
             </Draggable>
           )}
         </div>
-        <div className="Buttons-undo-redo-conatainer">
-          <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
-            Undo
-          </button>
-          <button className="Buttons-undo-redo-yytytyt" onClick={redo}>
-            Redo
-          </button>
-        </div>
+
         {isPopupOpen && (
           <div className="Overlay-for-edit-images-tablist-section-main-container ">
             <div className=" Overlay-for-edit-images-tablist-section-header-container">
@@ -368,7 +368,7 @@ const OverLayImage = ({
                   <img
                     src={uploadedPhoto}
                     alt="Uploaded"
-                    style={{ transform: `rotate(${rotationAngle}deg)` }}
+                    style={{ transform: `rotate(${rotationAngles}deg)` }}
                     // className="photo-container-photo-is-reviewed"
                   />
                 )}
@@ -391,7 +391,14 @@ const OverLayImage = ({
           </div>
         )}
       </div>
-
+      <div className="Buttons-undo-redo-conatainer">
+        <button className="Buttons-undo-redo-yytytyt" onClick={handleUndo}>
+          Undo
+        </button>
+        <button className="Buttons-undo-redo-yytytyt" onClick={handleRedo}>
+          Redo
+        </button>
+      </div>
       <input
         ref={fileInputRef}
         type="file"

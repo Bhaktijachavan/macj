@@ -29,6 +29,11 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const [textsWithPositions, setTextsWithPositions] = useState([]);
   const [croppedImageUrl, setCroppedImage] = useState(null);
   const [modifiedImageUrl, setModifiedImageUrl] = useState(null);
+  const [arrowColor, setArrowColor] = useState("Black");
+
+  const handleColorChange = (color) => {
+    setArrowColor(color);
+  };
 
   const handleSaveChanges = () => {
     // Gather all relevant data about the modified image
@@ -92,9 +97,9 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const handleTabClick = (tabNumber) => {
     setActiveTab(tabNumber);
 
-    if (tabNumber === 9) {
-      setEditorKey((prevKey) => prevKey + 1);
-    }
+    // if (tabNumber === 9) {
+    //   setEditorKey((prevKey) => prevKey + 1);
+    // }
     if (tabNumber === 10) {
       setEditorKey((prevKey) => prevKey + 1);
     }
@@ -124,9 +129,10 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
     1: (
       <CropImageContent
         imageUrl={uploadedImageUrl}
-        texts={textFromEditor}
+        textsWithPositions={textsWithPositions}
         brightness={brightness}
         contrast={contrast}
+        rotationAngle={rotationAngle}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
         drawnOvals={drawnOvals}
@@ -139,8 +145,9 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
     2: (
       <AdjustBrightnessContent
         imageUrl={uploadedImageUrl}
+        rotationAngle={rotationAngle}
         croppedImageUrl={croppedImageUrl}
-        texts={textFromEditor}
+        textsWithPositions={textsWithPositions}
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
@@ -154,11 +161,12 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
       <AdjustContrastContent
         imageUrl={uploadedImageUrl}
         croppedImageUrl={croppedImageUrl}
-        texts={textFromEditor}
+        textsWithPositions={textsWithPositions}
         contrast={contrast}
         brightness={brightness}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
+        rotationAngle={rotationAngle}
         drawnOvals={drawnOvals}
         drawnRectangles={drawnRectangles}
         onContrastChange={handleContrastChange}
@@ -168,7 +176,7 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
       <RotateClockwiseContent
         imageUrl={uploadedImageUrl}
         croppedImageUrl={croppedImageUrl}
-        texts={textFromEditor}
+        textsWithPositions={textsWithPositions}
         rotationAngle={rotationAngle}
         contrast={contrast}
         brightness={brightness}
@@ -183,13 +191,15 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
       <DrawLineContent
         imageUrl={uploadedImageUrl}
         croppedImageUrl={croppedImageUrl}
-        texts={textFromEditor}
+        rotationAngle={rotationAngle}
+        textsWithPositions={textsWithPositions}
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
         drawnOvals={drawnOvals}
         drawnRectangles={drawnRectangles}
+        arrowColor={arrowColor}
         onDrawLines={handleDrawnLines}
       />
     ),
@@ -197,13 +207,15 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
       <DrawArrowContent
         imageUrl={uploadedImageUrl}
         croppedImageUrl={croppedImageUrl}
-        texts={textFromEditor}
+        rotationAngle={rotationAngle}
+        textsWithPositions={textsWithPositions}
         contrast={contrast}
         brightness={brightness}
         drawnArrows={drawnArrows}
         drawnLines={drawnLines}
         drawnOvals={drawnOvals}
         drawnRectangles={drawnRectangles}
+        arrowColor={arrowColor}
         onDrawArrow={handleDrawnArrows}
       />
     ),
@@ -211,13 +223,15 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
       <DrawRectangleContent
         imageUrl={uploadedImageUrl}
         croppedImageUrl={croppedImageUrl}
-        texts={textFromEditor}
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
+        rotationAngle={rotationAngle}
         drawnLines={drawnLines}
+        textsWithPositions={textsWithPositions}
         drawnRectangles={drawnRectangles}
         drawnOvals={drawnOvals}
+        arrowColor={arrowColor}
         onDrawRectangles={handleDrawnRectangle}
       />
     ),
@@ -225,19 +239,21 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
       <DrawOvalContent
         imageUrl={uploadedImageUrl}
         croppedImageUrl={croppedImageUrl}
-        texts={textFromEditor}
+        textsWithPositions={textsWithPositions}
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
+        rotationAngle={rotationAngle}
         drawnLines={drawnLines}
         drawnOvals={drawnOvals}
         drawnRectangles={drawnRectangles}
+        arrowColor={arrowColor}
         onDrawOvals={handleDrawnOval}
       />
     ),
     9: (
       <Editor
-        key={editorKey}
+        // key={editorKey}
         imageUrl={uploadedImageUrl}
         croppedImageUrl={croppedImageUrl}
         textFromEditor={textFromEditor}
@@ -246,6 +262,7 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
+        rotationAngle={rotationAngle}
         drawnLines={drawnLines}
         drawnOvals={drawnOvals}
         drawnRectangles={drawnRectangles}
@@ -260,6 +277,7 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
         imageUrl={uploadedImageUrl}
         croppedImageUrl={croppedImageUrl}
         textsWithPositions={textsWithPositions}
+        rotationAngle={rotationAngle}
         brightness={brightness}
         contrast={contrast}
         drawnArrows={drawnArrows}
@@ -307,7 +325,11 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
                   </section>
                   <section className="color-picker-heading-and-color-picker">
                     <button></button>
-                    <input className="color-pickkkker" type="color" />
+                    <input
+                      className="color-pickkkker"
+                      type="color"
+                      onChange={(e) => handleColorChange(e.target.value)}
+                    />
                   </section>
                 </div>
               </div>

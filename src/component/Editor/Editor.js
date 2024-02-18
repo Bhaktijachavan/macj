@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Editor.css";
-import Draggable from "react-draggable";
+
 const Editor = ({
   imageUrl,
+  croppedImageUrl,
+  textsWithPositions,
   onTextChange,
   drawnArrows,
   brightness,
@@ -10,9 +12,7 @@ const Editor = ({
   drawnLines,
   drawnOvals,
   drawnRectangles,
-  croppedImageUrl,
-
-  textsWithPositions,
+  rotationAngle,
 }) => {
   const [font, setFont] = useState("Arial");
   const [fontSize, setFontSize] = useState(16);
@@ -22,20 +22,21 @@ const Editor = ({
   const [textColor, setTextColor] = useState("#000000");
   const [highlightColor, setHighlightColor] = useState("#FFFF00");
   const [highlightOpacity, setHighlightOpacity] = useState(1);
-  const [text, setText] = useState("");
-  const [isPopupOpen, setIsPopupOpen] = useState(true);
-  const [texts, setTexts] = useState([]);
-  const nextTextId = useRef(1);
-  const changesHistory = useRef([]);
-  const historyIndex = useRef(-1);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
+  const [clickPosition, setClickPosition] = useState({ x: 0, y: 0 });
+  const [text, setText] = useState("");
+  const [texts, setTexts] = useState(textsWithPositions);
+
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const [history, setHistory] = useState([]); // Maintain a history of text changes
 
   useEffect(() => {
     const handleKeydown = (event) => {
       if (event.ctrlKey && event.key === "z") {
-        redo();
+        handleUndo();
       } else if (event.ctrlKey && event.key === "y") {
-        redo();
+        handleRedo();
       }
     };
 
@@ -45,10 +46,35 @@ const Editor = ({
       window.removeEventListener("keydown", handleKeydown);
     };
   }, []); // Empty dependency array to run only once
-  useEffect(() => {
-    // Update the texts state when textsWithPositions changes
-    setTexts(textsWithPositions);
-  }, []);
+
+  const handleAddText = () => {
+    // Create a new text object and add it to the texts array
+    const newText = {
+      id: Date.now(), // Generate a unique id
+      content: text,
+      position: { x: clickPosition.x, y: clickPosition.y }, // Use the click position
+      font,
+      fontSize,
+      isBold,
+      isItalic,
+      isHighlighted,
+      textColor,
+      highlightColor,
+      highlightOpacity,
+    };
+    setTexts((prevTexts) => [...prevTexts, newText]); // Add the new text to the texts state
+    onTextChange([...textsWithPositions, newText]);
+
+    setText(""); // Clear the text input
+    setIsPopupOpen(false); // Close the popup
+    setHistory((prevHistory) => [
+      ...prevHistory.slice(0, historyIndex + 1),
+      texts,
+    ]);
+    setHistoryIndex(historyIndex + 1);
+    setText("");
+    setIsPopupOpen(false); // Close the popup
+  };
 
   useEffect(() => {
     if (croppedImageUrl) {
@@ -56,7 +82,7 @@ const Editor = ({
     } else {
       setImageSrc(imageUrl); // Set to original image URL
     }
-  }, [croppedImageUrl]);
+  }, [croppedImageUrl, imageUrl]);
 
   const handleFontChange = (event) => {
     setFont(event.target.value);
@@ -90,99 +116,125 @@ const Editor = ({
     setHighlightOpacity(event.target.value);
   };
 
+  const handleImageClick = (event) => {
+    // Get the clicked position relative to the image
+    const rect = event.target.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    setClickPosition({ x, y });
+    setIsPopupOpen(true); // Open the popup box
+  };
+
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
-  const handleDragStop = (id, newPosition) => {
-    const updatedTexts = texts.map((text) =>
-      text.id === id ? { ...text, position: newPosition } : text
-    );
-    setTexts(updatedTexts);
-    onTextChange(updatedTexts);
-  };
-  const handleAddText = () => {
-    // Create a new text object and add it to the texts array
-    const newText = {
-      id: nextTextId.current,
-      content: text,
-      position: { x: 20, y: 20 }, // Initial position
-      font,
-      fontSize,
-      isBold,
-      isItalic,
-      isHighlighted,
-      textColor,
-      highlightColor,
-      highlightOpacity,
-    };
 
-    setTexts((prevTexts) => [...prevTexts, newText]);
-    onTextChange((prevTextsWithPositions) => [
-      ...prevTextsWithPositions,
-      newText,
-    ]);
-    nextTextId.current++;
-    setText(""); // Clear the textarea after adding text
-  };
-  const undo = () => {
-    if (historyIndex.current > 0) {
-      historyIndex.current--;
-      setTexts(changesHistory.current[historyIndex.current]);
+  // Function to handle undo operation
+  const handleUndo = () => {
+    if (historyIndex > 0) {
+      setHistoryIndex(historyIndex - 1); // Decrement history index
+      setTexts(history[historyIndex - 1]); // Set texts state to the previous state in history
     }
   };
 
-  const redo = () => {
-    if (historyIndex.current < changesHistory.current.length - 1) {
-      historyIndex.current++;
-      setTexts(changesHistory.current[historyIndex.current]);
+  // Function to handle redo operation
+  const handleRedo = () => {
+    if (historyIndex < history.length - 1) {
+      setHistoryIndex(historyIndex + 1); // Increment history index
+      setTexts(history[historyIndex + 1]); // Set texts state to the next state in history
     }
   };
+
+  // Effect to update history when texts change
+  useEffect(() => {
+    if (texts !== history[historyIndex]) {
+      setHistory((prevHistory) => [
+        ...prevHistory.slice(0, historyIndex + 1),
+        texts,
+      ]);
+      setHistoryIndex(historyIndex + 1);
+    }
+  }, [texts]);
 
   return (
     <>
       <div className="Editor-image-main-container-to-add-text">
-        <div className="Editor-image-container-to-add-text">
+        <div
+          className="Editor-image-container-to-add-text"
+          style={{
+            filter: `contrast(${contrast}%) brightness(${brightness}%) `,
+            transform: `rotate(${rotationAngle}deg)`,
+          }}
+        >
           <img
             src={imageSrc}
             alt="Original Image"
             className="Editor-image-to-add-text"
-            style={{
-              filter: `brightness(${brightness}%) contrast(${contrast}%)`,
-            }}
+            onClick={handleImageClick} // Attach click event listener to the image
           />
+
           {texts.map((text) => (
-            <Draggable
-              bounds="parent"
+            <div
               key={text.id}
-              defaultPosition={{ x: text.position.x, y: text.position.y }}
-              onStop={(e, data) =>
-                handleDragStop(text.id, { x: data.x, y: data.y })
-              }
+              className="text-overlay"
+              style={{
+                color: text.textColor,
+                position: "absolute",
+                top: `${text.position.y}px`,
+                left: `${text.position.x}px`,
+                fontSize: `${text.fontSize}px`,
+                fontFamily: text.font,
+                fontWeight: text.isBold ? "bold" : "normal",
+                fontStyle: text.isItalic ? "italic" : "normal",
+                backgroundColor: text.isHighlighted
+                  ? `${text.highlightColor}${Math.round(
+                      text.highlightOpacity * 255
+                    ).toString(16)}`
+                  : "transparent",
+                textAlign: "center",
+                pointerEvents: "none", // Disable pointer events so that clicks pass through the text overlay to the image
+              }}
             >
-              <div
-                className="text-overlay"
-                style={{
-                  color: text.textColor,
-                  position: "absolute",
-                  top: `${text.position.y}%`,
-                  left: `${text.position.x}%`,
-                  fontSize: `${text.fontSize}px`,
-                  fontFamily: text.font,
-                  fontWeight: text.isBold ? "bold" : "normal",
-                  fontStyle: text.isItalic ? "italic" : "normal",
-                  backgroundColor: text.isHighlighted
-                    ? `${text.highlightColor}${Math.round(
-                        text.highlightOpacity * 255
-                      ).toString(16)}`
-                    : "transparent",
-                  textAlign: "center",
-                  cursor: "move",
-                }}
-              >
-                {text.content}
-              </div>
-            </Draggable>
+              {text.content}
+            </div>
           ))}
+          {drawnRectangles &&
+            drawnRectangles.map((rectangle, index) => {
+              return (
+                <svg
+                  key={index}
+                  width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
+                  height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
+                  viewBox={`0 0 ${Math.abs(
+                    rectangle.end.x - rectangle.start.x
+                  )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
+                  style={{
+                    position: "absolute",
+                    top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
+                    left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+                    pointerEvents: "none", // Allow pointer events to pass through
+                  }}
+                >
+                  <rect
+                    x={Math.abs(
+                      rectangle.start.x -
+                        Math.min(rectangle.start.x, rectangle.end.x)
+                    )}
+                    y={Math.abs(
+                      rectangle.start.y -
+                        Math.min(rectangle.start.y, rectangle.end.y)
+                    )}
+                    width={Math.abs(rectangle.end.x - rectangle.start.x)}
+                    height={Math.abs(rectangle.end.y - rectangle.start.y)}
+                    style={{
+                      stroke: rectangle.color,
+                      strokeWidth: "4",
+                      fill: "none",
+                    }}
+                  />
+                </svg>
+              );
+            })}
           {drawnArrows &&
             drawnArrows.map((arrow, index) => {
               // Calculate the angle of the arrow
@@ -210,6 +262,7 @@ const Editor = ({
                     position: "absolute",
                     top: `${Math.min(arrow.start.y, arrow.end.y)}px`,
                     left: `${Math.min(arrow.start.x, arrow.end.x)}px`,
+                    pointerEvents: "none", // Allow pointer events to pass through
                   }}
                 >
                   <svg
@@ -253,43 +306,6 @@ const Editor = ({
                 </div>
               );
             })}
-          {drawnRectangles &&
-            drawnRectangles.map((rectangle, index) => {
-              return (
-                <svg
-                  key={index}
-                  width={`${Math.abs(rectangle.end.x - rectangle.start.x)}px`}
-                  height={`${Math.abs(rectangle.end.y - rectangle.start.y)}px`}
-                  viewBox={`0 0 ${Math.abs(
-                    rectangle.end.x - rectangle.start.x
-                  )} ${Math.abs(rectangle.end.y - rectangle.start.y)}`}
-                  style={{
-                    position: "absolute",
-                    top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
-                    left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
-                  }}
-                >
-                  <rect
-                    x={Math.abs(
-                      rectangle.start.x -
-                        Math.min(rectangle.start.x, rectangle.end.x)
-                    )}
-                    y={Math.abs(
-                      rectangle.start.y -
-                        Math.min(rectangle.start.y, rectangle.end.y)
-                    )}
-                    width={Math.abs(rectangle.end.x - rectangle.start.x)}
-                    height={Math.abs(rectangle.end.y - rectangle.start.y)}
-                    style={{
-                      stroke: rectangle.color,
-                      strokeWidth: "4",
-                      fill: "none",
-                    }}
-                  />
-                </svg>
-              );
-            })}
-
           {drawnLines &&
             drawnLines.map((line, index) => (
               <svg
@@ -303,6 +319,7 @@ const Editor = ({
                   position: "absolute",
                   top: `${Math.min(line.start.y, line.end.y)}px`,
                   left: `${Math.min(line.start.x, line.end.x)}px`,
+                  pointerEvents: "none", // Allow pointer events to pass through
                 }}
               >
                 <line
@@ -341,6 +358,7 @@ const Editor = ({
                     position: "absolute",
                     top: `${Math.min(oval.start.y, oval.end.y)}px`,
                     left: `${Math.min(oval.start.x, oval.end.x)}px`,
+                    pointerEvents: "none", // Allow pointer events to pass through
                   }}
                 >
                   <ellipse
@@ -358,205 +376,206 @@ const Editor = ({
               );
             })}
         </div>
+      </div>
+      <div className="information-to-know-what-to-do">
+        <p>Click on any position on the image to add text on position.</p>
+      </div>
+      <div className="Buttons-undo-redo-conatainer">
+        <button className="Buttons-undo-redo-yytytyt" onClick={handleUndo}>
+          Undo
+        </button>
+        <button className="Buttons-undo-redo-yytytyt" onClick={handleRedo}>
+          Redo
+        </button>
+      </div>
 
-        {isPopupOpen && (
-          <div className="editor-for-edit-images-tablist-section ">
+      {isPopupOpen && (
+        <div className="editor-for-edit-images-tablist-section ">
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "57.6%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 1,
+            }}
+          >
             <div
               style={{
-                position: "absolute",
-                top: "50%",
-                left: "57.6%",
-                transform: "translate(-50%, -50%)",
-                zIndex: 1,
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                height: "28em",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
               }}
             >
+              <div className="flex justify-between px-3 editor-heading-close">
+                <div>
+                  <p>Add Text</p>
+                </div>
+                <div
+                  className="hover:bg-red-600 px-2 cursor-pointer"
+                  onClick={handleClosePopup}
+                >
+                  <button>X</button>
+                </div>
+              </div>
               <div
                 style={{
                   display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  height: "28em",
-                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                  borderBottom: "1px solid #ccc",
+                  backgroundColor: "#E5E5E5",
                 }}
               >
-                <div className="flex justify-between px-3 editor-heading-close">
-                  <div>
-                    <p>Add Text</p>
-                  </div>
-                  <div
-                    className="hover:bg-red-600 px-2 cursor-pointer"
-                    onClick={handleClosePopup}
+                <div style={{ flex: 1, padding: "30px" }}>
+                  <label>Font:</label>
+                  <select
+                    value={font}
+                    onChange={handleFontChange}
+                    className="border mb-3"
                   >
-                    <button>X</button>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    borderBottom: "1px solid #ccc",
-                    backgroundColor: "#E5E5E5",
-                  }}
-                >
-                  <div style={{ flex: 1, padding: "30px" }}>
-                    <label>Font:</label>
-                    <select
-                      value={font}
-                      onChange={handleFontChange}
-                      className="border mb-3"
-                    >
-                      <option value="Arial">Arial</option>
-                      <option value="Arial, Helvetica, sans-serif">
-                        Helvetica
-                      </option>
-                      <option value="'Times New Roman', Times, serif">
-                        Times New Roman
-                      </option>
-                      <option value="Verdana, Geneva, sans-serif">
-                        Verdana
-                      </option>
-                      <option value="'Courier New', Courier, monospace">
-                        Courier New
-                      </option>
-                      <option value="'Lucida Console', Monaco, monospace">
-                        Lucida Console
-                      </option>
-                      <option value="'Garamond', serif">Garamond</option>
-                      <option value="'Palatino Linotype', 'Book Antiqua', Palatino, serif">
-                        Palatino
-                      </option>
-                      <option value="'Trebuchet MS', sans-serif">
-                        Trebuchet MS
-                      </option>
-                      <option value="'Georgia', serif">Georgia</option>
-                      {/* Add more fonts as needed */}
-                    </select>
+                    <option value="Arial">Arial</option>
+                    <option value="Arial, Helvetica, sans-serif">
+                      Helvetica
+                    </option>
+                    <option value="'Times New Roman', Times, serif">
+                      Times New Roman
+                    </option>
+                    <option value="Verdana, Geneva, sans-serif">Verdana</option>
+                    <option value="'Courier New', Courier, monospace">
+                      Courier New
+                    </option>
+                    <option value="'Lucida Console', Monaco, monospace">
+                      Lucida Console
+                    </option>
+                    <option value="'Garamond', serif">Garamond</option>
+                    <option value="'Palatino Linotype', 'Book Antiqua', Palatino, serif">
+                      Palatino
+                    </option>
+                    <option value="'Trebuchet MS', sans-serif">
+                      Trebuchet MS
+                    </option>
+                    <option value="'Georgia', serif">Georgia</option>
+                    {/* Add more fonts as needed */}
+                  </select>
 
-                    <label className="">Font Size:</label>
-                    <input
-                      type="number"
-                      value={fontSize}
-                      onChange={handleFontSizeChange}
-                      className="border"
-                    />
-                  </div>
-                  <div style={{ padding: "10px" }}>
-                    <div>
-                      <input
-                        type="checkbox"
-                        checked={isBold}
-                        onChange={handleBoldChange}
-                      />
-                      <label className="px-3">Bold</label>
-                    </div>
-                    <div>
-                      <input
-                        type="checkbox"
-                        checked={isItalic}
-                        onChange={handleItalicChange}
-                      />
-                      <label className="px-3">Italic</label>
-                    </div>
-                    <div className="mb-1">
-                      <input
-                        type="checkbox"
-                        checked={isHighlighted}
-                        onChange={handleHighlightChange}
-                      />
-                      <label className="px-3">Highlight</label>
-                    </div>
-
-                    <div className="mb-1">
-                      <input
-                        type="color"
-                        value={textColor}
-                        onChange={handleTextColorChange}
-                      />
-                      <label>Text Color</label>
-                    </div>
-                    <div className="mb-1">
-                      <input
-                        type="color"
-                        value={highlightColor}
-                        onChange={handleHighlightColorChange}
-                      />
-                      <label>Highlight Color</label>
-                    </div>
-                    <div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.1"
-                        value={highlightOpacity}
-                        onChange={handleHighlightOpacityChange}
-                        className="w-24"
-                      />
-                      <label>Highlight Opacity</label>
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    flex: 1,
-                    padding: "10px",
-                    height: "90%",
-                    backgroundColor: "white",
-                  }}
-                >
-                  <textarea
-                    style={{
-                      fontFamily: font,
-                      fontSize: `${fontSize}px`,
-                      fontWeight: isBold ? "bold" : "normal",
-                      fontStyle: isItalic ? "italic" : "normal",
-                      backgroundColor: isHighlighted
-                        ? `${highlightColor}${Math.round(
-                            highlightOpacity * 255
-                          ).toString(16)}`
-                        : "transparent",
-                      color: textColor,
-                      width: "412px",
-                      height: "135px",
-                      boxSizing: "border-box",
-                    }}
-                    value={text}
-                    onChange={(e) => {
-                      setText(e.target.value);
-                    }}
+                  <label className="">Font Size:</label>
+                  <input
+                    type="number"
+                    value={fontSize}
+                    onChange={handleFontSizeChange}
+                    className="border"
                   />
                 </div>
-                <div className=" flex justify-center gap-5 py-2 bg-gray-200">
+                <div style={{ padding: "10px" }}>
                   <div>
-                    <button
-                      className="button-for-editor px-2"
-                      onClick={handleAddText}
-                    >
-                      Ok
-                    </button>
+                    <input
+                      type="checkbox"
+                      checked={isBold}
+                      onChange={handleBoldChange}
+                    />
+                    <label className="px-3">Bold</label>
                   </div>
                   <div>
-                    <button
-                      className="button-for-editor px-2"
-                      onClick={handleClosePopup}
-                    >
-                      Cancel
-                    </button>
+                    <input
+                      type="checkbox"
+                      checked={isItalic}
+                      onChange={handleItalicChange}
+                    />
+                    <label className="px-3">Italic</label>
                   </div>
+                  <div className="mb-1">
+                    <input
+                      type="checkbox"
+                      checked={isHighlighted}
+                      onChange={handleHighlightChange}
+                    />
+                    <label className="px-3">Highlight</label>
+                  </div>
+
+                  <div className="mb-1">
+                    <input
+                      type="color"
+                      value={textColor}
+                      onChange={handleTextColorChange}
+                    />
+                    <label>Text Color</label>
+                  </div>
+                  <div className="mb-1">
+                    <input
+                      type="color"
+                      value={highlightColor}
+                      onChange={handleHighlightColorChange}
+                    />
+                    <label>Highlight Color</label>
+                  </div>
+                  <div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={highlightOpacity}
+                      onChange={handleHighlightOpacityChange}
+                      className="w-24"
+                    />
+                    <label>Highlight Opacity</label>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  flex: 1,
+                  padding: "10px",
+                  height: "90%",
+                  backgroundColor: "white",
+                }}
+              >
+                <textarea
+                  style={{
+                    fontFamily: font,
+                    fontSize: `${fontSize}px`,
+                    fontWeight: isBold ? "bold" : "normal",
+                    fontStyle: isItalic ? "italic" : "normal",
+                    backgroundColor: isHighlighted
+                      ? `${highlightColor}${Math.round(
+                          highlightOpacity * 255
+                        ).toString(16)}`
+                      : "transparent",
+                    color: textColor,
+                    width: "412px",
+                    height: "135px",
+                    boxSizing: "border-box",
+                  }}
+                  value={text}
+                  onChange={(e) => {
+                    setText(e.target.value);
+                  }}
+                />
+              </div>
+              <div className=" flex justify-center gap-5 py-2 bg-gray-200">
+                <div>
+                  <button
+                    className="button-for-editor px-2"
+                    onClick={handleAddText}
+                  >
+                    Ok
+                  </button>
+                </div>
+                <div>
+                  <button
+                    className="button-for-editor px-2"
+                    onClick={handleClosePopup}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-        )}
-      </div>
-      <div className="Buttons-undo-redo-conatainer">
-        <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
-          Undo
-        </button>
-        <button className="Buttons-undo-redo-yytytyt" onClick={redo}>
-          Redo
-        </button>
-      </div>
+        </div>
+      )}
     </>
   );
 };

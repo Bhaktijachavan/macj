@@ -78,10 +78,10 @@ const PhotoReview = () => {
           <div
             key={rectangle.id}
             className="PhotoReview-rectangle"
-            onDrop={(event) => handleDrop(event, index)}
-            onDragOver={handleDragOver}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
+            // onDrop={(event) => handleDrop(event, index)}
+            // onDragOver={handleDragOver}
+            // onDragEnter={handleDragEnter}
+            // onDragLeave={handleDragLeave}
           >
             <Location />
             <div className="PhotoReview-Drag-Drop-Box">
@@ -130,7 +130,6 @@ const PhotoReview = () => {
               }}
             >
               <Buttons onFileSelect={(file) => handleFileSelect(file, index)} />
-              {/* Include other buttons or components related to each rectangle */}
             </div>
             <Caption />
           </div>
