@@ -38,18 +38,18 @@ const EditTemp = ({ onClose }) => {
     const updatedMenu = menu.map((item, index) =>
       index === selectedMenuItemIndex
         ? {
-            ...item,
-            subItems: item.subItems.map((subItem, subIndex) =>
-              subIndex === selectedSubItemIndex
-                ? {
-                    ...subItem,
-                    radioBoxSelection: "oneDamagePanal",
-                    tabName: formData.onetabName,
-                    onedamagePanelName: formData.onedamagePanelName,
-                  }
-                : subItem
-            ),
-          }
+          ...item,
+          subItems: item.subItems.map((subItem, subIndex) =>
+            subIndex === selectedSubItemIndex
+              ? {
+                ...subItem,
+                radioBoxSelection: "oneDamagePanal",
+                tabName: formData.onetabName,
+                onedamagePanelName: formData.onedamagePanelName,
+              }
+              : subItem
+          ),
+        }
         : item
     );
 
@@ -398,11 +398,10 @@ const EditTemp = ({ onClose }) => {
                     <FaFolderOpen className="mr-2 inline-block" size={18} />
                   </div>
                   <div
-                    className={`Menu-Item ${
-                      selectedMenuTitleIndex === null
+                    className={`Menu-Item ${selectedMenuTitleIndex === null
                         ? "selected-menu-title"
                         : ""
-                    }`}
+                      }`}
                     onClick={() => handleSelectMenuTitle(null)}
                   >
                     <p
@@ -421,9 +420,8 @@ const EditTemp = ({ onClose }) => {
                       <li key={index}>
                         <button
                           onDoubleClick={() => handleDoubleClick(index)}
-                          className={`Menu-Item ${
-                            selectedMenuItemIndex === index ? "clicked" : ""
-                          }`}
+                          className={`Menu-Item ${selectedMenuItemIndex === index ? "clicked" : ""
+                            }`}
                           onClick={() => handleSelectMenuItem(index)}
                           style={{
                             backgroundColor:
@@ -479,11 +477,10 @@ const EditTemp = ({ onClose }) => {
                             {item.subItems.map((subItem, subIndex) => (
                               <li
                                 key={subIndex}
-                                className={`${
-                                  selectedSubItemIndex === subIndex
+                                className={`${selectedSubItemIndex === subIndex
                                     ? "selected-subitem-edittemp"
                                     : ""
-                                }`}
+                                  }`}
                               >
                                 <button
                                   onClick={() => handleSelectSubItem(subIndex)}
@@ -547,8 +544,8 @@ const EditTemp = ({ onClose }) => {
                 subItemName={
                   selectedSubItemIndex !== null
                     ? items[selectedMenuItemIndex].subItems[
-                        selectedSubItemIndex
-                      ]?.submenuname
+                      selectedSubItemIndex
+                    ]?.submenuname
                     : ""
                 }
               >
