@@ -176,15 +176,15 @@ fieldset {
 .all-the-output-screen-with-all-the-changes-reflect-here {
 }
 .with-borders {
-  border: 2px solid black;
+  border: 5px solid black;
 }
 
 .react-draggable-dragged {
   width: 10em;
 }
-.draggableeeee::selection{
-background-color: skyblue ;
+.draggableeeee::selection {
+  background-color: skyblue;
 }
-.draggableeeee{
+.draggableeeee {
   cursor: pointer;
 }
