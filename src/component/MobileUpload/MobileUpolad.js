@@ -10,11 +10,11 @@ const MobileUpload = () => {
       <div className="container-mobileupload">
         <div className="container-header-mobileupload">
           <p className="title-header-mobileupload">
-            HIP Mobile Sync Management
+            Macj Mobile Sync Management
           </p>{" "}
           <br />
           <p className="note-header-mobileupload">
-            NOTE: REQUIRES HIP CLOUD OR HIP OFFICE SERVICE!
+            NOTE: REQUIRES Macj CLOUD OR Macj OFFICE SERVICE!
           </p>
           <p className="info-header-mobileupload">
             Sign up under Pricing on our website if you don't have an active
@@ -83,7 +83,7 @@ const MobileUpload = () => {
             <i className="fa-footer-mobileupload"></i> Application Settings
           </button>
           <span className="tag-footer-mobileupload">
-            <i className="fa-footer-mobileupload"></i> Connected to HIP Cloud
+            <i className="fa-footer-mobileupload"></i> Connected to Macj Cloud
           </span>
           <input className="input-footer-mobileupload" type="text" />
         </div>
