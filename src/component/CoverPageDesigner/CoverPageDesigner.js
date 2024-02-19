@@ -32,9 +32,6 @@ function CoverPageDesigner({ onClose }) {
   const [fontSize, setFontSize] = useState(16);
   const [isHovered, setIsHovered] = useState(false);
 
-
-
-
   // Export state function
   const exportState = () => {
     const exportedState = {
@@ -72,7 +69,6 @@ function CoverPageDesigner({ onClose }) {
       };
     }
   };
-
 
   const addObjectToOutput = (objectType, properties) => {
     setOutputContent([...outputContent, { type: objectType, properties }]);
@@ -183,7 +179,6 @@ function CoverPageDesigner({ onClose }) {
     }
   };
 
-
   const getContentForLabel = (label) => {
     let content = null;
     switch (label) {
@@ -208,13 +203,19 @@ function CoverPageDesigner({ onClose }) {
   };
   const handleRemoveBoxTextImage = () => {
     // Filter out selected objects from editableTexts array
-    const updatedTexts = editableTexts.filter(({ id }) => !selectedObjects.includes(id));
+    const updatedTexts = editableTexts.filter(
+      ({ id }) => !selectedObjects.includes(id)
+    );
 
     // Filter out selected objects from addedImages array
-    const updatedImages = addedImages.filter(({ id }) => !selectedObjects.includes(id));
+    const updatedImages = addedImages.filter(
+      ({ id }) => !selectedObjects.includes(id)
+    );
 
     // Filter out selected objects from outputContent array
-    const updatedContent = outputContent.filter(({ id }) => !selectedObjects.includes(id));
+    const updatedContent = outputContent.filter(
+      ({ id }) => !selectedObjects.includes(id)
+    );
 
     // Update the state with the filtered arrays
     setEditableTexts(updatedTexts);
@@ -238,7 +239,9 @@ function CoverPageDesigner({ onClose }) {
     // Filter out the selected object from various states based on its id
     const updatedTexts = editableTexts.filter((text) => text.id !== id);
     const updatedImages = addedImages.filter((image) => image.id !== id);
-    const updatedContents = outputContent.filter((content) => content.id !== id);
+    const updatedContents = outputContent.filter(
+      (content) => content.id !== id
+    );
 
     // Update the state with the filtered arrays
     setEditableTexts(updatedTexts);
@@ -260,7 +263,7 @@ function CoverPageDesigner({ onClose }) {
       </div>
       <div
         className="flex justify-center gap-3 p-2 bg-gray-200 main-container-for-the-cover-page-designer-popup-page"
-      // style={{ height: "100vh" }}
+        // style={{ height: "100vh" }}
       >
         <div className="container-for-Object-and-control-section-for-design-cover-page-grid">
           {/* Objects Column */}
@@ -494,23 +497,28 @@ function CoverPageDesigner({ onClose }) {
         </fieldset>
         {/* Output Column */}
         <div
-          className={`w-1/4 border border-gray-300 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here ${isBorderApplied ? "with-borders" : ""
-            }`}
+          className={`w-1/4 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here ${
+            isBorderApplied ? "with-borders" : ""
+          }`}
           style={{ width: "50%" }}
         >
           {/* <h2 className="text-2xl font-bold mb-4">Output</h2> */}
 
           <div className="content-that-is-draggable-and-adjustable-within-div">
             {/* Display the text input field if editing text */}
-            {selectedCheckboxContents.map((content, index) => (
+            {/* {selectedCheckboxContents.map((content, index) => (
               <Draggable
                 key={index}
                 bounds="parent"
-                className={`draggableeeee cursor-pointer ${isHovered ? 'hovered' : ''}`}
+                className={`draggableeeee cursor-pointer ${
+                  isHovered ? "hovered" : ""
+                }`}
                 style={{
-                  border: selectedObjects.includes(content.id) ? '2px solid red !important' : 'none',
-                  padding: '5px !important',
-                  borderRadius: '5px !important',
+                  border: selectedObjects.includes(content.id)
+                    ? "2px solid red !important"
+                    : "none",
+                  padding: "5px !important",
+                  borderRadius: "5px !important",
                 }}
                 onMouseOver={handleMouseOver}
                 onMouseLeave={handleMouseLeave}
@@ -518,6 +526,37 @@ function CoverPageDesigner({ onClose }) {
                 <div>
                   {content}
                   {isHovered && (
+                    <div
+                      className="delete-icon"
+                      onClick={() => handleDelete(content.id)}
+                    >
+                      🗑️
+                    </div>
+                  )}
+                </div>
+              </Draggable>
+            ))} */}
+            {selectedCheckboxContents.map((content, index) => (
+              <Draggable
+                key={index}
+                bounds="parent"
+                className={`draggableeeee cursor-pointer ${
+                  isHovered ? "hovered" : ""
+                }`}
+                style={{
+                  border:
+                    content && selectedObjects.includes(content.id)
+                      ? "2px solid red !important"
+                      : "none",
+                  padding: "5px !important",
+                  borderRadius: "5px !important",
+                }}
+                onMouseOver={handleMouseOver}
+                onMouseLeave={handleMouseLeave}
+              >
+                <div>
+                  {content}
+                  {isHovered && content && (
                     <div
                       className="delete-icon"
                       onClick={() => handleDelete(content.id)}
@@ -535,9 +574,11 @@ function CoverPageDesigner({ onClose }) {
                 bounds="parent"
                 className="draggableeeee"
                 style={{
-                  border: selectedObjects.includes(id) ? '2px solid #007BFF' : 'none',
-                  padding: '5px',
-                  borderRadius: '5px',
+                  border: selectedObjects.includes(id)
+                    ? "2px solid #007BFF"
+                    : "none",
+                  padding: "5px",
+                  borderRadius: "5px",
                 }}
               >
                 <div>
@@ -551,9 +592,11 @@ function CoverPageDesigner({ onClose }) {
                 bounds="parent"
                 className="draggableeeee"
                 style={{
-                  border: selectedObjects.includes(id) ? '2px solid #007BFF' : 'none',
-                  padding: '5px',
-                  borderRadius: '5px',
+                  border: selectedObjects.includes(id)
+                    ? "2px solid #007BFF"
+                    : "none",
+                  padding: "5px",
+                  borderRadius: "5px",
                 }}
               >
                 <div>
@@ -578,10 +621,16 @@ function CoverPageDesigner({ onClose }) {
           <button className="button-for-footer-for-changes-in-cover-page">
             Apply Changes <br /> to Template Template
           </button>{" "}
-          <button onClick={exportState} className="button-for-footer-for-changes-in-cover-page">
+          <button
+            onClick={exportState}
+            className="button-for-footer-for-changes-in-cover-page"
+          >
             Export Layout to a <br /> File for Future Use
           </button>{" "}
-          <button onClick={() => fileInputRef.current.click()} className="button-for-footer-for-changes-in-cover-page">
+          <button
+            onClick={() => fileInputRef.current.click()}
+            className="button-for-footer-for-changes-in-cover-page"
+          >
             Import Layout <br /> from File
           </button>{" "}
           <button
@@ -592,7 +641,6 @@ function CoverPageDesigner({ onClose }) {
           </button>
         </div>
       </div>
-
     </>
   );
 }

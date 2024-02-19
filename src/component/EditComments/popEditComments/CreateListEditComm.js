@@ -1,13 +1,30 @@
 import React, { useState } from "react";
 import "./CreateListEditComm.css";
 import AddListPopUp from "./AddListPopUp.js";
-import AddCommentsPopUp from "./AddCommentsPopUp.js"
+import AddCommentsPopUp from "./AddCommentsPopUp.js";
+import DeleteListPopup from "./DeleteListPopup/DeleteListPopup.js";
+import EditCommentPopup from "./EditCommentPopup/EditCommentPopup.js";
 
 const CreateListEditComm = ({ onClose }) => {
   const [text1, setText1] = useState("");
   const [text2, setText2] = useState("");
   const [isAddListPopUp, setAddListPopUp] = useState(false);
   const [isAddCommentsPopUp, setIsAddCommentsPopUp] = useState(false);
+  const [deletetlistPopup, setDeletetlistPopup] = useState(false);
+  const [editCommentListPopup, setEditCommentListPopup] = useState(false);
+
+  const openDeletetListPopup = () => {
+    setDeletetlistPopup(true);
+  };
+  const closeDeletetListPopup = () => {
+    setDeletetlistPopup(false);
+  };
+  const openEditCommentListPopup = () => {
+    setEditCommentListPopup(true);
+  };
+  const closeEditCommentListPopup = () => {
+    setEditCommentListPopup(false);
+  };
 
   const handleAddListClick = () => {
     setAddListPopUp(true);
@@ -17,9 +34,9 @@ const CreateListEditComm = ({ onClose }) => {
     setAddListPopUp(false);
     setIsAddCommentsPopUp(false);
   };
-  const handleAddCommPopopClick = () =>{
+  const handleAddCommPopopClick = () => {
     setIsAddCommentsPopUp(true);
-  }
+  };
 
   return (
     <div>
@@ -48,7 +65,7 @@ const CreateListEditComm = ({ onClose }) => {
                 <div className="first-cont-create">
                   <div>
                     <ul className="flex gap-5 pr-4 tems-center text-center">
-                      <div className="pl-4">
+                      <div className="">
                         <div
                           className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer"
                           onClick={handleAddListClick}
@@ -59,9 +76,9 @@ const CreateListEditComm = ({ onClose }) => {
                         </div>
 
                         <div className="w-full">
-                        {isAddListPopUp && (
-                          <AddListPopUp onClose={handlePopUpClose} />
-                        )}
+                          {isAddListPopUp && (
+                            <AddListPopUp onClose={handlePopUpClose} />
+                          )}
                         </div>
                       </div>
                       <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
@@ -70,9 +87,15 @@ const CreateListEditComm = ({ onClose }) => {
                         </li>
                       </div>
                       <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
-                        <li>
+                        <li onClick={openDeletetListPopup}>
                           Delete <br /> List
                         </li>
+                        {deletetlistPopup && (
+                          <div className="popup">
+                            {/* Render your color palet component here */}
+                            <DeleteListPopup onClose={closeDeletetListPopup} />
+                          </div>
+                        )}
                       </div>
                       <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
                         <li>
@@ -116,7 +139,9 @@ const CreateListEditComm = ({ onClose }) => {
                           </li>
                         </div>
 
-                        {isAddCommentsPopUp && <AddCommentsPopUp onClose={handlePopUpClose} />}
+                        {isAddCommentsPopUp && (
+                          <AddCommentsPopUp onClose={handlePopUpClose} />
+                        )}
                       </div>
                       <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
                         <li>
@@ -124,9 +149,17 @@ const CreateListEditComm = ({ onClose }) => {
                         </li>
                       </div>
                       <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
-                        <li>
+                        <li onClick={openEditCommentListPopup}>
                           Edit <br /> Comment
-                        </li>
+                        </li>{" "}
+                        {editCommentListPopup && (
+                          <div className="popup">
+                            {/* Render your color palet component here */}
+                            <EditCommentPopup
+                              onClose={closeEditCommentListPopup}
+                            />
+                          </div>
+                        )}
                       </div>
                       <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
                         <li>

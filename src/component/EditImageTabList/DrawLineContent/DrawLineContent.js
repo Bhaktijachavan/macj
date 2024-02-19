@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 const DrawLineContent = ({
   imageUrl,
-  texts,
+  textsWithPositions,
   drawnArrows,
   brightness,
   contrast,
@@ -13,13 +13,19 @@ const DrawLineContent = ({
   drawnOvals,
   drawnRectangles,
   croppedImageUrl,
+  rotationAngle,
+  arrowColor = { arrowColor },
 }) => {
   const [lines, setLines] = useState(drawnLines);
   const [drawing, setDrawing] = useState(false);
   const canvasRef = useRef(null);
-  const linesHistory = useRef([]);
-  const historyIndex = useRef(-1);
+  const linesHistory = useRef([drawnLines]);
+  const historyIndex = useRef(0);
   const [imageSrc, setImageSrc] = useState("");
+
+  useEffect(() => {
+    linesHistory.current.push(drawnLines); // Add the initial state to the history
+  }, []); // Empty dependency array to run only once
   useEffect(() => {
     const handleKeydown = (event) => {
       if (event.ctrlKey && event.key === "z") {
@@ -34,7 +40,7 @@ const DrawLineContent = ({
     return () => {
       window.removeEventListener("keydown", handleKeydown);
     };
-  }, []); // Empty dependency array to run only once
+  }, []);
 
   useEffect(() => {
     if (croppedImageUrl) {
@@ -55,8 +61,8 @@ const DrawLineContent = ({
       const aspectRatio = image.width / image.height;
 
       // Set the canvas width and height based on the image dimensions
-      const maxWidth = 750; // Max width for the canvas
-      const maxHeight = 600; // Max height for the canvas
+      const maxWidth = 776; // Max width for the canvas
+      const maxHeight = 576; // Max height for the canvas
       let canvasWidth = image.width;
       let canvasHeight = image.height;
 
@@ -74,7 +80,6 @@ const DrawLineContent = ({
       canvas.height = canvasHeight;
 
       ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
-      canvas.style.filter = `brightness(${brightness}%) contrast(${contrast}%)`;
 
       // Draw existing lines
       lines.forEach((line) => {
@@ -90,13 +95,12 @@ const DrawLineContent = ({
     const newLine = {
       start: { x: offsetX, y: offsetY },
       end: { x: offsetX, y: offsetY },
-      color: "blue",
+      color: arrowColor,
     };
-    setLines((prevLines) => [...prevLines, newLine]);
-    // Add new line to history
     linesHistory.current.splice(historyIndex.current + 1);
     linesHistory.current.push([...lines]);
     historyIndex.current++;
+    setLines((prevLines) => [...prevLines, newLine]);
   };
 
   const draw = (e) => {
@@ -108,6 +112,7 @@ const DrawLineContent = ({
       updatedLines[lastIndex].end = { x: offsetX, y: offsetY };
       return updatedLines;
     });
+    linesHistory.current[historyIndex.current] = [...lines];
   };
 
   const stopDrawing = () => {
@@ -142,7 +147,13 @@ const DrawLineContent = ({
   return (
     <>
       <div className="container-for-draw-line-content-component">
-        <div className="draw-line-container">
+        <div
+          className="draw-line-container"
+          style={{
+            filter: `contrast(${contrast}%) brightness(${brightness}%) `,
+            transform: `rotate(${rotationAngle}deg)`,
+          }}
+        >
           <canvas
             className="canvas-for-draw-line-content"
             ref={canvasRef}
@@ -151,31 +162,31 @@ const DrawLineContent = ({
             onMouseUp={stopDrawing}
             onMouseOut={stopDrawing}
           />
-          {texts &&
-            texts.map((text) => (
-              <div
-                key={text.id}
-                className="text-overlay"
-                style={{
-                  color: text.textColor,
-                  position: "absolute",
-                  top: `${text.position.y}%`,
-                  left: `${text.position.x}%`,
-                  fontSize: `${text.fontSize}px`,
-                  fontFamily: text.font,
-                  fontWeight: text.isBold ? "bold" : "normal",
-                  fontStyle: text.isItalic ? "italic" : "normal",
-                  backgroundColor: text.isHighlighted
-                    ? `${text.highlightColor}${Math.round(
-                        text.highlightOpacity * 255
-                      ).toString(16)}`
-                    : "transparent",
-                  textAlign: "center",
-                }}
-              >
-                {text.content}
-              </div>
-            ))}
+          {textsWithPositions.map((text) => (
+            <div
+              key={text.id}
+              className="text-overlay"
+              style={{
+                color: text.textColor,
+                position: "absolute",
+                top: `${text.position.y}px`,
+                left: `${text.position.x}px`,
+                fontSize: `${text.fontSize}px`,
+                fontFamily: text.font,
+                fontWeight: text.isBold ? "bold" : "normal",
+                fontStyle: text.isItalic ? "italic" : "normal",
+                backgroundColor: text.isHighlighted
+                  ? `${text.highlightColor}${Math.round(
+                      text.highlightOpacity * 255
+                    ).toString(16)}`
+                  : "transparent",
+                textAlign: "center",
+                pointerEvents: "none", // Disable pointer events so that clicks pass through the text overlay to the image
+              }}
+            >
+              {text.content}
+            </div>
+          ))}
           {drawnArrows &&
             drawnArrows.map((arrow, index) => {
               // Calculate the angle of the arrow
@@ -203,6 +214,7 @@ const DrawLineContent = ({
                     position: "absolute",
                     top: `${Math.min(arrow.start.y, arrow.end.y)}px`,
                     left: `${Math.min(arrow.start.x, arrow.end.x)}px`,
+                    pointerEvents: "none", // Allow pointer events to pass through
                   }}
                 >
                   <svg
@@ -269,6 +281,7 @@ const DrawLineContent = ({
                     position: "absolute",
                     top: `${Math.min(oval.start.y, oval.end.y)}px`,
                     left: `${Math.min(oval.start.x, oval.end.x)}px`,
+                    pointerEvents: "none", // Allow pointer events to pass through
                   }}
                 >
                   <ellipse
@@ -299,6 +312,7 @@ const DrawLineContent = ({
                     position: "absolute",
                     top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
                     left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+                    pointerEvents: "none", // Allow pointer events to pass through
                   }}
                 >
                   <rect
@@ -322,14 +336,14 @@ const DrawLineContent = ({
               );
             })}
         </div>
-        <div className="Buttons-undo-redo-container">
-          <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
-            Undo
-          </button>
-          <button className="Buttons-undo-redo-yytytyt" onClick={redo}>
-            Redo
-          </button>
-        </div>
+      </div>
+      <div className="Buttons-undo-redo-container">
+        <button className="Buttons-undo-redo-yytytyt" onClick={undo}>
+          Undo
+        </button>
+        <button className="Buttons-undo-redo-yytytyt" onClick={redo}>
+          Redo
+        </button>
       </div>
     </>
   );
