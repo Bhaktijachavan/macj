@@ -190,4 +190,6 @@ fieldset {
 }
 .draggableeeee {
   cursor: pointer;
+  display: flex;
+  justify-content: center;
 }

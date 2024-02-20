@@ -2,4 +2,12 @@
   font-size: 14px;
   letter-spacing: 0.1px;
   margin-top: 1em;
+  width: 12em;
+  text-align: center;
+}
+.draggable-text {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: 8em;
 }

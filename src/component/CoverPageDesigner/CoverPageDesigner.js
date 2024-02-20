@@ -375,15 +375,7 @@ function CoverPageDesigner({ onClose }) {
                       onChange={(e) => handleCheckboxChange(e, "Cover Photo")}
                     />
                     Cover Photo
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={checkedCheckboxes.includes("Company Logo")}
-                      onChange={(e) => handleCheckboxChange(e, "Company Logo")}
-                    />
-                    Company Logo
-                  </label>
+                  </label>{" "}
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -398,6 +390,14 @@ function CoverPageDesigner({ onClose }) {
                       }
                     />
                     Company Information
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={checkedCheckboxes.includes("Company Logo")}
+                      onChange={(e) => handleCheckboxChange(e, "Company Logo")}
+                    />
+                    Company Logo
                   </label>
                   <label className="flex items-center gap-2">
                     <input
