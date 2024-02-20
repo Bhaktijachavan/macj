@@ -1,4 +1,4 @@
-import React, { useState, useRef, useReducer } from "react";
+import React, { useState, useRef, useReducer, useEffect } from "react";
 import OutputComponent from "./OutputComponent/OutputComponent";
 import DraggableText from "./CompanyInfo/CompanyInfo";
 import CheckboxContent1 from "./CheckboxContent1/CheckboxContent1";
@@ -13,9 +13,39 @@ import InspectionSignature from "./Inspection Signature/InspectionSignature";
 import AgentPhoto from "./Agent Photo/AgentPhoto";
 import CompanyInfo from "./CompanyInfo/CompanyInfo";
 import EditableText from "./EditableText/EditableText";
+import jsPDF from "jspdf";
+import html2pdf from "html2pdf.js";
 
+import html2canvas from "html2canvas";
 import "./CoverPageDesigner.css";
+const exportState = () => {
+  // Get the output container element
+  const outputContainer = document.querySelector(
+    ".content-that-is-draggable-and-adjustable-within-div"
+  );
 
+  // Use html2canvas to convert the HTML content to a canvas
+  html2canvas(outputContainer).then((canvas) => {
+    // Create a new jsPDF instance
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    // Calculate the height of the content on the canvas
+    const contentHeight = (canvas.height * 210) / canvas.width;
+
+    // Add the canvas to the PDF document
+    pdf.addImage(
+      canvas.toDataURL("image/png"),
+      "PNG",
+      0,
+      0,
+      210,
+      contentHeight
+    );
+
+    // Save the PDF file
+    pdf.save("cover_page_layout.pdf");
+  });
+};
 function CoverPageDesigner({ onClose }) {
   const fileInputRef = useRef(null);
   const [selectedObjects, setSelectedObjects] = useState([]);
@@ -27,23 +57,56 @@ function CoverPageDesigner({ onClose }) {
   const [setContentT, setContentText] = useState([]); // State to hold added images
   const [isAgentPhotoUploaded, setIsAgentPhotoUploaded] = useState(false);
   // State to track whether "Page Borders" checkbox is checked
-  const [isPageBordersChecked, setIsPageBordersChecked] = useState(false);
-  const [isBorderApplied, setIsBorderApplied] = useState(false);
+  const [isPageBordersChecked, setIsPageBordersChecked] = useState(true);
+  const [isBorderApplied, setIsBorderApplied] = useState(true);
   const [fontSize, setFontSize] = useState(16);
   const [isHovered, setIsHovered] = useState(false);
-
+  const [checkedCheckboxes, setCheckedCheckboxes] = useState([
+    "Inspection Details",
+    "Cover Photo",
+    "Company Information",
+    "Company Logo",
+    "Page Borders",
+  ]); // State to track checked checkboxes
+  useEffect(() => {
+    // Add "Page Borders" content to selectedCheckboxContents initially
+    if (isPageBordersChecked) {
+      const pageBordersContent = renderCheckboxContent("Page Borders");
+      setSelectedCheckboxContents([
+        ...selectedCheckboxContents,
+        pageBordersContent,
+      ]);
+    }
+  }, []);
+  // Export state function
+  // const exportState = () => {
+  //   const exportedState = {
+  //     outputContent,
+  //     selectedObjects,
+  //     editableTexts,
+  //     addedImages,
+  //   };
+  //   const jsonString = JSON.stringify(exportedState);
+  //   console.log(jsonString);
+  // };
   // Export state function
   const exportState = () => {
-    const exportedState = {
-      outputContent,
-      selectedObjects,
-      editableTexts,
-      addedImages,
-    };
-    const jsonString = JSON.stringify(exportedState);
-    console.log(jsonString);
-  };
+    // Get the HTML content of your output container
+    const outputContainer = document.querySelector(
+      ".content-that-is-draggable-and-adjustable-within-div"
+    );
+    const content = outputContainer.innerHTML;
 
+    // Convert the HTML content to a PDF document
+    html2pdf()
+      .from(content)
+      .toPdf()
+      .get("pdf")
+      .then((pdf) => {
+        // Download the PDF file
+        pdf.save("cover_page_layout.pdf");
+      });
+  };
   // Import state function
   const importState = (jsonString) => {
     try {
@@ -143,6 +206,12 @@ function CoverPageDesigner({ onClose }) {
 
   const handleCheckboxChange = (event, label) => {
     const isChecked = event.target.checked;
+    // Toggle the checkbox in the checkedCheckboxes state
+    if (checkedCheckboxes.includes(label)) {
+      setCheckedCheckboxes(checkedCheckboxes.filter((item) => item !== label));
+    } else {
+      setCheckedCheckboxes([...checkedCheckboxes, label]);
+    }
     // Update the state based on the checkbox label
     if (isChecked) {
       setSelectedObjects([...selectedObjects, label]); // Add the label to selectedObjects if checkbox is checked
@@ -155,7 +224,7 @@ function CoverPageDesigner({ onClose }) {
     }
     // If checkbox is checked, add the content to the array
     if (isChecked) {
-      const newContent = getContentForLabel(label);
+      const newContent = renderCheckboxContent(label);
       setSelectedCheckboxContents([...selectedCheckboxContents, newContent]);
     } else {
       // If checkbox is unchecked, remove the content from the array
@@ -179,27 +248,44 @@ function CoverPageDesigner({ onClose }) {
     }
   };
 
-  const getContentForLabel = (label) => {
-    let content = null;
+  // const getContentForLabel = (label) => {
+  //   // let content = null;
+  //   switch (label) {
+  //     case "Cover Photo":
+  //       return <CheckboxContent1 />;
+  //     case "Company Logo":
+  //       return <CheckboxContent2 />;
+  //     case "Company Information":
+  //     case "Inspection Details":
+  //     case "Agent Information":
+  //     case "Cover Company":
+  //     case "Report Title":
+  //     case "Inspection Signature":
+  //       return <EditableText initialText={label} />;
+  //       break;
+  //     default:
+  //       return null;
+  //   }
+  // };  // Function to render content based on checkbox label
+  const renderCheckboxContent = (label) => {
     switch (label) {
-      case "Cover Photo":
-        content = <CheckboxContent1 />;
-        break;
-      case "Company Logo":
-        content = <CheckboxContent2 />;
-        break;
-      case "Company Information":
       case "Inspection Details":
+        return <InspectionDetails />;
+      case "Cover Photo":
+        return <CheckboxContent1 />;
+      case "Company Logo":
+        return <CheckboxContent2 />;
+      case "Company Information":
       case "Agent Information":
       case "Cover Company":
       case "Report Title":
       case "Inspection Signature":
-        content = <EditableText initialText={label} />;
-        break;
+        return <EditableText initialText={label} />;
+      // case "Page Borders":
+      //   return <div>Page Borders Content</div>;
       default:
-        content = null;
+        return null;
     }
-    return content;
   };
   const handleRemoveBoxTextImage = () => {
     // Filter out selected objects from editableTexts array
@@ -284,6 +370,7 @@ function CoverPageDesigner({ onClose }) {
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
+                      checked={checkedCheckboxes.includes("Cover Photo")}
                       onChange={(e) => handleCheckboxChange(e, "Cover Photo")}
                     />
                     Cover Photo
@@ -291,6 +378,7 @@ function CoverPageDesigner({ onClose }) {
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
+                      checked={checkedCheckboxes.includes("Company Logo")}
                       onChange={(e) => handleCheckboxChange(e, "Company Logo")}
                     />
                     Company Logo
@@ -298,6 +386,12 @@ function CoverPageDesigner({ onClose }) {
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
+                      // onChange={(e) =>
+                      //   handleCheckboxChange(e, "Company Information")
+                      // }
+                      checked={checkedCheckboxes.includes(
+                        "Company Information"
+                      )}
                       onChange={(e) =>
                         handleCheckboxChange(e, "Company Information")
                       }
@@ -307,8 +401,11 @@ function CoverPageDesigner({ onClose }) {
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
+                      checked={checkedCheckboxes.includes(
+                        " Inspection Details"
+                      )}
                       onChange={(e) =>
-                        handleCheckboxChange(e, "Inspection Details")
+                        handleCheckboxChange(e, " Inspection Details")
                       }
                     />
                     Inspection Details
@@ -497,108 +594,39 @@ function CoverPageDesigner({ onClose }) {
         </fieldset>
         {/* Output Column */}
         <div
-          className={`w-1/4 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here ${
-            isBorderApplied ? "with-borders" : ""
-          }`}
+          className="w-1/4 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here"
+          // className={`w-1/4 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here ${
+          //   isBorderApplied ? "with-borders" : ""
+          // }`}
           style={{ width: "50%" }}
         >
           {/* <h2 className="text-2xl font-bold mb-4">Output</h2> */}
 
-          <div className="content-that-is-draggable-and-adjustable-within-div">
-            {/* Display the text input field if editing text */}
-            {/* {selectedCheckboxContents.map((content, index) => (
+          <div
+            // className="content-that-is-draggable-and-adjustable-within-div"
+            className={`bg-white content-that-is-draggable-and-adjustable-within-div ${
+              isBorderApplied ? "with-borders" : ""
+            }`}
+          >
+            {checkedCheckboxes.map((label, index) => (
               <Draggable
                 key={index}
                 bounds="parent"
-                className={`draggableeeee cursor-pointer ${
-                  isHovered ? "hovered" : ""
-                }`}
-                style={{
-                  border: selectedObjects.includes(content.id)
-                    ? "2px solid red !important"
-                    : "none",
-                  padding: "5px !important",
-                  borderRadius: "5px !important",
-                }}
-                onMouseOver={handleMouseOver}
-                onMouseLeave={handleMouseLeave}
+                className="draggableeeee cursor-pointer"
               >
-                <div>
-                  {content}
-                  {isHovered && (
-                    <div
-                      className="delete-icon"
-                      onClick={() => handleDelete(content.id)}
-                    >
-                      🗑️
-                    </div>
-                  )}
-                </div>
-              </Draggable>
-            ))} */}
-            {selectedCheckboxContents.map((content, index) => (
-              <Draggable
-                key={index}
-                bounds="parent"
-                className={`draggableeeee cursor-pointer ${
-                  isHovered ? "hovered" : ""
-                }`}
-                style={{
-                  border:
-                    content && selectedObjects.includes(content.id)
-                      ? "2px solid red !important"
-                      : "none",
-                  padding: "5px !important",
-                  borderRadius: "5px !important",
-                }}
-                onMouseOver={handleMouseOver}
-                onMouseLeave={handleMouseLeave}
-              >
-                <div>
-                  {content}
-                  {isHovered && content && (
-                    <div
-                      className="delete-icon"
-                      onClick={() => handleDelete(content.id)}
-                    >
-                      🗑️
-                    </div>
-                  )}
-                </div>
+                <div>{renderCheckboxContent(label)}</div>
               </Draggable>
             ))}
             {/* Render editable text elements */}
             {editableTexts.map(({ id, text }) => (
-              <Draggable
-                key={id}
-                bounds="parent"
-                className="draggableeeee"
-                style={{
-                  border: selectedObjects.includes(id)
-                    ? "2px solid #007BFF"
-                    : "none",
-                  padding: "5px",
-                  borderRadius: "5px",
-                }}
-              >
+              <Draggable key={id} bounds="parent" className="draggableeeee">
                 <div>
                   <EditableText initialText={text} />
                 </div>
               </Draggable>
             ))}
             {addedImages.map(({ id, src, height, width }) => (
-              <Draggable
-                key={id}
-                bounds="parent"
-                className="draggableeeee"
-                style={{
-                  border: selectedObjects.includes(id)
-                    ? "2px solid #007BFF"
-                    : "none",
-                  padding: "5px",
-                  borderRadius: "5px",
-                }}
-              >
+              <Draggable key={id} bounds="parent" className="draggableeeee">
                 <div>
                   <img
                     src={src}
@@ -626,7 +654,7 @@ function CoverPageDesigner({ onClose }) {
             className="button-for-footer-for-changes-in-cover-page"
           >
             Export Layout to a <br /> File for Future Use
-          </button>{" "}
+          </button>
           <button
             onClick={() => fileInputRef.current.click()}
             className="button-for-footer-for-changes-in-cover-page"

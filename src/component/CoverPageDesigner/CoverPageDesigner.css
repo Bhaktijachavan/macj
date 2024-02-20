@@ -174,9 +174,12 @@ fieldset {
   gap: 1em;
 }
 .all-the-output-screen-with-all-the-changes-reflect-here {
+  border: 1px solid black;
+  /* padding: 1em; */
+  height: 100vh;
 }
 .with-borders {
-  border: 5px solid black;
+  border: 5px solid rgb(62, 41, 255);
 }
 
 .react-draggable-dragged {

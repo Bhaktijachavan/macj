@@ -5,7 +5,8 @@ const CheckboxContent2 = () => {
   return (
     <>
       <div className="content-for-the-company-logo-check-box">
-        <img src={CompanyLogo} alt="" srcset="" />
+        {/* <img src={CompanyLogo} alt="" srcset="" /> */}
+        Logo
       </div>
     </>
   );

@@ -1,6 +1,9 @@
 .all-the-editable-text-in-the-component {
+  display: flex;
+  justify-content: center;
+  margin: auto;
 }
 .text-that-passed-through-props {
   text-align: center;
-  width: 10em;
+  /* width: 10em; */
 }

@@ -1,0 +1,10 @@
+.draggable-text-inspection {
+  width: 100%;
+  background-color: blue;
+  color: white;
+  height: 4em;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

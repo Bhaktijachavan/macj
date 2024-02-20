@@ -1,5 +1,5 @@
 import React from "react";
-
+import './InspectionDetails.css'
 function InspectionDetails({ text, id }) {
   const handleDragStart = (event) => {
     event.dataTransfer.setData("text/plain", event.target.id);
@@ -11,7 +11,10 @@ function InspectionDetails({ text, id }) {
         id={id}
         draggable="true"
         onDragStart={handleDragStart}
-        className="draggable-text"
+        className="draggable-text-inspection"
+        style={{
+
+        }}
       >
         Inspection Details
       </div>
