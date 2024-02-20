@@ -579,7 +579,7 @@ const Header = ({ onButtonClick }) => {
           </div>
         )}{" "}
         {coverPageDesignPopup && (
-          <div className="popup Cover-Page-Design-Popup-ccc">
+          <div className="popup-gfhgCover-Page-Design-Popup-ccc">
             {/* Render your EditTemplate component here */}
             <CoverPageDesigner onClose={closeCoverPageDesignPopup} />
           </div>

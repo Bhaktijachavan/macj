@@ -7,7 +7,6 @@ import ColorPalet from "./component/ColorPalet/ColorPalet";
 import InsertPdf from "./component/InsertPdf/InsertPdf";
 import Book from "./component/Address _book/Book";
 
-
 import PhotoReview from "./component/Photo/PhotoReview";
 import PannelComponent from "./component/Panel/PannelComponent/PannelComponent";
 import InternetLogin from "./component/InternetLogin/InternetLogin";
@@ -26,7 +25,6 @@ import Panel5 from "./component/Panel/Panel5/Panel5";
 import Panel6 from "./component/Panel/Panel6/Panel6";
 import EditComments from "./component/EditComments/EditComments";
 
-
 function App() {
   return (
     <BrowserRouter>
@@ -42,14 +40,17 @@ function App() {
         <Route path="/panel4" element={<Panel4 />}></Route>
         <Route path="/panel5" element={<Panel5 />}></Route>
         <Route path="/panel6" element={<Panel6 />}></Route>
-        <Route path="/EditComments" element={<EditComments/>}></Route>
+        <Route path="/EditComments" element={<EditComments />}></Route>
 
         <Route path="/photoreview" element={<PhotoReview />}></Route>
         <Route path="/batchaddphotos" element={<BatchAddPhotos />}></Route>
         <Route path="/contractpage" element={<ContractPage />}></Route>
         <Route path="/generateReport" element={<ColorPalette />}></Route>
         <Route path="/internetlogin" element={<InternetLogin />}></Route>
-        <Route path="/coverpagedesigner"element={<CoverPageDesigner />}></Route>
+        <Route
+          path="/coverpagedesigner"
+          element={<CoverPageDesigner />}
+        ></Route>
         {/* <Route path="/" element={<MobileUpload/>}></Route> */}
         {/* <Route path="/mobilesync" element={<MobileUpload />}></Route> */}
       </Routes>

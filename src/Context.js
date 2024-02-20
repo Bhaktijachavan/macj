@@ -1,17 +1,21 @@
 import React, { createContext, useContext, useState } from "react";
 // import EditTemp from "./component/EditTemp/EditTemp";
+import OverLayImage from "./component/EditImageTabList/OverLayImage/OverLayImage";
 
 export const EditTempContext = createContext();
 
 export const ContextProvider = ({ children }) => {
   const [addressBook, setAddressBook] = useState([]);
   const [editTempData, setEditTempData] = useState([]);
+  const [editImage, setEditImage] = useState();
 
   const contextValues = {
     addressBook,
     setAddressBook,
     editTempData,
     setEditTempData,
+    setEditImage,
+    editImage,
   };
 
   return (
