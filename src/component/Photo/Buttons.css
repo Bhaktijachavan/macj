@@ -81,9 +81,9 @@
 }
 .Add-Icons-popup-main-container {
   position: absolute;
-  top: 41%;
-  left: 50%;
-  transform: translate(-50%, -60%);
+  /* top: 41%;
+  left: 50%; */
+  transform: translate(-50%, -15%);
   background-color: #d3d3d3;
 
   /* border-radius: 8px; */
@@ -212,10 +212,11 @@
 }
 .Add-icons-user-uploaded-icons-img-to-be-uploaded {
   cursor: pointer;
+  width: 10em;
+  height: 7em;
 }
 .Add-icons-user-uploaded-icons-img-to-be-uploaded:hover {
   border: 1px solid black;
-  /* margin: 1em; */
 }
 
 .Add-icons-No-Icons-found-after-uploaded-para {
@@ -229,7 +230,7 @@
   /* text-align: center; */
   height: 2em;
   padding-left: 1em;
-  width: 100%;
+  width: 20em;
   /* cursor: pointer; */
 }
 .label-name-for-Added-icons:hover {
