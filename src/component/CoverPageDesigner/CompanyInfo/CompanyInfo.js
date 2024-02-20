@@ -1,5 +1,5 @@
 import React from "react";
-
+import "./CompanyInfo.css";
 function CompanyInfo({ text, id }) {
   const handleDragStart = (event) => {
     event.dataTransfer.setData("text/plain", event.target.id);
@@ -13,7 +13,13 @@ function CompanyInfo({ text, id }) {
         onDragStart={handleDragStart}
         className="draggable-text"
       >
-        Company Information
+        <section className="content-for-the-company-info">
+          <p>
+            Inspector : Nitin Gujarathi <br />
+            Phone : +91-9890002635 <br />
+            Email: nitin@Macj.in
+          </p>
+        </section>
       </div>
     </>
   );

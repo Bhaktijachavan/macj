@@ -276,6 +276,7 @@ function CoverPageDesigner({ onClose }) {
       case "Company Logo":
         return <CheckboxContent2 />;
       case "Company Information":
+        return <CompanyInfo />;
       case "Agent Information":
       case "Cover Company":
       case "Report Title":
@@ -635,9 +636,9 @@ function CoverPageDesigner({ onClose }) {
                     width={width}
                   />
                   {/* Add a delete button to remove the image */}
-                  <button onClick={() => handleDeleteImage(id)}>
+                  {/* <button onClick={() => handleDeleteImage(id)}>
                     Delete Image
-                  </button>
+                  </button> */}
                 </div>
               </Draggable>
             ))}
