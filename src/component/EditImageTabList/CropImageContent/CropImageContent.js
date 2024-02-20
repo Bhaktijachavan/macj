@@ -316,6 +316,7 @@ const CropImageContent = ({
                       position: "absolute",
                       top: `${Math.min(arrow.start.y, arrow.end.y)}px`,
                       left: `${Math.min(arrow.start.x, arrow.end.x)}px`,
+                      pointerEvents: "none", // Allow pointer events to pass through
                     }}
                   >
                     <svg
@@ -372,6 +373,7 @@ const CropImageContent = ({
                     position: "absolute",
                     top: `${Math.min(line.start.y, line.end.y)}px`,
                     left: `${Math.min(line.start.x, line.end.x)}px`,
+                    pointerEvents: "none", // Allow pointer events to pass through
                   }}
                 >
                   <line
@@ -414,6 +416,7 @@ const CropImageContent = ({
                       position: "absolute",
                       top: `${Math.min(oval.start.y, oval.end.y)}px`,
                       left: `${Math.min(oval.start.x, oval.end.x)}px`,
+                      pointerEvents: "none", // Allow pointer events to pass through
                     }}
                   >
                     <ellipse
@@ -446,6 +449,7 @@ const CropImageContent = ({
                       position: "absolute",
                       top: `${Math.min(rectangle.start.y, rectangle.end.y)}px`,
                       left: `${Math.min(rectangle.start.x, rectangle.end.x)}px`,
+                      pointerEvents: "none", // Allow pointer events to pass through
                     }}
                   >
                     <rect

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "./EditImageTabList.css";
 import PropTypes from "prop-types";
 import Editor from "../Editor/Editor";
@@ -11,12 +11,15 @@ import DrawArrowContent from "./DrawArrowContent/DrawArrowContent";
 import DrawRectangleContent from "./DrawRectangleContent/DrawRectangleContent";
 import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
 import OverLayImage from "./OverLayImage/OverLayImage";
+import { EditTempContext } from "../../Context";
 
 const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const [activeTab, setActiveTab] = useState(1);
   const [textFromEditor, setTextFromEditor] = useState(null);
   const [overLayImage, setOverLayImage] = useState([]);
-  const [originalImage, setOriginalImage] = useState([]);
+  const { setEditImage } = useContext(EditTempContext);
+
+  const [originalImage, setOriginalImage] = useState(null);
   const [editorKey, setEditorKey] = useState(1);
 
   const [brightness, setBrightness] = useState(100);
@@ -38,6 +41,8 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const handleSaveChanges = () => {
     // Gather all relevant data about the modified image
     const modifiedData = {
+      croppedImageUrl,
+      textsWithPositions,
       brightness,
       contrast,
       rotationAngle,
@@ -45,14 +50,16 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
       drawnLines,
       drawnRectangles,
       drawnOvals,
-      croppedImageUrl,
+
+      overLayImage,
     };
 
     // Save the modified image data
     console.log("Saving changes...", modifiedData);
+    setEditImage(overLayImage);
 
     // Assuming modifiedImageUrl is the URL of the modified image, set it to the state
-    const modifiedImageUrl = "new_image_url_here"; // Replace "new_image_url_here" with the actual modified image URL
+    const modifiedImageUrl = ""; // Replace "new_image_url_here" with the actual modified image URL
     setModifiedImageUrl(modifiedImageUrl);
   };
 
@@ -169,6 +176,8 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
         rotationAngle={rotationAngle}
         drawnOvals={drawnOvals}
         drawnRectangles={drawnRectangles}
+        overLayImage={overLayImage}
+        onOverlayChange={handleOverLayImage}
         onContrastChange={handleContrastChange}
       />
     ),
@@ -290,6 +299,7 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
 
   return (
     <>
+      <button></button>
       {isOpen && (
         <div className="flex-container-for-tablist-for-edit-img">
           <div className="width-set-for-the-popup-windows-edit-image-section">

@@ -276,6 +276,7 @@ function CoverPageDesigner({ onClose }) {
       case "Company Logo":
         return <CheckboxContent2 />;
       case "Company Information":
+        return <CompanyInfo />;
       case "Agent Information":
       case "Cover Company":
       case "Report Title":
@@ -374,15 +375,7 @@ function CoverPageDesigner({ onClose }) {
                       onChange={(e) => handleCheckboxChange(e, "Cover Photo")}
                     />
                     Cover Photo
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={checkedCheckboxes.includes("Company Logo")}
-                      onChange={(e) => handleCheckboxChange(e, "Company Logo")}
-                    />
-                    Company Logo
-                  </label>
+                  </label>{" "}
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -397,6 +390,14 @@ function CoverPageDesigner({ onClose }) {
                       }
                     />
                     Company Information
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={checkedCheckboxes.includes("Company Logo")}
+                      onChange={(e) => handleCheckboxChange(e, "Company Logo")}
+                    />
+                    Company Logo
                   </label>
                   <label className="flex items-center gap-2">
                     <input
@@ -635,9 +636,9 @@ function CoverPageDesigner({ onClose }) {
                     width={width}
                   />
                   {/* Add a delete button to remove the image */}
-                  <button onClick={() => handleDeleteImage(id)}>
+                  {/* <button onClick={() => handleDeleteImage(id)}>
                     Delete Image
-                  </button>
+                  </button> */}
                 </div>
               </Draggable>
             ))}

@@ -29,7 +29,7 @@ import SaveTPZ from "./../SaveTemp/TPZ/SaveTPZ";
 import OpenTPZ from "./../SaveTemp/TPZ/OpenTPZ";
 import AboutUsMacj from "./../AboutUsMacj/AboutUsMacj";
 
-const Header = ({ onButtonClick }) => {
+const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
   const [saveTemplatePopup, setSaveTemplatePopup] = useState(false);
   const [editTemplatePopup, setEditTemplatePopup] = useState(false);
@@ -345,7 +345,7 @@ const Header = ({ onButtonClick }) => {
       >
         <nav className="header2">
           <ul className="uordered-list-in-header-section">
-            <li className="list-for-header-section-main-nav">
+            {/* <li className="list-for-header-section-main-nav">
               <a
                 href="#file"
                 onClick={handleOpenInspectionClick}
@@ -378,7 +378,43 @@ const Header = ({ onButtonClick }) => {
                   Save <br /> Inspection
                 </div>
               </a>
+            </li> */}
+            <li className="list-for-header-section-main-nav">
+              <a
+                href="#file"
+                onClick={handleOpenInspectionClick}
+                className="header2-tag-a"
+              >
+                <div className="flex justify-center">
+                  <img src={img1} alt="" />
+                </div>
+                <div className="">
+                  Open <br /> Inspection
+                </div>
+              </a>
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={onOpenInspection}
+              />
             </li>
+            <button onClick={onSaveInspection}>
+              <li className="list-for-header-section-main-nav border-r border-black-900">
+                <a
+                  href="#edit"
+                  onClick={handleSaveInspectionClick}
+                  className="header2-tag-a"
+                >
+                  <div className="flex justify-center">
+                    <img src={img2} alt="" />
+                  </div>
+                  <div>
+                    Save <br /> Inspection
+                  </div>
+                </a>
+              </li>
+            </button>
             <hr />
             <div>
               <OpenTPZ />
@@ -579,7 +615,7 @@ const Header = ({ onButtonClick }) => {
           </div>
         )}{" "}
         {coverPageDesignPopup && (
-          <div className="popup Cover-Page-Design-Popup-ccc">
+          <div className="popup-gfhgCover-Page-Design-Popup-ccc">
             {/* Render your EditTemplate component here */}
             <CoverPageDesigner onClose={closeCoverPageDesignPopup} />
           </div>
