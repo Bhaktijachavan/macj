@@ -293,30 +293,22 @@ const ColorPalette = ({ onClose }) => {
                       <th className="border font-semibold p-2">TOC Font</th>
                     </tr>
                   </thead>
-                  <tbody></tbody>
                 </table>
-                <tbody>
-                  {dummyData.length > 0 &&
-                    dummyData.map((data, index) => (
-                      <tr
-                        key={index}
-                        className={
-                          selectAll || selectedRow === index
-                            ? "bg-gray-200"
-                            : ""
-                        }
-                        onClick={() => handleRowClick(index, 0)}
-                      >
+
+                {Object.keys(dummyData).map((key, index) => (
+                  <tbody key={key}>
+                    {Object.keys(dummyData[key].subitems).map((subKey) => (
+                      <tr key={subKey}>
+                        {/* <td>{dummyData[key].subitems[subKey].id}</td> */}
+                        <td>{dummyData[key].subitems[subKey].subName}</td>
                         <td className="border p-2">
-                          {localStorageData[data.id]?.subitems[0]?.subName}
+                          {JSON.stringify(dummyData[key].selectedOption)}
                         </td>
-                        <td className="border p-2">
-                          {/* render other columns */}
-                        </td>
+                        <td className="border p-2"></td>
                         <td className="border p-2">
                           <input
                             type="checkbox"
-                            checked={data.print}
+                            checked={dummyData[key].print}
                             onChange={() => {}}
                           />
                         </td>
@@ -328,17 +320,58 @@ const ColorPalette = ({ onClose }) => {
                             value={rowColors[index].border}
                             onChange={(e) =>
                               handleColorChange(
-                                data.id,
+                                dummyData[key].id,
                                 "border",
                                 e.target.value
                               )
                             }
                           />
                         </td>
-                        {/* Render other columns similarly */}
+                        <td className="border p-2">
+                          <input
+                            type="color"
+                            id={`header_bg_color_${index}`}
+                            name={`header_bg_color_${index}`}
+                            value={rowColors[index].headerBackground}
+                            onChange={(e) =>
+                              handleColorChange(
+                                dummyData[key].id,
+                                "headerBackground",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </td>
+                        <td className="border p-2"></td>
+                        <td className="border p-2">
+                          <input
+                            type="color"
+                            id={`footer_bg_color_${index}`}
+                            name={`footer_bg_color_${index}`}
+                            value={rowColors[index].footerBackground}
+                            onChange={(e) =>
+                              handleColorChange(
+                                dummyData[key].id,
+                                "footerBackground",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </td>
+                        <td className="border p-2"></td>
+                        <td className="border p-2"></td>
+                        <td className="border p-2">
+                          <div>
+                            <input type="color" />
+                          </div>
+                        </td>
+                        <td className="border p-2"></td>
                       </tr>
                     ))}
-                </tbody>
+                  </tbody>
+                ))}
+
+                <tbody></tbody>
               </div>
               <div
                 className="text-center mx-2 text-sm"
