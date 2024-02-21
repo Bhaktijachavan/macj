@@ -15,7 +15,7 @@ import { EditTempContext } from "../../Context";
 
 const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const [activeTab, setActiveTab] = useState(1);
-  const [textFromEditor, setTextFromEditor] = useState(null);
+  // const [textFromEditor, setTextFromEditor] = useState(null);
   const [overLayImage, setOverLayImage] = useState([]);
   const { setEditImage } = useContext(EditTempContext);
 
@@ -265,7 +265,7 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
         // key={editorKey}
         imageUrl={uploadedImageUrl}
         croppedImageUrl={croppedImageUrl}
-        textFromEditor={textFromEditor}
+        // textFromEditor={textFromEditor}
         textsWithPositions={textsWithPositions}
         onTextChange={handleTextChange}
         brightness={brightness}
