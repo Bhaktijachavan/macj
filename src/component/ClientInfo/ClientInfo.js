@@ -3,7 +3,10 @@ import "./ClientInfo.css";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
 import * as CryptoJS from "crypto-js"; // Import CryptoJS library
-import { downloadFile, readFileAsText } from "../Function/function";
+import {
+  downloadFile,
+  readFileAsText,
+} from "../../component/Function/function";
 
 const ClientInfo = () => {
   const [formData, setFormData] = useState({
@@ -39,17 +42,8 @@ const ClientInfo = () => {
   }, []);
 
   const handleSaveInspection = useCallback(() => {
-    if (
-      window.confirm(
-        `are you want to donwload this hzf file of ${
-          formData.firstName + " " + formData.lastName
-        }`
-      )
-    ) {
-      const encryptedData = encryptData(formData, encryptionKey);
-      const name = formData.firstName;
-      downloadEncryptedFile(encryptedData, name);
-    }
+    const encryptedData = encryptData(formData, encryptionKey);
+    downloadEncryptedFile(encryptedData);
 
     // Parse existingClient only if it exists
   }, [formData, encryptionKey]);
@@ -80,14 +74,14 @@ const ClientInfo = () => {
     return encryptedData;
   };
 
-  const downloadEncryptedFile = useCallback((encryptedData, name) => {
+  const downloadEncryptedFile = useCallback((encryptedData) => {
     const blob = new Blob([encryptedData], {
       type: "application/octet-stream",
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${name}.hzf`;
+    a.download = "encryptedData.hzf";
     document.body.appendChild(a);
     a.click();
     URL.revokeObjectURL(url);
@@ -408,46 +402,7 @@ const ClientInfo = () => {
           ></textarea>
         </div>
 
-        <button
-          style={{
-            backgroundColor: "#4CAF50",
-            padding: "10px 20px",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-          onClick={handleSaveInspection}
-        >
-          Save Inspection
-        </button>
-        <button
-          style={{
-            backgroundColor: "#4CAF50",
-            padding: "10px 20px",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-          onClick={saveOffline}
-        >
-          Save Offline
-        </button>
-
-        <input
-          type="file"
-          style={{
-            backgroundColor: "#4CAF50",
-            padding: "10px 20px",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            marginLeft: "10px",
-          }}
-          onChange={handleFileChange}
-        />
+       
       </form>
 
       <div>

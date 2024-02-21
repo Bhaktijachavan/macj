@@ -627,7 +627,7 @@ const OverLayImage = ({
             alt="Original Image"
             className="Overlay-Image-image-uploded"
           />
-          {textsWithPositions.map((text) => (
+          {/* {textsWithPositions.map((text) => (
             <div
               key={text.id}
               className="text-overlay"
@@ -704,7 +704,7 @@ const OverLayImage = ({
                       style={{ stroke: arrow.color, strokeWidth: "4" }}
                     />
                     {/* Arrowhead */}
-                    <line
+          {/* <line
                       x1={arrowheadX1 - Math.min(arrow.start.x, arrow.end.x)}
                       y1={arrowheadY1 - Math.min(arrow.start.y, arrow.end.y)}
                       x2={arrow.end.x - Math.min(arrow.start.x, arrow.end.x)}
@@ -825,7 +825,8 @@ const OverLayImage = ({
                   />
                 </svg>
               );
-            })}
+            })} */}{" "}
+          */
           {isOkClicked && uploadedPhoto && (
             <Draggable
               defaultPosition={{ x: position.x, y: position.y }}

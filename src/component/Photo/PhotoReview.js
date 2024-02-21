@@ -149,6 +149,7 @@ export default PhotoReview;
 // const PhotoReview = () => {
 //   const { editImage } = useContext(EditTempContext);
 //   console.log("edited images ", editImage);
+
 //   const rectanglesData = [
 //     { id: 1, label: "Rectangle 1" },
 //     { id: 2, label: "Rectangle 2" },
@@ -198,6 +199,7 @@ export default PhotoReview;
 //     event.preventDefault();
 //     event.currentTarget.classList.remove("drag-over");
 //   }, []);
+//   console.log("uploaded files", uploadedFiles);
 
 //   return (
 //     <>
@@ -226,7 +228,7 @@ export default PhotoReview;
 //           >
 //             <Location />
 //             <div className="PhotoReview-Drag-Drop-Box">
-//               {editImage ? (
+//               {editImage && editImage.type && (
 //                 <>
 //                   {editImage.type.startsWith("image/") && (
 //                     <img
@@ -248,37 +250,34 @@ export default PhotoReview;
 //                     />
 //                   )}
 //                 </>
-//               ) : (
+//               )}
+//               {!editImage && uploadedFiles[index] && (
 //                 <>
-//                   {uploadedFiles[index] && (
-//                     <>
-//                       {uploadedFiles[index].type.startsWith("image/") && (
-//                         <img
-//                           src={URL.createObjectURL(uploadedFiles[index])}
-//                           alt={`Uploaded Image for ${rectangle.label}`}
-//                           style={{
-//                             width: "100%",
-//                             height: "100%",
-//                             objectFit: "cover",
-//                           }}
-//                         />
-//                       )}
-//                       {uploadedFiles[index].type === "application/pdf" && (
-//                         <embed
-//                           src={URL.createObjectURL(uploadedFiles[index])}
-//                           type="application/pdf"
-//                           width="100%"
-//                           height="100%"
-//                         />
-//                       )}
-//                     </>
+//                   {uploadedFiles[index].type.startsWith("image/") && (
+//                     <img
+//                       src={URL.createObjectURL(uploadedFiles[index])}
+//                       alt={`Uploaded Image for ${rectangle.label}`}
+//                       style={{
+//                         width: "100%",
+//                         height: "100%",
+//                         objectFit: "cover",
+//                       }}
+//                     />
 //                   )}
-//                   {!uploadedFiles[index] && (
-//                     <p className="Drag-Drop-Box-Para">
-//                       The Selected File will Appear Here !
-//                     </p>
+//                   {uploadedFiles[index].type === "application/pdf" && (
+//                     <embed
+//                       src={URL.createObjectURL(uploadedFiles[index])}
+//                       type="application/pdf"
+//                       width="100%"
+//                       height="100%"
+//                     />
 //                   )}
 //                 </>
+//               )}
+//               {!editImage && !uploadedFiles[index] && (
+//                 <p className="Drag-Drop-Box-Para">
+//                   The Selected File will Appear Here !
+//                 </p>
 //               )}
 //             </div>
 //             <div

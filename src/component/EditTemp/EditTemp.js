@@ -1,730 +1,508 @@
-import React, { useContext } from "react";
-import { useState, useEffect } from "react";
-import { FaFolderOpen } from "react-icons/fa";
-import OneDamage from "../EditTemp/OneDamage/OneDamage";
-import twoDamage from "../EditTemp/twoDamage/TwoDamage";
-import OneSelection from "../EditTemp/oneSelection/OneSelection";
-import twoSelection from "../EditTemp/twoSelection/TwoSelection";
-import oneDamageSelection from "../EditTemp/oneDamageSelection/OneDamageSelection";
-import OneDamageTwoSelection from "../EditTemp/oneDamageTwoSelection/OneDamageTwoSelection";
-import "./EditTemp.css";
-import { Link } from "react-router-dom";
-import Inspection from "./Inspection/Inspection";
-import TwoSelection from "./twoSelection/TwoSelection";
-import TwoDamage from "./twoDamage/TwoDamage";
-import OneDamageSelection from "./oneDamageSelection/OneDamageSelection";
-import { EditTempContext } from "../../Context";
-import _ from "lodash";
-const EditTemp = ({ onClose }) => {
-  const [selectedSubItem, setSelectedSubItem] = useState(null);
-  const [meduData, setMenuData] = useState("");
+import React, { useEffect, useState } from 'react';
+import "../../component/EditTemp/DynamicMenuComponent.css"
 
-  const [selectedTabName, setSelectedTabName] = useState("");
-  const handleTabNameChange = (event) => {
-    setSelectedTabName(event.target.value);
-    setOnedamagePanelName(event.target.value); // Add this line
-    console.log("Tab Name in Parent Component:", event.target.value);
-  };
+const SubdetailsDisplay = ({ subdetails }) => {
+  if (!subdetails || Object.keys(subdetails).length === 0) {
+    return null;
+  }
 
-  const handleOneDamageDone = (formData) => {
-    console.log("Received formData from OneDamage:", formData);
-    console.log("selected sub id ", selectedSubItemIndex);
+  return (
+    <div>
+      <h4>Added Subdetails:</h4>
+      {Object.entries(subdetails).map(([key, values]) => (
+        <div key={key}>
+          <p>{`Option ${key}:`}</p>
+          <ul>
+            {Object.entries(values).map(([label, value]) => (
+              <li key={label}>{`${label}: ${value}`}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+};
 
-    // Retrieve the menu data from localStorage
-    const storedMenuData = localStorage.getItem("menuData");
-    const menu = JSON.parse(storedMenuData);
 
-    // Map over the menu and update the selected sub-item
-    const updatedMenu = menu.map((item, index) =>
-      index === selectedMenuItemIndex
-        ? {
-          ...item,
-          subItems: item.subItems.map((subItem, subIndex) =>
-            subIndex === selectedSubItemIndex
-              ? {
-                ...subItem,
-                radioBoxSelection: "oneDamagePanal",
-                tabName: formData.onetabName,
-                onedamagePanelName: formData.onedamagePanelName,
-              }
-              : subItem
-          ),
-        }
-        : item
-    );
-
-    // Merge the original menu object with the updated menu object
-    const mergedMenu = {
-      ...menu,
-      ...updatedMenu,
-    };
-
-    console.log("Merged menu data:", mergedMenu);
-
-    // Convert the merged menu object to a JSON string
-    const mergedMenuString = JSON.stringify(mergedMenu);
-
-    // Update localStorage with the merged menu data
-    localStorage.setItem("menuData", mergedMenuString);
-
-    // Update state and close the popup
-    setMenuData(mergedMenu);
-    setIsPopupOpen(false);
-  };
+const DynamicMenuComponent = () => {
+  const [menuData, setMenuData] = useState({});
+  const [menuName, setMenuName] = useState('');
+  const [submenuName, setSubmenuName] = useState('');
+  const [selectedMenuId, setSelectedMenuId] = useState(null);
+  const [selectedSubMenuId, setSelectedSubMenuId] = useState(null);
+  const [selectedRadio, setSelectedRadio] = useState('');
+  const [inputValues, setInputValues] = useState({
+    tabname: '',
+    damage1: '',
+    damage2: '',
+    selection1: '',
+    selection2: '',
+  });
+  const [selectedOption, setSelectedOption] = useState(''); // New state for selected option
 
   useEffect(() => {
-    console.log("Component mounted");
-
-    // Retrieve data from local storage
-    const localStorageData = localStorage.getItem("twoDamageFormData");
-    console.log("LocalStorage Data:", localStorageData);
-
-    try {
-      const parsedData = JSON.parse(localStorageData);
-      console.log("Parsed Data:", parsedData);
-
-      if (parsedData) {
-        // Access the data and use it as needed
-        console.log("Retrieved data from local storage:", parsedData);
-        // Do something with the retrieved data
-      } else {
-        console.log("No data found in local storage.");
-      }
-    } catch (error) {
-      console.error("Error parsing localStorage data:", error);
+    const storedMenuData = localStorage.getItem('menuData');
+    if (storedMenuData) {
+      setMenuData(JSON.parse(storedMenuData));
     }
   }, []);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isRadioOptionSelected, setIsRadioOptionSelected] = useState(false);
-  const { setEditTempData } = useContext(EditTempContext);
-  const [item] = useState();
-  const [onetabNames, setOnetabNames] = useState([]);
-  const [popupStates, setPopupStates] = useState({
-    "Option 1": false,
-    "Option 2": false,
-    "Option 3": false,
-    "Option 4": false,
-    "Option 5": false,
-    "Option 6": false,
-  });
-  const componentsMap = {
-    "Option 1": OneDamage,
-    "Option 2": twoDamage,
-    "Option 3": OneSelection,
-    "Option 4": twoSelection,
-    "Option 5": oneDamageSelection,
-    "Option 6": OneDamageTwoSelection,
-  };
-  const handleRadioChange = (event) => {
-    const value = event.target.value;
-    setSelectedOption(value);
-    localStorage.setItem("selectedPanel", value);
-  };
-  const [selectedPanel, setSelectedPanel] = useState("");
-  const handlePanelSelect = (panelName) => {
-    setSelectedPanel(panelName);
-  };
 
+  // Save menu data to local storage whenever it changes
   useEffect(() => {
-    const localStorageData = localStorage.getItem("oneDamageFormData");
-    try {
-      const parsedData = JSON.parse(localStorageData);
-      if (parsedData && parsedData.onetabName) {
-        // Check if the onetabName is not already in the array
-        if (!onetabNames.includes(parsedData.onetabName)) {
-          setOnetabNames((prevOnetabNames) => [
-            ...prevOnetabNames,
-            parsedData.onetabName,
-          ]);
-        }
-      }
-    } catch (error) {
-      console.error("Error parsing localStorage data:", error);
+    localStorage.setItem('menuData', JSON.stringify(menuData));
+  }, [menuData]);
+
+  const handleAddMenu = () => {
+    if (menuName.trim() === '') {
+      alert('Please enter a valid menu name');
+      return;
     }
-  });
-  const handleLocalStorageUpdate = () => {
-    const localStorageData = localStorage.getItem("oneDamageFormData");
-    try {
-      const parsedData = JSON.parse(localStorageData);
-      if (parsedData && parsedData.onetabName) {
-        if (!onetabNames.includes(parsedData.onetabName)) {
-          setOnetabNames((prevOnetabNames) => [
-            ...prevOnetabNames,
-            parsedData.onetabName,
-          ]);
-        }
-      }
-    } catch (error) {
-      console.error("Error parsing localStorage data:", error);
-    }
-  };
-  useEffect(() => {
-    if (selectedOption && !popupStates[selectedOption]) {
-      console.log("Closing popup");
-      setSelectedOption("");
-    }
-  }, [popupStates]);
-  const openPopup = () => {
-    setPopupStates((prevState) => ({
-      ...prevState,
-      [selectedOption]: true,
-    }));
-  };
-  const closePopup = () => {
-    setPopupStates((prevState) => ({
-      ...prevState,
-      [selectedOption]: false,
-    }));
-    console.log("closing");
-  };
-  const handleCancel = () => {
-    setSelectedOption("");
-    setPopupStates((prevState) => ({
-      ...prevState,
-      [selectedOption]: false,
-    }));
-    console.log("Cancel clicked");
-  };
-  const handleBack = () => {
-    console.log("Back clicked");
-  };
-  const handleDone = () => {
-    console.log("Done clicked");
-    closePopup();
-  };
-  const [inputText, setInputText] = useState("");
-  const [displayText, setDisplayText] = useState("");
-  const [newItemName, setNewItemName] = useState("");
-  const [menuName, setMenuName] = useState("");
-  const [menuItem, setMenuItem] = useState("");
-  const [items, setItems] = useState([]);
-  const [selectedMenuItemIndex, setSelectedMenuItemIndex] = useState(null);
-  const [selectedSubItemIndex, setSelectedSubItemIndex] = useState(null);
-  const [lastSelectionType, setLastSelectionType] = useState("menu"); // 'menu' or 'menuItem'
-  const [selectedMenuTitleIndex, setSelectedMenuTitleIndex] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [menuItems, setMenuItems] = useState([]);
-  const [onedamagePanelName, setOnedamagePanelName] = useState("");
-  const handleAddClick = () => {
-    setDisplayText(inputText);
-    setInputText("");
-  };
-  const handleInputChange = (event) => {
-    setNewItemName(event.target.value);
-  };
-  const handleMenuItemChange = (event) => {
-    setMenuItem(event.target.value);
-  };
-  const handleSelectMenuItem = (index) => {
-    setSelectedMenuItemIndex(index);
-    setLastSelectionType(index === null ? "menu" : "menuItem");
-    setShowPopup(true);
-  };
-  const handleSelectSubItem = (subIndex) => {
-    setSelectedSubItemIndex(subIndex);
-    setShowPopup(true);
-  };
-  const handleSelectMenuTitle = (index) => {
-    setSelectedMenuTitleIndex(index);
-    setSelectedMenuItemIndex(null);
-    setSelectedSubItemIndex(null);
-  };
-  const storedMenuData = localStorage.getItem("menuData");
-  const menuData = JSON.parse(storedMenuData);
-  console.log(menuData);
-  useEffect(() => {
-    localStorage.setItem("menuData", JSON.stringify(items));
-    setEditTempData(items);
-  }, [items]);
-  const handleAddMenuItem = (event) => {
-    event.preventDefault();
-    let updatedItems;
-    if (lastSelectionType === "menu" && selectedMenuTitleIndex !== null) {
-      updatedItems = [...items];
-      const newItem = {
-        id: Date.now(),
-        menuname: menuItem,
-        subItems: [],
-      };
-      updatedItems[selectedMenuTitleIndex] = newItem;
-      setMenuItem("");
-      setLastSelectionType("menuItem");
-    } else if (
-      lastSelectionType === "menuItem" &&
-      selectedMenuItemIndex !== null
-    ) {
-      const selectedItem = items[selectedMenuItemIndex];
-      if (
-        !selectedItem.subItems.find((item) => item.submenuname === menuItem)
-      ) {
-        updatedItems = [...items];
-        const newSubItem = {
-          id: Date.now(),
-          submenuname: menuItem,
-          radioBoxSelection: "", // Set your default value or leave it empty
-          tabName: "", // Set your default value or leave it empty
-        };
-        updatedItems[selectedMenuItemIndex] = {
-          ...selectedItem,
-          subItems: [...selectedItem.subItems, newSubItem],
-        };
-        setMenuItem("");
-      }
-    } else {
-      updatedItems = [
-        ...items,
-        {
-          id: Date.now(),
-          menuname: menuItem,
-          subItems: [],
+
+    setMenuData((prevMenuData) => {
+      const newMenuId = Object.keys(prevMenuData).length + 1;
+
+      return {
+        ...prevMenuData,
+        [newMenuId]: {
+          id: newMenuId,
+          name: menuName,
+          subitems: [],
+          subdetails: {},
         },
-      ];
-      setMenuItem("");
-      setLastSelectionType("menu");
-    }
-    setItems(updatedItems);
-    console.log("setitems : ", setItems);
-  };
-  const [isPopupVisible, setPopupVisible] = useState(false);
-  const handleDoubleClick = (index) => {
-    setSelectedMenuItemIndex(index);
-    setPopupVisible(true);
+      };
+    });
+
+    setMenuName(''); // Clear the input field
+    setSelectedMenuId(null); // Clear the selected menu
   };
   const handleClosePopup = () => {
-    setPopupVisible(false);
-  };
-  const handleOkButtonClick = () => {
-    setItems((prevItems) =>
-      prevItems.map((item, index) =>
-        index === selectedMenuItemIndex
-          ? { ...item, menuname: newItemName }
-          : item
-      )
-    );
-    setPopupVisible(false);
-  };
-  const handleRemoveItem = () => {
-    if (selectedSubItemIndex !== null) {
-      setItems((prevItems) => {
-        const updatedItems = prevItems.map((menuItem) => {
-          if (menuItem.subItems && menuItem.subItems.length > 0) {
-            const updatedSubItems = menuItem.subItems.filter(
-              (_, index) => index !== selectedSubItemIndex
-            );
-            return {
-              ...menuItem,
-              subItems: updatedSubItems,
-            };
-          }
-          return menuItem;
-        });
-        return updatedItems;
-      });
-    }
-  };
-  const handleCopyItems = () => {
-    if (lastSelectionType === "menu" && selectedMenuTitleIndex !== null) {
-      const copiedMenu = { ...items[selectedMenuTitleIndex] };
-      setItems((prevItems) => [...prevItems, copiedMenu]);
-    } else if (
-      lastSelectionType === "menuItem" &&
-      selectedMenuItemIndex !== null
-    ) {
-      const copiedMenuItem = { ...items[selectedMenuItemIndex] };
-      setItems((prevItems) => [...prevItems, copiedMenuItem]);
-    }
-  };
+    // Add any additional cleanup logic here if needed
+    // For now, just clear selected menu and submenu
+    setSelectedMenuId(null);
+    setSelectedSubMenuId(null);
 
-  const handleClosePopupInspection = () => {
-    console.log("popup close");
-    setIsPopupOpen(false);
   };
-  const openPopupInspection = (subItemId, subItemName) => {
-    console.log("popup open");
-    console.log("Subitem ID:", subItemId);
-    console.log("Subitem Name:", subItemName);
-    setIsPopupOpen(true);
-  };
-  const handleAddButtonClick = () => {
-    if (selectedSubItemIndex !== null) {
-      const selectedMenuItem = items[selectedMenuItemIndex];
-      const selectedSubItem = selectedMenuItem.subItems[selectedSubItemIndex];
-      const updatedItems = [...items];
-      updatedItems[selectedMenuItemIndex] = {
-        ...selectedMenuItem,
-        subItems: [
-          ...selectedMenuItem.subItems.slice(0, selectedSubItemIndex),
-          {
-            ...selectedSubItem,
-            tabName: selectedTabName,
-            onedamagePanelName: onedamagePanelName,
+  const handleAddSubmenu = () => {
+    if (submenuName.trim() === '') {
+      alert('Please enter a valid submenu name');
+      return;
+    }
+
+    setMenuData((prevMenuData) => {
+      if (!selectedMenuId) {
+        alert('Please select a menu first');
+        return prevMenuData;
+      }
+
+      const selectedMenu = prevMenuData[selectedMenuId];
+      const newSubmenuId = selectedMenu.subitems.length + 1;
+
+      return {
+        ...prevMenuData,
+        [selectedMenuId]: {
+          ...selectedMenu,
+          subitems: [
+            ...selectedMenu.subitems,
+            {
+              id: newSubmenuId,
+              subName: submenuName,
+              si: newSubmenuId,
+              selectedOption: selectedRadio,
+            },
+          ],
+          subdetails: {
+            ...selectedMenu.subdetails,
+            [newSubmenuId]: {},
           },
-          ...selectedMenuItem.subItems.slice(selectedSubItemIndex + 1),
-        ],
+        },
       };
-      setItems(updatedItems);
-      openPopupInspection(selectedSubItem.id, selectedSubItem.submenuname);
-    } else {
-      alert("Please select a subitem before clicking Add");
+    });
+
+    setSubmenuName(''); // Clear the input field
+    setSelectedRadio(''); // Clear the selected radio
+    setInputValues({
+      tabname: '',
+      damage1: '',
+      damage2: '',
+      selection1: '',
+      selection2: '',
+    }); // Clear the input values
+    setSelectedSubMenuId(null); // Clear the selected submenu
+  };
+
+  const handleAddSubdetails = () => {
+    if (!selectedMenuId || !selectedSubMenuId) {
+      alert('Please select a menu and submenu first');
+      return;
+    }
+
+    setMenuData((prevMenuData) => {
+      const selectedMenu = prevMenuData[selectedMenuId];
+
+      if (!selectedMenu) {
+        alert('Please select a valid menu');
+        return prevMenuData;
+      }
+
+      const selectedSubmenu = selectedMenu.subitems.find(
+        (submenu) => submenu.id === selectedSubMenuId
+      );
+
+      if (!selectedSubmenu) {
+        alert('Please select a valid submenu');
+        return prevMenuData;
+      }
+
+      return {
+        ...prevMenuData,
+        [selectedMenuId]: {
+          ...selectedMenu,
+          subdetails: {
+            ...selectedMenu.subdetails,
+            [selectedSubMenuId]: {
+              ...selectedMenu.subdetails[selectedSubMenuId],
+              [selectedRadio]: { ...inputValues },
+            },
+          },
+        },
+      };
+    });
+
+    setSelectedRadio(''); // Clear the selected radio
+    setInputValues({
+      tabname: '',
+      damage1: '',
+      damage2: '',
+      selection1: '',
+      selection2: '',
+    }); // Clear the input values
+  };
+
+  const handleRadioChange = (value) => {
+    setSelectedRadio(value);
+  };
+
+  const handleInputChange = (inputName, inputValue) => {
+    setInputValues((prevInputValues) => ({
+      ...prevInputValues,
+      [inputName]: inputValue,
+    }));
+  };
+
+  const getOptionLabel = (radioValue) => {
+    switch (radioValue) {
+      case 1:
+        return '1 Damage';
+      case 2:
+        return '2 Damage';
+      case 3:
+        return '1 Selection';
+      case 4:
+        return '2 Selections';
+      case 5:
+        return '1 Damage 1 Selection';
+      case 6:
+        return '1 Damage 2 Selections';
+      default:
+        return '';
     }
   };
-  return (
-    <div className="Contant-edittemp">
-      <div className="template-card-edittemp">
-        <div className="template-selector-edittemp">
-          <span className="selectTemp-edittemp">Edit Template</span>
-          <div className="close-div-edittemp">
-            <p onClick={onClose} className="close-button-edittemp">
-              X
-            </p>
-          </div>
-        </div>
-        <div className="Menu-Item flex justify-center">
-          <div className="menu">
-            <p className="p-menutitle-edittemp">Menu</p>
-          </div>
-          <div className="item">
-            <p className="p-itemtitle-edittemp">Item</p>
-          </div>
-        </div>
-        <div className="Menu-Item-edittemp">
-          <div className="template-card__body__center__input-edittemp">
-            <div className="box-edittemp">
-              <div className="menubox text-left">
-                <div className="iconmenu-edittemp">
-                  <div>
-                    <FaFolderOpen className="mr-2 inline-block" size={18} />
-                  </div>
-                  <div
-                    className={`Menu-Item ${selectedMenuTitleIndex === null
-                        ? "selected-menu-title"
-                        : ""
-                      }`}
-                    onClick={() => handleSelectMenuTitle(null)}
-                  >
-                    <p
-                      className="menutitle1-edittemp"
-                      value={menuName}
-                      onChange={handleMenuItemChange}
-                      style={{ cursor: "pointer", backgroundColor: "#f0f0f0" }}
-                    >
-                      MENU
-                    </p>
-                  </div>
-                </div>
-                <div key={selectedMenuItemIndex}>
-                  <ul className="pl-10">
-                    {items.map((item, index) => (
-                      <li key={index}>
-                        <button
-                          onDoubleClick={() => handleDoubleClick(index)}
-                          className={`Menu-Item ${selectedMenuItemIndex === index ? "clicked" : ""
-                            }`}
-                          onClick={() => handleSelectMenuItem(index)}
-                          style={{
-                            backgroundColor:
-                              selectedMenuItemIndex === index
-                                ? "#b3e0ff"
-                                : "transparent",
-                          }}
-                        >
-                          {item.menuname}{" "}
-                        </button>
-                        {isPopupVisible && index === selectedMenuItemIndex && (
-                          <div className="Contant1-edittemp">
-                            <div className="template-card1-edittemp">
-                              <div className="template-selector1-edittemp">
-                                <span className="selectTemp1-edittemp">
-                                  Input
-                                </span>
-                                <button
-                                  className="close-button1-edittemp"
-                                  onClick={handleClosePopup}
-                                >
-                                  X
-                                </button>
-                              </div>
-                              <div className="para2-edittemp">
-                                <p>Enter new name of menu item</p>
-                                <input
-                                  type="text"
-                                  value={newItemName}
-                                  onChange={handleInputChange}
-                                  className="menutext1-edittemp"
-                                />
-                              </div>
-                              <div className="button-container1-edittemp">
-                                <button
-                                  className="ok-button-edittemp"
-                                  onClick={handleOkButtonClick}
-                                >
-                                  Ok
-                                </button>
-                                <button
-                                  className="cancel-button1-edittemp"
-                                  onClick={handleClosePopup}
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        {item.subItems.length > 0 && (
-                          <ul>
-                            {item.subItems.map((subItem, subIndex) => (
-                              <li
-                                key={subIndex}
-                                className={`${selectedSubItemIndex === subIndex
-                                    ? "selected-subitem-edittemp"
-                                    : ""
-                                  }`}
-                              >
-                                <button
-                                  onClick={() => handleSelectSubItem(subIndex)}
-                                  style={{
-                                    backgroundColor:
-                                      selectedSubItemIndex === subIndex
-                                        ? "#c2f0c2"
-                                        : "transparent",
-                                  }}
-                                >
-                                  {subItem.submenuname}
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div className="box2-edittemp">
-              <div className="item text-left">
-                {onetabNames.map((onetabName, index) => (
-                  <p key={index}>{onetabName}</p>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="Menu-Item-edittemp">
-          <div className="button-container-edittemp">
-            <div className="input-container-edittemp">
-              <input
-                type="text"
-                className="custom-input-edittemp"
-                placeholder="Text..."
-                value={menuItem}
-                onChange={handleMenuItemChange}
-              />
-              <button
-                className="btnM-edittemp"
-                onClick={(e) => handleAddMenuItem(e)}
-              >
-                Add
-              </button>
-              <button className="btnM-edittemp" onClick={handleRemoveItem}>
-                Remove
-              </button>
-              <button className="btnM-edittemp" onClick={handleCopyItems}>
-                Copy
-              </button>
-            </div>
-          </div>
-          <div className="button-container-edittemp">
-            <div className="input-container-edittemp">
-              <button
-                className="btnM-edittemp"
-                onClick={handleAddButtonClick}
-                subItemName={
-                  selectedSubItemIndex !== null
-                    ? items[selectedMenuItemIndex].subItems[
-                      selectedSubItemIndex
-                    ]?.submenuname
-                    : ""
-                }
-              >
-                Add
-              </button>
-              {isPopupOpen && (
-                // <Inspection/>
-                <div className="dialog-inspection">
-                  <div className="dialog-header-inspection">
-                    <p className="para-inspection">
-                      What would you like to have on your new panel? A damage
-                      panel is a section that has a list of
-                      conditions/narratives and a red and black section to move
-                      the items into. A selection panel is one list used for
-                      selecting types of materials, locations, etc:
-                    </p>
-                  </div>
-                  <div className="dialog-body-inspection">
-                    <label className="label1-inspection">
-                      <input
-                        type="radio"
-                        name="options"
-                        value="Option 1"
-                        checked={selectedOption === "Option 1"}
-                        onChange={handleRadioChange}
-                      />
-                      1 Damage Panel
-                    </label>
-                    <label className="label2-inspection">
-                      <input
-                        type="radio"
-                        name="options"
-                        value="Option 2"
-                        checked={selectedOption === "Option 2"}
-                        onChange={handleRadioChange}
-                      />
-                      2 Damage Panels
-                    </label>
-                    <label className="label3-inspection">
-                      <input
-                        type="radio"
-                        name="options"
-                        value="Option 3"
-                        checked={selectedOption === "Option 3"}
-                        onChange={handleRadioChange}
-                      />
-                      1 Selection Panel
-                    </label>
-                    <label className="label4-inspection">
-                      <input
-                        type="radio"
-                        name="options"
-                        value="Option 4"
-                        checked={selectedOption === "Option 4"}
-                        onChange={handleRadioChange}
-                      />
-                      2 Selection Panels
-                    </label>
-                    <label className="label-inspection">
-                      <input
-                        type="radio"
-                        name="options"
-                        value="Option 5"
-                        checked={selectedOption === "Option 5"}
-                        onChange={handleRadioChange}
-                      />
-                      1 Damage Panel & 1 Selection Panel
-                    </label>
-                    <label className="label5-inspection">
-                      <input
-                        type="radio"
-                        name="options"
-                        value="Option 6"
-                        checked={selectedOption === "Option 6"}
-                        onChange={handleRadioChange}
-                      />
-                      1 Damage Panel & 2 Selection Panels
-                    </label>
-                  </div>
-                  <div className="dialog-footer-inspection">
-                    <button
-                      className="cancel-button-inspection"
-                      onClick={handleClosePopupInspection}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      className="back-button-inspection"
-                      onClick={handleBack}
-                    >
-                      Back
-                    </button>
-                    <button
-                      className="back-button-inspection"
-                      onClick={handleBack}
-                    >
-                      Next
-                    </button>
-                    <button className="done-button-inspection">Done</button>
-                  </div>
 
-                  {isPopupOpen && selectedOption === "Option 1" && (
-                    <OneDamage
-                      isPopupOpen={isPopupOpen}
-                      setIsPopupOpen={setIsPopupOpen}
-                      onDone={handleOneDamageDone}
-                      onClose={() =>
-                        setPopupStates({ ...popupStates, "Option 1": false })
-                      }
-                    />
-                  )}
-                  {isPopupOpen && selectedOption === "Option 2" && (
-                    <TwoDamage
-                      isPopupOpen={isPopupOpen}
-                      setIsPopupOpen={setIsPopupOpen}
-                      onClose={() =>
-                        setPopupStates({ ...popupStates, "Option 2": false })
-                      }
-                    />
-                  )}
-                  {isPopupOpen && selectedOption === "Option 3" && (
-                    <OneSelection
-                      isPopupOpen={isPopupOpen}
-                      setIsPopupOpen={setIsPopupOpen}
-                      onClose={() =>
-                        setPopupStates({ ...popupStates, "Option 3": false })
-                      }
-                    />
-                  )}
-                  {isPopupOpen && selectedOption === "Option 4" && (
-                    <TwoSelection
-                      isPopupOpen={isPopupOpen}
-                      setIsPopupOpen={setIsPopupOpen}
-                      onClose={() =>
-                        setPopupStates({ ...popupStates, "Option 4": false })
-                      }
-                    />
-                  )}
-                  {isPopupOpen && selectedOption === "Option 5" && (
-                    <OneDamageSelection
-                      isPopupOpen={isPopupOpen}
-                      setIsPopupOpen={setIsPopupOpen}
-                      onClose={() =>
-                        setPopupStates({ ...popupStates, "Option 5": false })
-                      }
-                    />
-                  )}
-                  {isPopupOpen && selectedOption === "Option 6" && (
-                    <OneDamageTwoSelection
-                      isPopupOpen={isPopupOpen}
-                      setIsPopupOpen={setIsPopupOpen}
-                      onClose={() =>
-                        setPopupStates({ ...popupStates, "Option 6": false })
-                      }
-                    />
+  const renderInputFields = (selectedRadio) => {
+    switch (selectedRadio) {
+      case 1:
+        return (
+          <div className='flex float-right'>
+            <label htmlFor="tabname">Tab Name:</label>
+            <input
+              type="text"
+              id="tabname"
+              value={inputValues.tabname}
+              onChange={(e) => handleInputChange('tabname', e.target.value)}
+            />
+            <br />
+            <label htmlFor="damage1">1st Damage:</label>
+            <input
+              type="text"
+              id="damage1"
+              value={inputValues.damage1}
+              onChange={(e) => handleInputChange('damage1', e.target.value)}
+            />
+          </div>
+        );
+      case 2:
+        return (
+          <div className='flex float-right'>
+            <label htmlFor="tabname">Tab Name:</label>
+            <input
+              type="text"
+              id="tabname"
+              value={inputValues.tabname}
+              onChange={(e) => handleInputChange('tabname', e.target.value)}
+            />
+            <br />
+            <label htmlFor="damage1">1st Damage:</label>
+            <input
+              type="text"
+              id="damage1"
+              value={inputValues.damage1}
+              onChange={(e) => handleInputChange('damage1', e.target.value)}
+            />
+            <br />
+            <label htmlFor="damage2">2nd Damage:</label>
+            <input
+              type="text"
+              id="damage2"
+              value={inputValues.damage2}
+              onChange={(e) => handleInputChange('damage2', e.target.value)}
+            />
+          </div>
+        );
+      case 3:
+        return (
+          <div className='flex float-right'>
+            <label htmlFor="tabname">Tab Name:</label>
+            <input
+              type="text"
+              id="tabname"
+              value={inputValues.tabname}
+              onChange={(e) => handleInputChange('tabname', e.target.value)}
+            />
+            <br />
+            <label htmlFor="selection1">1st Selection:</label>
+            <input
+              type="text"
+              id="selection1"
+              value={inputValues.selection1}
+              onChange={(e) => handleInputChange('selection1', e.target.value)}
+            />
+          </div>
+        );
+      case 4:
+        return (
+          <div className='flex float-right'>
+            <label htmlFor="tabname">Tab Name:</label>
+            <input
+              type="text"
+              id="tabname"
+              value={inputValues.tabname}
+              onChange={(e) => handleInputChange('tabname', e.target.value)}
+            />
+            <br />
+            <label htmlFor="selection1">1st Selection:</label>
+            <input
+              type="text"
+              id="selection1"
+              value={inputValues.selection1}
+              onChange={(e) => handleInputChange('selection1', e.target.value)}
+            />
+            <br />
+            <label htmlFor="selection2">2nd Selection:</label>
+            <input
+              type="text"
+              id="selection2"
+              value={inputValues.selection2}
+              onChange={(e) => handleInputChange('selection2', e.target.value)}
+            />
+          </div>
+        );
+      case 5:
+        return (
+          <div className='flex float-right'>
+            {/* Handle 1 Damage 1 Selection input fields */}
+            <label htmlFor="tabname">Tab Name:</label>
+            <input
+              type="text"
+              id="tabname"
+              value={inputValues.tabname}
+              onChange={(e) => handleInputChange('tabname', e.target.value)}
+            />
+            <br />
+            <label htmlFor="damage1">1st Damage:</label>
+            <input
+              type="text"
+              id="damage1"
+              value={inputValues.damage1}
+              onChange={(e) => handleInputChange('damage1', e.target.value)}
+            />
+            <br />
+            <label htmlFor="selection1">1st Selection:</label>
+            <input
+              type="text"
+              id="selection1"
+              value={inputValues.selection1}
+              onChange={(e) => handleInputChange('selection1', e.target.value)}
+            />
+          </div>
+        );
+
+      case 6:
+        return (
+          <div className='flex float-right'>
+            {/* Handle 1 Damage 2 Selections input fields */}
+            <label htmlFor="tabname">Tab Name:</label>
+            <input
+              type="text"
+              id="tabname"
+              value={inputValues.tabname}
+              onChange={(e) => handleInputChange('tabname', e.target.value)}
+            />
+            <br />
+            <label htmlFor="damage1">1st Damage:</label>
+            <input
+              type="text"
+              id="damage1"
+              value={inputValues.damage1}
+              onChange={(e) => handleInputChange('damage1', e.target.value)}
+            />
+            <br />
+            <label htmlFor="selection1">1st Selection:</label>
+            <input
+              type="text"
+              id="selection1"
+              value={inputValues.selection1}
+              onChange={(e) => handleInputChange('selection1', e.target.value)}
+            />
+            <br />
+            <label htmlFor="selection2">2nd Selection:</label>
+            <input
+              type="text"
+              id="selection2"
+              value={inputValues.selection2}
+              onChange={(e) => handleInputChange('selection2', e.target.value)}
+            />
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+
+  const renderMenuTree = () => {
+    return Object.keys(menuData).map((menuId) => {
+      const menu = menuData[menuId];
+
+      return (
+        <div
+          key={menuId}
+          style={{
+            marginLeft: 20,
+            cursor: 'pointer',
+            backgroundColor: selectedMenuId === menuId ? '#e0e0e0' : 'transparent',
+          }}
+          onClick={() => setSelectedMenuId(menuId)}
+        >
+          {menu.name}
+
+          {menu.subitems.map((submenu) => (
+            <div
+              key={submenu.id}
+              style={{
+                marginLeft: 20,
+                cursor: 'pointer',
+                backgroundColor: selectedSubMenuId === submenu.id ? '#c0c0c0' : 'transparent',
+              }}
+              onClick={() => setSelectedSubMenuId(submenu.id)}
+            >
+              {submenu.subName}
+
+              {selectedMenuId === menuId && selectedSubMenuId === submenu.id && (
+                <div style={{ marginLeft: 20 }} className='flex-wrap'>
+                  {/* Radio buttons for subdetails */}
+                  {[1, 2, 3, 4, 5, 6].map((radioValue) => (
+                    <label key={radioValue}>
+                      <input
+                        type="radio"
+                        name={`subdetails_${submenu.id}`}
+                        value={radioValue}
+                        checked={selectedRadio === radioValue}
+                        onChange={() => handleRadioChange(radioValue)}
+                      />
+                      {getOptionLabel(radioValue)}
+                    </label>
+                  ))}
+
+                  {/* Input fields for selected radio */}
+                  {selectedRadio && (
+                    <div>
+                      {renderInputFields(selectedRadio)}
+                      {/* Add subdetails button */}
+                      <button onClick={handleAddSubdetails}>Add Subdetails</button>
+
+                      {/* Display added subdetails */}
+                      <div>
+                        <SubdetailsDisplay
+                          subdetails={menu.subdetails[selectedSubMenuId][selectedRadio]}
+                        />
+                      </div>
+                    </div>
                   )}
                 </div>
               )}
-              <button className="btnM-edittemp">Remove</button>
-              <button className="btnM-edittemp">Move Up</button>
-              <button className="btnM-edittemp">Move Down</button>
-              <button className="btnM-edittemp">Copy</button>
             </div>
+          ))}
+
+          {/* Move SubdetailsDisplay outside the inner map but inside the menu div */}
+          {selectedMenuId === menuId && selectedSubMenuId && (
+            <SubdetailsDisplay
+              subdetails={menu.subdetails[selectedSubMenuId]}
+            />
+          )}
+        </div>
+      );
+    });
+  };
+
+
+  return (
+    <div>
+      {/* Popup Wrapper */}
+      <div className="popup-wrapper text-left z-10">
+        {/* Popup Content */}
+        <div className="popup-content">
+          {/* Heading */}
+          <div className='text-left height-for-data'>
+
+            <h2> Menu </h2>
+            <div className='z-50'>
+
+              {renderMenuTree()}
+            </div>
+
           </div>
-        </div>
-        <div className="para1-edittemp">
-          <p>
-            Double click on a menu or inspection item to rename it. Move a menu
-            by dragging and dropping an item to the new location Type into the
-            box left of Add and click Add to add a new area or menu
-          </p>
-        </div>
-        <div className="Donebtn-edittemp">
-          <button className="open-button-edittemp" onClick={onClose}>
-            Done
-          </button>
+
+          {/* Add Menu Section */}
+          <div>
+            <label htmlFor="menuName">Menu Name:</label>
+            <input
+              type="text"
+              id="menuName"
+              value={menuName}
+              onChange={(e) => setMenuName(e.target.value)}
+            />
+            <button onClick={handleAddMenu}>Add Menu</button>
+          </div>
+
+          {/* Add Submenu Section */}
+          <div>
+            <label htmlFor="submenuName">Submenu Name:</label>
+            <input
+              type="text"
+              id="submenuName"
+              value={submenuName}
+              onChange={(e) => setSubmenuName(e.target.value)}
+            />
+            <button onClick={handleAddSubmenu}>Add Submenu</button>
+          </div>
+
+          <button className="close-button" onClick={handleClosePopup}>Close</button>
         </div>
       </div>
     </div>
   );
 };
-export default EditTemp;
+
+
+export default DynamicMenuComponent;
