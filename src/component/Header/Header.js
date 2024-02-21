@@ -185,7 +185,6 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
 
   useEffect(() => {
     const storedMenuData = localStorage.getItem("menuData");
-    console.log("storedMenuData:", storedMenuData);
 
     if (storedMenuData) {
       try {
@@ -195,7 +194,7 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
         console.error("Error parsing JSON:", error);
       }
     }
-  });
+  }, []);
   return (
     <>
       <div
@@ -348,12 +347,15 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
             </ul>
           )}
         </div>
-        <div className="flex ">
-          <ul onClick={openAboutUsPopup}>
+        <div className="flex">
+          {/* <ul className="flex" onClick={openAboutUsPopup}> */}
+          <ul className="flex">
             <li className="ml-5">About</li>
             {header &&
               Object.keys(header).map((key) => (
-                <li key={key}>{header[key].name}</li>
+                <li className="ml-5" key={key}>
+                  {header[key].name}
+                </li>
               ))}
           </ul>
         </div>
