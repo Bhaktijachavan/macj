@@ -159,49 +159,34 @@ const ColorPalette = ({ onClose }) => {
     setIsModalOpen(false);
   };
   useEffect(() => {
-    // Retrieve data from local storage when the component mounts
-    const storedMenuData = localStorage.getItem('menuData');
-    console.log('storedMenuData:', storedMenuData);
+    const storedMenuData = localStorage.getItem("menuData");
+    console.log("storedMenuData:", storedMenuData);
 
     if (storedMenuData) {
-      const parsedMenuData = JSON.parse(storedMenuData);
-      setMenuData(parsedMenuData);
-      setDummyData(parsedMenuData);
+      try {
+        const parsedMenuData = JSON.parse(storedMenuData);
+        setMenuData(parsedMenuData);
+        setDummyData(parsedMenuData);
 
-      // Iterate over the properties of the outermost object
-      for (const outerKey in parsedMenuData) {
-        if (parsedMenuData.hasOwnProperty(outerKey)) {
-          const outerObject = parsedMenuData[outerKey];
+        // Accessing the properties directly as per the JSON structure
+        const name = parsedMenuData[1].name;
 
-          // Accessing the properties of the outer object
-          const name = outerObject.name;
-          console.log('Name:', name);
+        console.log("Name:", name);
 
-          // Iterate over the subitems array
-          const subItems = outerObject.subitems;
-          if (subItems && subItems.length > 0) {
-            // Assuming you want the first subItem
-            const subItem = subItems[0];
-            const subName = subItem.subName;
-            console.log('SubName:', subName);
-          }
+        console.log("subitems", parsedMenuData[1].subitems[0].si);
 
-          // Accessing the properties of the subdetails object
-          const subDetails = outerObject.subdetails;
-          console.log('SubDetails:', subDetails);
-        }
+        Object.keys(parsedMenuData).map((key) =>
+          console.log("hello ", parsedMenuData[key])
+        );
+      } catch (error) {
+        console.error("Error parsing JSON:", error);
       }
     }
   }, []);
 
-
   useEffect(() => {
-    console.log("parsed object ", dummyData)
-
-
-  }
-
-  )
+    console.log("parsed object ", dummyData);
+  });
 
   // useEffect(() => {
   //   const handleLocalStorageChange = () => {
@@ -219,24 +204,28 @@ const ColorPalette = ({ onClose }) => {
   // }, []);
   useEffect(() => {
     // Fetch or set your localStorageData here
-    const storedData = localStorage.getItem('menuData');
+    const storedData = localStorage.getItem("menuData");
     if (storedData) {
       setLocalStorageData(JSON.parse(storedData));
     }
     console.log(localStorageData);
   }, []);
 
-  // const pdf = new jsPDF();
-  // pdf.autoTableInitialize();
-
-  // Function to handle close and generate PDF
   const handleClose = () => {
-
     onClose();
   };
 
-
-  // ..
+  const ItemComponent = ({ item }) => {
+    const { id, name, subitems, subdetails } = item;
+    return (
+      <div>
+        <p>ID: {id}</p>
+        <p>Name: {name}</p>
+        <p>Subitems: {subitems.join(", ")}</p>
+        <p>Subdetails: {JSON.stringify(subdetails)}</p>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -304,39 +293,23 @@ const ColorPalette = ({ onClose }) => {
                       <th className="border font-semibold p-2">TOC Font</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {menuData.length > 0 && menuData.map((data, index) => (
-                      <tr
-                        key={index}
-                        className={selectAll || selectedRow === index ? "bg-gray-200" : ""}
-                        onClick={() => handleRowClick(index, 0)}
-                      >
-                        <td>{data.id}</td>
-                        <td>{data.name}</td>
-                        {/* Access the data from subitems using the same index */}
-                        <td>{data.subitems.length > 0 ? data.subitems[0].subName : ''}</td>
-                        {/* ... (other cells) */}
-                      </tr>
-                    ))}
-                  </tbody>
                 </table>
-                {console.log(dummyData[0]?.subitems.subName)}
-                {/* <tbody>
-                    {localStorageData.length > 0 && localStorageData.map((index) => (
-                      <tr
-                        key={index}
-                        className={selectAll || selectedRow === index ? "bg-gray-200" : ""}
-                        onClick={() => handleRowClick(index, 0)}
-                      >
-                        <td className="border p-2">{localStorageData[index]?.subitems[0]?.subName}</td>
 
-
+                {Object.keys(dummyData).map((key, index) => (
+                  <tbody key={key}>
+                    {Object.keys(dummyData[key].subitems).map((subKey) => (
+                      <tr key={subKey}>
+                        {/* <td>{dummyData[key].subitems[subKey].id}</td> */}
+                        <td>{dummyData[key].subitems[subKey].subName}</td>
+                        <td className="border p-2">
+                          {JSON.stringify(dummyData[key].selectedOption)}
+                        </td>
                         <td className="border p-2"></td>
                         <td className="border p-2">
                           <input
                             type="checkbox"
-                            checked={data.print}
-                            onChange={() => { }}
+                            checked={dummyData[key].print}
+                            onChange={() => {}}
                           />
                         </td>
                         <td className="border p-2">
@@ -347,7 +320,7 @@ const ColorPalette = ({ onClose }) => {
                             value={rowColors[index].border}
                             onChange={(e) =>
                               handleColorChange(
-                                data.id,
+                                dummyData[key].id,
                                 "border",
                                 e.target.value
                               )
@@ -362,7 +335,7 @@ const ColorPalette = ({ onClose }) => {
                             value={rowColors[index].headerBackground}
                             onChange={(e) =>
                               handleColorChange(
-                                data.id,
+                                dummyData[key].id,
                                 "headerBackground",
                                 e.target.value
                               )
@@ -378,7 +351,7 @@ const ColorPalette = ({ onClose }) => {
                             value={rowColors[index].footerBackground}
                             onChange={(e) =>
                               handleColorChange(
-                                data.id,
+                                dummyData[key].id,
                                 "footerBackground",
                                 e.target.value
                               )
@@ -389,18 +362,16 @@ const ColorPalette = ({ onClose }) => {
                         <td className="border p-2"></td>
                         <td className="border p-2">
                           <div>
-                            <input
-                              type="color"
-
-                            />
-
+                            <input type="color" />
                           </div>
                         </td>
                         <td className="border p-2"></td>
                       </tr>
                     ))}
-                  </tbody> */}
-                {/* </table> */}
+                  </tbody>
+                ))}
+
+                <tbody></tbody>
               </div>
               <div
                 className="text-center mx-2 text-sm"
@@ -498,7 +469,10 @@ const ColorPalette = ({ onClose }) => {
             </div>
           </div>
           <div className="flex justify-end mr-20">
-            <button className="border-2 border-black py-1 px-2" onClick={handleClose}>
+            <button
+              className="border-2 border-black py-1 px-2"
+              onClick={handleClose}
+            >
               Generate PDF & Close
             </button>
           </div>

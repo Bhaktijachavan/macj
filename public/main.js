@@ -14,7 +14,7 @@
 // //       isMac ? { role: "close" } : { role: "quit" },
 // //     ],
 // //   },
-// //   {
+// //   {x
 // //     label: "Edite",
 // //     submenu: [
 // //       { label: "Client Information" },
@@ -89,7 +89,6 @@
 //     app.quit();
 //   }
 // });
-
 
 const { app, BrowserWindow, Menu } = require("electron/main");
 const path = require("node:path");

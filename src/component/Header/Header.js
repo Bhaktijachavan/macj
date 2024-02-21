@@ -43,6 +43,7 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
   const [pastedText, setPastedText] = useState("");
   const [value, setValue] = React.useState("");
   const [aboutUsPagePopup, setAboutUsPagePopup] = useState(false);
+  const [header, setHeader] = useState();
   const ref = useRef(null);
 
   const openOpenTemplatePopup = () => {
@@ -181,6 +182,20 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
         console.error("Error pasting text:", error);
       });
   };
+
+  useEffect(() => {
+    const storedMenuData = localStorage.getItem("menuData");
+    console.log("storedMenuData:", storedMenuData);
+
+    if (storedMenuData) {
+      try {
+        const parsedMenuData = JSON.parse(storedMenuData);
+        setHeader(parsedMenuData);
+      } catch (error) {
+        console.error("Error parsing JSON:", error);
+      }
+    }
+  });
   return (
     <>
       <div
@@ -333,9 +348,13 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
             </ul>
           )}
         </div>
-        <div>
+        <div className="flex ">
           <ul onClick={openAboutUsPopup}>
             <li className="ml-5">About</li>
+            {header &&
+              Object.keys(header).map((key) => (
+                <li key={key}>{header[key].name}</li>
+              ))}
           </ul>
         </div>
       </div>
@@ -529,7 +548,7 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
                   );
                   setValue(paste);
                 }}
-              // onClick={handlePaste}
+                // onClick={handlePaste}
               >
                 <div className="flex justify-center">
                   <img src={img11} alt="" />

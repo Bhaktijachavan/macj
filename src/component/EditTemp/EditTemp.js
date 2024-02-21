@@ -23,7 +23,7 @@ const SubdetailsDisplay = ({ subdetails }) => {
   );
 };
 
-const DynamicMenuComponent = (onClose) => {
+const DynamicMenuComponent = () => {
   const [menuData, setMenuData] = useState({});
   const [menuName, setMenuName] = useState("");
   const [submenuName, setSubmenuName] = useState("");
@@ -37,9 +37,8 @@ const DynamicMenuComponent = (onClose) => {
     selection1: "",
     selection2: "",
   });
-
   const [selectedOption, setSelectedOption] = useState(""); // New state for selected option
-  const [isPopupOpen, setPopupOpen] = useState(true);
+
   useEffect(() => {
     const storedMenuData = localStorage.getItem("menuData");
     if (storedMenuData) {
@@ -87,8 +86,6 @@ const DynamicMenuComponent = (onClose) => {
     // For now, just clear selected menu and submenu
     setSelectedMenuId(null);
     setSelectedSubMenuId(null);
-    onClose();
-
   };
   const handleAddSubmenu = () => {
     if (submenuName.trim() === "") {
@@ -512,7 +509,7 @@ const DynamicMenuComponent = (onClose) => {
             save to local{" "}
           </button>
 
-          <button className="close-button" onClick={handleClose}>
+          <button className="close-button" onClick={handleClosePopup}>
             Close
           </button>
         </div>
