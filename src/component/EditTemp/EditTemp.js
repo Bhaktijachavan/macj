@@ -1,10 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
-import "../../component/EditTemp/DynamicMenuComponent.css"
-
+import React, { useContext, useEffect, useState } from "react";
+import "../../component/EditTemp/DynamicMenuComponent.css";
 
 const SubdetailsDisplay = ({ subdetails }) => {
-
-
   if (!subdetails || Object.keys(subdetails).length === 0) {
     return null;
   }
@@ -26,40 +23,45 @@ const SubdetailsDisplay = ({ subdetails }) => {
   );
 };
 
-
-const DynamicMenuComponent = () => {
+const DynamicMenuComponent = (onClose) => {
   const [menuData, setMenuData] = useState({});
-  const [menuName, setMenuName] = useState('');
-  const [submenuName, setSubmenuName] = useState('');
+  const [menuName, setMenuName] = useState("");
+  const [submenuName, setSubmenuName] = useState("");
   const [selectedMenuId, setSelectedMenuId] = useState(null);
   const [selectedSubMenuId, setSelectedSubMenuId] = useState(null);
-  const [selectedRadio, setSelectedRadio] = useState('');
+  const [selectedRadio, setSelectedRadio] = useState("");
   const [inputValues, setInputValues] = useState({
-    tabname: '',
-    damage1: '',
-    damage2: '',
-    selection1: '',
-    selection2: '',
+    tabname: "",
+    damage1: "",
+    damage2: "",
+    selection1: "",
+    selection2: "",
   });
-  const [selectedOption, setSelectedOption] = useState(''); // New state for selected option
 
+  const [selectedOption, setSelectedOption] = useState(""); // New state for selected option
+  const [isPopupOpen, setPopupOpen] = useState(true);
   useEffect(() => {
-    const storedMenuData = localStorage.getItem('menuData');
+    const storedMenuData = localStorage.getItem("menuData");
     if (storedMenuData) {
       setMenuData(JSON.parse(storedMenuData));
     }
   }, []);
+  const handleClose = () => {
+    // Close the popup when the close button (X sign) is clicked
+    setPopupOpen(false);
+    console.log("Close button clicked!");
+  };
+  // If the popup is not open, return null to render nothing
+  if (!isPopupOpen) {
+    return null;
+  }
+
 
   // Save menu data to local storage whenever it changes
 
-
-
-
-
-
   const handleAddMenu = () => {
-    if (menuName.trim() === '') {
-      alert('Please enter a valid menu name');
+    if (menuName.trim() === "") {
+      alert("Please enter a valid menu name");
       return;
     }
 
@@ -77,7 +79,7 @@ const DynamicMenuComponent = () => {
       };
     });
 
-    setMenuName(''); // Clear the input field
+    setMenuName(""); // Clear the input field
     setSelectedMenuId(null); // Clear the selected menu
   };
   const handleClosePopup = () => {
@@ -85,17 +87,18 @@ const DynamicMenuComponent = () => {
     // For now, just clear selected menu and submenu
     setSelectedMenuId(null);
     setSelectedSubMenuId(null);
+    onClose();
 
   };
   const handleAddSubmenu = () => {
-    if (submenuName.trim() === '') {
-      alert('Please enter a valid submenu name');
+    if (submenuName.trim() === "") {
+      alert("Please enter a valid submenu name");
       return;
     }
 
     setMenuData((prevMenuData) => {
       if (!selectedMenuId) {
-        alert('Please select a menu first');
+        alert("Please select a menu first");
         return prevMenuData;
       }
 
@@ -123,21 +126,21 @@ const DynamicMenuComponent = () => {
       };
     });
 
-    setSubmenuName(''); // Clear the input field
-    setSelectedRadio(''); // Clear the selected radio
+    setSubmenuName(""); // Clear the input field
+    setSelectedRadio(""); // Clear the selected radio
     setInputValues({
-      tabname: '',
-      damage1: '',
-      damage2: '',
-      selection1: '',
-      selection2: '',
+      tabname: "",
+      damage1: "",
+      damage2: "",
+      selection1: "",
+      selection2: "",
     }); // Clear the input values
     setSelectedSubMenuId(null); // Clear the selected submenu
   };
 
   const handleAddSubdetails = () => {
     if (!selectedMenuId || !selectedSubMenuId) {
-      alert('Please select a menu and submenu first');
+      alert("Please select a menu and submenu first");
       return;
     }
 
@@ -145,7 +148,7 @@ const DynamicMenuComponent = () => {
       const selectedMenu = prevMenuData[selectedMenuId];
 
       if (!selectedMenu) {
-        alert('Please select a valid menu');
+        alert("Please select a valid menu");
         return prevMenuData;
       }
 
@@ -154,7 +157,7 @@ const DynamicMenuComponent = () => {
       );
 
       if (!selectedSubmenu) {
-        alert('Please select a valid submenu');
+        alert("Please select a valid submenu");
         return prevMenuData;
       }
 
@@ -173,13 +176,13 @@ const DynamicMenuComponent = () => {
       };
     });
 
-    setSelectedRadio(''); // Clear the selected radio
+    setSelectedRadio(""); // Clear the selected radio
     setInputValues({
-      tabname: '',
-      damage1: '',
-      damage2: '',
-      selection1: '',
-      selection2: '',
+      tabname: "",
+      damage1: "",
+      damage2: "",
+      selection1: "",
+      selection2: "",
     }); // Clear the input values
   };
 
@@ -188,9 +191,8 @@ const DynamicMenuComponent = () => {
   };
 
   const handlesave = () => {
-    localStorage.setItem('menuData', JSON.stringify(menuData));
-
-  }
+    localStorage.setItem("menuData", JSON.stringify(menuData));
+  };
 
   const handleInputChange = (inputName, inputValue) => {
     setInputValues((prevInputValues) => ({
@@ -202,19 +204,19 @@ const DynamicMenuComponent = () => {
   const getOptionLabel = (radioValue) => {
     switch (radioValue) {
       case 1:
-        return '1 Damage';
+        return "1 Damage";
       case 2:
-        return '2 Damage';
+        return "2 Damage";
       case 3:
-        return '1 Selection';
+        return "1 Selection";
       case 4:
-        return '2 Selections';
+        return "2 Selections";
       case 5:
-        return '1 Damage 1 Selection';
+        return "1 Damage 1 Selection";
       case 6:
-        return '1 Damage 2 Selections';
+        return "1 Damage 2 Selections";
       default:
-        return '';
+        return "";
     }
   };
 
@@ -222,13 +224,13 @@ const DynamicMenuComponent = () => {
     switch (selectedRadio) {
       case 1:
         return (
-          <div className='flex float-right'>
+          <div className="flex float-right">
             <label htmlFor="tabname">Tab Name:</label>
             <input
               type="text"
               id="tabname"
               value={inputValues.tabname}
-              onChange={(e) => handleInputChange('tabname', e.target.value)}
+              onChange={(e) => handleInputChange("tabname", e.target.value)}
             />
             <br />
             <label htmlFor="damage1">1st Damage:</label>
@@ -236,19 +238,19 @@ const DynamicMenuComponent = () => {
               type="text"
               id="damage1"
               value={inputValues.damage1}
-              onChange={(e) => handleInputChange('damage1', e.target.value)}
+              onChange={(e) => handleInputChange("damage1", e.target.value)}
             />
           </div>
         );
       case 2:
         return (
-          <div className='flex float-right'>
+          <div className="flex float-right">
             <label htmlFor="tabname">Tab Name:</label>
             <input
               type="text"
               id="tabname"
               value={inputValues.tabname}
-              onChange={(e) => handleInputChange('tabname', e.target.value)}
+              onChange={(e) => handleInputChange("tabname", e.target.value)}
             />
             <br />
             <label htmlFor="damage1">1st Damage:</label>
@@ -256,7 +258,7 @@ const DynamicMenuComponent = () => {
               type="text"
               id="damage1"
               value={inputValues.damage1}
-              onChange={(e) => handleInputChange('damage1', e.target.value)}
+              onChange={(e) => handleInputChange("damage1", e.target.value)}
             />
             <br />
             <label htmlFor="damage2">2nd Damage:</label>
@@ -264,19 +266,19 @@ const DynamicMenuComponent = () => {
               type="text"
               id="damage2"
               value={inputValues.damage2}
-              onChange={(e) => handleInputChange('damage2', e.target.value)}
+              onChange={(e) => handleInputChange("damage2", e.target.value)}
             />
           </div>
         );
       case 3:
         return (
-          <div className='flex float-right'>
+          <div className="flex float-right">
             <label htmlFor="tabname">Tab Name:</label>
             <input
               type="text"
               id="tabname"
               value={inputValues.tabname}
-              onChange={(e) => handleInputChange('tabname', e.target.value)}
+              onChange={(e) => handleInputChange("tabname", e.target.value)}
             />
             <br />
             <label htmlFor="selection1">1st Selection:</label>
@@ -284,19 +286,19 @@ const DynamicMenuComponent = () => {
               type="text"
               id="selection1"
               value={inputValues.selection1}
-              onChange={(e) => handleInputChange('selection1', e.target.value)}
+              onChange={(e) => handleInputChange("selection1", e.target.value)}
             />
           </div>
         );
       case 4:
         return (
-          <div className='flex float-right'>
+          <div className="flex float-right">
             <label htmlFor="tabname">Tab Name:</label>
             <input
               type="text"
               id="tabname"
               value={inputValues.tabname}
-              onChange={(e) => handleInputChange('tabname', e.target.value)}
+              onChange={(e) => handleInputChange("tabname", e.target.value)}
             />
             <br />
             <label htmlFor="selection1">1st Selection:</label>
@@ -304,7 +306,7 @@ const DynamicMenuComponent = () => {
               type="text"
               id="selection1"
               value={inputValues.selection1}
-              onChange={(e) => handleInputChange('selection1', e.target.value)}
+              onChange={(e) => handleInputChange("selection1", e.target.value)}
             />
             <br />
             <label htmlFor="selection2">2nd Selection:</label>
@@ -312,20 +314,20 @@ const DynamicMenuComponent = () => {
               type="text"
               id="selection2"
               value={inputValues.selection2}
-              onChange={(e) => handleInputChange('selection2', e.target.value)}
+              onChange={(e) => handleInputChange("selection2", e.target.value)}
             />
           </div>
         );
       case 5:
         return (
-          <div className='flex float-right'>
+          <div className="flex float-right">
             {/* Handle 1 Damage 1 Selection input fields */}
             <label htmlFor="tabname">Tab Name:</label>
             <input
               type="text"
               id="tabname"
               value={inputValues.tabname}
-              onChange={(e) => handleInputChange('tabname', e.target.value)}
+              onChange={(e) => handleInputChange("tabname", e.target.value)}
             />
             <br />
             <label htmlFor="damage1">1st Damage:</label>
@@ -333,7 +335,7 @@ const DynamicMenuComponent = () => {
               type="text"
               id="damage1"
               value={inputValues.damage1}
-              onChange={(e) => handleInputChange('damage1', e.target.value)}
+              onChange={(e) => handleInputChange("damage1", e.target.value)}
             />
             <br />
             <label htmlFor="selection1">1st Selection:</label>
@@ -341,21 +343,21 @@ const DynamicMenuComponent = () => {
               type="text"
               id="selection1"
               value={inputValues.selection1}
-              onChange={(e) => handleInputChange('selection1', e.target.value)}
+              onChange={(e) => handleInputChange("selection1", e.target.value)}
             />
           </div>
         );
 
       case 6:
         return (
-          <div className='flex float-right'>
+          <div className="flex float-right">
             {/* Handle 1 Damage 2 Selections input fields */}
             <label htmlFor="tabname">Tab Name:</label>
             <input
               type="text"
               id="tabname"
               value={inputValues.tabname}
-              onChange={(e) => handleInputChange('tabname', e.target.value)}
+              onChange={(e) => handleInputChange("tabname", e.target.value)}
             />
             <br />
             <label htmlFor="damage1">1st Damage:</label>
@@ -363,7 +365,7 @@ const DynamicMenuComponent = () => {
               type="text"
               id="damage1"
               value={inputValues.damage1}
-              onChange={(e) => handleInputChange('damage1', e.target.value)}
+              onChange={(e) => handleInputChange("damage1", e.target.value)}
             />
             <br />
             <label htmlFor="selection1">1st Selection:</label>
@@ -371,7 +373,7 @@ const DynamicMenuComponent = () => {
               type="text"
               id="selection1"
               value={inputValues.selection1}
-              onChange={(e) => handleInputChange('selection1', e.target.value)}
+              onChange={(e) => handleInputChange("selection1", e.target.value)}
             />
             <br />
             <label htmlFor="selection2">2nd Selection:</label>
@@ -379,7 +381,7 @@ const DynamicMenuComponent = () => {
               type="text"
               id="selection2"
               value={inputValues.selection2}
-              onChange={(e) => handleInputChange('selection2', e.target.value)}
+              onChange={(e) => handleInputChange("selection2", e.target.value)}
             />
           </div>
         );
@@ -388,7 +390,6 @@ const DynamicMenuComponent = () => {
         return null;
     }
   };
-
 
   const renderMenuTree = () => {
     return Object.keys(menuData).map((menuId) => {
@@ -399,8 +400,9 @@ const DynamicMenuComponent = () => {
           key={menuId}
           style={{
             marginLeft: 20,
-            cursor: 'pointer',
-            backgroundColor: selectedMenuId === menuId ? '#e0e0e0' : 'transparent',
+            cursor: "pointer",
+            backgroundColor:
+              selectedMenuId === menuId ? "#e0e0e0" : "transparent",
           }}
           onClick={() => setSelectedMenuId(menuId)}
         >
@@ -411,46 +413,52 @@ const DynamicMenuComponent = () => {
               key={submenu.id}
               style={{
                 marginLeft: 20,
-                cursor: 'pointer',
-                backgroundColor: selectedSubMenuId === submenu.id ? '#c0c0c0' : 'transparent',
+                cursor: "pointer",
+                backgroundColor:
+                  selectedSubMenuId === submenu.id ? "#c0c0c0" : "transparent",
               }}
               onClick={() => setSelectedSubMenuId(submenu.id)}
             >
               {submenu.subName}
 
-              {selectedMenuId === menuId && selectedSubMenuId === submenu.id && (
-                <div style={{ marginLeft: 20 }} className='flex-wrap'>
-                  {/* Radio buttons for subdetails */}
-                  {[1, 2, 3, 4, 5, 6].map((radioValue) => (
-                    <label key={radioValue}>
-                      <input
-                        type="radio"
-                        name={`subdetails_${submenu.id}`}
-                        value={radioValue}
-                        checked={selectedRadio === radioValue}
-                        onChange={() => handleRadioChange(radioValue)}
-                      />
-                      {getOptionLabel(radioValue)}
-                    </label>
-                  ))}
-
-                  {/* Input fields for selected radio */}
-                  {selectedRadio && (
-                    <div>
-                      {renderInputFields(selectedRadio)}
-                      {/* Add subdetails button */}
-                      <button onClick={handleAddSubdetails}>Add Subdetails</button>
-
-                      {/* Display added subdetails */}
-                      <div>
-                        <SubdetailsDisplay
-                          subdetails={menu.subdetails[selectedSubMenuId][selectedRadio]}
+              {selectedMenuId === menuId &&
+                selectedSubMenuId === submenu.id && (
+                  <div style={{ marginLeft: 20 }} className="flex-wrap">
+                    {/* Radio buttons for subdetails */}
+                    {[1, 2, 3, 4, 5, 6].map((radioValue) => (
+                      <label key={radioValue}>
+                        <input
+                          type="radio"
+                          name={`subdetails_${submenu.id}`}
+                          value={radioValue}
+                          checked={selectedRadio === radioValue}
+                          onChange={() => handleRadioChange(radioValue)}
                         />
+                        {getOptionLabel(radioValue)}
+                      </label>
+                    ))}
+
+                    {/* Input fields for selected radio */}
+                    {selectedRadio && (
+                      <div>
+                        {renderInputFields(selectedRadio)}
+                        {/* Add subdetails button */}
+                        <button onClick={handleAddSubdetails}>
+                          Add Subdetails
+                        </button>
+
+                        {/* Display added subdetails */}
+                        <div>
+                          <SubdetailsDisplay
+                            subdetails={
+                              menu.subdetails[selectedSubMenuId][selectedRadio]
+                            }
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              )}
+                    )}
+                  </div>
+                )}
             </div>
           ))}
 
@@ -465,7 +473,6 @@ const DynamicMenuComponent = () => {
     });
   };
 
-
   return (
     <div>
       {/* Popup Wrapper */}
@@ -473,14 +480,9 @@ const DynamicMenuComponent = () => {
         {/* Popup Content */}
         <div className="popup-content">
           {/* Heading */}
-          <div className='text-left height-for-data'>
-
+          <div className="text-left height-for-data">
             <h2> Menu </h2>
-            <div className='z-50'>
-
-              {renderMenuTree()}
-            </div>
-
+            <div className="z-50">{renderMenuTree()}</div>
           </div>
 
           {/* Add Menu Section */}
@@ -506,14 +508,17 @@ const DynamicMenuComponent = () => {
             />
             <button onClick={handleAddSubmenu}>Add Submenu</button>
           </div>
-          <button className="close-button" onClick={handlesave}>save to local </button>
+          <button className="close-button" onClick={handlesave}>
+            save to local{" "}
+          </button>
 
-          <button className="close-button" onClick={handleClosePopup}>Close</button>
+          <button className="close-button" onClick={handleClose}>
+            Close
+          </button>
         </div>
       </div>
     </div>
   );
 };
-
 
 export default DynamicMenuComponent;

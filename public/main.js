@@ -111,7 +111,7 @@ function createWindow() {
     autoHideMenuBar: true, // Hide the default menu bar
   });
 
-  win.loadURL("http://localhost:3000");
+  win.loadURL("http://localhost:3000/");
 }
 
 app.whenReady().then(() => {

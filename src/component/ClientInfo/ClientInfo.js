@@ -41,8 +41,7 @@ const ClientInfo = () => {
   const handleSaveInspection = useCallback(() => {
     if (
       window.confirm(
-        `are you want to donwload this hzf file of ${
-          formData.firstName + " " + formData.lastName
+        `are you want to donwload this hzf file of ${formData.firstName + " " + formData.lastName
         }`
       )
     ) {
@@ -408,7 +407,7 @@ const ClientInfo = () => {
           ></textarea>
         </div>
 
-        <button
+        {/* <button
           style={{
             backgroundColor: "#4CAF50",
             padding: "10px 20px",
@@ -447,7 +446,7 @@ const ClientInfo = () => {
             marginLeft: "10px",
           }}
           onChange={handleFileChange}
-        />
+        /> */}
       </form>
 
       <div>
