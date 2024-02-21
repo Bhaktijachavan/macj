@@ -18,6 +18,7 @@ import html2pdf from "html2pdf.js";
 
 import html2canvas from "html2canvas";
 import "./CoverPageDesigner.css";
+
 const exportState = () => {
   // Get the output container element
   const outputContainer = document.querySelector(
@@ -248,25 +249,6 @@ function CoverPageDesigner({ onClose }) {
     }
   };
 
-  // const getContentForLabel = (label) => {
-  //   // let content = null;
-  //   switch (label) {
-  //     case "Cover Photo":
-  //       return <CheckboxContent1 />;
-  //     case "Company Logo":
-  //       return <CheckboxContent2 />;
-  //     case "Company Information":
-  //     case "Inspection Details":
-  //     case "Agent Information":
-  //     case "Cover Company":
-  //     case "Report Title":
-  //     case "Inspection Signature":
-  //       return <EditableText initialText={label} />;
-  //       break;
-  //     default:
-  //       return null;
-  //   }
-  // };  // Function to render content based on checkbox label
   const renderCheckboxContent = (label) => {
     switch (label) {
       case "Inspection Details":
@@ -446,9 +428,11 @@ function CoverPageDesigner({ onClose }) {
                   <label className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      onClick={() => fileInputRef.current.click()}
+                      // onClick={() => fileInputRef.current.click()}
+                      // onChange={(e) => handleCheckboxChange(e, "Agent Photo")}
+                      checked={checkedCheckboxes.includes("Agent Photo")}
                       onChange={(e) => handleCheckboxChange(e, "Agent Photo")}
-                      disabled={isAgentPhotoUploaded} // Disable the checkbox if an image is already uploaded
+                      // disabled={isAgentPhotoUploaded} // Disable the checkbox if an image is already uploaded
                     />
                     Agent Photo
                   </label>
@@ -647,7 +631,10 @@ function CoverPageDesigner({ onClose }) {
       </div>
       <div className="contains-bottom-section-with-buttons-design-cover-page">
         <div className="buttons-with-apply-export-import-discard-changes-apply">
-          <button className="button-for-footer-for-changes-in-cover-page">
+          <button
+            onClick={exportState}
+            className="button-for-footer-for-changes-in-cover-page"
+          >
             Apply Changes <br /> to Template Template
           </button>{" "}
           <button
