@@ -529,7 +529,7 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
                   );
                   setValue(paste);
                 }}
-                // onClick={handlePaste}
+              // onClick={handlePaste}
               >
                 <div className="flex justify-center">
                   <img src={img11} alt="" />

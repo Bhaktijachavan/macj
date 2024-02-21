@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import "../../component/EditTemp/DynamicMenuComponent.css"
 
+
 const SubdetailsDisplay = ({ subdetails }) => {
+
+
   if (!subdetails || Object.keys(subdetails).length === 0) {
     return null;
   }
@@ -48,9 +51,11 @@ const DynamicMenuComponent = () => {
   }, []);
 
   // Save menu data to local storage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('menuData', JSON.stringify(menuData));
-  }, [menuData]);
+
+
+
+
+
 
   const handleAddMenu = () => {
     if (menuName.trim() === '') {
@@ -181,6 +186,11 @@ const DynamicMenuComponent = () => {
   const handleRadioChange = (value) => {
     setSelectedRadio(value);
   };
+
+  const handlesave = () => {
+    localStorage.setItem('menuData', JSON.stringify(menuData));
+
+  }
 
   const handleInputChange = (inputName, inputValue) => {
     setInputValues((prevInputValues) => ({
@@ -496,6 +506,7 @@ const DynamicMenuComponent = () => {
             />
             <button onClick={handleAddSubmenu}>Add Submenu</button>
           </div>
+          <button className="close-button" onClick={handlesave}>save to local </button>
 
           <button className="close-button" onClick={handleClosePopup}>Close</button>
         </div>
