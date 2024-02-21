@@ -15,19 +15,20 @@ function InspectionDetails({ text, id }) {
         style={{}}
       >
         <p
+          className="N-G-Home-Inspection-Services"
           style={{
             fontSize: "20px",
           }}
         >
           N G Home Inspection Services <br />
-          <br />{" "}
-          <p
-            style={{
-              fontSize: "15px",
-            }}
-          >
-            Property Inspection Report
-          </p>
+        </p>
+        <p
+          className=" Property-Inspection-Report"
+          style={{
+            fontSize: "15px",
+          }}
+        >
+          Property Inspection Report
         </p>
       </div>
     </>
