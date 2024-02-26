@@ -1,82 +1,56 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+
+import Header from "../../Header/Header";
+import { useLocation } from "react-router-dom";
+import { PanalSelect } from "../../Function/function";
 
 const PanelHeader = () => {
-    const [oneDamageFormData, setOneDamageFormData] = useState({});
+  const location = useLocation();
+  const state = location.state;
+  console.log("headerdata", state);
 
-    useEffect(() => {
-        const storeData = localStorage.getItem('oneDamageFormData')
-        if (storeData != null) {
-            const newdata = JSON.parse(storeData)
-            setOneDamageFormData(newdata)
-            console.log(newdata)
-        }
+  const [selectedPanel, setSelectedPanel] = useState(null);
 
+  const handleButtonClick = (panelNumber, panelData) => {
+    const panelComponent = PanalSelect(panelNumber, panelData);
+    setSelectedPanel(panelComponent);
+  };
 
-
-    }, []);
-
-    return (
-        <>
-            <div className="panelheader flex border-b  border-black">
-
-                <div>
-                    <Link to="/panel1">
-                        <div>
-                            <ul>
-                                <li className="ml-5">{oneDamageFormData.onetabName || 'panel 1'}</li>
-                                {/* <li>Panel1</li> */}
-                            </ul>
-                        </div>
-                    </Link>
-                </div>
-                <div>
-                    <Link to="/panel2">
-                        <div>
-                            <ul>
-                                <li className="ml-5">{oneDamageFormData.onetabName || 'Panel2'}</li>
-                            </ul>
-                        </div>
-                    </Link>
-                </div>
-                <div>
-                    <Link to="/panel3">
-                        <div>
-                            <ul>
-                                <li className="ml-5">Panel 3</li>
-                            </ul>
-                        </div>
-                    </Link>
-                </div>
-                <div>
-                    <Link to="/panel4">
-                        <div>
-                            <ul>
-                                <li className="ml-5">Panel 4</li>
-                            </ul>
-                        </div>
-                    </Link>
-                </div>
-                <div>
-                    <Link to="/panel5">
-                        <div>
-                            <ul>
-                                <li className="ml-5">Panel 5</li>
-                            </ul>
-                        </div>
-                    </Link>
-                </div>
-                <div>
-                    <Link to="/panel6">
-                        <div>
-                            <ul>
-                                <li className="ml-5">Panel 6</li>
-                            </ul>
-                        </div>
-                    </Link>
-                </div>
+  return (
+    <>
+      <div>
+        <Header />
+        <div className="panelheader flex border-b  border-black">
+          <div>
+            <div>
+              <ul style={{ display: "flex", listStyle: "none", padding: 0 }}>
+                {state &&
+                  Object.keys(state).map((key) => {
+                    const panelData = state[key];
+                    console.log("panelData", panelData);
+                    const panelNumber = parseInt(panelData?.Radiopanal);
+                    console.log("panelNumber", panelNumber);
+                    return (
+                      <li key={key} style={{ marginRight: "10px" }}>
+                        <button
+                          onClick={() =>
+                            handleButtonClick(panelNumber, panelData)
+                          }
+                        >
+                          {panelData.tabname} |
+                        </button>
+                      </li>
+                    );
+                  })}
+              </ul>
             </div>
-        </>
-    );
+          </div>
+        </div>
+        <div>
+          <div>{selectedPanel}</div>
+        </div>
+      </div>
+    </>
+  );
 };
 export default PanelHeader;

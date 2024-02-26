@@ -8,6 +8,7 @@ export const ContextProvider = ({ children }) => {
   const [addressBook, setAddressBook] = useState([]);
   const [editTempData, setEditTempData] = useState([]);
   const [editImage, setEditImage] = useState();
+  const [pdf, setPdf] = useState();
 
   const contextValues = {
     addressBook,
@@ -16,6 +17,8 @@ export const ContextProvider = ({ children }) => {
     setEditTempData,
     setEditImage,
     editImage,
+    pdf,
+    setPdf,
   };
 
   return (

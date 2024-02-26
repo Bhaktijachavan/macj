@@ -5,12 +5,13 @@ import PanelHeader from "../PanelHeader/PanelHeader";
 import Header from "./../../Header/Header";
 import EditComments from "../../EditComments/EditComments";
 
-function Panel2() {
+function Panel2({ panelData }) {
   const [selectedText, setSelectedText] = useState("");
   const [blackText, setBlackText] = useState("");
   const [redText, setRedText] = useState("");
   const [index] = ""; // Remove this line or provide a valid value
   const [lines, setLines] = useState("");
+  console.log("props paneldata", panelData);
 
   const [selectedLine, setSelectedLine] = useState(0);
   const [SelectedLineText, setSelectedLineText] = useState(0);
@@ -137,11 +138,7 @@ function Panel2() {
   return (
     <>
       <div>
-        <Header onButtonClick={toggleContent} />
-      </div>
-      <PanelHeader />
-      <div>
-        <div className="panel-heading text-center m-2">Panel 2</div>
+        <div className="panel-heading text-center m-2">{panelData.damage1}</div>
 
         <div className="pl-2 m-2 flex">
           {" "}
@@ -172,7 +169,7 @@ function Panel2() {
       </div>
 
       <div>
-        <div className="panel-heading text-center">Panel 2</div>
+        <div className="panel-heading text-center">{panelData.selection1}</div>
 
         <div className="container-panel2">
           <div className="panel2">

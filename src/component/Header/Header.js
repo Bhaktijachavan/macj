@@ -28,8 +28,11 @@ import { EditTempContext } from "../../Context";
 import SaveTPZ from "./../SaveTemp/TPZ/SaveTPZ";
 import OpenTPZ from "./../SaveTemp/TPZ/OpenTPZ";
 import AboutUsMacj from "./../AboutUsMacj/AboutUsMacj";
+import { PanalSelect } from "../Function/function";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
+  const navigate = useNavigate();
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
   const [saveTemplatePopup, setSaveTemplatePopup] = useState(false);
   const [editTemplatePopup, setEditTemplatePopup] = useState(false);
@@ -43,8 +46,15 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
   const [pastedText, setPastedText] = useState("");
   const [value, setValue] = React.useState("");
   const [aboutUsPagePopup, setAboutUsPagePopup] = useState(false);
-  const [header, setHeader] = useState();
   const ref = useRef(null);
+
+  const [header, setHeader] = useState();
+
+  const [activeDropdown, setActiveDropdown] = useState(null);
+
+  const toggleDropdown = (key) => {
+    setActiveDropdown(activeDropdown === key ? null : key);
+  };
 
   const openOpenTemplatePopup = () => {
     setOpenTemplatePopup(true);
@@ -184,21 +194,36 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
   };
 
   useEffect(() => {
-    const storedMenuData = localStorage.getItem("menuData");
-
-    if (storedMenuData) {
-      try {
-        const parsedMenuData = JSON.parse(storedMenuData);
-        setHeader(parsedMenuData);
-      } catch (error) {
-        console.error("Error parsing JSON:", error);
+    const fetchMenuData = () => {
+      const storedMenuData = localStorage.getItem("menuData");
+      if (storedMenuData) {
+        try {
+          const parsedMenuData = JSON.parse(storedMenuData);
+          setHeader(parsedMenuData);
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
       }
-    }
+    };
+
+    // Execute the function immediately when the component mounts
+    fetchMenuData();
+
+    // Set up interval to check for updates every 50 seconds
+    const intervalId = setInterval(fetchMenuData, 50000);
+
+    return () => clearInterval(intervalId);
   }, []);
+
+  const handleNavigate = (value) => {
+    console.log("navigate", value);
+  };
+
   return (
     <>
       <div
-        className="dropdown-container flex text-sm border-b-2 border-black-900"
+        className="dropdown-container flex text-sm border-b-2
+border-black-900"
         style={{ backgroundColor: "#f7f7f7" }}
       >
         <div className="menu-item relative ml-4">
@@ -210,7 +235,8 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
           </div>
           {activeMenu === 0 && (
             <ul
-              className="submenu w-36 absolute z-10 bg-white shadow mt-2"
+              className="submenu w-36 absolute z-10 bg-white shadow
+mt-2"
               style={{
                 lineHeight: "24px",
                 fontSize: "13px",
@@ -225,15 +251,15 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
           )}
         </div>
         {/* <div>
-          <ul>
-            <li className="ml-5">Edit</li>
-          </ul>
-        </div> */}
+            <ul>
+              <li className="ml-5">Edit</li>
+            </ul>
+          </div> */}
         <div>
           {/* <ul onClick={internetLogin}>
-            <li className="ml-5">Internet</li>
-            {isInternetLoginPopup && <InternetLogin />}
-          </ul> */}
+              <li className="ml-5">Internet</li>
+              {isInternetLoginPopup && <InternetLogin />}
+            </ul> */}
           <div
             className="main-label cursor-pointer ml-4"
             onClick={() => handleMenuClick(1)}
@@ -242,7 +268,8 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
           </div>
           {activeMenu === 1 && (
             <ul
-              className="submenu w-36 left-12 absolute z-10 bg-white shadow mt-2"
+              className="submenu w-36 left-12 absolute z-10 bg-white
+shadow mt-2"
               style={{ fontSize: "13px" }}
               onClick={setInternetLoginPopup}
             >
@@ -271,7 +298,8 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
             </div>
             {activeMenu === 2 && (
               <ul
-                className="submenu w-36 absolute z-10 bg-white shadow mt-2"
+                className="submenu w-36 absolute z-10 bg-white shadow
+mt-2"
                 style={{ lineHeight: "12px", fontSize: "13px" }}
                 onClick={openCoverPageDesignPopup}
               >
@@ -301,7 +329,8 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
           </div>
           {activeMenu === 3 && (
             <ul
-              className="submenu w-36 absolute z-10 bg-white shadow mt-2"
+              className="submenu w-36 absolute z-10 bg-white shadow
+mt-2"
               style={{
                 lineHeight: "24px",
                 fontSize: "13px",
@@ -325,7 +354,8 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
           </div>
           {activeMenu === 4 && (
             <ul
-              className="submenu w-36  absolute z-10 bg-white shadow mt-2"
+              className="submenu w-36  absolute z-10 bg-white shadow
+mt-2"
               style={{
                 lineHeight: "34px",
                 fontSize: "13px",
@@ -351,10 +381,47 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
           {/* <ul className="flex" onClick={openAboutUsPopup}> */}
           <ul className="flex">
             <li className="ml-5">About</li>
+
+            {/* fetch here localstorage menudtatanad submenu items  */}
+
+            {/* <Link to="/panel1"> */}
             {header &&
               Object.keys(header).map((key) => (
                 <li className="ml-5" key={key}>
-                  {header[key].name}
+                  <div
+                    onClick={() => toggleDropdown(key)}
+                    style={{ position: "relative" }}
+                  >
+                    {header[key].name}
+                    {activeDropdown === key && (
+                      <div
+                        className="submenu w-36 absolute z-10 bg-white shadow mt-2"
+                        style={{
+                          top: "100%",
+                          left: 0,
+                          lineHeight: "34px",
+                          fontSize: "13px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <ul style={{ listStyleType: "none", padding: 0 }}>
+                          {header[key].subitems.map((subItem) => (
+                            <li key={subItem.id}>
+                              <button
+                                onClick={() =>
+                                  navigate("/panalHeader", {
+                                    state: header[key].subdetails[subItem.si],
+                                  })
+                                }
+                              >
+                                {subItem.subName}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                 </li>
               ))}
           </ul>
@@ -367,39 +434,40 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
         <nav className="header2">
           <ul className="uordered-list-in-header-section">
             {/* <li className="list-for-header-section-main-nav">
-              <a
-                href="#file"
-                onClick={handleOpenInspectionClick}
-                className="header2-tag-a"
-              >
-                <div className="flex justify-center">
-                  <img src={img1} alt="" />
-                </div>
-                <div className="">
-                  Open <br /> Inspection
-                </div>
-              </a>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
-            </li>
-            <li className="list-for-header-section-main-nav  border-r border-black-900">
-              <a
-                href="#edit"
-                onClick={handleSaveInspectionClick}
-                className="header2-tag-a"
-              >
-                <div className="flex justify-center">
-                  <img src={img2} alt="" />
-                </div>
-                <div>
-                  Save <br /> Inspection
-                </div>
-              </a>
-            </li> */}
+                <a
+                  href="#file"
+                  onClick={handleOpenInspectionClick}
+                  className="header2-tag-a"
+                >
+                  <div className="flex justify-center">
+                    <img src={img1} alt="" />
+                  </div>
+                  <div className="">
+                    Open <br /> Inspection
+                  </div>
+                </a>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+              </li>
+              <li className="list-for-header-section-main-nav  border-r
+border-black-900">
+                <a
+                  href="#edit"
+                  onClick={handleSaveInspectionClick}
+                  className="header2-tag-a"
+                >
+                  <div className="flex justify-center">
+                    <img src={img2} alt="" />
+                  </div>
+                  <div>
+                    Save <br /> Inspection
+                  </div>
+                </a>
+              </li> */}
             <li className="list-for-header-section-main-nav">
               <a
                 href="#file"
@@ -421,7 +489,10 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
               />
             </li>
             <button onClick={onSaveInspection}>
-              <li className="list-for-header-section-main-nav border-r border-black-900">
+              <li
+                className="list-for-header-section-main-nav border-r
+border-black-900"
+              >
                 <a
                   href="#edit"
                   onClick={handleSaveInspectionClick}
@@ -437,12 +508,10 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
               </li>
             </button>
             <hr />
-            <div>
-              <OpenTPZ />
-            </div>
+            <div>{/* <OpenTPZ /> */}</div>
             <div>
               {/* Your other JSX elements */}
-              <SaveTPZ />
+              {/* <SaveTPZ /> */}
             </div>
             <hr />
 
@@ -464,7 +533,10 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
             </li>
             {/* </Link> */}
 
-            <li className="list-for-header-section-main-nav  border-r border-black-900">
+            <li
+              className="list-for-header-section-main-nav  border-r
+border-black-900"
+            >
               <a
                 href="#"
                 onClick={openEditTemplatePopup}
@@ -493,7 +565,10 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
             </Link>
             <hr />
             <Link to="/">
-              <li className="list-for-header-section-main-nav border-r border-black-900">
+              <li
+                className="list-for-header-section-main-nav border-r
+border-black-900"
+              >
                 <a href="#" className="header2-tag-a">
                   <div className="flex justify-center">
                     <img src={img8} alt="" />
@@ -519,7 +594,10 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
               </li>
             </Link>
             <Link to="/contractpage">
-              <li className="list-for-header-section-main-nav  border-r border-black-900">
+              <li
+                className="list-for-header-section-main-nav  border-r
+border-black-900"
+              >
                 <a href="#" className="header2-tag-a">
                   <div className="flex justify-center">
                     <img src={img9} alt="" />
@@ -540,7 +618,10 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
                 <div>Copy</div>
               </a>
             </li>
-            <li className="list-for-header-section-main-nav  border-r border-black-900">
+            <li
+              className="list-for-header-section-main-nav  border-r
+border-black-900"
+            >
               <a
                 href="#"
                 className="header2-tag-a"
@@ -569,10 +650,7 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
                 <div className="flex justify-center">
                   <img src={img12} alt="" />
                 </div>
-                <div>
-                  Geneate
-                  <br /> report
-                </div>
+                <div>Generate <br/> report</div>
               </a>
             </li>
             {/* </Link> */}
@@ -580,12 +658,12 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
             <li className="list-for-header-section-main-nav">
               <a href="#" className="header2-tag-a">
                 {/* <div className="flex justify-center">
-                  <img src={img15} alt="" />
-                </div>
-                <div>
-                  Mobile
-                  <br /> Sync
-                </div> */}
+                    <img src={img15} alt="" />
+                  </div>
+                  <div>
+                    Mobile
+                    <br /> Sync
+                  </div> */}
                 <Link to="/mobilesync">
                   <li className="list-for-header-section-main-nav">
                     <a href="#" className="header2-tag-a p-0">
@@ -657,4 +735,5 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
     </>
   );
 };
+
 export default Header;

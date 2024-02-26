@@ -6,18 +6,15 @@ import PanelHeader from "../PanelHeader/PanelHeader";
 import PannelComponent from "../PannelComponent/PannelComponent";
 import EditComments from "./../../EditComments/EditComments";
 
-function Panel2() {
+function Panel2({ panelData }) {
   const [showAlternateContent, setShowAlternateContent] = useState(false);
+  console.log("props panelData", panelData);
 
   const toggleContent = () => {
     setShowAlternateContent((prevState) => !prevState);
   };
   return (
     <>
-      <div>
-        <Header onButtonClick={toggleContent} />
-      </div>
-      <PanelHeader />
       <div className="flex items-center content-around">
         {" "}
         {showAlternateContent ? (
@@ -44,12 +41,13 @@ function Panel2() {
           console.log()
         )}
         <div>
-          <div className="panel-heading text-center m-2">Panel 3</div>{" "}
+          <div className="panel-heading text-center m-2">
+            {panelData.damage1}
+          </div>{" "}
           <div className="pl-2 ml-24">
             <div className="scroll-box4-panel3  bg-white"></div>
           </div>
-        </div>
-        {" "}
+        </div>{" "}
         {showAlternateContent ? (
           <EditComments />
         ) : (
@@ -74,7 +72,9 @@ function Panel2() {
           console.log()
         )}
         <div>
-          <div className="panel-heading text-center m-2">Panel 3</div>
+          <div className="panel-heading text-center m-2">
+            {panelData.selection1}
+          </div>
           <div className="pl-2 ml-40 flex">
             {" "}
             {showAlternateContent ? (
@@ -103,7 +103,7 @@ function Panel2() {
           </div>
         </div>
       </div>
-      <div className="panel-heading text-center">Panel 3</div>
+      <div className="panel-heading text-center">{panelData.selection2}</div>
       <div>
         <PannelComponent showAlternateContent={showAlternateContent} />
       </div>

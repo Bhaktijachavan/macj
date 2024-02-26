@@ -4,8 +4,13 @@ import Header from "../../Header/Header";
 import Footer from "../../Footer/Footer";
 import PanelHeader from "../PanelHeader/PanelHeader";
 import EditComments from "./../../EditComments/EditComments";
+import { useLocation } from "react-router-dom";
 
-function Panel4() {
+function Panel4({ panelData }) {
+  const location = useLocation();
+  const stateObject = location.state;
+  console.log("stateobject", stateObject);
+  console.log("props panelData", panelData.damage1);
   const [selectedText, setSelectedText] = useState("");
   const [blackText, setBlackText] = useState("");
   const [redText, setRedText] = useState("");
@@ -137,12 +142,7 @@ function Panel4() {
   return (
     <>
       <div>
-        <Header onButtonClick={toggleContent} />
-      </div>
-      <PanelHeader />
-
-      <div>
-        <div className="panel-heading text-center">Panel 4</div>
+        <div className="panel-heading text-center">{panelData.damage1}</div>
 
         <div className="container-panel4">
           <div className="panel4">

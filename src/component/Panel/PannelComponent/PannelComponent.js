@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import EditComments from "../../EditComments/EditComments";
 import Header from "./../../Header/Header";
 
-const PannelComponent = ({ showAlternateContent }) => {
+const PannelComponent = ({ showAlternateContent, onSave }) => {
   const [selectedText, setSelectedText] = useState("");
   const [blackText, setBlackText] = useState("");
   const [redText, setRedText] = useState("");
@@ -18,6 +18,24 @@ const PannelComponent = ({ showAlternateContent }) => {
     setSelectedLineIndex(index);
     setSelectedLineColor(color);
   };
+   const handleSaveClick = () => {
+     // Gather the data that you want to save
+     const dataToSave = {
+       selectedText,
+       blackText,
+       redText,
+       index,
+       lines,
+       selectedLine,
+       SelectedLineText,
+       selectedLineIndex,
+       selectedLineColor,
+       // Add more data fields as needed
+     };
+
+     // Call the onSave function received from props and pass the data
+     onSave(dataToSave);
+   };
 
   const handleMoveUp = (text, setText) => {
     if (SelectedLineText !== null && SelectedLineText > 0) {
@@ -168,7 +186,6 @@ const PannelComponent = ({ showAlternateContent }) => {
               <p>
                 if color select bad stock it go in the 2 box and color is red
               </p>
-              {/* Content for scroll box */}
             </div>
 
             <div className="flex flex-col space-y-2 ml-2 mr-2 text-sm">
@@ -301,6 +318,7 @@ const PannelComponent = ({ showAlternateContent }) => {
             <div className="scroll-box3-panel2 p-4 bg-gray-100"></div>
           </div>
         </div>
+        <button onClick={handleSaveClick}>Save</button>
       </div>
     </div>
   );

@@ -124,7 +124,7 @@
   border-radius: 5px;
   padding: 8px;
   margin-left: 27px;
-  background-color:white;
+  background-color: white;
 }
 .box-edittemp:hover {
   border-color: #005a9e;
@@ -352,13 +352,94 @@
   margin-bottom: 5px;
 }
 
-.close-button1-edittemp{
+.close-button1-edittemp {
   background-color: red;
   padding: 5px;
   margin-left: 276px;
   justify-content: space-between;
 }
 
-.template-selector1-edittemp{
+.template-selector1-edittemp {
   background-color: rgb(242, 236, 236);
+}
+.popup-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background
+*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.height-for-data {
+  height: 500px;
+  width: 400px;
+  border: 1px solid black;
+  padding: 1%;
+  margin-left: 1%;
+}
+
+.popup-content {
+  background: #fff; /* White background for the content */
+  width: 58%;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Box shadow for a subtle
+lift effect */
+}
+.option-panel-div {
+  /* display: flex; */
+  /* gap: 10px; */
+  position: absolute;
+  top: 92px;
+  left: 471px;
+  height: 500px;
+  width: 400px;
+  padding: 2%;
+  background-color: #ccc;
+  z-index: 999;
+}
+.case-input-div {
+  position: absolute;
+  top: 100px;
+  left: 51%;
+  height: 400px;
+  width: 300px;
+  padding: 2%;
+  background-color: #ccc;
+  z-index: 999;
+}
+.popup-content label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.popup-content input {
+  /* width: calc(100% - 16px);  */
+}
+
+.popup-content button {
+  font-size: 14px;
+  width: 100px;
+  height: 30px;
+  background-color: #f3f2f1;
+  color: black;
+  border: 2px solid rgb(191, 189, 189);
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.popup-content button:hover {
+  background-color: #d7e9f7;
+  border-color: #005a9e; /* Darker green color on hover */
+}
+
+.selectionpanelRB {
+  /* padding-left: 100%; */
 }

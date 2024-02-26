@@ -19,34 +19,34 @@ import html2pdf from "html2pdf.js";
 import html2canvas from "html2canvas";
 import "./CoverPageDesigner.css";
 
-const exportState = () => {
-  // Get the output container element
-  const outputContainer = document.querySelector(
-    ".content-that-is-draggable-and-adjustable-within-div"
-  );
+// const exportState = () => {
+//   // Get the output container element
+//   const outputContainer = document.querySelector(
+//     ".content-that-is-draggable-and-adjustable-within-div"
+//   );
 
-  // Use html2canvas to convert the HTML content to a canvas
-  html2canvas(outputContainer).then((canvas) => {
-    // Create a new jsPDF instance
-    const pdf = new jsPDF("p", "mm", "a4");
+//   // Use html2canvas to convert the HTML content to a canvas
+//   html2canvas(outputContainer).then((canvas) => {
+//     // Create a new jsPDF instance
+//     const pdf = new jsPDF("p", "mm", "a4");
 
-    // Calculate the height of the content on the canvas
-    const contentHeight = (canvas.height * 210) / canvas.width;
+//     // Calculate the height of the content on the canvas
+//     const contentHeight = (canvas.height * 210) / canvas.width;
 
-    // Add the canvas to the PDF document
-    pdf.addImage(
-      canvas.toDataURL("image/png"),
-      "PNG",
-      0,
-      0,
-      210,
-      contentHeight
-    );
+//     // Add the canvas to the PDF document
+//     pdf.addImage(
+//       canvas.toDataURL("image/png"),
+//       "PNG",
+//       0,
+//       0,
+//       210,
+//       contentHeight
+//     );
 
-    // Save the PDF file
-    pdf.save("cover_page_layout.pdf");
-  });
-};
+//     // Save the PDF file
+//     pdf.save("cover_page_layout.pdf");
+//   });
+// };
 function CoverPageDesigner({ onClose }) {
   const fileInputRef = useRef(null);
   const [selectedObjects, setSelectedObjects] = useState([]);
@@ -107,6 +107,32 @@ function CoverPageDesigner({ onClose }) {
         // Download the PDF file
         pdf.save("cover_page_layout.pdf");
       });
+  };
+  const exportStateSave = () => {
+    // Get the HTML content of your output container
+    const outputContainer = document.querySelector(
+      ".all-the-output-screen-with-all-the-changes-reflect-here"
+    );
+    const content = outputContainer.innerHTML;
+
+    // Save the content to localStorage
+    localStorage.setItem("outputContent", content);
+
+    // Convert the HTML content to a PDF document
+    html2pdf()
+      .from(content)
+      .toPdf()
+      .get("pdf")
+      .then((pdf) => {
+        // Download the PDF file
+        // pdf.save("cover_page_layout.pdf");
+      });
+  };
+
+  // Function to retrieve data from localStorage
+  const getStateFromLocalStorage = () => {
+    // Retrieve the content from localStorage
+    return localStorage.getItem("outputContent");
   };
   // Import state function
   const importState = (jsonString) => {
@@ -632,7 +658,7 @@ function CoverPageDesigner({ onClose }) {
       <div className="contains-bottom-section-with-buttons-design-cover-page">
         <div className="buttons-with-apply-export-import-discard-changes-apply">
           <button
-            onClick={exportState}
+            onClick={exportStateSave}
             className="button-for-footer-for-changes-in-cover-page"
           >
             Apply Changes <br /> to Template Template

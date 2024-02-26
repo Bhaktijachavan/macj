@@ -5,8 +5,9 @@ import Footer from "../../Footer/Footer";
 import PanelHeader from "../PanelHeader/PanelHeader";
 import EditComments from "./../../EditComments/EditComments";
 
-function Panel2() {
+function Panel2({ panelData }) {
   const [showAlternateContent, setShowAlternateContent] = useState(false);
+  console.log("panel5 ", panelData);
 
   const toggleContent = () => {
     setShowAlternateContent((prevState) => !prevState);
@@ -14,11 +15,9 @@ function Panel2() {
   return (
     <>
       <div>
-        <Header onButtonClick={toggleContent} />
-      </div>
-      <PanelHeader />
-      <div>
-        <div className="panel-heading text-center m-2">Panel 5</div>
+        <div className="panel-heading text-center m-2">
+          {panelData.selection1}
+        </div>
         <div className="pl-2 m-2 flex">
           {" "}
           {showAlternateContent ? (

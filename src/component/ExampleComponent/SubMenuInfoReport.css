@@ -1,0 +1,71 @@
+.close-button-and-header-for-popup-box-nfo-of-generate-report-page {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2em 0 0.2em 1em;
+  align-items: center;
+  background-color: rgb(242, 236, 236);
+}
+
+.close-btn-info-of-generate-report-pag {
+  width: 2em;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.close-btn-info-of-generate-report-pag:hover {
+  background-color: red;
+  cursor: pointer;
+  color: white;
+}
+
+.drop-down-and-checkboxes-with-title {
+  display: flex;
+  justify-self: center;
+  gap: 1em;
+  align-items: center;
+}
+
+.main-container-for-the-info-of-generate-report-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.checkbox-section-for-include-document {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+.width-set-for-main-container-for-the-info-of-generate-report-page {
+  width: 75em;
+  text-align: center;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+.section-for-page-that-contains-drop-downs-and-btns-and-checkboxes {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2em;
+  padding-top: 0.4em;
+}
+.checkbox-section-for-include-document > input {
+  width: 1em;
+  height: 1em;
+}
+.btns-for-add-and-remove-documents {
+  padding: 0 9px;
+  font-size: 14px;
+  border: 1px solid #7e7e7e;
+  border-radius: 1px;
+  color: #333;
+  background-color: white;
+}
+.btns-for-add-and-remove-documents:hover {
+  background-color: #c7e2f8;
+  border: 1px solid #7dbcef;
+}
