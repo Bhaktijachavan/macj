@@ -16,12 +16,17 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack }) => {
   const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
-    // Fetch CommentText from localStorage
-    const storedCommentText = localStorage.getItem("CommentText");
-    if (storedCommentText) {
-      setCommentText(storedCommentText);
-    }
-  }, []); // Empty dependency array ensures the effect runs only once on component mount
+    // Fetch CommentText from localStorage initially
+    const interval = setInterval(() => {
+      const storedCommentText = localStorage.getItem("CommentText");
+      if (storedCommentText) {
+        setCommentText(storedCommentText);
+      }
+    }, 3000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLineClick = (index, color) => {
     setSelectedLineIndex(index);
