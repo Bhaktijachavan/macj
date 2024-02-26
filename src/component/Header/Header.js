@@ -214,7 +214,7 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
     fetchMenuData();
 
     // Set up interval to check for updates every 50 seconds
-    const intervalId = setInterval(fetchMenuData, 50000);
+    const intervalId = setInterval(fetchMenuData, 3000);
 
     return () => clearInterval(intervalId);
   }, []);
