@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-
+import html2canvas from "html2canvas";
+import html2pdf from "html2pdf.js";
 import moveUpButtonImg from "../../Assets/icons/ic_up.png";
 import moveDownButtonImg from "../../Assets/icons/ic_down.png";
 import inheritButtonImg from "../../Assets/icons/sync.png";
@@ -10,9 +11,12 @@ import selectIconsButtonImg from "../../Assets/icons/open_inspection.png";
 import Header from "./../Header/Header";
 import Footer from "./../Footer/Footer";
 import ColorPicker from "./ColorPicker";
+import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
 
 const ColorPalette = ({ onClose }) => {
   const [localStorageData, setLocalStorageData] = useState([]);
+  const coverPageRef = useRef(null);
+
   // State for row colors
   const [rowColors, setRowColors] = useState([
     {
@@ -211,46 +215,214 @@ const ColorPalette = ({ onClose }) => {
     console.log(localStorageData);
   }, []);
 
-  const handleClose = () => {
-    // Generate PDF logic here
+  //   const handleClose = () => {
+  //     // Generate PDF logic here
 
-    // Assuming dummyData is your data structure
-    const dummyData = {
-      category1: {
-        subitems: {
-          subitem1: {
-            subName: "Subitem 1",
-            selectedOption: "Option1",
-            print: true,
-          },
-          // ... other subitems
-        },
-      },
-      // ... other categories
-    };
+  //     // Assuming dummyData is your data structure
+  //     const dummyData = {
+  //       category1: {
+  //         subitems: {
+  //           subitem1: {
+  //             subName: "Subitem 1",
+  //             selectedOption: "Option1",
+  //             print: true,
+  //           },
+  //           // ... other subitems
+  //         },
+  //       },
+  //       // ... other categories
+  //     };
 
-    const pdf = new jsPDF();
+  //     const pdf = new jsPDF();
 
-    Object.keys(dummyData).forEach((categoryKey, categoryIndex) => {
-      pdf.text(`Category: ${categoryKey}`, 10, 10 + categoryIndex * 10);
+  //     Object.keys(dummyData).forEach((categoryKey, categoryIndex) => {
+  //       pdf.text(`Category: ${categoryKey}`, 10, 10 + categoryIndex * 10);
 
-      Object.keys(dummyData[categoryKey].subitems).forEach(
-        (subKey, subIndex) => {
-          const subitem = dummyData[categoryKey].subitems[subKey];
-          const yPos = 20 + categoryIndex * 10 + subIndex * 10;
+  //       Object.keys(dummyData[categoryKey].subitems).forEach(
+  //         (subKey, subIndex) => {
+  //           const subitem = dummyData[categoryKey].subitems[subKey];
+  //           const yPos = 20 + categoryIndex * 10 + subIndex * 10;
 
-          const text = `${subitem.subName}, ${subitem.selectedOption},
-${subitem.print ? "Print: Yes" : "Print: No"}`;
+  //           const text = `${subitem.subName}, ${subitem.selectedOption},
+  // ${subitem.print ? "Print: Yes" : "Print: No"}`;
 
-          pdf.text(text, 10, yPos);
-        }
-      );
+  //           pdf.text(text, 10, yPos);
+  //         }
+  //       );
+  //     });
+
+  //     // Save or display the PDF
+  //     pdf.save("tableData.pdf");
+  //   };
+  const exportCoverPageToPDF = () => {
+    // Retrieve the content from localStorage saved by CoverPageDesigner
+    const content = localStorage.getItem("outputContent");
+
+    if (content) {
+      // Convert the HTML content to a PDF document
+      html2pdf()
+        .from(content)
+        .toPdf()
+        .get("pdf")
+        .then((pdf) => {
+          // Download the PDF file
+          pdf.save("cover_page_layout.pdf");
+        });
+    } else {
+      // Handle case where content is not found in localStorage
+      console.log("No content found in localStorage");
+    }
+  };
+  const generatePDF = async () => {
+    const data = localStorage.getItem("menuData");
+    const reportData = JSON.parse(data);
+
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
     });
 
-    // Save or display the PDF
-    pdf.save("tableData.pdf");
+    // Initial y position for content
+    let yPos = 10;
+
+    // Iterate over main keys
+    Object.keys(reportData).forEach((mainKey, index) => {
+      const mainData = reportData[mainKey];
+
+      // Save current font size
+      const currentFontSize = pdf.internal.getFontSize();
+      // Add Name at the top
+      pdf.setFontSize(30); // Adjust the font size here as needed
+
+      pdf.text(`${mainData.name}`, 10, yPos);
+      yPos += 10; // Increment y position
+      // Restore previous font size
+      pdf.setFontSize(currentFontSize);
+
+      // Add main key data to PDF
+      pdf.text(`${mainKey}`, 10, yPos);
+      yPos += 10; // Increment y position
+
+      // Iterate over subdetails
+      // Object.keys(mainData.subdetails).forEach((subKey) => {
+      //   const subDetail = mainData.subdetails[subKey];
+
+      //   // Add subdetail to PDF
+      //   pdf.text(`Subdetail ${subKey}:`, 10, yPos);
+      //   yPos += 5; // Increment y position
+
+      //   // Add subdetail data to PDF
+      //   Object.keys(subDetail).forEach((key) => {
+      //     const value = subDetail[key];
+      //     if (typeof value === "object") {
+      //       // If the value is an object, stringify it
+      //       pdf.text(`${key}: ${JSON.stringify(value)}`, 15, yPos);
+      //     } else {
+      //       pdf.text(`${key}: ${value}`, 15, yPos);
+      //     }
+      //     yPos += 5; // Increment y position
+      //   });
+      // });
+      Object.keys(mainData.subdetails).forEach((subKey) => {
+        const subDetail = mainData.subdetails[subKey];
+
+        // Add subdetail to PDF
+        pdf.text(`Subdetail ${subKey}:`, 10, yPos);
+        yPos += 5; // Increment y position
+
+        // Add subdetail data to PDF
+        Object.keys(subDetail).forEach((key) => {
+          const value = subDetail[key];
+          if (typeof value === "object") {
+            // If the value is an object, stringify it with pretty-print option
+            const formattedValue = JSON.stringify(value, null, 2).split("\n"); // Pretty-print with 2-space indentation
+            pdf.text(`${key}:`, 15, yPos);
+            yPos += 5; // Increment y position
+
+            // Print each line of the formatted JSON object
+            formattedValue.forEach((line) => {
+              pdf.text(line, 20, yPos);
+              yPos += 5; // Increment y position
+            });
+            yPos += 5; // Add extra spacing after the JSON object
+          } else {
+            pdf.text(`${key}: ${value}`, 15, yPos);
+            yPos += 5; // Increment y position
+          }
+        });
+      });
+
+      // If subitems exist for the main key
+      // if (mainData.subitems) {
+      //   Object.keys(mainData.subitems).forEach((itemKey) => {
+      //     const subItems = mainData.subitems[itemKey];
+
+      //     // Add subdetail to PDF
+      //     pdf.text(`Subdetail ${itemKey}:`, 5, yPos);
+      //     yPos += 5; // Increment y position
+
+      //     // Add subdetail data to PDF
+      //     Object.keys(subItems).forEach((key) => {
+      //       const value = subItems[key];
+      //       if (typeof value === "object") {
+      //         // If the value is an object, stringify it
+      //         pdf.text(`${key}: ${JSON.stringify(value)}`, 15, yPos);
+      //       } else {
+      //         pdf.text(`${key}: ${value}`, 15, yPos);
+      //       }
+      //       yPos += 5; // Increment y position
+      //     });
+      //   });
+      // }
+      // If subitems exist for the main key
+      if (mainData.subitems) {
+        Object.keys(mainData.subitems).forEach((itemKey) => {
+          const subItems = mainData.subitems[itemKey];
+
+          // Add subdetail to PDF
+          pdf.text(`Subdetail ${itemKey}:`, 5, yPos);
+          yPos += 5; // Increment y position
+
+          // Add subdetail data to PDF
+          Object.entries(subItems).forEach(([key, value]) => {
+            if (typeof value === "object") {
+              // If the value is an object, iterate over its properties
+              pdf.text(`${key}:`, 15, yPos);
+              Object.entries(value).forEach(([subKey, subValue]) => {
+                pdf.text(`${subKey}: ${subValue}`, 20, yPos);
+                yPos += 5; // Increment y position for each subproperty
+              });
+            } else {
+              pdf.text(`${key}: ${value}`, 15, yPos);
+            }
+            yPos += 5; // Increment y position for each property
+          });
+        });
+      }
+
+      yPos += 10; // Add some spacing between main keys
+
+      // Add a new page if there are more main keys
+      if (index < Object.keys(reportData).length - 1) {
+        pdf.addPage();
+        yPos = 10; // Reset yPos for new page
+      }
+    });
+
+    // Save the PDF file
+    pdf.save("generated_report.pdf");
   };
 
+  useEffect(() => {
+    getDataLocal();
+  }, []);
+
+  const getDataLocal = () => {
+    const data = localStorage.getItem("menuData");
+    const reportData = JSON.parse(data);
+    console.log("report data ", reportData);
+  };
   const ItemComponent = ({ item }) => {
     const { id, name, subitems, subdetails } = item;
     return (
@@ -549,9 +721,18 @@ w-full px-4 bg-white border border-black"
             </div>
           </div>
           <div className="flex justify-end mr-20">
+            <div id="pdf-content">
+              <div
+                id="pdf-content-home"
+                style={{ position: "absolute", left: "-9999px" }}
+                ref={coverPageRef}
+              >
+                <CoverPageDesigner />
+              </div>
+            </div>
             <button
               className="border-2 border-black py-1 px-2"
-              onClick={handleClose}
+              onClick={generatePDF}
             >
               Generate PDF & Close
             </button>
