@@ -10,19 +10,21 @@ import CreateListEditComm from "./CreateListEditComm";
 import InsertListPopup from "./InsertListPopup/InsertListPopup";
 
 const AddComment = ({ onClose }) => {
-  const [isCreateListVisiable, setIsCreateListVisiable] = useState(false);
+  const [isCreateListVisible, setIsCreateListVisible] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
   const [text, setText] = useState("");
-  const [insertlistPopup, setInsertlistPopup] = useState(false);
-  const openInsertlistPopup = () => {
-    setInsertlistPopup(true);
+  const [insertListPopup, setInsertListPopup] = useState(false);
+
+  const openInsertListPopup = () => {
+    setInsertListPopup(true);
   };
 
-  const closeInsertlistPopup = () => {
-    setInsertlistPopup(false);
+  const closeInsertListPopup = () => {
+    setInsertListPopup(false);
   };
+
   const handleBoldClick = () => {
     document.execCommand("bold", false, null);
     setIsBold(!isBold);
@@ -39,7 +41,20 @@ const AddComment = ({ onClose }) => {
   };
 
   const clickCreatePop = () => {
-    setIsCreateListVisiable(true);
+    setIsCreateListVisible(true);
+  };
+
+  const SaveText = () => {
+    console.log("Saving text:", text);
+    try {
+      const storedText = localStorage.getItem("CommentText");
+      const newText = storedText ? `${storedText}\n${text}` : text;
+      localStorage.setItem("CommentText", newText);
+      console.log("Text saved successfully.");
+      setText("");
+    } catch (error) {
+      console.error("Error saving text:", error);
+    }
   };
 
   return (
@@ -55,7 +70,7 @@ const AddComment = ({ onClose }) => {
           <div className="buttonlists-editcomm">
             <ul className="flex gap-5 pl-4">
               <div className="text-sm hover:bg-gray-300 cursor-pointer">
-                <li className="p-2" onClick={openInsertlistPopup}>
+                <li className="p-2" onClick={openInsertListPopup}>
                   <div className="flex justify-center">
                     <img
                       src={img1}
@@ -78,9 +93,9 @@ const AddComment = ({ onClose }) => {
                   </div>
                   <span>Create/Edit Lists</span>
                 </li>
-                {isCreateListVisiable && (
+                {isCreateListVisible && (
                   <CreateListEditComm
-                    onClose={() => setIsCreateListVisiable(false)}
+                    onClose={() => setIsCreateListVisible(false)}
                   />
                 )}
               </div>
@@ -191,11 +206,9 @@ const AddComment = ({ onClose }) => {
 
           <div className="scroll-box-editcomm p-4 bg-gray-100">
             <div>
-              {" "}
-              {insertlistPopup && (
+              {insertListPopup && (
                 <div className="popup">
-                  {/* Render your color palet component here */}
-                  <InsertListPopup onClose={closeInsertlistPopup} />
+                  <InsertListPopup onClose={closeInsertListPopup} />
                 </div>
               )}
               <textarea
@@ -208,18 +221,20 @@ const AddComment = ({ onClose }) => {
                 }}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-              />{" "}
-            </div>{" "}
+              />
+            </div>
           </div>
 
           <div className="button-container-editcomm">
-            <button className="open-button-editcomm">Ok</button>
+            <button className="open-button-editcomm" onClick={SaveText}>
+              Ok
+            </button>
             <button className="cancel-button-editcomm" onClick={onClose}>
               Cancel
             </button>
           </div>
         </div>
-      </div>{" "}
+      </div>
     </div>
   );
 };
