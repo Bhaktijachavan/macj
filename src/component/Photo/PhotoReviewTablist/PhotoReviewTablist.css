@@ -5,9 +5,13 @@
 .photo-review-tablist-buttons button {
   margin-right: 10px;
 }
-.opened-tab-for-tablist {
+/* .opened-tab-for-tablist {
   border-bottom: 2px solid;
-}
+} */
 .opened-tab-for-tablist-name {
   padding-left: 0.5em;
+}
+
+.tab1-container-buttons:hover {
+  color: blue;
 }

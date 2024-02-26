@@ -36,11 +36,20 @@ function PhotoReviewTablist() {
       <div className="Tablist-to-open-new-EditImageTabList">
         <div className="tab1-container">
           {tabs.map((tab) => (
-            <button key={tab.id} onClick={() => handleTabClick(tab.id)}>
+            <button
+              key={tab.id}
+              onClick={() => handleTabClick(tab.id)}
+              className="tab1-container-buttons"
+            >
               {tab.name}
             </button>
           ))}
-          <button onClick={handleNewTabClick}>New Tab</button>
+          <button
+            onClick={handleNewTabClick}
+            className="tab1-container-buttons"
+          >
+            New Tab
+          </button>
         </div>
 
         {tabs.map((tab) => (
@@ -49,10 +58,6 @@ function PhotoReviewTablist() {
             className="tab"
             style={{ display: activeTab === tab.id ? "block" : "none" }}
           >
-            <div className="opened-tab-for-tablist">
-              <h2 className="opened-tab-for-tablist-name">{tab.name} Opened</h2>
-            </div>
-
             {tab.content}
           </div>
         ))}

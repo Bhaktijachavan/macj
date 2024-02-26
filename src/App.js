@@ -28,6 +28,8 @@ import GenerateReport from "./component/ColorPalet/GeneatePdf";
 import PanelHeader from "./component/Panel/PanelHeader/PanelHeader";
 import SubMenuInfoReport from "./component/ExampleComponent/SubMenuInfoReport";
 
+import PhotoReviewTablist from "./component/Photo/PhotoReviewTablist/PhotoReviewTablist";
+
 function App() {
   return (
     <BrowserRouter>
@@ -45,7 +47,7 @@ function App() {
         <Route path="/panel6" element={<Panel6 />}></Route>
         <Route path="/EditComments" element={<EditComments />}></Route>
 
-        <Route path="/photoreview" element={<PhotoReview />}></Route>
+        <Route path="/photoreview" element={<PhotoReviewTablist />}></Route>
         <Route path="/batchaddphotos" element={<BatchAddPhotos />}></Route>
         <Route path="/contractpage" element={<ContractPage />}></Route>
         <Route path="/generateReport" element={<ColorPalette />}></Route>
@@ -58,7 +60,7 @@ function App() {
         {/* <Route path="/" element={<MobileUpload/>}></Route> */}
         <Route path="/mobilesync" element={<MobileUpload />}></Route>
         <Route path="/generateReportPdf" element={<GenerateReport />} />
-        <Route path="/submenureport" element={<SubMenuInfoReport/>}/>
+        <Route path="/submenureport" element={<SubMenuInfoReport />} />
       </Routes>
     </BrowserRouter>
 
