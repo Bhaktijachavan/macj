@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Panel1.css";
 import Header from "../../Header/Header";
 import Footer from "../../Footer/Footer";
@@ -8,18 +8,26 @@ import { PanalSelect } from "../../Function/function";
 
 function Panel1({ panelData }) {
   const [showAlternateContent, setShowAlternateContent] = useState(false);
-    const [savedData, setSavedData] = useState(null); // State to store saved data
-
-    // Function to handle saving data from child component
-    const handleSave = (data) => {
-      // You can perform any necessary operations with the received data here
-      // For now, just logging it
-      console.log("Saved data:", data);
-      setSavedData(data); // Update the saved data state
-    };
-  console.log("panel1", panelData);
+  const [Damage1red, setDamage1Red] = useState();
+  const [Damage1black, setDamage1Black] = useState();
+  const [Damage2red, setDamage2Red] = useState();
+  const [Damage2black, setDamage2Black] = useState();
+  const [menuData, SetMenuData] = useState();
+  console.log("paneldata ", panelData);
   const toggleContent = () => {
     setShowAlternateContent((prevState) => !prevState);
+  };
+  useEffect(() => {
+    console.log("red", Damage1red);
+    console.log("black", Damage1black);
+    getData();
+  }, [Damage1red, Damage1black]);
+
+  const getData = () => {
+    const MenuData = localStorage.getItem("menuData");
+    const data = JSON.parse(MenuData);
+    SetMenuData(data);
+    console.log(data);
   };
   return (
     <>
@@ -27,18 +35,18 @@ function Panel1({ panelData }) {
         <div className="panel-heading text-center">{panelData.damage1}</div>
 
         <div>
-          {/* Pass handleSave function as a prop to the child component */}
           <PannelComponent
             showAlternateContent={showAlternateContent}
-            onSave={handleSave} // Pass the handleSave function as a prop
+            setRed={setDamage1Red}
+            setBlack={setDamage1Black}
           />
         </div>
         <div className="panel-heading text-center">{panelData.damage2}</div>
         <div>
-          {/* Pass handleSave function as a prop to the child component */}
           <PannelComponent
             showAlternateContent={showAlternateContent}
-            onSave={handleSave} // Pass the handleSave function as a prop
+            setRed={setDamage2Red}
+            setBlack={setDamage2Black}
           />
         </div>
       </div>

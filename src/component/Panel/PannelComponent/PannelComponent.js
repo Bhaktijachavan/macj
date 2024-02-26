@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EditComments from "../../EditComments/EditComments";
 import Header from "./../../Header/Header";
 
-const PannelComponent = ({ showAlternateContent, onSave }) => {
+const PannelComponent = ({ showAlternateContent, setRed, setBlack }) => {
   const [selectedText, setSelectedText] = useState("");
   const [blackText, setBlackText] = useState("");
   const [redText, setRedText] = useState("");
@@ -13,29 +13,38 @@ const PannelComponent = ({ showAlternateContent, onSave }) => {
   const [SelectedLineText, setSelectedLineText] = useState(0);
   const [selectedLineIndex, setSelectedLineIndex] = useState(null);
   const [selectedLineColor, setSelectedLineColor] = useState(null);
+  const [commentText, setCommentText] = useState("");
+
+  useEffect(() => {
+    // Fetch CommentText from localStorage
+    const storedCommentText = localStorage.getItem("CommentText");
+    if (storedCommentText) {
+      setCommentText(storedCommentText);
+    }
+  }, []); // Empty dependency array ensures the effect runs only once on component mount
 
   const handleLineClick = (index, color) => {
     setSelectedLineIndex(index);
     setSelectedLineColor(color);
   };
-   const handleSaveClick = () => {
-     // Gather the data that you want to save
-     const dataToSave = {
-       selectedText,
-       blackText,
-       redText,
-       index,
-       lines,
-       selectedLine,
-       SelectedLineText,
-       selectedLineIndex,
-       selectedLineColor,
-       // Add more data fields as needed
-     };
 
-     // Call the onSave function received from props and pass the data
-     onSave(dataToSave);
-   };
+  const handleTextSelection = () => {
+    const selection = window.getSelection();
+    const selectedRange = selection.getRangeAt(0);
+    const container = selectedRange.commonAncestorContainer;
+    const selectedText =
+      container.nodeType === 3 ? container.nodeValue : container.innerText;
+    setSelectedText(selectedText);
+  };
+
+  const handleAddText = (color) => {
+    const newText = selectedText + "\n";
+    if (color === "black") {
+      setBlackText(blackText + newText);
+    } else if (color === "red") {
+      setRedText(redText + newText);
+    }
+  };
 
   const handleMoveUp = (text, setText) => {
     if (SelectedLineText !== null && SelectedLineText > 0) {
@@ -61,24 +70,6 @@ const PannelComponent = ({ showAlternateContent, onSave }) => {
       const updatedText = linesArray.join("\n");
       setText(updatedText);
       setSelectedLineText(SelectedLineText + 1);
-    }
-  };
-
-  const handleTextSelection = () => {
-    const selection = window.getSelection();
-    const selectedRange = selection.getRangeAt(0);
-    const container = selectedRange.commonAncestorContainer;
-    const selectedText =
-      container.nodeType === 3 ? container.nodeValue : container.innerText;
-    setSelectedText(selectedText);
-  };
-
-  const handleAddText = (color) => {
-    const newText = selectedText + "\n";
-    if (color === "black") {
-      setBlackText(blackText + newText);
-    } else if (color === "red") {
-      setRedText(redText + newText);
     }
   };
 
@@ -145,6 +136,12 @@ const PannelComponent = ({ showAlternateContent, onSave }) => {
     }
   };
 
+  // Pass redText and blackText states to the parent component
+  useEffect(() => {
+    setRed(redText);
+    setBlack(blackText);
+  }, [redText, blackText, setRed, setBlack]);
+
   return (
     <div>
       <div>
@@ -173,19 +170,15 @@ const PannelComponent = ({ showAlternateContent, onSave }) => {
               </div>
             )}
 
+            {/* Displaying content from localStorage */}
             <div
               className="scroll-box-panel2 p-4 bg-gray-100"
               style={{ cursor: "pointer" }}
               onMouseUp={handleTextSelection}
             >
-              <p>Demo Panel color</p>
-              <p>Color Red and black</p>
-              <p>
-                if color select good stock it go in the 1 box and color is black
-              </p>
-              <p>
-                if color select bad stock it go in the 2 box and color is red
-              </p>
+              {commentText.split("\n").map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
             </div>
 
             <div className="flex flex-col space-y-2 ml-2 mr-2 text-sm">
@@ -318,7 +311,6 @@ const PannelComponent = ({ showAlternateContent, onSave }) => {
             <div className="scroll-box3-panel2 p-4 bg-gray-100"></div>
           </div>
         </div>
-        <button onClick={handleSaveClick}>Save</button>
       </div>
     </div>
   );
