@@ -146,9 +146,8 @@ function Panel4({ panelData }) {
 
         <div className="container-panel4">
           <div className="panel4">
-            {showAlternateContent ? (
+            <div className="Editcomments-and-checkbox-container">
               <EditComments />
-            ) : (
               <div className="p-5">
                 {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
                   <div
@@ -167,7 +166,7 @@ function Panel4({ panelData }) {
                   </div>
                 ))}
               </div>
-            )}
+            </div>
 
             <div
               className="scroll-box-panel4 p-4 bg-gray-100"

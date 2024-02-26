@@ -142,7 +142,7 @@ function Panel2({ panelData }) {
 
         <div className="pl-2 m-2 flex">
           {" "}
-          {showAlternateContent ? (
+          {/* {showAlternateContent ? (
             <EditComments />
           ) : (
             <div className="p-5">
@@ -163,7 +163,29 @@ function Panel2({ panelData }) {
                 </div>
               ))}
             </div>
-          )}
+          )} */}
+          <div className="Editcomments-and-checkbox-container">
+              <EditComments />
+              <div className="p-5">
+                {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center mb-2 checkbox-container"
+                  >
+                    <input
+                      type="checkbox"
+                      id={label}
+                      name={label}
+                      value={label}
+                      style={{ backgroundColor: "#3182ce" }}
+                      className="mr-2 focus:ring-2 focus:ring-blue-500 checked:bg-blue-500 checked:border-blue-500"
+                    />
+                    <label htmlFor={label}>{label}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          
           <div className="scroll-box4-panel2 bg-white"></div>
         </div>
       </div>
@@ -173,7 +195,7 @@ function Panel2({ panelData }) {
 
         <div className="container-panel2">
           <div className="panel2">
-            {showAlternateContent ? (
+            {/* {showAlternateContent ? (
               <EditComments />
             ) : (
               <div className="p-5">
@@ -194,7 +216,28 @@ function Panel2({ panelData }) {
                   </div>
                 ))}
               </div>
-            )}
+            )} */}
+            <div className="Editcomments-and-checkbox-container">
+              <EditComments />
+              <div className="p-5">
+                {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center mb-2 checkbox-container"
+                  >
+                    <input
+                      type="checkbox"
+                      id={label}
+                      name={label}
+                      value={label}
+                      style={{ backgroundColor: "#3182ce" }}
+                      className="mr-2 focus:ring-2 focus:ring-blue-500 checked:bg-blue-500 checked:border-blue-500"
+                    />
+                    <label htmlFor={label}>{label}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
             <div
               className="scroll-box-panel2 p-4 bg-gray-100"
               style={{ cursor: "pointer" }}

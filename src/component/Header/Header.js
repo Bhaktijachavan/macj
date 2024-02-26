@@ -522,13 +522,13 @@ border-black-900"
             {/* <Link to="/EditComments"> */}
             <li className="list-for-header-section-main-nav">
               <button
-                onClick={() => {
-                  if (showComment === true) {
-                    setShowComment(false);
-                  } else {
-                    setShowComment(true);
-                  }
-                }}
+                // onClick={() => {
+                //   if (showComment === true) {
+                //     setShowComment(false);
+                //   } else {
+                //     setShowComment(true);
+                //   }
+                // }}
                 className="header2-tag-a"
               >
                 <div className="flex justify-center">

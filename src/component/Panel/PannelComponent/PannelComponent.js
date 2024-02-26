@@ -18,24 +18,24 @@ const PannelComponent = ({ showAlternateContent, onSave }) => {
     setSelectedLineIndex(index);
     setSelectedLineColor(color);
   };
-   const handleSaveClick = () => {
-     // Gather the data that you want to save
-     const dataToSave = {
-       selectedText,
-       blackText,
-       redText,
-       index,
-       lines,
-       selectedLine,
-       SelectedLineText,
-       selectedLineIndex,
-       selectedLineColor,
-       // Add more data fields as needed
-     };
+  const handleSaveClick = () => {
+    // Gather the data that you want to save
+    const dataToSave = {
+      selectedText,
+      blackText,
+      redText,
+      index,
+      lines,
+      selectedLine,
+      SelectedLineText,
+      selectedLineIndex,
+      selectedLineColor,
+      // Add more data fields as needed
+    };
 
-     // Call the onSave function received from props and pass the data
-     onSave(dataToSave);
-   };
+    // Call the onSave function received from props and pass the data
+    onSave(dataToSave);
+  };
 
   const handleMoveUp = (text, setText) => {
     if (SelectedLineText !== null && SelectedLineText > 0) {
@@ -150,7 +150,7 @@ const PannelComponent = ({ showAlternateContent, onSave }) => {
       <div>
         <div className="container-panel2">
           <div className="panel2">
-            {showAlternateContent ? (
+            {/* {showAlternateContent ? (
               <EditComments />
             ) : (
               <div className="p-5">
@@ -171,7 +171,28 @@ const PannelComponent = ({ showAlternateContent, onSave }) => {
                   </div>
                 ))}
               </div>
-            )}
+            )} */}
+            <div className="Editcomments-and-checkbox-container">
+              <EditComments />
+              <div className="p-5">
+                {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center mb-2 checkbox-container"
+                  >
+                    <input
+                      type="checkbox"
+                      id={label}
+                      name={label}
+                      value={label}
+                      style={{ backgroundColor: "#3182ce" }}
+                      className="mr-2 focus:ring-2 focus:ring-blue-500 checked:bg-blue-500 checked:border-blue-500"
+                    />
+                    <label htmlFor={label}>{label}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div
               className="scroll-box-panel2 p-4 bg-gray-100"
