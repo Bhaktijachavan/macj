@@ -42,6 +42,7 @@ function Panel1({ panelData }) {
           />
         </div>
         <div className="panel-heading text-center">{panelData.damage2}</div>
+
         <div>
           <PannelComponent
             showAlternateContent={showAlternateContent}

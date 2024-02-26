@@ -1,3 +1,4 @@
+
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "../../component/EditTemp/DynamicMenuComponent.css";
@@ -579,7 +580,7 @@ const DynamicMenuComponent = ({ onClose }) => {
                 {submenu.subName}
               </div>
             )}
-              {submenu.subName}
+              {/* {submenu.subName} */}
               <div className="selectionpanelRB">
                 {isMenuSelected &&
                   selectedSubMenuId === submenu.id &&

@@ -147,6 +147,27 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack }) => {
       <div>
         <div className="container-panel2">
           <div className="panel2">
+            <div className="Editcomments-and-checkbox-container">
+              <EditComments />
+              <div className="p-5">
+                {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center mb-2 checkbox-container"
+                  >
+                    <input
+                      type="checkbox"
+                      id={label}
+                      name={label}
+                      value={label}
+                      style={{ backgroundColor: "#3182ce" }}
+                      className="mr-2 focus:ring-2 focus:ring-blue-500 checked:bg-blue-500 checked:border-blue-500"
+                    />
+                    <label htmlFor={label}>{label}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
             {/* {showAlternateContent ? (
               <EditComments />
             ) : (
@@ -171,6 +192,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack }) => {
             )}
 
             {/* Displaying content from localStorage */}
+
             <div
               className="scroll-box-panel2 p-4 bg-gray-100"
               style={{ cursor: "pointer" }}
