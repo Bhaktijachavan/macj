@@ -21,41 +21,31 @@ const CropImageContent = ({
   const [isCropped, setIsCropped] = useState(false); // Track whether image is cropped or not
   const [prevCanvasState, setPrevCanvasState] = useState(null); // Store previous canvas state
   const [nextCanvasState, setNextCanvasState] = useState(null); // Store next canvas state
+  // const rectangleRef = useRef(null);
+  // const imageRef = useRef(null);
+  // const maxWidth = 776;
+  // const maxHeight = 576; // Maximum canvas height
+  // const canvasHistory = useRef([]);
+  // const historyIndex = useRef(0);
+
   const rectangleRef = useRef(null);
   const imageRef = useRef(null);
-  const maxWidth = 776; // Maximum canvas width
-  const maxHeight = 576; // Maximum canvas height
   const canvasHistory = useRef([]);
   const historyIndex = useRef(0);
 
   useEffect(() => {
+    const canvas = rectangleRef.current;
+    const ctx = canvas.getContext("2d");
+
     const image = new Image();
     image.src = imageUrl;
 
     image.onload = () => {
-      const canvas = rectangleRef.current;
-      const ctx = canvas.getContext("2d");
-
       // Determine canvas dimensions based on original image aspect ratio
-      let canvasWidth = image.width;
-      let canvasHeight = image.height;
+      canvas.width = image.width;
+      canvas.height = image.height;
 
-      // Ensure canvas dimensions do not exceed maximum limits
-      if (canvasWidth > maxWidth) {
-        const scaleFactor = maxWidth / canvasWidth;
-        canvasWidth *= scaleFactor;
-        canvasHeight *= scaleFactor;
-      }
-      if (canvasHeight > maxHeight) {
-        const scaleFactor = maxHeight / canvasHeight;
-        canvasWidth *= scaleFactor;
-        canvasHeight *= scaleFactor;
-      }
-
-      canvas.width = canvasWidth;
-      canvas.height = canvasHeight;
-
-      ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+      ctx.drawImage(image, 0, 0);
 
       rectangles.forEach((rect) => {
         if (rect.isSelecting) {
@@ -76,7 +66,7 @@ const CropImageContent = ({
           );
         }
         ctx.strokeStyle = "black";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 4;
         ctx.strokeRect(rect.startX, rect.startY, rect.width, rect.height);
       });
 
@@ -85,20 +75,84 @@ const CropImageContent = ({
         const croppedImg = new Image();
         croppedImg.src = croppedImage;
         croppedImg.onload = () => {
-          ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(croppedImg, 0, 0);
         };
       }
     };
-  }, [
-    imageUrl,
-    rectangles,
-    brightness,
-    contrast,
-    croppedImage,
-    maxWidth,
-    maxHeight,
-  ]);
+  }, [imageUrl, rectangles, brightness, contrast, croppedImage]);
+
+  // useEffect(() => {
+  //   const image = new Image();
+  //   image.src = imageUrl;
+
+  //   image.onload = () => {
+  //     const canvas = rectangleRef.current;
+  //     const ctx = canvas.getContext("2d");
+
+  //     // Determine canvas dimensions based on original image aspect ratio
+  //     let canvasWidth = image.width;
+  //     let canvasHeight = image.height;
+
+  //     // Ensure canvas dimensions do not exceed maximum limits
+  //     if (canvasWidth > maxWidth) {
+  //       const scaleFactor = maxWidth / canvasWidth;
+  //       canvasWidth *= scaleFactor;
+  //       canvasHeight *= scaleFactor;
+  //     }
+  //     if (canvasHeight > maxHeight) {
+  //       const scaleFactor = maxHeight / canvasHeight;
+  //       canvasWidth *= scaleFactor;
+  //       canvasHeight *= scaleFactor;
+  //     }
+
+  //     canvas.width = canvasWidth;
+  //     canvas.height = canvasHeight;
+
+  //     ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+
+  //     rectangles.forEach((rect) => {
+  //       if (rect.isSelecting) {
+  //         ctx.fillStyle = "rgba(0, 0, 255, 0.5)";
+  //         ctx.fillRect(rect.startX, rect.startY, rect.width, rect.height);
+  //       } else {
+  //         ctx.clearRect(rect.startX, rect.startY, rect.width, rect.height);
+  //         ctx.drawImage(
+  //           image,
+  //           rect.startX,
+  //           rect.startY,
+  //           rect.width,
+  //           rect.height,
+  //           rect.startX,
+  //           rect.startY,
+  //           rect.width,
+  //           rect.height
+  //         );
+  //       }
+  //       ctx.strokeStyle = "black";
+  //       ctx.lineWidth = 2;
+  //       ctx.strokeRect(rect.startX, rect.startY, rect.width, rect.height);
+  //     });
+
+  //     // Clear canvas and redraw cropped image if it exists
+  //     if (croppedImage) {
+  //       const croppedImg = new Image();
+  //       croppedImg.src = croppedImage;
+  //       croppedImg.onload = () => {
+  //         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+  //         ctx.drawImage(croppedImg, 0, 0);
+  //       };
+  //     }
+  //   };
+  // }, [
+  //   imageUrl,
+  //   rectangles,
+  //   brightness,
+  //   contrast,
+  //   croppedImage,
+  //   maxWidth,
+  //   maxHeight,
+  // ]);
 
   const handleMouseDown = (e) => {
     const startX = e.nativeEvent.offsetX;
@@ -131,7 +185,7 @@ const CropImageContent = ({
       Math.abs(height)
     );
     ctx.strokeStyle = "black";
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 4;
     ctx.strokeRect(
       Math.min(rect.startX, currentX),
       Math.min(rect.startY, currentY),

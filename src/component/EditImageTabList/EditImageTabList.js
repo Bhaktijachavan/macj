@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./EditImageTabList.css";
 import PropTypes from "prop-types";
 import Editor from "../Editor/Editor";
@@ -14,10 +14,10 @@ import OverLayImage from "./OverLayImage/OverLayImage";
 import { EditTempContext } from "../../Context";
 
 const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
+  const overlayImageRef = useRef(null);
   const [activeTab, setActiveTab] = useState(1);
   // const [textFromEditor, setTextFromEditor] = useState(null);
   const [overLayImage, setOverLayImage] = useState([]);
-  const { setEditImage } = useContext(EditTempContext);
 
   const [originalImage, setOriginalImage] = useState(null);
   const [editorKey, setEditorKey] = useState(1);
@@ -31,36 +31,34 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const [drawnOvals, setOval] = useState([]);
   const [textsWithPositions, setTextsWithPositions] = useState([]);
   const [croppedImageUrl, setCroppedImage] = useState(null);
-  const [modifiedImageUrl, setModifiedImageUrl] = useState(null);
-  const [arrowColor, setArrowColor] = useState("Black");
 
+  const [arrowColor, setArrowColor] = useState("Black");
+  const [downloadUrl, setDownloadUrl] = useState(null);
   const handleColorChange = (color) => {
     setArrowColor(color);
   };
 
   const handleSaveChanges = () => {
-    // Gather all relevant data about the modified image
-    const modifiedData = {
-      croppedImageUrl,
-      textsWithPositions,
-      brightness,
-      contrast,
-      rotationAngle,
-      drawnArrows,
-      drawnLines,
-      drawnRectangles,
-      drawnOvals,
+    // Call the handleDownload function in OverLayImage component
+    // You can access it through a ref or any other method
+    // For simplicity, I'm assuming you have a ref to OverLayImage component
+    if (overlayImageRef.current) {
+      overlayImageRef.current.handleDownload();
+    }
+  };
 
-      overLayImage,
-    };
+  const handleDiscardChanges = () => {
+    // Remove the image from local storage
+    localStorage.removeItem("coverphotoImage");
+    // Clear the download URL state
+    setDownloadUrl(null);
+  };
 
-    // Save the modified image data
-    console.log("Saving changes...", modifiedData);
-    setEditImage(overLayImage);
-
-    // Assuming modifiedImageUrl is the URL of the modified image, set it to the state
-    const modifiedImageUrl = ""; // Replace "new_image_url_here" with the actual modified image URL
-    setModifiedImageUrl(modifiedImageUrl);
+  const handleDownloadUrlChange = (url) => {
+    // Handle the download URL change here
+    console.log("Download URL:", url);
+    localStorage.setItem("coverphotoImage", url);
+    setDownloadUrl(url);
   };
 
   const handleCrop = (croppedImageData) => {
@@ -119,6 +117,7 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const handleTextChange = (newTexts) => {
     setTextsWithPositions(newTexts);
   };
+
   const tabNames = [
     "Crop Image",
     "Adjust Brightness",
@@ -282,6 +281,8 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
         key={editorKey}
         overLayImage={overLayImage}
         originalImage={originalImage}
+        onDownloadUrlChange={handleDownloadUrlChange}
+        ref={overlayImageRef}
         onOverlayChange={handleOverLayImage}
         imageUrl={uploadedImageUrl}
         croppedImageUrl={croppedImageUrl}
@@ -367,7 +368,10 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
                 >
                   Save Changes
                 </button>
-                <button className="footer-for-Eidt-image-tabelist-btns-save-and-discard">
+                <button
+                  className="footer-for-Eidt-image-tabelist-btns-save-and-discard"
+                  onClick={handleDiscardChanges}
+                >
                   Discard Changes
                 </button>
               </div>

@@ -1,7 +1,7 @@
 .PhotoReview-Main-Para {
   text-align: center;
   font-size: 14px;
-  padding: 0.6em;
+  /* padding: 0.6em; */
   letter-spacing: 0.6px;
 }
 .PhotoReview-rectangular-container {
@@ -51,4 +51,23 @@
 }
 body {
   background-color: #fee4c3;
+}
+.Tablist-to-open-new-EditImageTabList {
+  /* display: flex; */
+  align-items: center;
+  justify-content: start;
+  width: 100%;
+  /* border: 1px solid #ccc; */
+  /* gap: 0em; */
+}
+.tab1-container {
+  display: flex;
+  align-items: flex-start;
+  /* justify-content: space-evenly; */
+  gap: 1em;
+  width: auto;
+  /* border: 2px solid; */
+  left: 1em;
+  margin-left: 10px;
+  cursor: pointer;
 }

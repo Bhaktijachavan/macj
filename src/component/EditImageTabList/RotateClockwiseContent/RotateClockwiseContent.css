@@ -1,5 +1,5 @@
 .rotate-clockwise-container {
-  border: 2px solid;
+  /* border: 2px solid; */
   height: 37em;
   flex-direction: column;
   display: flex;
@@ -11,7 +11,7 @@
 
 .image-container-rotate-clockwise-eee-rrrr {
   position: relative;
-  border: 2px solid;
+  /* border: 2px solid; */
   max-width: 780px;
   max-height: 576px;
   display: flex;

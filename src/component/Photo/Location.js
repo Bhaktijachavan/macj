@@ -73,7 +73,7 @@ const Location = () => {
             </section>
           </div>
         </div>
-        <div className="recalllllll">{/* <Recallcheck /> */}</div>
+        {/* <div className="recalllllll"><Recallcheck /></div> */}
       </div>
     </>
   );

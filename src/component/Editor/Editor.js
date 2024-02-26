@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "./Editor.css";
-import Draggable from "react-draggable";
+
 
 const Editor = ({
   imageUrl,

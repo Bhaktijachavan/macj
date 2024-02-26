@@ -48,6 +48,47 @@ const DrawRectangleContent = ({
     }
   }, [croppedImageUrl]);
 
+  // useEffect(() => {
+
+  //   const rectangleCanvas = rectangleRef.current;
+  //   const ctx = rectangleCanvas.getContext("2d");
+
+  //   const image = new Image();
+  //   image.src = imageSrc;
+  //   image.onload = () => {
+  //     const aspectRatio = image.width / image.height;
+
+  //     const maxWidth = 776;
+  //     const maxHeight = 576;
+  //     let canvasWidth = image.width;
+  //     let canvasHeight = image.height;
+
+  //     if (canvasWidth > maxWidth) {
+  //       canvasWidth = maxWidth;
+  //       canvasHeight = canvasWidth / aspectRatio;
+  //     }
+
+  //     if (canvasHeight > maxHeight) {
+  //       canvasHeight = maxHeight;
+  //       canvasWidth = canvasHeight * aspectRatio;
+  //     }
+
+  //     rectangleCanvas.width = canvasWidth;
+  //     rectangleCanvas.height = canvasHeight;
+
+  //     ctx.drawImage(image, 0, 0, canvasWidth, canvasHeight);
+
+  //     rectangles.forEach((rectangle) => {
+  //       drawRectangle(
+  //         ctx,
+  //         rectangle.start,
+  //         rectangle.end,
+  //         rectangle.color,
+  //         lineWidth
+  //       );
+  //     });
+  //   };
+  // }, [imageSrc, rectangles, lineWidth, brightness, contrast]);
   useEffect(() => {
     const rectangleCanvas = rectangleRef.current;
     const ctx = rectangleCanvas.getContext("2d");
@@ -86,6 +127,10 @@ const DrawRectangleContent = ({
           lineWidth
         );
       });
+
+      // Get URL of the canvas content
+      const canvasUrl = rectangleCanvas.toDataURL("image/jpeg");
+      console.log("Canvas URL:", canvasUrl);
     };
   }, [imageSrc, rectangles, lineWidth, brightness, contrast]);
 
