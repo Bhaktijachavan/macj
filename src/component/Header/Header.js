@@ -30,6 +30,7 @@ import OpenTPZ from "./../SaveTemp/TPZ/OpenTPZ";
 import AboutUsMacj from "./../AboutUsMacj/AboutUsMacj";
 import { PanalSelect } from "../Function/function";
 import { useNavigate } from "react-router-dom";
+import { useEditTempContext } from "../../Context";
 
 const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
   const navigate = useNavigate();
@@ -41,11 +42,14 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
   const [coverPageDesignPopup, setCoverPageDesignPopup] = useState(false);
   const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] =
     useState(false);
+
   const [activePopup, setActivePopup] = useState(null);
   const [colorPaletPopup, setOpenColorPaletPopup] = useState(false);
   const [pastedText, setPastedText] = useState("");
   const [value, setValue] = React.useState("");
   const [aboutUsPagePopup, setAboutUsPagePopup] = useState(false);
+  const { showComment, setShowComment } = useEditTempContext();
+
   const ref = useRef(null);
 
   const [header, setHeader] = useState();
@@ -518,8 +522,13 @@ border-black-900"
             {/* <Link to="/EditComments"> */}
             <li className="list-for-header-section-main-nav">
               <button
-                // onClick={() => openPopup("editComments")}
-                onClick={onButtonClick}
+                onClick={() => {
+                  if (showComment === true) {
+                    setShowComment(false);
+                  } else {
+                    setShowComment(true);
+                  }
+                }}
                 className="header2-tag-a"
               >
                 <div className="flex justify-center">
@@ -650,7 +659,9 @@ border-black-900"
                 <div className="flex justify-center">
                   <img src={img12} alt="" />
                 </div>
-                <div>Generate <br/> report</div>
+                <div>
+                  Generate <br /> report
+                </div>
               </a>
             </li>
             {/* </Link> */}

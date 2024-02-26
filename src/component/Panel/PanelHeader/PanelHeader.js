@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import Header from "../../Header/Header";
 import { useLocation } from "react-router-dom";
 import { PanalSelect } from "../../Function/function";
+import EditComments from "../../EditComments/EditComments";
+import { useEditTempContext } from "../../../Context";
 
 const PanelHeader = () => {
   const location = useLocation();
@@ -10,6 +12,7 @@ const PanelHeader = () => {
   console.log("headerdata", state);
 
   const [selectedPanel, setSelectedPanel] = useState(null);
+  const { showComment, setShowComment } = useEditTempContext();
 
   const handleButtonClick = (panelNumber, panelData) => {
     const panelComponent = PanalSelect(panelNumber, panelData);
@@ -46,8 +49,18 @@ const PanelHeader = () => {
             </div>
           </div>
         </div>
-        <div>
-          <div>{selectedPanel}</div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {showComment && <EditComments />}
+          <div
+            style={{
+              display: "flex",
+              flex: 1,
+              flexDirection: "row",
+              flexWrap: "wrap",
+            }}
+          >
+            {selectedPanel}
+          </div>
         </div>
       </div>
     </>

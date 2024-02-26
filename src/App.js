@@ -26,6 +26,7 @@ import Panel6 from "./component/Panel/Panel6/Panel6";
 import EditComments from "./component/EditComments/EditComments";
 import GenerateReport from "./component/ColorPalet/GeneatePdf";
 import PanelHeader from "./component/Panel/PanelHeader/PanelHeader";
+import SubMenuInfoReport from "./component/ExampleComponent/SubMenuInfoReport";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
         {/* <Route path="/" element={<MobileUpload/>}></Route> */}
         <Route path="/mobilesync" element={<MobileUpload />}></Route>
         <Route path="/generateReportPdf" element={<GenerateReport />} />
+        <Route path="/submenureport" element={<SubMenuInfoReport/>}/>
       </Routes>
     </BrowserRouter>
 

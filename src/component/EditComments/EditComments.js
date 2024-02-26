@@ -18,9 +18,6 @@ const EditComments = ({ onClose }) => {
 
   return (
     <>
-      {/* <div>
-        <Header />
-      </div> */}
       <div className="cont-editcomm">
         <div className="button-editcomm">
           <div className="">
