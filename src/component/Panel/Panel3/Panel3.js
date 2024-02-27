@@ -5,6 +5,7 @@ import Footer from "../../Footer/Footer";
 import PanelHeader from "../PanelHeader/PanelHeader";
 import PannelComponent from "../PannelComponent/PannelComponent";
 import EditComments from "./../../EditComments/EditComments";
+import SelectionComponent from "../SelectionComponent/SelectionComponent";
 
 function Panel2({ panelData }) {
   const [showAlternateContent, setShowAlternateContent] = useState(false);
@@ -26,6 +27,12 @@ function Panel2({ panelData }) {
             setBlack={setDamage1Black}
             value={panelData.Damage1Data}
           />
+        </div>
+        <div className="panel-heading text-center m-2">
+          {panelData.selection1}
+          <div>
+            <SelectionComponent panelData={panelData} value={panelData.selection1} />
+          </div>
         </div>
       </div>
 

@@ -1,10 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./SelectionComponent.css";
 import EditComments from "../../EditComments/EditComments";
 
-const SelectionComponent = (panelData) => {
+const SelectionComponent = ({ panelData, value }) => {
   const [selectedText, setSelectedText] = useState("");
   const [commentText, setCommentText] = useState("");
+
+  useEffect(() => {
+    // Fetch CommentText from localStorage initially
+    const interval = setInterval(() => {
+      const storedData = localStorage.getItem("TempPanelData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        const commentText = parsedData[value] || "";
+        setCommentText(commentText);
+      }
+    }, 3000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(interval);
+  }, [value]);
 
   const handleTextSelectionforSelectionChange = () => {
     const selection = window.getSelection();
@@ -17,12 +32,10 @@ const SelectionComponent = (panelData) => {
   return (
     <div>
       <div>
-        <div className="panel-heading text-center m-2">
-          {panelData.selection1}
-        </div>
+        <div className="panel-heading text-center m-2"></div>
         <div className="pl-2 m-2 flex">
           <div className="Editcomments-and-checkbox-container">
-            <EditComments />
+            <EditComments value={value} />
             <div className="p-5">
               {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
                 <div
