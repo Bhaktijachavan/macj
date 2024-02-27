@@ -350,337 +350,362 @@ function CoverPageDesigner({ onClose }) {
 
   return (
     <>
-      <div className="cover-page-header-closer-btn">
-        <span className="cover-page-design-header-text">Cover Page Design</span>
-        <button onClick={onClose} className="close-button-cover-page-design">
-          X
-        </button>
-      </div>
-      <div
-        className="flex justify-center gap-3 p-2 bg-gray-200 main-container-for-the-cover-page-designer-popup-page"
-        // style={{ height: "100vh" }}
-      >
-        <div className="container-for-Object-and-control-section-for-design-cover-page-grid">
-          {/* Objects Column */}
-          {/* <p>objects</p> */}{" "}
-          <fieldset className="bordered-text">
-            <legend className="tag-for-line-draw-through-text">Objects</legend>
-            <div className="contains-template-and-design-components-for-cover-page-design-OBJECTS ">
-              {/* <h2 className="text-2xl font-bold mb-4">Objects</h2> */}
-              {/* Template Components */}
+      <div className="cover-page-container-popup-contains-all-the-info-abt-cover-page">
+        <div className="width-set-for-cover-page-container-popup-contains-all-the-info-abt-cover-page">
+          <div className="cover-page-header-closer-btn">
+            <span className="cover-page-design-header-text">
+              Cover Page Design
+            </span>
+            <button
+              onClick={onClose}
+              className="close-button-cover-page-design"
+            >
+              X
+            </button>
+          </div>
+          <div
+            className="flex justify-center gap-3 p-2 bg-gray-200 main-container-for-the-cover-page-designer-popup-page"
+            // style={{ height: "100vh" }}
+          >
+            <div className="container-for-Object-and-control-section-for-design-cover-page-grid">
+              {/* Objects Column */}
+              {/* <p>objects</p> */}{" "}
               <fieldset className="bordered-text">
                 <legend className="tag-for-line-draw-through-text">
-                  Template Components
+                  Objects
                 </legend>
-                <div className="div-contains-all-the-check-boxes-regarding-cover-page">
-                  {/* <h3 className="text-lg font-semibold mb-2">Template Components</h3> */}
-                  {/* Checkbox for cover photo */}
-                  {/* <p>objects</p> */}
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={checkedCheckboxes.includes("Cover Photo")}
-                      onChange={(e) => handleCheckboxChange(e, "Cover Photo")}
-                    />
-                    Cover Photo
-                  </label>{" "}
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      // onChange={(e) =>
-                      //   handleCheckboxChange(e, "Company Information")
-                      // }
-                      checked={checkedCheckboxes.includes(
-                        "Company Information"
-                      )}
-                      onChange={(e) =>
-                        handleCheckboxChange(e, "Company Information")
-                      }
-                    />
-                    Company Information
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={checkedCheckboxes.includes("Company Logo")}
-                      onChange={(e) => handleCheckboxChange(e, "Company Logo")}
-                    />
-                    Company Logo
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={checkedCheckboxes.includes(
-                        " Inspection Details"
-                      )}
-                      onChange={(e) =>
-                        handleCheckboxChange(e, " Inspection Details")
-                      }
-                    />
-                    Inspection Details
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      onChange={(e) =>
-                        handleCheckboxChange(e, "Agent Information")
-                      }
-                    />
-                    Agent Information
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      onChange={(e) => handleCheckboxChange(e, "Cover Company")}
-                    />
-                    Cover Company
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      onChange={(e) => handleCheckboxChange(e, "Report Title")}
-                    />
-                    Report Title
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      onChange={(e) =>
-                        handleCheckboxChange(e, "Inspection Signature")
-                      }
-                    />
-                    Inspection Signature
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      // onClick={() => fileInputRef.current.click()}
-                      // onChange={(e) => handleCheckboxChange(e, "Agent Photo")}
-                      checked={checkedCheckboxes.includes("Agent Photo")}
-                      onChange={(e) => handleCheckboxChange(e, "Agent Photo")}
-                      // disabled={isAgentPhotoUploaded} // Disable the checkbox if an image is already uploaded
-                    />
-                    Agent Photo
-                  </label>
-                  {/* ... Add more checkboxes for other template components */}
-                </div>
-              </fieldset>
-              {/* Design Components */}
-              <fieldset className="bordered-text">
-                <legend className="tag-for-line-draw-through-text">
-                  Design Components
-                </legend>
-                <div className="Buttons-and-check-boxes-for-Design-Component-ss">
-                  {/* <h3 className="text-lg font-semibold mb-2">Design Components</h3> */}
-                  <div className="check-boxes-and-buttons-for-adding-text-box-and-image">
-                    <div className="lables-check-boxes-for-page-border-cover-page-stationary">
+                <div className="contains-template-and-design-components-for-cover-page-design-OBJECTS ">
+                  {/* <h2 className="text-2xl font-bold mb-4">Objects</h2> */}
+                  {/* Template Components */}
+                  <fieldset className="bordered-text">
+                    <legend className="tag-for-line-draw-through-text">
+                      Template Components
+                    </legend>
+                    <div className="div-contains-all-the-check-boxes-regarding-cover-page">
+                      {/* <h3 className="text-lg font-semibold mb-2">Template Components</h3> */}
+                      {/* Checkbox for cover photo */}
+                      {/* <p>objects</p> */}
                       <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
+                          checked={checkedCheckboxes.includes("Cover Photo")}
                           onChange={(e) =>
-                            handleCheckboxChange(e, "Page Borders")
+                            handleCheckboxChange(e, "Cover Photo")
                           }
                         />
-                        Page Borders
+                        Cover Photo
+                      </label>{" "}
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          // onChange={(e) =>
+                          //   handleCheckboxChange(e, "Company Information")
+                          // }
+                          checked={checkedCheckboxes.includes(
+                            "Company Information"
+                          )}
+                          onChange={(e) =>
+                            handleCheckboxChange(e, "Company Information")
+                          }
+                        />
+                        Company Information
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={checkedCheckboxes.includes("Company Logo")}
+                          onChange={(e) =>
+                            handleCheckboxChange(e, "Company Logo")
+                          }
+                        />
+                        Company Logo
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={checkedCheckboxes.includes(
+                            " Inspection Details"
+                          )}
+                          onChange={(e) =>
+                            handleCheckboxChange(e, " Inspection Details")
+                          }
+                        />
+                        Inspection Details
                       </label>
                       <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           onChange={(e) =>
-                            handleCheckboxChange(e, "Cover Page Stationary")
+                            handleCheckboxChange(e, "Agent Information")
                           }
                         />
-                        Cover Page Stationary
+                        Agent Information
                       </label>
-                      <p className="no-stationary-loaded-text-button">
-                        No Stationary Loaded
-                      </p>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          onChange={(e) =>
+                            handleCheckboxChange(e, "Cover Company")
+                          }
+                        />
+                        Cover Company
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          onChange={(e) =>
+                            handleCheckboxChange(e, "Report Title")
+                          }
+                        />
+                        Report Title
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          onChange={(e) =>
+                            handleCheckboxChange(e, "Inspection Signature")
+                          }
+                        />
+                        Inspection Signature
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          // onClick={() => fileInputRef.current.click()}
+                          // onChange={(e) => handleCheckboxChange(e, "Agent Photo")}
+                          checked={checkedCheckboxes.includes("Agent Photo")}
+                          onChange={(e) =>
+                            handleCheckboxChange(e, "Agent Photo")
+                          }
+                          // disabled={isAgentPhotoUploaded} // Disable the checkbox if an image is already uploaded
+                        />
+                        Agent Photo
+                      </label>
+                      {/* ... Add more checkboxes for other template components */}
                     </div>
-                  </div>
-                  <div className="buttons-for-add-text-box-and-imagess">
-                    <section className="section-for-btnss-of-text-add-imgs">
-                      {/* Buttons for adding box, text, image, etc. */}
-                      <button className="btn">Add Box</button>
-                      <button className="btn" onClick={handleAddText}>
-                        Add/Edit <br /> Text
-                      </button>
-                      <button onClick={() => fileInputRef.current.click()}>
-                        Add Image
-                      </button>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        ref={fileInputRef}
-                        style={{ display: "none" }}
-                        onChange={handleImageUpload}
-                      />
-                    </section>
-                  </div>
+                  </fieldset>
+                  {/* Design Components */}
+                  <fieldset className="bordered-text">
+                    <legend className="tag-for-line-draw-through-text">
+                      Design Components
+                    </legend>
+                    <div className="Buttons-and-check-boxes-for-Design-Component-ss">
+                      {/* <h3 className="text-lg font-semibold mb-2">Design Components</h3> */}
+                      <div className="check-boxes-and-buttons-for-adding-text-box-and-image">
+                        <div className="lables-check-boxes-for-page-border-cover-page-stationary">
+                          <label className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              onChange={(e) =>
+                                handleCheckboxChange(e, "Page Borders")
+                              }
+                            />
+                            Page Borders
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              onChange={(e) =>
+                                handleCheckboxChange(e, "Cover Page Stationary")
+                              }
+                            />
+                            Cover Page Stationary
+                          </label>
+                          <p className="no-stationary-loaded-text-button">
+                            No Stationary Loaded
+                          </p>
+                        </div>
+                      </div>
+                      <div className="buttons-for-add-text-box-and-imagess">
+                        <section className="section-for-btnss-of-text-add-imgs">
+                          {/* Buttons for adding box, text, image, etc. */}
+                          <button className="btn">Add Box</button>
+                          <button className="btn" onClick={handleAddText}>
+                            Add/Edit <br /> Text
+                          </button>
+                          <button onClick={() => fileInputRef.current.click()}>
+                            Add Image
+                          </button>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            ref={fileInputRef}
+                            style={{ display: "none" }}
+                            onChange={handleImageUpload}
+                          />
+                        </section>
+                      </div>
+                    </div>
+                  </fieldset>
                 </div>
               </fieldset>
-            </div>
-          </fieldset>
-          <fieldset className="bordered-text">
-            <legend className="tag-for-line-draw-through-text">Controls</legend>
-            <div className="contains-controls-for-the-design-cover-page">
-              {/* Controls Section */}
               <fieldset className="bordered-text">
                 <legend className="tag-for-line-draw-through-text">
                   Controls
                 </legend>
-                <div className="contains-all-the-button-that-appear-in-control-section">
-                  {/* <h3 className="text-lg font-semibold mb-2">Controls</h3> */}
-                  {/* Controls for attribute */}
-                  <button className="btn-for-control-section-design-page">
-                    Show Actual <br /> Font Size
-                  </button>
-                  <button className="btn-for-control-section-design-page">
-                    Font Setting
-                  </button>
-                  <button className="btn-for-control-section-design-page">
-                    Color Setting
-                  </button>
-                  <button className="btn-for-control-section-design-page">
-                    Border Style
-                  </button>
-                  <button
-                    onClick={handleRemoveBoxTextImage}
-                    className="btn-for-control-section-design-page"
-                  >
-                    Remove <br /> Box/Text/Image
-                  </button>
-                  {/* ... Add more controls for size and position */}
-                </div>
-              </fieldset>
+                <div className="contains-controls-for-the-design-cover-page">
+                  {/* Controls Section */}
+                  <fieldset className="bordered-text">
+                    <legend className="tag-for-line-draw-through-text">
+                      Controls
+                    </legend>
+                    <div className="contains-all-the-button-that-appear-in-control-section">
+                      {/* <h3 className="text-lg font-semibold mb-2">Controls</h3> */}
+                      {/* Controls for attribute */}
+                      <button className="btn-for-control-section-design-page">
+                        Show Actual <br /> Font Size
+                      </button>
+                      <button className="btn-for-control-section-design-page">
+                        Font Setting
+                      </button>
+                      <button className="btn-for-control-section-design-page">
+                        Color Setting
+                      </button>
+                      <button className="btn-for-control-section-design-page">
+                        Border Style
+                      </button>
+                      <button
+                        onClick={handleRemoveBoxTextImage}
+                        className="btn-for-control-section-design-page"
+                      >
+                        Remove <br /> Box/Text/Image
+                      </button>
+                      {/* ... Add more controls for size and position */}
+                    </div>
+                  </fieldset>
 
-              <div className="contains-position-and-size-controls-with-this-div">
-                <fieldset className="bordered-text">
-                  <legend className="tag-for-line-draw-through-text">
-                    Controls
-                  </legend>
-                  {/* <div className="contains-size-control-for-cover-page-design">
+                  <div className="contains-position-and-size-controls-with-this-div">
+                    <fieldset className="bordered-text">
+                      <legend className="tag-for-line-draw-through-text">
+                        Controls
+                      </legend>
+                      {/* <div className="contains-size-control-for-cover-page-design">
                     Size Control
                   </div> */}
-                  <div className="contains-size-control-for-cover-page-design">
-                    <label htmlFor="fontSize">Font Size:</label>
-                    <input
-                      type="range"
-                      id="fontSize"
-                      name="fontSize"
-                      min="10" // Minimum font size
-                      max="30" // Maximum font size
-                      value={fontSize}
-                      onChange={(e) => setFontSize(parseInt(e.target.value))}
-                    />
-                    <span>{fontSize}px</span>
+                      <div className="contains-size-control-for-cover-page-design">
+                        <label htmlFor="fontSize">Font Size:</label>
+                        <input
+                          type="range"
+                          id="fontSize"
+                          name="fontSize"
+                          min="10" // Minimum font size
+                          max="30" // Maximum font size
+                          value={fontSize}
+                          onChange={(e) =>
+                            setFontSize(parseInt(e.target.value))
+                          }
+                        />
+                        <span>{fontSize}px</span>
+                      </div>
+                    </fieldset>{" "}
+                    <fieldset className="bordered-text">
+                      <legend className="tag-for-line-draw-through-text">
+                        Controls
+                      </legend>
+                      <div className="contains-position-control-for-cover-page-design">
+                        <section>Movement Shortcut</section>
+                        <section>Object Alignment</section>
+                        <section>Object Alignment</section>
+                      </div>
+                    </fieldset>
                   </div>
-                </fieldset>{" "}
-                <fieldset className="bordered-text">
-                  <legend className="tag-for-line-draw-through-text">
-                    Controls
-                  </legend>
-                  <div className="contains-position-control-for-cover-page-design">
-                    <section>Movement Shortcut</section>
-                    <section>Object Alignment</section>
-                    <section>Object Alignment</section>
-                  </div>
-                </fieldset>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-        {/* Layering Column */}
-        <fieldset className="bordered-text w-1/4">
-          <legend className="tag-for-line-draw-through-text">Layers</legend>
-          <div className="contains-the-list-of-selected-objects-and-thier-layer">
-            {/* <h2 className="text-2xl font-bold mb-4">Layering</h2> */}
-            {/* ... Display the list of selected objects and their layers */}
-
-            <ul>
-              {selectedObjects.map((obj, index) => (
-                <li key={index}>{obj}</li>
-              ))}
-            </ul>
-          </div>
-        </fieldset>
-        {/* Output Column */}
-        <div
-          className="w-1/4 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here"
-          // className={`w-1/4 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here ${
-          //   isBorderApplied ? "with-borders" : ""
-          // }`}
-          style={{ width: "50%" }}
-        >
-          {/* <h2 className="text-2xl font-bold mb-4">Output</h2> */}
-
-          <div
-            // className="content-that-is-draggable-and-adjustable-within-div"
-            className={`bg-white content-that-is-draggable-and-adjustable-within-div ${
-              isBorderApplied ? "with-borders" : ""
-            }`}
-          >
-            {checkedCheckboxes.map((label, index) => (
-              <Draggable
-                key={index}
-                bounds="parent"
-                className="draggableeeee cursor-pointer"
-              >
-                <div>{renderCheckboxContent(label)}</div>
-              </Draggable>
-            ))}
-            {/* Render editable text elements */}
-            {editableTexts.map(({ id, text }) => (
-              <Draggable key={id} bounds="parent" className="draggableeeee">
-                <div>
-                  <EditableText initialText={text} />
                 </div>
-              </Draggable>
-            ))}
-            {addedImages.map(({ id, src, height, width }) => (
-              <Draggable key={id} bounds="parent" className="draggableeeee">
-                <div>
-                  <img
-                    src={src}
-                    alt={`Image ${id}`}
-                    height={height}
-                    width={width}
-                  />
-                  {/* Add a delete button to remove the image */}
-                  {/* <button onClick={() => handleDeleteImage(id)}>
+              </fieldset>
+            </div>
+            {/* Layering Column */}
+            <fieldset className="bordered-text w-1/4">
+              <legend className="tag-for-line-draw-through-text">Layers</legend>
+              <div className="contains-the-list-of-selected-objects-and-thier-layer">
+                {/* <h2 className="text-2xl font-bold mb-4">Layering</h2> */}
+                {/* ... Display the list of selected objects and their layers */}
+
+                <ul>
+                  {selectedObjects.map((obj, index) => (
+                    <li key={index}>{obj}</li>
+                  ))}
+                </ul>
+              </div>
+            </fieldset>
+            {/* Output Column */}
+            <div
+              className="w-1/4 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here"
+              // className={`w-1/4 relative bg-white all-the-output-screen-with-all-the-changes-reflect-here ${
+              //   isBorderApplied ? "with-borders" : ""
+              // }`}
+              style={{ width: "50%" }}
+            >
+              {/* <h2 className="text-2xl font-bold mb-4">Output</h2> */}
+
+              <div
+                // className="content-that-is-draggable-and-adjustable-within-div"
+                className={`bg-white content-that-is-draggable-and-adjustable-within-div ${
+                  isBorderApplied ? "with-borders" : ""
+                }`}
+              >
+                {/* Render editable text elements */}
+                {editableTexts.map(({ id, text }) => (
+                  <div key={id} bounds="parent" className="draggableeeee">
+                    <div>
+                      <EditableText initialText={text} />
+                    </div>
+                  </div>
+                ))}
+                {checkedCheckboxes.map((label, index) => (
+                  <div
+                    key={index}
+                    bounds="parent"
+                    className="draggableeeee cursor-pointer"
+                  >
+                    <div>{renderCheckboxContent(label)}</div>
+                  </div>
+                ))}{" "}
+                {addedImages.map(({ id, src, height, width }) => (
+                  <div key={id} bounds="parent" className="draggableeeee">
+                    <div>
+                      <img
+                        src={src}
+                        alt={`Image ${id}`}
+                        height={height}
+                        width={width}
+                      />
+                      {/* Add a delete button to remove the image */}
+                      {/* <button onClick={() => handleDeleteImage(id)}>
                     Delete Image
                   </button> */}
-                </div>
-              </Draggable>
-            ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="contains-bottom-section-with-buttons-design-cover-page">
-        <div className="buttons-with-apply-export-import-discard-changes-apply">
-          <button
-            onClick={exportStateSave}
-            className="button-for-footer-for-changes-in-cover-page"
-          >
-            Apply Changes <br /> to Template Template
-          </button>{" "}
-          <button
-            onClick={exportState}
-            className="button-for-footer-for-changes-in-cover-page"
-          >
-            Export Layout to a <br /> File for Future Use
-          </button>
-          <button
-            onClick={() => fileInputRef.current.click()}
-            className="button-for-footer-for-changes-in-cover-page"
-          >
-            Import Layout <br /> from File
-          </button>{" "}
-          <button
-            className="button-for-footer-for-changes-in-cover-page"
-            onClick={() => setAddedImages([])}
-          >
-            Discard <br /> Changes
-          </button>
+          <div className="contains-bottom-section-with-buttons-design-cover-page">
+            <div className="buttons-with-apply-export-import-discard-changes-apply">
+              <button
+                onClick={exportStateSave}
+                className="button-for-footer-for-changes-in-cover-page"
+              >
+                Apply Changes <br /> to Template Template
+              </button>{" "}
+              <button
+                onClick={exportState}
+                className="button-for-footer-for-changes-in-cover-page"
+              >
+                Export Layout to a <br /> File for Future Use
+              </button>
+              <button
+                onClick={() => fileInputRef.current.click()}
+                className="button-for-footer-for-changes-in-cover-page"
+              >
+                Import Layout <br /> from File
+              </button>{" "}
+              <button
+                className="button-for-footer-for-changes-in-cover-page"
+                onClick={() => setAddedImages([])}
+              >
+                Discard <br /> Changes
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </>

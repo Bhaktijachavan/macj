@@ -9,6 +9,24 @@ import {
 } from "../../component/Function/function";
 
 const ClientInfo = () => {
+  const hanndleSaveToLocalStorage = () => {
+    const { firstName, lastName, email, phone } = formData;
+
+    if (!firstName || !lastName || !email || !phone) {
+      console.error("Incomplete data. Please fill in all required fields.");
+      return;
+    }
+    const clientInfoData = {
+      firstName,
+      lastName,
+      email,
+      phone,
+    };
+
+    // Convert the object to a string and store it in local storage
+    localStorage.setItem("clientInfoData", JSON.stringify(clientInfoData));
+  };
+
   const [formData, setFormData] = useState({
     lastName: "",
     firstName: "",
@@ -401,8 +419,9 @@ const ClientInfo = () => {
             onChange={handleInputChange}
           ></textarea>
         </div>
-
-
+        <div>
+          <button onClick={hanndleSaveToLocalStorage}>Save</button>
+        </div>
       </form>
 
       <div>

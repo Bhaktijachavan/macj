@@ -8,11 +8,11 @@ function InspectionDetails({ text, id }) {
   return (
     <>
       <div
-        id={id}
-        draggable="true"
-        onDragStart={handleDragStart}
+        // id={id}
+        // draggable="true"
+        // onDragStart={handleDragStart}
         className="draggable-text-inspection"
-        style={{}}
+        // style={{}}
       >
         <p
           className="N-G-Home-Inspection-Services"
