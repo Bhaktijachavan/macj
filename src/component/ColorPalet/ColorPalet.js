@@ -12,7 +12,7 @@ import Header from "./../Header/Header";
 import Footer from "./../Footer/Footer";
 import ColorPicker from "./ColorPicker";
 import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
-
+import "./ColorPalet.css";
 const ColorPalette = ({ onClose }) => {
   const [localStorageData, setLocalStorageData] = useState([]);
   const coverPageRef = useRef(null);
@@ -437,13 +437,7 @@ const ColorPalette = ({ onClose }) => {
 
   return (
     <>
-      <div>
-        <Header />
-      </div>
-      <div
-        className="fixed inset-0 flex items-center justify-center
-top-12"
-      >
+      <div className="all-the-popup-content-of-color-pallet-infoo">
         <div
           className="rounded-lg"
           style={{ width: "90%", backgroundColor: "#f3f2f1" }}
@@ -454,8 +448,8 @@ border-slate-400 "
           >
             <span className="px-3">Print Settings</span>
             <span
-              className="cursor-pointer px-3 hover:bg-red-500
-hover:text-white  "
+              className="justify-center flex h-9 items-center close-btn-for-the-color-pallet-popup-red cursor-pointer px-3 hover:bg-red-500
+hover:text-white"
               onClick={onClose}
             >
               X
@@ -716,31 +710,38 @@ w-full px-4 bg-white border border-black"
                       <img alt="right" />
                     </button>
                   </div>
+                  <div className="flex justify-center pt-4 pb-4">
+                    <div id="pdf-content">
+                      <div
+                        id="pdf-content-home"
+                        style={{
+                          position: "absolute",
+                          left: "-9999px",
+                          display: "none",
+                        }}
+                        ref={coverPageRef}
+                      >
+                        <CoverPageDesigner />
+                      </div>
+                    </div>
+                    <button
+                      className="border-2 border-black py-1 px-2 mr-4"
+                      onClick={exportCoverPageToPDF}
+                    >
+                      Generate PDF & Close
+                    </button>{" "}
+                    <button
+                      className="border-2 border-black py-1 px-2"
+                      onClick={generatePDF}
+                    >
+                      Generate PDF & Close
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="flex justify-end mr-20">
-            <div id="pdf-content">
-              <div
-                id="pdf-content-home"
-                style={{ position: "absolute", left: "-9999px" }}
-                ref={coverPageRef}
-              >
-                <CoverPageDesigner />
-              </div>
-            </div>
-            <button
-              className="border-2 border-black py-1 px-2"
-              onClick={exportCoverPageToPDF}
-            >
-              Generate PDF & Close
-            </button>
-          </div>
         </div>
-      </div>
-      <div>
-        <Footer />
       </div>
     </>
   );
