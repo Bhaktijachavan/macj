@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import "./SelectionComponent.css";
 import EditComments from "../../EditComments/EditComments";
 
 const SelectionComponent = (panelData) => {
+  const [selectedText, setSelectedText] = useState("");
+  const [commentText, setCommentText] = useState("");
+
+  const handleTextSelectionforSelectionChange = () => {
+    const selection = window.getSelection();
+    const selectedRange = selection.getRangeAt(0);
+    const container = selectedRange.commonAncestorContainer;
+    const selectedText =
+      container.nodeType === 3 ? container.nodeValue : container.innerText;
+    setSelectedText(selectedText);
+  };
   return (
     <div>
       <div>
@@ -31,7 +42,15 @@ const SelectionComponent = (panelData) => {
               ))}
             </div>
           </div>
-          <div className="scroll-box-selection-panel6 bg-white"></div>
+          <div
+            className="scroll-box-panel2 p-4 bg-gray-100"
+            style={{ cursor: "pointer" }}
+            onMouseUp={handleTextSelectionforSelectionChange}
+          >
+            {commentText.split("\n").map((line, index) => (
+              <p key={index}>{line}</p>
+            ))}
+          </div>
         </div>
       </div>
     </div>
