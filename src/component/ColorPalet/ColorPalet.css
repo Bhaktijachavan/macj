@@ -1,0 +1,12 @@
+.all-the-popup-content-of-color-pallet-infoo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  z-index: 999;
+  position: absolute;
+  top: 5%;
+  /* left: 30%; */
+  /* background-color: rgb(242, 236, 236); */
+  /* align-items: center; */
+}
