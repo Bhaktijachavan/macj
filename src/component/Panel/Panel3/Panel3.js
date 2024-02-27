@@ -31,7 +31,19 @@ function Panel2({ panelData }) {
         <div className="panel-heading text-center m-2">
           {panelData.selection1}
           <div>
-            <SelectionComponent panelData={panelData} value={panelData.selection1} />
+            <SelectionComponent
+              panelData={panelData}
+              value={panelData.Selection1Data}
+            />
+          </div>
+        </div>
+        <div className="panel-heading text-center m-2">
+          {panelData.selection2}
+          <div>
+            <SelectionComponent
+              panelData={panelData}
+              value={panelData.Selection2Data}
+            />
           </div>
         </div>
       </div>
