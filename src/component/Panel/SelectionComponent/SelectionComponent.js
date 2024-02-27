@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./SelectionComponent.css";
 import EditComments from "../../EditComments/EditComments";
 
-const SelectionComponent = ({ panelData, value }) => {
+const SelectionComponent = ({ panelData, value, classname }) => {
   const [selectedText, setSelectedText] = useState("");
   const [commentText, setCommentText] = useState("");
 
@@ -56,7 +56,9 @@ const SelectionComponent = ({ panelData, value }) => {
             </div>
           </div>
           <div
-            className="scroll-box-panel2 p-4 bg-gray-100"
+            className={
+              classname ? classname : "scroll-box-panel2 p-4 bg-gray-100"
+            }
             style={{ cursor: "pointer" }}
             onMouseUp={handleTextSelectionforSelectionChange}
           >
