@@ -732,7 +732,7 @@ w-full px-4 bg-white border border-black"
             </div>
             <button
               className="border-2 border-black py-1 px-2"
-              onClick={generatePDF}
+              onClick={exportCoverPageToPDF}
             >
               Generate PDF & Close
             </button>
