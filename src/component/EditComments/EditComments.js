@@ -4,7 +4,7 @@ import Footer from "./../Footer/Footer";
 import AddComment from "./popEditComments/AddComment";
 import "./EditComments.css";
 
-const EditComments = ({ onClose }) => {
+const EditComments = ({ onClose, value }) => {
   const [isAddModalVisible, setAddModalVisible] = useState(false);
 
   const handleAddButtonClick = () => {
@@ -39,7 +39,10 @@ const EditComments = ({ onClose }) => {
                 Add
               </button>
               {isAddModalVisible && (
-                <AddComment onClose={() => setAddModalVisible(false)} />
+                <AddComment
+                  onClose={() => setAddModalVisible(false)}
+                  value={value}
+                />
               )}
             </div>
 

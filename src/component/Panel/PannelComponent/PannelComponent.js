@@ -18,7 +18,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   useEffect(() => {
     // Fetch CommentText from localStorage initially
     const interval = setInterval(() => {
-      const storedCommentText = localStorage.getItem("CommentText");
+      const storedCommentText = localStorage.getItem(value);
       if (storedCommentText) {
         setCommentText(storedCommentText);
       }
@@ -153,7 +153,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
         <div className="container-panel2">
           <div className="panel2">
             <div className="Editcomments-and-checkbox-container">
-              <EditComments />
+              <EditComments value={value}/>
               <div className="p-5">
                 {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
                   <div

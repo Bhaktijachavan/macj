@@ -9,7 +9,7 @@ import img7 from "../../../Assets/icons/remove.png";
 import CreateListEditComm from "./CreateListEditComm";
 import InsertListPopup from "./InsertListPopup/InsertListPopup";
 
-const AddComment = ({ onClose }) => {
+const AddComment = ({ onClose, value }) => {
   const [isCreateListVisible, setIsCreateListVisible] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
@@ -47,9 +47,9 @@ const AddComment = ({ onClose }) => {
   const SaveText = () => {
     console.log("Saving text:", text);
     try {
-      const storedText = localStorage.getItem("CommentText");
+      const storedText = localStorage.getItem(value);
       const newText = storedText ? `${storedText}\n${text}` : text;
-      localStorage.setItem("CommentText", newText);
+      localStorage.setItem(value, newText);
       console.log("Text saved successfully.");
       setText("");
     } catch (error) {
