@@ -31,6 +31,7 @@ import AboutUsMacj from "./../AboutUsMacj/AboutUsMacj";
 import { PanalSelect } from "../Function/function";
 import { useNavigate } from "react-router-dom";
 import { useEditTempContext } from "../../Context";
+import SubMenuInfoReport from "./../ExampleComponent/SubMenuInfoReport";
 
 const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
   const [internetLoginPopup, setInternetLoginPopup] = useState(false);
   const [batchAddPhotosPopup, setBatchAddPhotosPopup] = useState(false);
   const [coverPageDesignPopup, setCoverPageDesignPopup] = useState(false);
+  const [editDocumentPopup, setEditDocumentPopup] = useState(false);
   const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] =
     useState(false);
 
@@ -93,6 +95,12 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
   };
   const openCoverPageDesignPopup = () => {
     setCoverPageDesignPopup(true);
+  };
+  const openCreateEditDocument = () => {
+    setEditDocumentPopup(true);
+  };
+  const closeCreateEditDocument = () => {
+    setEditDocumentPopup(false);
   };
 
   const fileInputRef = useRef(null);
@@ -305,11 +313,11 @@ shadow mt-2"
                 className="submenu w-36 absolute z-10 bg-white shadow
 mt-2"
                 style={{ lineHeight: "12px", fontSize: "13px" }}
-                onClick={openCoverPageDesignPopup}
               >
                 {/* <Link to="/coverpagedesigner"> */}
                 <li
                   className=" hover:bg-gray-200"
+                  onClick={openCoverPageDesignPopup}
                   style={{
                     height: "2em",
                     display: "flex",
@@ -319,6 +327,20 @@ mt-2"
                 >
                   Cover Page Designer
                 </li>
+
+                <Link to="submenureport">
+                  <li
+                    className=" hover:bg-gray-200"
+                    style={{
+                      height: "2em",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    Create And Edit Document
+                  </li>
+                </Link>
                 {/* </Link> */}
               </ul>
             )}
@@ -728,6 +750,12 @@ border-black-900"
           <div className="popup-gfhgCover-Page-Design-Popup-ccc">
             {/* Render your EditTemplate component here */}
             <CoverPageDesigner onClose={closeCoverPageDesignPopup} />
+          </div>
+        )}
+        {editDocumentPopup && (
+          <div className="popup-gfhgCover-Page-Design-Popup-ccc">
+            {/* Render your EditTemplate component here */}
+            <SubMenuInfoReport onClose={closeCreateEditDocument} />
           </div>
         )}
         {colorPaletPopup && (

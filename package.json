@@ -45,6 +45,12 @@
     "electron:start": "wait-on tcp:3000 && electron .",
     "package": "electron-packager . electron-react --platform=win32 --arch=x64 --out=dist --overwrite"
   },
+  "build": {
+    "directories": {
+      "output": "dist"
+    }
+  },
+
   "eslintConfig": {
     "extends": [
       "react-app",
