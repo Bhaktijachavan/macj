@@ -12,8 +12,7 @@ function Panel4({ panelData }) {
   const [Damage1black, setDamage1Black] = useState();
   const [Damage2red, setDamage2Red] = useState();
   const [Damage2black, setDamage2Black] = useState();
-  const damage1 = "damage1";
-  const damage2 = "damage2";
+
 
   console.log("paneldata ", panelData);
   const toggleContent = () => {
