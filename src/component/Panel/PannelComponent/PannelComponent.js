@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import EditComments from "../../EditComments/EditComments";
 import Header from "./../../Header/Header";
 
-const PannelComponent = ({ showAlternateContent, setRed, setBlack }) => {
+const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [selectedText, setSelectedText] = useState("");
   const [blackText, setBlackText] = useState("");
   const [redText, setRedText] = useState("");

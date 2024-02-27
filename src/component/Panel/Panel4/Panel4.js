@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Panel4.css";
 import Header from "../../Header/Header";
 import Footer from "../../Footer/Footer";
@@ -22,6 +22,20 @@ function Panel4({ panelData }) {
   const [selectedLineIndex, setSelectedLineIndex] = useState(null);
   const [selectedLineColor, setSelectedLineColor] = useState(null);
   const [showAlternateContent, setShowAlternateContent] = useState(false);
+  const [commentText, setCommentText] = useState("");
+
+  useEffect(() => {
+    // Fetch CommentText from localStorage initially
+    const interval = setInterval(() => {
+      const storedCommentText = localStorage.getItem("CommentText");
+      if (storedCommentText) {
+        setCommentText(storedCommentText);
+      }
+    }, 3000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
 
   const toggleContent = () => {
     setShowAlternateContent((prevState) => !prevState);
@@ -167,21 +181,14 @@ function Panel4({ panelData }) {
                 ))}
               </div>
             </div>
-
             <div
-              className="scroll-box-panel4 p-4 bg-gray-100"
+              className="scroll-box-panel2 p-4 bg-gray-100"
               style={{ cursor: "pointer" }}
               onMouseUp={handleTextSelection}
             >
-              <p>Demo Panel color</p>
-              <p>Color Red and black</p>
-              <p>
-                if color select good stock it go in the 1 box and color is black
-              </p>
-              <p>
-                if color select bad stock it go in the 2 box and color is red
-              </p>
-              {/* Content for scroll box */}
+              {commentText.split("\n").map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
             </div>
 
             <div className="flex flex-col space-y-2 ml-2 mr-2 text-sm">
