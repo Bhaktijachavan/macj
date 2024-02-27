@@ -34,7 +34,7 @@ function Panel1({ panelData }) {
             showAlternateContent={showAlternateContent}
             setRed={setDamage1Red}
             setBlack={setDamage1Black}
-            value={damage1}
+            value={panelData.Damage1Data}
           />
         </div>
         <div className="panel-heading text-center">{panelData.damage2}</div>
@@ -44,7 +44,7 @@ function Panel1({ panelData }) {
             showAlternateContent={showAlternateContent}
             setRed={setDamage2Red}
             setBlack={setDamage2Black}
-            value={damage2}
+            value={panelData.Damage2Data}
           />
         </div>
       </div>

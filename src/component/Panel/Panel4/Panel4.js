@@ -34,7 +34,7 @@ function Panel4({ panelData }) {
             showAlternateContent={showAlternateContent}
             setRed={setDamage1Red}
             setBlack={setDamage1Black}
-            value={damage1}
+            value={panelData.Damage1Data}
           />
         </div>
       </div>
