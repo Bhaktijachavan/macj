@@ -1,4 +1,3 @@
-
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "../../component/EditTemp/DynamicMenuComponent.css";
@@ -134,7 +133,7 @@ const DynamicMenuComponent = ({ onClose }) => {
       setSelectedMenuId(null);
       setSelectedSubMenuId(null);
     }
-  }; 
+  };
   // Function to delete a tabname
   const handleDeleteTab = () => {
     if (!selectedMenuId || !selectedSubMenuId || !selectedTabNameId) {
@@ -234,13 +233,13 @@ const DynamicMenuComponent = ({ onClose }) => {
             [selectedSubMenuId]: {
               ...selectedMenu.subdetails[selectedSubMenuId],
               [uniqueId]: {
-          ...inputValues,
-          Radiopanal: selectedRadio,
-          Damage1Data: uniqueId + "_d1",
-          Damage2Data: uniqueId + "_d2",
-          Selection1Data: uniqueId + "_s1",
-          Selection2Data: uniqueId + "_s2",
-        },
+                ...inputValues,
+                Radiopanal: selectedRadio,
+                Damage1Data: uniqueId + "_d1",
+                Damage2Data: uniqueId + "_d2",
+                Selection1Data: uniqueId + "_s1",
+                Selection2Data: uniqueId + "_s2",
+              },
             },
           },
         },
@@ -293,9 +292,7 @@ const DynamicMenuComponent = ({ onClose }) => {
       };
       updatedMenuData[selectedMenuId].subitems = updatedMenuData[
         selectedMenuId
-      ].subitems.map((sub) =>
-        sub.id === submenu.id ? updatedSubMenu : sub
-      );
+      ].subitems.map((sub) => (sub.id === submenu.id ? updatedSubMenu : sub));
       return updatedMenuData;
     });
     setIsEditing(false);
@@ -330,7 +327,10 @@ const DynamicMenuComponent = ({ onClose }) => {
         return (
           <div className="flex float-right case-input-div">
             <div className="pl-5">
-              <p className="text-center mb-2">Creating A Page With 1 Damage Panel. The Damage Panel Name is what will appear on the report.</p>
+              <p className="text-center mb-2">
+                Creating A Page With 1 Damage Panel. The Damage Panel Name is
+                what will appear on the report.
+              </p>
               <label htmlFor="tabname">Tab Name:</label>
               <input
                 type="text"
@@ -355,7 +355,11 @@ const DynamicMenuComponent = ({ onClose }) => {
         return (
           <div className="flex float-right case-input-div">
             <div className="pl-5">
-              <p className="text-center mb-2">Creating the page with 2 Damage Panels Each Damage Panel willhave it's own section on the report. The Damage Panel Names are what will appear on the report.</p>
+              <p className="text-center mb-2">
+                Creating the page with 2 Damage Panels Each Damage Panel
+                willhave it's own section on the report. The Damage Panel Names
+                are what will appear on the report.
+              </p>
               <label htmlFor="tabname">Tab Name:</label>
               <input
                 type="text"
@@ -389,7 +393,10 @@ const DynamicMenuComponent = ({ onClose }) => {
         return (
           <div className="flex float-right case-input-div">
             <div className="pl-5">
-              <p className="text-center mb-2">Creating A Page With 1 Selection Panel.The Selection Panel Name is what will appear on the report.</p>
+              <p className="text-center mb-2">
+                Creating A Page With 1 Selection Panel.The Selection Panel Name
+                is what will appear on the report.
+              </p>
               <label htmlFor="tabname">Tab Name:</label>
               <input
                 type="text"
@@ -405,7 +412,8 @@ const DynamicMenuComponent = ({ onClose }) => {
                 id="selection1"
                 value={inputValues.selection1}
                 onChange={(e) =>
-                  handleInputChange("selection1", e.target.value)}
+                  handleInputChange("selection1", e.target.value)
+                }
                 className="w-50 h-7 border border-black p-2 m-1 ml-2"
               />
             </div>
@@ -415,7 +423,10 @@ const DynamicMenuComponent = ({ onClose }) => {
         return (
           <div className="flex float-right case-input-div">
             <div className="pl-5">
-              <p className="text-center mb-2">Creating the page with 2 Selection Panels. The name of the first Selection Panel Name will appear on the report.</p>
+              <p className="text-center mb-2">
+                Creating the page with 2 Selection Panels. The name of the first
+                Selection Panel Name will appear on the report.
+              </p>
               <label htmlFor="tabname">Tab Name:</label>
               <input
                 type="text"
@@ -453,7 +464,10 @@ const DynamicMenuComponent = ({ onClose }) => {
         return (
           <div className="flex float-right case-input-div">
             <div className="pl-5">
-              <p className="text-center mb-2">Creating the page with 1 Damage Panel and 1 Selection Panel. The Damage Panel Name will be appear on the report.</p>
+              <p className="text-center mb-2">
+                Creating the page with 1 Damage Panel and 1 Selection Panel. The
+                Damage Panel Name will be appear on the report.
+              </p>
               {/* Handle 1 Damage 1 Selection input fields */}
               <label htmlFor="tabname">Tab Name:</label>
               <input
@@ -490,7 +504,10 @@ const DynamicMenuComponent = ({ onClose }) => {
         return (
           <div className="flex float-right case-input-div">
             <div className="pl-5">
-              <p className="text-center mb-2">Creating the page with 1 Damage Panel and 2 Selection Panel. The Damage Panel Name will be appear on the report</p>
+              <p className="text-center mb-2">
+                Creating the page with 1 Damage Panel and 2 Selection Panel. The
+                Damage Panel Name will be appear on the report
+              </p>
               {/* Handle 1 Damage 2 Selections input fields */}
               <label htmlFor="tabname">Tab Name:</label>
               <input
@@ -566,23 +583,23 @@ const DynamicMenuComponent = ({ onClose }) => {
               }}
               onClick={() => setSelectedSubMenuId(submenu.id)}
             >
-            {isEditing && selectedSubMenuId === submenu.id ? (
-              <div>
-                <input
-                  type="text"
-                  value={editedSubName}
-                  onChange={(e) => setEditedSubName(e.target.value)}
-                />
-                <button onClick={() => handleEditSubName(submenu)}>OK</button>
-                <button onClick={handleCancelEdit}>Cancel</button>
-              </div>
-            ) : (
-              <div
-                onDoubleClick={() => handleSubNameDoubleClick(submenu)}
-              >
-                {submenu.subName}
-              </div>
-            )}
+              {isEditing && selectedSubMenuId === submenu.id ? (
+                <div className="">
+                  <input
+                    type="text"
+                    value={editedSubName}
+                    onChange={(e) => setEditedSubName(e.target.value)}
+                    className="w-40 h-7 border border-black p-2 m-1 ml-2"
+                  />
+                  <br />
+                  <button onClick={() => handleEditSubName(submenu)}>OK</button>
+                  <button onClick={handleCancelEdit}>Cancel</button>
+                </div>
+              ) : (
+                <div onDoubleClick={() => handleSubNameDoubleClick(submenu)}>
+                  {submenu.subName}
+                </div>
+              )}
               {/* {submenu.subName} */}
               <div className="selectionpanelRB">
                 {isMenuSelected &&
@@ -639,9 +656,10 @@ const DynamicMenuComponent = ({ onClose }) => {
               <h2>Items</h2>
               <div>
                 <div>
-                  {/* Display all added subdetails for the selected submenu
-                   */}
-                   {selectedSubMenuId && (
+                  {/* Display all added subdetails for the selected
+submenu
+                    */}
+                  {selectedSubMenuId && (
                     <div>
                       {Object.keys(
                         selectedMenu?.subdetails[selectedSubMenuId] || {}
@@ -651,8 +669,8 @@ const DynamicMenuComponent = ({ onClose }) => {
                           style={{
                             backgroundColor:
                               radioValue === selectedTabNameId
-                              ? "#c0c0c0"
-                              : "transparent",
+                                ? "#c0c0c0"
+                                : "transparent",
                             cursor:
                               radioValue === selectedTabNameId
                                 ? "your_selected_cursor_style"
@@ -660,7 +678,11 @@ const DynamicMenuComponent = ({ onClose }) => {
                           }}
                         >
                           <h3>
-                            {selectedMenu?.subdetails[selectedSubMenuId][radioValue]?.tabname}
+                            {
+                              selectedMenu?.subdetails[selectedSubMenuId][
+                                radioValue
+                              ]?.tabname
+                            }
                           </h3>
                           {/* Display other details as needed */}
                         </div>
@@ -681,7 +703,8 @@ const DynamicMenuComponent = ({ onClose }) => {
                     id="menuName"
                     value={menuName}
                     onChange={(e) => setMenuName(e.target.value)}
-                    className="w-40 h-7 border border-black p-2 m-1 ml-2"
+                    className="w-40 h-7 border border-black p-2 m-1
+ml-2"
                     placeholder="Menu Name"
                   />
                   <button onClick={handleAddMenu}>Add Menu</button>
@@ -693,7 +716,8 @@ const DynamicMenuComponent = ({ onClose }) => {
                     id="submenuName"
                     value={submenuName}
                     onChange={(e) => setSubmenuName(e.target.value)}
-                    className="w-40 h-7 border border-black p-2 m-1 ml-2"
+                    className="w-40 h-7 border border-black p-2 m-1
+ml-2"
                     placeholder="Submenu Name"
                   />
                   <button onClick={handleAddSubmenu}>Add Submenu</button>
@@ -737,10 +761,10 @@ const DynamicMenuComponent = ({ onClose }) => {
                     {menuData[selectedMenuId].subitems.find(
                       (submenu) => submenu.id === selectedSubMenuId
                     )?.subName && (
-                        <button onClick={handleAddSubdetails} className="mt-1">
-                          Add Subdetails
-                        </button>
-                      )}
+                      <button onClick={handleAddSubdetails} className="mt-1">
+                        Add Subdetails
+                      </button>
+                    )}
                     {/* Display added subdetails */}
                   </div>
                 )}

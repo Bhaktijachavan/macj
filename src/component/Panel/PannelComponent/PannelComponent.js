@@ -21,7 +21,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       const storedData = localStorage.getItem("TempPanelData");
       if (storedData) {
         const parsedData = JSON.parse(storedData);
-        const commentText = parsedData[value] || ""; // Get comment text for the specific ID or empty string if not found
+        const commentText = parsedData[value] || "";
         setCommentText(commentText);
       }
     }, 3000);
