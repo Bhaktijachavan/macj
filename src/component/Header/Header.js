@@ -346,31 +346,7 @@ mt-2"
             )}
           </div>
         </div>
-        <div className="menu-item relative ml-4">
-          <div
-            className="main-label cursor-pointer"
-            onClick={() => handleMenuClick(3)}
-          >
-            General information
-          </div>
-          {activeMenu === 3 && (
-            <ul
-              className="submenu w-36 absolute z-10 bg-white shadow
-mt-2"
-              style={{
-                lineHeight: "24px",
-                fontSize: "13px",
-                textAlign: "Center",
-              }}
-            >
-              <Link to="/panel1">
-                <li className=" hover:bg-gray-200">Wall</li>
-              </Link>
-              <li className=" hover:bg-gray-200">Batch Add Photos</li>
-              <li className=" hover:bg-gray-200">Clear All Photos</li>
-            </ul>
-          )}
-        </div>
+
         <div className="menu-item relative ml-4">
           <div
             className="main-label cursor-pointer"
@@ -537,7 +513,7 @@ border-black-900"
             <div>{/* <OpenTPZ /> */}</div>
             <div>
               {/* Your other JSX elements */}
-              {/* <SaveTPZ /> */}
+              <SaveTPZ />
             </div>
             <hr />
 
