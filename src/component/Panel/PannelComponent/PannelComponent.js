@@ -18,15 +18,17 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   useEffect(() => {
     // Fetch CommentText from localStorage initially
     const interval = setInterval(() => {
-      const storedCommentText = localStorage.getItem(value);
-      if (storedCommentText) {
-        setCommentText(storedCommentText);
+      const storedData = localStorage.getItem("TempPanelData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        const commentText = parsedData[value] || ""; // Get comment text for the specific ID or empty string if not found
+        setCommentText(commentText);
       }
     }, 3000);
 
     // Clean up the interval on component unmount
     return () => clearInterval(interval);
-  }, []);
+  }, [value]);
 
   const handleLineClick = (index, color) => {
     setSelectedLineIndex(index);
@@ -153,7 +155,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
         <div className="container-panel2">
           <div className="panel2">
             <div className="Editcomments-and-checkbox-container">
-              <EditComments value={value}/>
+              <EditComments value={value} />
               <div className="p-5">
                 {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
                   <div
