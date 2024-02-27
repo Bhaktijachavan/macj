@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import EditComments from "../../EditComments/EditComments";
 import Header from "./../../Header/Header";
 
-const PannelComponent = ({ showAlternateContent, setRed, setBlack }) => {
+const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [selectedText, setSelectedText] = useState("");
   const [blackText, setBlackText] = useState("");
   const [redText, setRedText] = useState("");
@@ -18,15 +18,17 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack }) => {
   useEffect(() => {
     // Fetch CommentText from localStorage initially
     const interval = setInterval(() => {
-      const storedCommentText = localStorage.getItem("CommentText");
-      if (storedCommentText) {
-        setCommentText(storedCommentText);
+      const storedData = localStorage.getItem("TempPanelData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        const commentText = parsedData[value] || "";
+        setCommentText(commentText);
       }
     }, 3000);
 
     // Clean up the interval on component unmount
     return () => clearInterval(interval);
-  }, []);
+  }, [value]);
 
   const handleLineClick = (index, color) => {
     setSelectedLineIndex(index);
@@ -153,7 +155,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack }) => {
         <div className="container-panel2">
           <div className="panel2">
             <div className="Editcomments-and-checkbox-container">
-              <EditComments />
+              <EditComments value={value} />
               <div className="p-5">
                 {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
                   <div

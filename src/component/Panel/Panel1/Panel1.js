@@ -12,7 +12,9 @@ function Panel1({ panelData }) {
   const [Damage1black, setDamage1Black] = useState();
   const [Damage2red, setDamage2Red] = useState();
   const [Damage2black, setDamage2Black] = useState();
-  const [menuData, SetMenuData] = useState();
+  const damage1 = "damage1";
+  const damage2 = "damage2";
+
   console.log("paneldata ", panelData);
   const toggleContent = () => {
     setShowAlternateContent((prevState) => !prevState);
@@ -20,15 +22,8 @@ function Panel1({ panelData }) {
   useEffect(() => {
     console.log("red", Damage1red);
     console.log("black", Damage1black);
-    getData();
   }, [Damage1red, Damage1black]);
 
-  const getData = () => {
-    const MenuData = localStorage.getItem("menuData");
-    const data = JSON.parse(MenuData);
-    SetMenuData(data);
-    console.log(data);
-  };
   return (
     <>
       <div>
@@ -39,6 +34,7 @@ function Panel1({ panelData }) {
             showAlternateContent={showAlternateContent}
             setRed={setDamage1Red}
             setBlack={setDamage1Black}
+            value={panelData.Damage1Data}
           />
         </div>
         <div className="panel-heading text-center">{panelData.damage2}</div>
@@ -48,6 +44,7 @@ function Panel1({ panelData }) {
             showAlternateContent={showAlternateContent}
             setRed={setDamage2Red}
             setBlack={setDamage2Black}
+            value={panelData.Damage2Data}
           />
         </div>
       </div>

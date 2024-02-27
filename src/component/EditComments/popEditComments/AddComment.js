@@ -9,7 +9,7 @@ import img7 from "../../../Assets/icons/remove.png";
 import CreateListEditComm from "./CreateListEditComm";
 import InsertListPopup from "./InsertListPopup/InsertListPopup";
 
-const AddComment = ({ onClose }) => {
+const AddComment = ({ onClose, value }) => {
   const [isCreateListVisible, setIsCreateListVisible] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
@@ -47,16 +47,32 @@ const AddComment = ({ onClose }) => {
   const SaveText = () => {
     console.log("Saving text:", text);
     try {
-      const storedText = localStorage.getItem("CommentText");
+      // Check if TempPanelData already exists in local storage
+      let tempPanelData = localStorage.getItem("TempPanelData");
+      if (!tempPanelData) {
+        // If not, create an empty object
+        tempPanelData = {};
+      } else {
+        // If it exists, parse the JSON string to an object
+        tempPanelData = JSON.parse(tempPanelData);
+      }
+
+      // Check if value already exists in tempPanelData
+      const storedText = tempPanelData[value];
       const newText = storedText ? `${storedText}\n${text}` : text;
-      localStorage.setItem("CommentText", newText);
+
+      // Update the value under the specified key
+      tempPanelData[value] = newText;
+
+      // Save the updated data back to local storage
+      localStorage.setItem("TempPanelData", JSON.stringify(tempPanelData));
+
       console.log("Text saved successfully.");
       setText("");
     } catch (error) {
       console.error("Error saving text:", error);
     }
   };
-
   return (
     <div>
       <div className="Contant-editcomm">
