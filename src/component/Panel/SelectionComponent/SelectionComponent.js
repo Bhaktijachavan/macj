@@ -3,7 +3,7 @@ import "./SelectionComponent.css";
 import EditComments from "../../EditComments/EditComments";
 
 const SelectionComponent = ({ panelData, value, classname }) => {
-  const [selectedText, setSelectedText] = useState("");
+  const [selectedText, setSelectedText] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -22,19 +22,28 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     return () => clearInterval(interval);
   }, [value]);
 
+  useEffect(() => {
+    // Log selected lines whenever the selection changes
+    console.log("Selected Lines:", selectedText);
+  }, [selectedText]);
+
   const handleTextSelectionforSelectionChange = () => {
     const selection = window.getSelection();
     const selectedRange = selection.getRangeAt(0);
     const container = selectedRange.commonAncestorContainer;
     const selectedText =
       container.nodeType === 3 ? container.nodeValue : container.innerText;
-    setSelectedText(selectedText);
+    setSelectedText((prevSelectedText) =>
+      prevSelectedText.includes(selectedText)
+        ? prevSelectedText.filter((text) => text !== selectedText)
+        : [...prevSelectedText, selectedText]
+    );
   };
 
-  const handleSelectText = () => {
-    // Toggle the selected state
+  const handleSelectText = (line) => {
+    // Toggle the selected state for the clicked line
     setSelectedRow((prevSelectedRow) =>
-      prevSelectedRow === selectedText ? null : selectedText
+      prevSelectedRow === line ? null : line
     );
   };
 
@@ -74,10 +83,11 @@ const SelectionComponent = ({ panelData, value, classname }) => {
             {commentText.split("\n").map((line, index) => (
               <p
                 key={index}
-                onClick={handleSelectText}
+                onClick={() => handleSelectText(line)}
                 style={{
-                  backgroundColor:
-                    line === selectedRow ? "#e0e0e0" : "transparent",
+                  backgroundColor: selectedText.includes(line)
+                    ? "#e0e0e0"
+                    : "transparent",
                 }}
               >
                 {line}
