@@ -122,7 +122,28 @@ const ClientInfo = () => {
       setFormData(decryptedData);
     }
   };
-
+  const clearForm = () => {
+    setFormData({
+      lastName: "",
+      firstName: "",
+      phone: "",
+      fax: "",
+      email: "",
+      inspectionAddress: "",
+      addressLine2: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      agent: "macj-home-inspector",
+      dateOfInspection: "",
+      timeOfInspection: "",
+      ageOfHome: "",
+      size: "",
+      inspectionFee: "",
+      weather: "",
+      otherInfo: "",
+    });
+  };
   return (
     <div className="main-container-clientinfo">
       {pop && (
@@ -428,6 +449,12 @@ const ClientInfo = () => {
           onClick={hanndleSaveToLocalStorage}
         >
           Save
+        </button>
+        <button
+          className="for-saving-the-data-to-the-localstorage-btn-client-info"
+          onClick={clearForm}
+        >
+          Clear Form
         </button>
       </div>
       <div>
