@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import "./CompanyInfo.css";
-function CompanyInfo({ text, id }) {
+
+function CompanyInfo({ id }) {
   const clientInfoDataString = localStorage.getItem("clientInfoData");
   const clientInfoData = clientInfoDataString
     ? JSON.parse(clientInfoDataString)
@@ -8,27 +9,58 @@ function CompanyInfo({ text, id }) {
 
   const { firstName, lastName, email, phone } = clientInfoData;
 
+  const [editableText, setEditableText] = useState({
+    firstName: firstName || "",
+    lastName: lastName || "",
+    email: email || "",
+    phone: phone || "",
+  });
+
   const handleDragStart = (event) => {
     event.dataTransfer.setData("text/plain", event.target.id);
   };
-  return (
-    <>
-      <div
-        id={id}
-        draggable="true"
-        onDragStart={handleDragStart}
-        className="draggable-text"
-      >
-        <section className="content-for-the-company-info">
-          <p>
-            {firstName && lastName && `Client Name: ${firstName} ${lastName}`}
-          </p>
-          <p> {email && `Email: ${email}`}</p>
 
-          <p>{phone && `Phone: ${phone}`}</p>
+  const handleInputChange = (key, value) => {
+    setEditableText({
+      ...editableText,
+      [key]: value,
+    });
+  };
+
+  return (
+    <div
+      id={id}
+      draggable="true"
+      onDragStart={handleDragStart}
+      className="draggable-text"
+    >
+      <section className="content-for-the-company-info">
+        <section className="fname-and-lname-content-for-the-company-info">
+          <input
+            type="text"
+            value={`${editableText.firstName} ${editableText.lastName}`}
+            onChange={(e) => {
+              const [firstName, lastName] = e.target.value.split(" ");
+              handleInputChange("firstName", firstName);
+              handleInputChange("lastName", lastName);
+            }}
+          />
         </section>
-      </div>
-    </>
+        <section className="email-and-mob-number-section-for-company-info">
+          <input
+            type="text"
+            value={editableText.email}
+            onChange={(e) => handleInputChange("email", e.target.value)}
+          />
+
+          <input
+            type="text"
+            value={editableText.phone}
+            onChange={(e) => handleInputChange("phone", e.target.value)}
+          />
+        </section>
+      </section>
+    </div>
   );
 }
 

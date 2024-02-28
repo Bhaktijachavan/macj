@@ -179,9 +179,9 @@ fieldset {
   display: grid;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: 100vh;
   flex-wrap: wrap;
-  gap: 4em;
+  gap: 1em;
 }
 .contains-added-image-with-the-delete-button-ouput-section {
   display: grid;
@@ -192,7 +192,7 @@ fieldset {
 .all-the-output-screen-with-all-the-changes-reflect-here {
   border: 1px solid black;
   /* padding: 1em; */
-  /* height: 100%; */
+  height: 54em;
 }
 .with-borders {
   border: 5px solid rgb(62, 41, 255);

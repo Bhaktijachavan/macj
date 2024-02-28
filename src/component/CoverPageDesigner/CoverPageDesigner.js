@@ -94,7 +94,7 @@ function CoverPageDesigner({ onClose }) {
   const exportState = () => {
     // Get the HTML content of your output container
     const outputContainer = document.querySelector(
-      ".content-that-is-draggable-and-adjustable-within-div"
+      ".all-the-output-screen-with-all-the-changes-reflect-here"
     );
     const content = outputContainer.innerHTML;
 

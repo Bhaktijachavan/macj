@@ -64,3 +64,18 @@
 .input-for-form:focus {
   border-bottom-color: #007bff;
 }
+.for-saving-the-data-to-the-localstorage-btn-client-info {
+  width: 7em;
+  height: 2em;
+  background-color: darkseagreen;
+  border-radius: 3px;
+  color: white;
+  /* display: flex; */
+  justify-content: center;
+  font-size: 15px;
+  text-align: center;
+}
+.div-for-saving-the-data-to-the-localstorage-btn-client-info {
+  display: flex;
+  justify-content: center;
+}
