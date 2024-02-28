@@ -3,7 +3,6 @@ import EditComments from "../../EditComments/EditComments";
 import Header from "./../../Header/Header";
 
 const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
-
   const [selectedText, setSelectedText] = useState("");
   const [blackText, setBlackText] = useState("");
   const [redText, setRedText] = useState("");
@@ -16,19 +15,54 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [selectedLineColor, setSelectedLineColor] = useState(null);
   const [commentText, setCommentText] = useState("");
 
-    useEffect(() => {
-      const data = localStorage.getItem("DamageData");
-      if (data) {
-        const parsedData = JSON.parse(data);
-        console.log("parsedData", parsedData);
-        const Damage1Data = parsedData[value];
-        console.log("Damage1Data", Damage1Data);
-        if (Damage1Data) {
-          setRedText(Damage1Data.Damage1red);
-          setBlackText(Damage1Data.Damage1black);
-        }
+  useEffect(() => {
+    const data = localStorage.getItem("DamageData");
+    if (data) {
+      const parsedData = JSON.parse(data);
+      console.log("parsedData", parsedData);
+      const Damage1Data = parsedData[value];
+      console.log("Damage1Data", Damage1Data);
+      if (Damage1Data) {
+        setRedText(Damage1Data.Damage1red);
+        setBlackText(Damage1Data.Damage1black);
       }
-    }, []);
+    }
+  }, []);
+
+  const handlesave = () => {
+    console.log("Saving data...");
+
+    try {
+      // Check if DamageData already exists in local storage
+      let tempPanelData = localStorage.getItem("DamageData");
+      if (!tempPanelData) {
+        // If not, create an empty object
+        tempPanelData = {};
+      } else {
+        // If it exists, parse the JSON string to an object
+        tempPanelData = JSON.parse(tempPanelData);
+      }
+
+      // Create a nested object for Damage1Data if it doesn't exist
+      if (!tempPanelData[value]) {
+        tempPanelData[value] = {};
+      }
+
+      // Store Damage1red and Damage1black values under Damage1Data
+      tempPanelData[value]["Damage1red"] = redText;
+      tempPanelData[value]["Damage1black"] = blackText;
+
+      console.log("tempPanelData", tempPanelData);
+
+      // Save the updated data back to local storage
+      localStorage.setItem("DamageData", JSON.stringify(tempPanelData));
+
+      console.log("Data saved successfully.");
+      // No need to reset any state here since there's no 'text' state being used
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  };
 
   useEffect(() => {
     // Fetch CommentText from localStorage initially
@@ -227,11 +261,19 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
 
             <div className="flex flex-col space-y-2 ml-2 mr-2 text-sm">
               <button
+                onClick={handlesave}
+                type="button"
+                className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+              >
+                Save Data For report
+              </button>
+              <button
                 className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
                 onClick={() => handleAddText("black")}
               >
                 Black
               </button>
+
               <button
                 className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
                 onClick={() => handleAddText("red")}
