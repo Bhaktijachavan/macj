@@ -12,6 +12,40 @@ import italicimg from "../../Assets/icons/italic-font.png";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 const SubMenuInfoReport = () => {
+  const [isAddDocumentPopupOpen, setAddDocumentPopupOpen] = useState(false);
+  const [documents, setDocuments] = useState([]);
+
+  // Event handler for opening the "Add New Document" popup
+  const handleAddDocumentClick = () => {
+    setAddDocumentPopupOpen(true);
+  };
+
+  // Event handler for closing the "Add New Document" popup
+  const handleAddDocumentClose = () => {
+    setAddDocumentPopupOpen(false);
+  };
+
+  // Event handler for adding a new document (you can implement your logic here)
+  const handleAddDocument = () => {
+    const newDocumentName = document.getElementById("newDocumentName").value;
+
+    // Check if the document name is not empty
+    if (newDocumentName.trim() !== "") {
+      // Update the list of documents
+      setDocuments((prevDocuments) => [...prevDocuments, newDocumentName]);
+
+      // Set the newly added document as the selected option
+      setSelectedOption(newDocumentName);
+
+      // Close the "Add New Document" popup after adding
+      setAddDocumentPopupOpen(false);
+    }
+  };
+
+  const handleDropdownChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
   // const handleClose = () => {
   //   // Close the popup when the close button (X sign) is clicked
   //   setPopupOpen(false);
@@ -25,9 +59,6 @@ const SubMenuInfoReport = () => {
   const [selectedOption, setSelectedOption] = useState("");
 
   // Event handler for dropdown change
-  const handleDropdownChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
 
   // Event handler for button 1 click
   const handleButton1Click = () => {
@@ -196,6 +227,26 @@ const SubMenuInfoReport = () => {
     console.log("Selected file:", event.target.files[0]);
   };
 
+  const handleLineClick = (line) => {
+    setText((prevText) => {
+      const lines = prevText.split("\n");
+      const lineIndex = lines.indexOf(line);
+
+      if (selectedLines.includes(lineIndex)) {
+        setSelectedLines((prevSelectedLines) =>
+          prevSelectedLines.filter((index) => index !== lineIndex)
+        );
+      } else {
+        setSelectedLines((prevSelectedLines) => [
+          ...prevSelectedLines,
+          lineIndex,
+        ]);
+      }
+
+      return prevText;
+    });
+  };
+
   return (
     <>
       <Header />
@@ -206,18 +257,35 @@ const SubMenuInfoReport = () => {
               <p>File Name:</p>
               <select value={selectedOption} onChange={handleDropdownChange}>
                 <option value="">Select A Document</option>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                {/* Add more options as needed */}
+                {documents.map((document, index) => (
+                  <option key={index} value={document}>
+                    {document}
+                  </option>
+                ))}
               </select>
 
-              {/* Button 1 */}
               <button
                 className="btns-for-add-and-remove-documents"
-                onClick={handleButton1Click}
+                onClick={handleAddDocumentClick}
               >
-                Add New Docuement
+                Add New Document
               </button>
+
+              {/* Add New Document Popup */}
+              {isAddDocumentPopupOpen && (
+                <div className="add-document-popup">
+                  <div className="popup-content-for-submenureport">
+                    <h2>Add New Document</h2>
+                    <label htmlFor="newDocumentName">Document Name:</label>
+                    <input type="text" id="newDocumentName" />
+                    <div className="button-container">
+                      <button onClick={handleAddDocument}>OK</button>
+                      <button onClick={handleAddDocumentClose}>Cancel</button>
+                      <button onClick={handleAddDocumentClose}>Close</button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Button 2 */}
               <button
