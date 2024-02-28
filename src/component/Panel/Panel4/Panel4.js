@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import "./Panel4.css";
 import Header from "../../Header/Header";
 import Footer from "../../Footer/Footer";
 import PanelHeader from "../PanelHeader/PanelHeader";
@@ -8,20 +7,15 @@ import { PanalSelect } from "../../Function/function";
 
 function Panel4({ panelData }) {
   const [showAlternateContent, setShowAlternateContent] = useState(false);
+  const [text, setText] = useState(""); // Define text state
   const [Damage1red, setDamage1Red] = useState();
   const [Damage1black, setDamage1Black] = useState();
   const [Damage2red, setDamage2Red] = useState();
   const [Damage2black, setDamage2Black] = useState();
 
-
-  console.log("paneldata ", panelData);
   const toggleContent = () => {
     setShowAlternateContent((prevState) => !prevState);
   };
-  useEffect(() => {
-    console.log("red", Damage1red);
-    console.log("black", Damage1black);
-  }, [Damage1red, Damage1black]);
 
   return (
     <>
