@@ -107,6 +107,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
           const parsedData = JSON.parse(storedData);
           parsedData[value] = updatedCommentText;
           localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
+          setSelectedText("");
           console.log(
             "Updated commentText in localStorage:",
             parsedData[value]
