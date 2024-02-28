@@ -1,13 +1,24 @@
 .content-for-the-company-info {
   font-size: 14px;
   letter-spacing: 0.1px;
-  margin-top: 1em;
-  width: 12em;
+  /* margin-top: 1em; */
+  width: 100%;
   text-align: center;
+  /* padding-bottom: 12em; */
 }
-.draggable-text {
+/* .draggable-text {
   display: flex;
   justify-content: center;
   position: relative;
   top: 8em;
+} */
+.fname-and-lname-content-for-the-company-info > input {
+  text-align: center;
+  height: 2em;
+}
+.email-and-mob-number-section-for-company-info > input {
+  text-align: center;
+  /* display: grid; */
+  height: 2.5em;
+  width: 100%;
 }

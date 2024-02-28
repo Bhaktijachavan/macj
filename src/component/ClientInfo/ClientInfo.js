@@ -9,7 +9,9 @@ import {
 } from "../../component/Function/function";
 
 const ClientInfo = () => {
-  const hanndleSaveToLocalStorage = () => {
+  const hanndleSaveToLocalStorage = (event) => {
+    event.preventDefault();
+
     const { firstName, lastName, email, phone } = formData;
 
     if (!firstName || !lastName || !email || !phone) {
@@ -419,11 +421,15 @@ const ClientInfo = () => {
             onChange={handleInputChange}
           ></textarea>
         </div>
-        <div>
-          <button onClick={hanndleSaveToLocalStorage}>Save</button>
-        </div>
       </form>
-
+      <div className="div-for-saving-the-data-to-the-localstorage-btn-client-info">
+        <button
+          className="for-saving-the-data-to-the-localstorage-btn-client-info"
+          onClick={hanndleSaveToLocalStorage}
+        >
+          Save
+        </button>
+      </div>
       <div>
         <Footer />
       </div>
