@@ -227,26 +227,6 @@ const SubMenuInfoReport = () => {
     console.log("Selected file:", event.target.files[0]);
   };
 
-  const handleLineClick = (line) => {
-    setText((prevText) => {
-      const lines = prevText.split("\n");
-      const lineIndex = lines.indexOf(line);
-
-      if (selectedLines.includes(lineIndex)) {
-        setSelectedLines((prevSelectedLines) =>
-          prevSelectedLines.filter((index) => index !== lineIndex)
-        );
-      } else {
-        setSelectedLines((prevSelectedLines) => [
-          ...prevSelectedLines,
-          lineIndex,
-        ]);
-      }
-
-      return prevText;
-    });
-  };
-
   return (
     <>
       <Header />
