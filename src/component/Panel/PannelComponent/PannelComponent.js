@@ -3,6 +3,7 @@ import EditComments from "../../EditComments/EditComments";
 import Header from "./../../Header/Header";
 
 const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
+
   const [selectedText, setSelectedText] = useState("");
   const [blackText, setBlackText] = useState("");
   const [redText, setRedText] = useState("");
@@ -14,6 +15,20 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [selectedLineIndex, setSelectedLineIndex] = useState(null);
   const [selectedLineColor, setSelectedLineColor] = useState(null);
   const [commentText, setCommentText] = useState("");
+
+    useEffect(() => {
+      const data = localStorage.getItem("DamageData");
+      if (data) {
+        const parsedData = JSON.parse(data);
+        console.log("parsedData", parsedData);
+        const Damage1Data = parsedData[value];
+        console.log("Damage1Data", Damage1Data);
+        if (Damage1Data) {
+          setRedText(Damage1Data.Damage1red);
+          setBlackText(Damage1Data.Damage1black);
+        }
+      }
+    }, []);
 
   useEffect(() => {
     // Fetch CommentText from localStorage initially
@@ -242,52 +257,54 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 className="scroll-box1-panel2"
                 onClick={() => handleLineClick(index, "black")}
               >
-                {blackText.split("\n").map((line, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      cursor: "pointer",
-                      backgroundColor:
-                        selectedLineColor === "black" &&
-                        selectedLineIndex === index
-                          ? "#ddd"
-                          : "transparent",
-                    }}
-                    onClick={() => {
-                      setSelectedLine(line);
-                      setSelectedLineText(index);
-                      handleLineClick(index, "black");
-                    }}
-                  >
-                    {line}
-                  </div>
-                ))}
+                {blackText &&
+                  blackText.split("\n").map((line, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        cursor: "pointer",
+                        backgroundColor:
+                          selectedLineColor === "black" &&
+                          selectedLineIndex === index
+                            ? "#ddd"
+                            : "transparent",
+                      }}
+                      onClick={() => {
+                        setSelectedLine(line);
+                        setSelectedLineText(index);
+                        handleLineClick(index, "black");
+                      }}
+                    >
+                      {line}
+                    </div>
+                  ))}
               </div>
 
               <div
                 className="scroll-box1-panel2"
                 style={{ padding: "10px", color: "red" }}
               >
-                {redText.split("\n").map((line, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      cursor: "pointer",
-                      backgroundColor:
-                        selectedLineColor === "red" &&
-                        selectedLineIndex === index
-                          ? "#ddd"
-                          : "transparent",
-                    }}
-                    onClick={() => {
-                      setSelectedLine(line);
-                      setSelectedLineText(index);
-                      handleLineClick(index, "red");
-                    }}
-                  >
-                    {line}
-                  </div>
-                ))}
+                {redText &&
+                  redText.split("\n").map((line, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        cursor: "pointer",
+                        backgroundColor:
+                          selectedLineColor === "red" &&
+                          selectedLineIndex === index
+                            ? "#ddd"
+                            : "transparent",
+                      }}
+                      onClick={() => {
+                        setSelectedLine(line);
+                        setSelectedLineText(index);
+                        handleLineClick(index, "red");
+                      }}
+                    >
+                      {line}
+                    </div>
+                  ))}
               </div>
             </div>
             <div className="panelupdown-panel2">
