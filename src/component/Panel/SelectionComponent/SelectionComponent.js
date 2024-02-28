@@ -5,6 +5,7 @@ import EditComments from "../../EditComments/EditComments";
 const SelectionComponent = ({ panelData, value, classname }) => {
   const [selectedText, setSelectedText] = useState("");
   const [commentText, setCommentText] = useState("");
+  const [selectedRow, setSelectedRow] = useState(null);
 
   useEffect(() => {
     // Fetch CommentText from localStorage initially
@@ -29,6 +30,14 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       container.nodeType === 3 ? container.nodeValue : container.innerText;
     setSelectedText(selectedText);
   };
+
+  const handleSelectText = () => {
+    // Toggle the selected state
+    setSelectedRow((prevSelectedRow) =>
+      prevSelectedRow === selectedText ? null : selectedText
+    );
+  };
+
   return (
     <div>
       <div>
@@ -63,7 +72,16 @@ const SelectionComponent = ({ panelData, value, classname }) => {
             onMouseUp={handleTextSelectionforSelectionChange}
           >
             {commentText.split("\n").map((line, index) => (
-              <p key={index}>{line}</p>
+              <p
+                key={index}
+                onClick={handleSelectText}
+                style={{
+                  backgroundColor:
+                    line === selectedRow ? "#e0e0e0" : "transparent",
+                }}
+              >
+                {line}
+              </p>
             ))}
           </div>
         </div>

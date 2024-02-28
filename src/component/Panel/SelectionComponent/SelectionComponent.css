@@ -5,3 +5,6 @@
   border: solid black 1px;
   padding-left: 10px;
 }
+.selected {
+  background-color: yellow; /* You can change the color to your preference */
+}
