@@ -30,17 +30,16 @@ function Panel2({ panelData }) {
             value={panelData.Selection1Data}
           />
         </div>
-      </div>
-
-      <div>
         <div className="panel-heading text-center">{panelData.damage1}</div>
+        <div>
+          <PannelComponent
+            showAlternateContent={showAlternateContent}
+            setRed={setDamage1Red}
+            setBlack={setDamage1Black}
+            value={panelData.Damage1Data}
+          />
+        </div>
       </div>
-      <PannelComponent
-        showAlternateContent={showAlternateContent}
-        setRed={setDamage1Red}
-        setBlack={setDamage1Black}
-        value={panelData.Damage1Data}
-      />
 
       <div>
         <Footer />
