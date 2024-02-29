@@ -30,6 +30,12 @@ const ClientInfo = () => {
     otherInfo: "",
   });
 
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem("clientInfoData"));
+    console.log(data);
+    setFormData(data);
+  }, []);
+
   const hanndleSaveToLocalStorage = (event) => {
     event.preventDefault();
 
