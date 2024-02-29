@@ -92,6 +92,30 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       container.nodeType === 3 ? container.nodeValue : container.innerText;
     setSelectedText(selectedText);
   };
+  const HandleDeleteText = () => {
+    console.log("HandleDeleteText function called");
+    if (window.confirm(`are you want to delete : ${selectedText}`)) {
+      if (selectedText) {
+        // Remove the selected text from commentText
+        const updatedCommentText = commentText.replace(selectedText, "");
+        setCommentText(updatedCommentText);
+        console.log("Text removed from comments:", selectedText);
+
+        // Update localStorage with the modified commentText
+        const storedData = localStorage.getItem("TempPanelData");
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+          parsedData[value] = updatedCommentText;
+          localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
+          setSelectedText("");
+          console.log(
+            "Updated commentText in localStorage:",
+            parsedData[value]
+          );
+        }
+      }
+    }
+  };
 
   const handleAddText = (color) => {
     const newText = selectedText + "\n";
@@ -204,7 +228,8 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
         <div className="container-panel2">
           <div className="panel2">
             <div className="Editcomments-and-checkbox-container">
-              <EditComments value={value} />
+              <EditComments value={value} handleDelete={HandleDeleteText} />
+
               <div className="p-5">
                 {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
                   <div

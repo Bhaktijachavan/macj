@@ -78,4 +78,5 @@
 .div-for-saving-the-data-to-the-localstorage-btn-client-info {
   display: flex;
   justify-content: center;
+  gap: 1em;
 }

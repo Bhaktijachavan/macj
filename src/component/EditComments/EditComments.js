@@ -4,7 +4,7 @@ import Footer from "./../Footer/Footer";
 import AddComment from "./popEditComments/AddComment";
 import "./EditComments.css";
 
-const EditComments = ({ onClose, value }) => {
+const EditComments = ({ onClose, value, handleDelete }) => {
   const [isAddModalVisible, setAddModalVisible] = useState(false);
 
   const handleAddButtonClick = () => {
@@ -29,7 +29,12 @@ const EditComments = ({ onClose, value }) => {
                 Move Down
               </button>
               <button className="btn-editcomm mr-2  w-24 text-sm">Sort</button>
-              <button className="btn-editcomm mr-2  w-24 text-sm">
+              <button
+                className="btn-editcomm mr-2  w-24 text-sm"
+                onClick={() => {
+                  handleDelete();
+                }}
+              >
                 Delete
               </button>
               <button
