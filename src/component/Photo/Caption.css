@@ -110,3 +110,6 @@
   justify-content: center;
   align-items: center;
 }
+.caption-main-input-field {
+  margin: 10px 0 0 5px;
+}

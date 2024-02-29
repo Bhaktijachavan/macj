@@ -85,12 +85,30 @@ const Buttons = ({ onFileSelect }) => {
     // Delete the uploaded file
     uploadedFileRef.current = null;
     onFileSelect(null); // Notify parent component that no file is selected
+    localStorage.removeItem("uploadedImage");
+    // Clear the download URL state
+    onFileSelect(null);
   };
 
   const handleImg8Click = () => {
-    // Save the uploaded data (you can implement the saving logic here)
-    console.log("Save data:", uploadedFileRef.current);
+    // Check if an image is uploaded
+    if (uploadedFileRef.current) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        // Get the base64 data of the uploaded image
+        const imageData = event.target.result;
+
+        // Save the image data to local storage
+        localStorage.setItem("uploadedImage", imageData);
+        console.log("Uploaded image data saved to local storage.");
+      };
+      // Read the uploaded image file as a data URL
+      reader.readAsDataURL(uploadedFileRef.current);
+    } else {
+      console.log("No image uploaded to save.");
+    }
   };
+
   // Function to open the popup
   const openPopup = () => {
     setShowPopup(true);
@@ -153,69 +171,72 @@ const Buttons = ({ onFileSelect }) => {
         ref={fileInputRef}
         onChange={handleFileChange}
       />
-
-      <ul className="Buttons-unorderlist-container">
-        <li>
-          <div
-            className={`Buttons-orderlist-to-adjust-images img1 ${
-              activeTab === 1 ? "active" : ""
-            }`}
-            onClick={handleImg1Click}
-          >
-            <img src={img1} alt="gallery" />
-          </div>
-        </li>
-        <li>
-          <a href="#file">
+      <div className="jkdshfkjashfkjahksalk">
+        <ul className="Buttons-unorderlist-container">
+          <li>
             <div
-              className={`Buttons-orderlist-to-adjust-images ${
-                isImageUploaded ? "active" : ""
+              className={`Buttons-orderlist-to-adjust-images img1 ${
+                activeTab === 1 ? "active" : ""
               }`}
+              onClick={handleImg1Click}
             >
-              <img
-                src={img2}
-                alt=""
-                onClick={isImageUploaded ? handlePopupOpen : undefined}
-              />
-              {isPopupOpen && (
-                <div className="edit-image-main-popup-container-css">
-                  <EditImageTabList
-                    isOpen={isPopupOpen}
-                    onRequestClose={closePopup}
-                    uploadedImageUrl={uploadedImageUrl}
-                  />
-                </div>
-              )}
+              <img src={img1} alt="gallery" />
             </div>
-          </a>
-        </li>
+          </li>
+          <li>
+            <a href="#file">
+              <div
+                className={`Buttons-orderlist-to-adjust-images ${
+                  isImageUploaded ? "active" : ""
+                }`}
+              >
+                <img
+                  src={img2}
+                  alt=""
+                  onClick={isImageUploaded ? handlePopupOpen : undefined}
+                />
+                {isPopupOpen && (
+                  <div className="edit-image-main-popup-container-css">
+                    <EditImageTabList
+                      isOpen={isPopupOpen}
+                      onRequestClose={closePopup}
+                      uploadedImageUrl={uploadedImageUrl}
+                    />
+                  </div>
+                )}
+              </div>
+            </a>
+          </li>
 
-        <li>
-          <a href="#file">
-            <div
-              className={`Buttons-orderlist-to-adjust-images ${
-                isImageUploaded ? "active" : ""
-              }`}
-              onClick={isImageUploaded ? handleImg6Click : undefined}
-            >
-              <img src={img6} alt="" />
-            </div>
-          </a>
-        </li>
+          <li>
+            <a href="#file">
+              <div
+                className={`Buttons-orderlist-to-adjust-images ${
+                  isImageUploaded ? "active" : ""
+                }`}
+                onClick={isImageUploaded ? handleImg6Click : undefined}
+              >
+                <img src={img6} alt="" />
+              </div>
+            </a>
+          </li>
 
-        <li>
-          <a href="#file">
-            <div
-              className={`Buttons-orderlist-to-adjust-images ${
-                isImageUploaded ? "active" : ""
-              }`}
-              onClick={isImageUploaded ? handleImg8Click : undefined}
-            >
-              <img src={img8} alt="" />
-            </div>
-          </a>
-        </li>
-      </ul>
+          <li>
+            <a href="#file">
+              <div
+                className={`Buttons-orderlist-to-adjust-images ${
+                  isImageUploaded ? "active" : ""
+                }`}
+                onClick={isImageUploaded ? handleImg8Click : undefined}
+              >
+                <img src={img8} alt="" />
+              </div>
+            </a>
+          </li>
+        </ul>
+
+        <label>Caption</label>
+      </div>
 
       <div>
         <ul className="Buttons-unoorderlist-for-icons-buttons">

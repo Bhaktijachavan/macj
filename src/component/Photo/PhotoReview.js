@@ -3,9 +3,6 @@ import "./PhotoReview.css";
 import Location from "./Location";
 import Buttons from "./Buttons";
 import Caption from "./Caption";
-// import Recallcheck from "./Recallcheck";
-// import Header from "../Header/Header";
-// import Footer from "../Footer/Footer";
 
 const PhotoReview = () => {
   const rectanglesData = [
@@ -23,15 +20,12 @@ const PhotoReview = () => {
   useEffect(() => {
     const coverImagePath = localStorage.getItem("coverphotoImage");
     if (coverImagePath) {
-      // Check if there are already uploaded files
       const indexOfFirstEmptyRectangle = uploadedFiles.findIndex(
         (file) => file === null
       );
       if (indexOfFirstEmptyRectangle === -1) {
-        // If all rectangles have uploaded files, set Vedant image to the first rectangle
         setCoverImage(coverImagePath);
       } else {
-        // Set Vedant image to the first available rectangle without uploaded files
         setUploadedFiles((prevUploadedFiles) => {
           const updatedFiles = [...prevUploadedFiles];
           updatedFiles[indexOfFirstEmptyRectangle] = coverImagePath;
@@ -144,7 +138,6 @@ const PhotoReview = () => {
           </div>
         ))}
       </div>
-      {/* <Footer /> */}
     </>
   );
 };
