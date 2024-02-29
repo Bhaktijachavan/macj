@@ -58,6 +58,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       localStorage.setItem("DamageData", JSON.stringify(tempPanelData));
 
       console.log("Data saved successfully.");
+      console.log("Data saved successfully.");
       // No need to reset any state here since there's no 'text' state being used
     } catch (error) {
       console.error("Error saving data:", error);
