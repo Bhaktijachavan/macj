@@ -145,18 +145,6 @@ const ColorPalette = ({ onClose }) => {
     }
   };
 
-  // Function to open the color picker
-  // const openColorPicker = (index, event) => {
-  //   setSelectedColorIndex(index);
-
-  //   // Calculate position relative to the document
-  //   const rect = event.target.getBoundingClientRect();
-  //   const top = rect.bottom + window.scrollY;
-  //   const left = rect.left + window.scrollX;
-
-  //   setColorPickerPosition({ top, left });
-  //   setIsModalOpen(true);
-  // };
   const [menuData, setMenuData] = useState([]);
   // Function to close the color picker
   const closeColorPicker = () => {
@@ -192,20 +180,6 @@ const ColorPalette = ({ onClose }) => {
     console.log("parsed object ", dummyData);
   }, []);
 
-  // useEffect(() => {
-  //   const handleLocalStorageChange = () => {
-  //     const storedMenuData = localStorage.getItem("menuData");
-  //     const parsedMenuData = JSON.parse(storedMenuData) || [];
-
-  //     setDummyData(parsedMenuData);
-  //   };
-
-  //   window.addEventListener("storage", handleLocalStorageChange);
-
-  //   return () => {
-  //     window.removeEventListener("storage",handleLocalStorageChange);
-  //   };
-  // }, []);
   useEffect(() => {
     // Fetch or set your localStorageData here
     const storedData = localStorage.getItem("menuData");
@@ -215,204 +189,137 @@ const ColorPalette = ({ onClose }) => {
     console.log(localStorageData);
   }, []);
 
-  //   const handleClose = () => {
-  //     // Generate PDF logic here
-
-  //     // Assuming dummyData is your data structure
-  //     const dummyData = {
-  //       category1: {
-  //         subitems: {
-  //           subitem1: {
-  //             subName: "Subitem 1",
-  //             selectedOption: "Option1",
-  //             print: true,
-  //           },
-  //           // ... other subitems
-  //         },
-  //       },
-  //       // ... other categories
-  //     };
-
-  //     const pdf = new jsPDF();
-
-  //     Object.keys(dummyData).forEach((categoryKey, categoryIndex) => {
-  //       pdf.text(`Category: ${categoryKey}`, 10, 10 + categoryIndex * 10);
-
-  //       Object.keys(dummyData[categoryKey].subitems).forEach(
-  //         (subKey, subIndex) => {
-  //           const subitem = dummyData[categoryKey].subitems[subKey];
-  //           const yPos = 20 + categoryIndex * 10 + subIndex * 10;
-
-  //           const text = `${subitem.subName}, ${subitem.selectedOption},
-  // ${subitem.print ? "Print: Yes" : "Print: No"}`;
-
-  //           pdf.text(text, 10, yPos);
-  //         }
-  //       );
-  //     });
-
-  //     // Save or display the PDF
-  //     pdf.save("tableData.pdf");
-  //   };
   const exportCoverPageToPDF = () => {
     // Retrieve the content from localStorage saved by CoverPageDesigner
     const content = localStorage.getItem("outputContent");
 
-    if (content) {
-      // Convert the HTML content to a PDF document
+    // Fetch menu data from localStorage
+    const menuData = localStorage.getItem("menuData");
+
+    if (content && menuData) {
+      // Modify the content to include border, page heading, and adjust page height
+      const modifiedContent = `
+        <div style="padding:10px height: 72vw;">
+          ${content}
+        </div>
+      `;
+
+      // Convert the modified HTML content to a PDF document
       html2pdf()
-        .from(content)
+        .from(modifiedContent)
         .toPdf()
         .get("pdf")
         .then((pdf) => {
+          // Add a new page for each menu item
+          const menuNames = JSON.parse(menuData);
+          Object.values(menuNames).forEach((item, index) => {
+            pdf.addPage();
+            pdf.text(`Menu ${index + 1} Name: ${item.name}`, 10, 10);
+          });
+
           // Download the PDF file
           pdf.save("cover_page_layout.pdf");
         });
     } else {
-      // Handle case where content is not found in localStorage
-      console.log("No content found in localStorage");
+      // Handle case where content or menuData is not found in localStorage
+      console.log("No content or menu data found in localStorage");
     }
   };
-  const generatePDF = async () => {
-    const data = localStorage.getItem("menuData");
-    const reportData = JSON.parse(data);
 
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-    });
+  // const generateCombinedPDF = async () => {
+  //   const localStorageContent = localStorage.getItem("outputContent");
+  //   const menuData = localStorage.getItem("menuData");
 
-    // Initial y position for content
-    let yPos = 10;
+  //   if (!localStorageContent || !menuData) {
+  //     console.error("Content or menu data not found in local storage");
+  //     return;
+  //   }
 
-    // Iterate over main keys
-    Object.keys(reportData).forEach((mainKey, index) => {
-      const mainData = reportData[mainKey];
+  //   const content = localStorageContent.replace(/\"/g, ""); // Remove quotes from the stored HTML content
 
-      // Save current font size
-      const currentFontSize = pdf.internal.getFontSize();
-      // Add Name at the top
-      pdf.setFontSize(30); // Adjust the font size here as needed
+  //   const pdf = new jsPDF({
+  //     orientation: "portrait",
+  //     unit: "mm",
+  //     format: "a4",
+  //   });
 
-      pdf.text(`${mainData.name}`, 10, yPos);
-      yPos += 10; // Increment y position
-      // Restore previous font size
-      pdf.setFontSize(currentFontSize);
+  //   let yPos = 10;
 
-      // Add main key data to PDF
-      pdf.text(`${mainKey}`, 10, yPos);
-      yPos += 10; // Increment y position
+  //   pdf.text(stripHtml(content), 10, yPos);
+  //   yPos += 10;
 
-      // Iterate over subdetails
-      // Object.keys(mainData.subdetails).forEach((subKey) => {
-      //   const subDetail = mainData.subdetails[subKey];
+  //   pdf.addPage(); // Add a new page for menu names
+  //   yPos = 10; // Reset yPos for menu names
 
-      //   // Add subdetail to PDF
-      //   pdf.text(`Subdetail ${subKey}:`, 10, yPos);
-      //   yPos += 5; // Increment y position
+  //   const reportData = JSON.parse(menuData);
+  //   Object.keys(reportData).forEach((mainKey, index) => {
+  //     pdf.text(`Menu Name: ${reportData[mainKey].name}`, 10, yPos);
+  //     yPos += 10;
 
-      //   // Add subdetail data to PDF
-      //   Object.keys(subDetail).forEach((key) => {
-      //     const value = subDetail[key];
-      //     if (typeof value === "object") {
-      //       // If the value is an object, stringify it
-      //       pdf.text(`${key}: ${JSON.stringify(value)}`, 15, yPos);
-      //     } else {
-      //       pdf.text(`${key}: ${value}`, 15, yPos);
-      //     }
-      //     yPos += 5; // Increment y position
-      //   });
-      // });
-      Object.keys(mainData.subdetails).forEach((subKey) => {
-        const subDetail = mainData.subdetails[subKey];
+  //     yPos += 10; // Add some spacing between menu names
 
-        // Add subdetail to PDF
-        pdf.text(`Subdetail ${subKey}:`, 10, yPos);
-        yPos += 5; // Increment y position
+  //     if (index < Object.keys(reportData).length - 1) {
+  //       pdf.addPage();
+  //       yPos = 10; // Reset yPos for new page
+  //     }
+  //   });
 
-        // Add subdetail data to PDF
-        Object.keys(subDetail).forEach((key) => {
-          const value = subDetail[key];
-          if (typeof value === "object") {
-            // If the value is an object, stringify it with pretty-print option
-            const formattedValue = JSON.stringify(value, null, 2).split("\n"); // Pretty-print with 2-space indentation
-            pdf.text(`${key}:`, 15, yPos);
-            yPos += 5; // Increment y position
+  //   // Convert the HTML content to a PDF document using html2pdf
+  //   html2pdf()
+  //     .from(pdf.output())
+  //     .toPdf()
+  //     .get("pdf")
+  //     .then((pdf) => {
+  //       // Download the PDF file
+  //       pdf.save("combined_report.pdf");
+  //     });
+  // };
 
-            // Print each line of the formatted JSON object
-            formattedValue.forEach((line) => {
-              pdf.text(line, 20, yPos);
-              yPos += 5; // Increment y position
-            });
-            yPos += 5; // Add extra spacing after the JSON object
-          } else {
-            pdf.text(`${key}: ${value}`, 15, yPos);
-            yPos += 5; // Increment y position
-          }
-        });
-      });
+  // Function to strip HTML tags and convert to plain text
+  function stripHtml(html) {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  }
 
-      // If subitems exist for the main key
-      // if (mainData.subitems) {
-      //   Object.keys(mainData.subitems).forEach((itemKey) => {
-      //     const subItems = mainData.subitems[itemKey];
-
-      //     // Add subdetail to PDF
-      //     pdf.text(`Subdetail ${itemKey}:`, 5, yPos);
-      //     yPos += 5; // Increment y position
-
-      //     // Add subdetail data to PDF
-      //     Object.keys(subItems).forEach((key) => {
-      //       const value = subItems[key];
-      //       if (typeof value === "object") {
-      //         // If the value is an object, stringify it
-      //         pdf.text(`${key}: ${JSON.stringify(value)}`, 15, yPos);
-      //       } else {
-      //         pdf.text(`${key}: ${value}`, 15, yPos);
-      //       }
-      //       yPos += 5; // Increment y position
-      //     });
-      //   });
-      // }
-      // If subitems exist for the main key
-      if (mainData.subitems) {
-        Object.keys(mainData.subitems).forEach((itemKey) => {
-          const subItems = mainData.subitems[itemKey];
-
-          // Add subdetail to PDF
-          pdf.text(`Subdetail ${itemKey}:`, 5, yPos);
-          yPos += 5; // Increment y position
-
-          // Add subdetail data to PDF
-          Object.entries(subItems).forEach(([key, value]) => {
-            if (typeof value === "object") {
-              // If the value is an object, iterate over its properties
-              pdf.text(`${key}:`, 15, yPos);
-              Object.entries(value).forEach(([subKey, subValue]) => {
-                pdf.text(`${subKey}: ${subValue}`, 20, yPos);
-                yPos += 5; // Increment y position for each subproperty
-              });
-            } else {
-              pdf.text(`${key}: ${value}`, 15, yPos);
-            }
-            yPos += 5; // Increment y position for each property
-          });
-        });
+  // Function to convert base64 to Blob
+  function base64toBlob(base64data, contentType) {
+    const sliceSize = 512;
+    const byteCharacters = atob(base64data);
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
       }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, { type: contentType });
+  }
 
-      yPos += 10; // Add some spacing between main keys
+  // Function to strip HTML tags and convert to plain text
+  function stripHtml(html) {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  }
 
-      // Add a new page if there are more main keys
-      if (index < Object.keys(reportData).length - 1) {
-        pdf.addPage();
-        yPos = 10; // Reset yPos for new page
+  // Function to convert base64 to Blob
+  function base64toBlob(base64data, contentType) {
+    const sliceSize = 512;
+    const byteCharacters = atob(base64data);
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
       }
-    });
-
-    // Save the PDF file
-    pdf.save("generated_report.pdf");
-  };
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, { type: contentType });
+  }
 
   useEffect(() => {
     getDataLocal();
@@ -422,6 +329,7 @@ const ColorPalette = ({ onClose }) => {
     const data = localStorage.getItem("menuData");
     const reportData = JSON.parse(data);
     console.log("report data ", reportData);
+    setLocalStorageData(reportData);
   };
   const ItemComponent = ({ item }) => {
     const { id, name, subitems, subdetails } = item;
@@ -730,12 +638,12 @@ w-full px-4 bg-white border border-black"
                     >
                       Generate PDF & Close
                     </button>{" "}
-                    <button
+                    {/* <button
                       className="border-2 border-black py-1 px-2"
-                      onClick={generatePDF}
+                      onClick={generateCombinedPDF}
                     >
                       Generate PDF & Close
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
