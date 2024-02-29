@@ -24,11 +24,7 @@ import InternetLogin from "./../InternetLogin/InternetLogin";
 import BatchAddPhotos from "./../Photo/BatchAddPhotos/BatchAddPhotos";
 import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
 import ColorPalette from "./../ColorPalet/ColorPalet";
-import { EditTempContext } from "../../Context";
-import SaveTPZ from "./../SaveTemp/TPZ/SaveTPZ";
-import OpenTPZ from "./../SaveTemp/TPZ/OpenTPZ";
 import AboutUsMacj from "./../AboutUsMacj/AboutUsMacj";
-import { PanalSelect } from "../Function/function";
 import { useNavigate } from "react-router-dom";
 import { useEditTempContext } from "../../Context";
 import SubMenuInfoReport from "./../ExampleComponent/SubMenuInfoReport";
@@ -654,12 +650,6 @@ border-black-900"
                 </a>
               </li>
             </button>
-            <hr />
-            <div>{/* <OpenTPZ /> */}</div>
-            <div>
-              {/* Your other JSX elements */}
-              <SaveTPZ />
-            </div>
             <hr />
 
             {/* <Link to="/EditComments"> */}
