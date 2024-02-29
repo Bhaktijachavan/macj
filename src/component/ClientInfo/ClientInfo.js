@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import "./ClientInfo.css";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
@@ -9,26 +9,6 @@ import {
 } from "../../component/Function/function";
 
 const ClientInfo = () => {
-  const hanndleSaveToLocalStorage = (event) => {
-    event.preventDefault();
-
-    const { firstName, lastName, email, phone } = formData;
-
-    if (!firstName || !lastName || !email || !phone) {
-      console.error("Incomplete data. Please fill in all required fields.");
-      return;
-    }
-    const clientInfoData = {
-      firstName,
-      lastName,
-      email,
-      phone,
-    };
-
-    // Convert the object to a string and store it in local storage
-    localStorage.setItem("clientInfoData", JSON.stringify(clientInfoData));
-  };
-
   const [formData, setFormData] = useState({
     lastName: "",
     firstName: "",
@@ -49,6 +29,20 @@ const ClientInfo = () => {
     weather: "",
     otherInfo: "",
   });
+
+  const hanndleSaveToLocalStorage = (event) => {
+    event.preventDefault();
+
+    const { firstName, lastName, email, phone } = formData;
+
+    if (!firstName || !lastName || !email || !phone) {
+      console.error("Incomplete data. Please fill in all required fields.");
+      return;
+    }
+
+    // Convert the object to a string and store it in local storage
+    localStorage.setItem("clientInfoData", JSON.stringify(formData));
+  };
   const [pop, setpop] = useState(false);
 
   const encryptionKey = "secretkey";
@@ -62,8 +56,28 @@ const ClientInfo = () => {
   }, []);
 
   const handleSaveInspection = useCallback(() => {
-    const encryptedData = encryptData(formData, encryptionKey);
-    downloadEncryptedFile(encryptedData);
+    const panalData = localStorage.getItem("TempPanelData");
+    const TempPanelData = JSON.parse(panalData);
+    const clientInfoData = JSON.parse(localStorage.getItem("clientInfoData"));
+    const SelectionData = JSON.parse(localStorage.getItem("SelectionData"));
+    const DamageData = JSON.parse(localStorage.getItem("DamageData"));
+    const coverphotoImage = localStorage.getItem("coverphotoImage");
+    const menuData = JSON.parse(localStorage.getItem("menuData"));
+    const outputContent = localStorage.getItem("outputContent");
+
+    const InspectionData = {
+      clientInfoData,
+      TempPanelData,
+      SelectionData,
+      DamageData,
+      coverphotoImage,
+      menuData,
+      outputContent,
+      id: Date.now(),
+    };
+
+    const encryptedData = encryptData(InspectionData, encryptionKey);
+    downloadFile(encryptedData);
 
     // Parse existingClient only if it exists
   }, [formData, encryptionKey]);
@@ -119,7 +133,33 @@ const ClientInfo = () => {
     if (file) {
       const encryptedData = await readFileAsText(file);
       const decryptedData = decryptData(encryptedData, encryptionKey);
-      setFormData(decryptedData);
+      console.log("decryptedData ", decryptedData);
+
+      localStorage.setItem("menuData", JSON.stringify(decryptedData.menuData));
+      localStorage.setItem(
+        "SelectionData",
+        JSON.stringify(decryptedData.SelectionData)
+      );
+      localStorage.setItem(
+        "DamageData",
+        JSON.stringify(decryptedData.DamageData)
+      );
+      localStorage.setItem(
+        "TempPanelData",
+        JSON.stringify(decryptedData.TempPanelData)
+      );
+      localStorage.setItem("outputContent", decryptedData.outputContent);
+      localStorage.setItem("coverphotoImage", decryptedData.coverphotoImage);
+      localStorage.setItem(
+        "clientInfoData",
+        JSON.stringify(decryptedData.clientInfoData)
+      );
+
+      alert("successfully opened");
+
+      const userdata = localStorage.getItem("clientInfoData");
+      const user = JSON.parse(userdata);
+      setFormData(user);
     }
   };
   const clearForm = () => {

@@ -36,9 +36,11 @@ const Caption = () => {
   };
 
   return (
-    <div className="Caption-main-container">
-      <div className="Caption-main-label-name">
-        <label>Caption</label>
+    <>
+      {/* <label>Caption</label> */}
+      <div className="Caption-main-container">
+        {/* <div className="Caption-main-label-name"> */}
+        {/* <label >Caption</label> */}
         <div className="caption-main-input-field">
           <input
             className="Caption-main-input-filed"
@@ -46,66 +48,67 @@ const Caption = () => {
             onChange={handleInputChange}
           />
         </div>
-      </div>
-      <div className="caption-image-edit-caption-container">
-        <img
-          src={img7}
-          alt=""
-          className="Caption-image-toopen-popupbox"
-          onClick={handlePopupOpen}
-        />
+        {/* </div> */}
+        <div className="caption-image-edit-caption-container">
+          <img
+            src={img7}
+            alt=""
+            className="Caption-image-toopen-popupbox"
+            onClick={handlePopupOpen}
+          />
 
-        {isPopupOpen && (
-          <div className="Caption-main-popup-container">
-            <div className="caption-popup-caption-editor-container">
-              <label className="caption-popup-caption-editor">
-                Caption Editor
-              </label>
-              <div className="caption-popup-close-image-container">
-                {/* <img
+          {isPopupOpen && (
+            <div className="Caption-main-popup-container">
+              <div className="caption-popup-caption-editor-container">
+                <label className="caption-popup-caption-editor">
+                  Caption Editor
+                </label>
+                <div className="caption-popup-close-image-container">
+                  {/* <img
                   src={close}
                   className="caption-popup-close-image"
                   onClick={handleClosePopup}
                 /> */}
-                <p
-                  className="caption-popup-close-image"
-                  onClick={handleClosePopup}
-                >
-                  X
-                </p>
+                  <p
+                    className="caption-popup-close-image"
+                    onClick={handleClosePopup}
+                  >
+                    X
+                  </p>
+                </div>
+              </div>
+
+              <br />
+
+              <textarea
+                className="caption-popupbox-input-filed"
+                value={popupCaptionValue}
+                onChange={handlePopupInputChange}
+              />
+              <br />
+              <div className="caption-popupbox-buttons-main-container">
+                <div className="caption-popupbox-Buttons">
+                  <button
+                    className="caption-popupbox-btns"
+                    onClick={handleSaveChanges}
+                  >
+                    Save Changes
+                  </button>
+                </div>
+                <div className="caption-popupbox-Buttons">
+                  <button
+                    className="caption-popupbox-btns"
+                    onClick={handleDiscardChanges}
+                  >
+                    Discard Changes
+                  </button>
+                </div>
               </div>
             </div>
-
-            <br />
-
-            <textarea
-              className="caption-popupbox-input-filed"
-              value={popupCaptionValue}
-              onChange={handlePopupInputChange}
-            />
-            <br />
-            <div className="caption-popupbox-buttons-main-container">
-              <div className="caption-popupbox-Buttons">
-                <button
-                  className="caption-popupbox-btns"
-                  onClick={handleSaveChanges}
-                >
-                  Save Changes
-                </button>
-              </div>
-              <div className="caption-popupbox-Buttons">
-                <button
-                  className="caption-popupbox-btns"
-                  onClick={handleDiscardChanges}
-                >
-                  Discard Changes
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

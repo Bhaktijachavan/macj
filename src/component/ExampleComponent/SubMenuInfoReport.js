@@ -14,38 +14,30 @@ import Footer from "../Footer/Footer";
 const SubMenuInfoReport = () => {
   const [isAddDocumentPopupOpen, setAddDocumentPopupOpen] = useState(false);
   const [documents, setDocuments] = useState([]);
-
   // Event handler for opening the "Add New Document" popup
   const handleAddDocumentClick = () => {
     setAddDocumentPopupOpen(true);
   };
-
   // Event handler for closing the "Add New Document" popup
   const handleAddDocumentClose = () => {
     setAddDocumentPopupOpen(false);
   };
-
   // Event handler for adding a new document (you can implement your logic here)
   const handleAddDocument = () => {
     const newDocumentName = document.getElementById("newDocumentName").value;
-
     // Check if the document name is not empty
     if (newDocumentName.trim() !== "") {
       // Update the list of documents
       setDocuments((prevDocuments) => [...prevDocuments, newDocumentName]);
-
       // Set the newly added document as the selected option
       setSelectedOption(newDocumentName);
-
       // Close the "Add New Document" popup after adding
       setAddDocumentPopupOpen(false);
     }
   };
-
-  const handleDropdownChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
-
+  // const handleDropdownChange = (event) => {
+  //   setSelectedOption(event.target.value);
+  // };
   // const handleClose = () => {
   //   // Close the popup when the close button (X sign) is clicked
   //   setPopupOpen(false);
@@ -57,23 +49,18 @@ const SubMenuInfoReport = () => {
   // }
   // State to manage the selected option in the dropdown
   const [selectedOption, setSelectedOption] = useState("");
-
   // Event handler for dropdown change
-
   // Event handler for button 1 click
   const handleButton1Click = () => {
     console.log(`Button 1 clicked with selected option: ${selectedOption}`);
     // Add your custom logic here
   };
-
   // Event handler for button 2 click
   const handleButton2Click = () => {
     console.log(`Button 2 clicked with selected option: ${selectedOption}`);
     // Add your custom logic here
   };
-
   // text editor
-
   const [font, setFont] = useState("Arial");
   const [fontSize, setFontSize] = useState(16);
   const [isBold, setIsBold] = useState(false);
@@ -83,97 +70,77 @@ const SubMenuInfoReport = () => {
   const [highlightColor, setHighlightColor] = useState("#FFFF00");
   const [highlightOpacity, setHighlightOpacity] = useState(1);
   const [text, setText] = useState(`Hello`);
-
   const [copiedMessage, setCopiedMessage] = useState("");
   const textAreaRef = useRef(null);
   const fileInputRef = useRef(null);
-
   const [showFindPopup, setShowFindPopup] = useState(false);
   const [findText, setFindText] = useState("");
   const [caseSensitive, setCaseSensitive] = useState(false);
   const [startAtTop, setStartAtTop] = useState(false);
-
   const handleFind = () => {
     setShowFindPopup(true);
   };
-
   const handleFindClose = () => {
     setShowFindPopup(false);
   };
-
   const handleFindTextChange = (e) => {
     setFindText(e.target.value);
   };
-
   const handleCaseSensitiveChange = () => {
     setCaseSensitive(!caseSensitive);
   };
-
   const handleStartAtTopChange = () => {
     setStartAtTop(!startAtTop);
   };
-
   const handleFindSubmit = () => {
     // Implement your logic for finding text
     // You can use the values of findText, caseSensitive, and startAtTop
     // to perform the find operation
     // ...
-
     // Close the Find popup after finding
     setShowFindPopup(false);
   };
-
   useEffect(() => {
     // Set the predefined text when the component mounts
     textAreaRef.current.value = text;
   }, [text]);
-
   const handleOpenClick = () => {
     fileInputRef.current.click();
   };
-
   const handleCut = () => {
     // Get selected text
     const selectedText = textAreaRef.current.value.substring(
       textAreaRef.current.selectionStart,
       textAreaRef.current.selectionEnd
     );
-
     // Copy selected text to clipboard
     navigator.clipboard.writeText(selectedText);
-
     // Remove selected text from textarea
     setText(
       textAreaRef.current.value.slice(0, textAreaRef.current.selectionStart) +
         textAreaRef.current.value.slice(textAreaRef.current.selectionEnd)
     );
-
     setCopiedMessage("Text Cut!");
     setTimeout(() => {
       setCopiedMessage("");
     }, 2000);
   };
-
   const handleCopy = () => {
     // Get selected text
     const selectedText = textAreaRef.current.value.substring(
       textAreaRef.current.selectionStart,
       textAreaRef.current.selectionEnd
     );
-
     // Copy selected text to clipboard
     navigator.clipboard.writeText(selectedText);
-
     setCopiedMessage("Text Copied!");
     setTimeout(() => {
       setCopiedMessage("");
     }, 2000);
   };
-
   const handlePaste = async () => {
     // Get clipboard text
     const clipboardText = await navigator.clipboard.readText();
-
     // Insert clipboard text at the cursor position
     setText(
       textAreaRef.current.value.slice(0, textAreaRef.current.selectionStart) +
@@ -181,51 +148,96 @@ const SubMenuInfoReport = () => {
         textAreaRef.current.value.slice(textAreaRef.current.selectionEnd)
     );
   };
-
   const handleUndo = () => {
     document.execCommand("undo");
   };
-
   const handleRedo = () => {
     document.execCommand("redo");
   };
-
   const handleFontChange = (event) => {
     setFont(event.target.value);
   };
-
   const handleFontSizeChange = (event) => {
     setFontSize(event.target.value);
   };
-
   const handleBoldChange = () => {
     setIsBold(!isBold);
   };
-
   const handleItalicChange = () => {
     setIsItalic(!isItalic);
   };
-
   const handleHighlightChange = () => {
     setIsHighlighted(!isHighlighted);
   };
-
   const handleTextColorChange = (event) => {
     setTextColor(event.target.value);
   };
-
   const handleHighlightColorChange = (event) => {
     setHighlightColor(event.target.value);
   };
-
   const handleHighlightOpacityChange = (event) => {
     setHighlightOpacity(event.target.value);
   };
-
   const handleFileChange = (event) => {
     // Handle file change as needed
     console.log("Selected file:", event.target.files[0]);
   };
+
+  const [selectedSubmenu, setSelectedSubmenu] = useState("");
+  const [submenus, setSubmenus] = useState([]);
+  const [selectedMenuId, setSelectedMenuId] = useState("");
+  const [menuData, setMenuData] = useState({});
+
+  useEffect(() => {
+    // Step 1: Retrieve menuData from localStorage
+    const menuDataString = localStorage.getItem("menuData");
+    if (!menuDataString) {
+      return;
+    }
+
+    // Step 2: Parse menuData and set it to the state
+    const parsedMenuData = JSON.parse(menuDataString);
+    setMenuData(parsedMenuData);
+
+    // Set menu names along with existing document names
+    const menuNames = Object.values(parsedMenuData).map((menu) => menu.name);
+    setDocuments((existingDocuments) => [
+      ...new Set([...existingDocuments, ...menuNames]),
+    ]);
+
+    // Initialize submenus with an empty array
+    setSubmenus([]);
+  }, []); // Run this effect only once when the component mounts
+
+  const handleDropdownChange = (event) => {
+    const selectedMenuId = event.target.value;
+    console.log("Selected Menu ID:", selectedMenuId); // Log the selected menu ID
+
+    setSelectedMenuId(selectedMenuId);
+    setSelectedOption(selectedMenuId); // Set the selected option for the first dropdown
+
+    // Fetch submenus based on the selected menu
+    const selectedMenu = menuData[selectedMenuId];
+    if (selectedMenu && selectedMenu.subitems) {
+      const submenuNames = selectedMenu.subitems.map((sub) => sub.subName);
+      console.log("Submenu Names:", submenuNames); // Log the submenu names
+      // Set submenu names
+      setSubmenus(submenuNames);
+      setSelectedSubmenu(submenuNames[0] || ""); // Set the first submenu as the selected submenu
+    } else {
+      // Reset submenus if no subitems found
+      setSubmenus([]);
+      setSelectedSubmenu("");
+    }
+  };
+
+  const handleSubmenuDropdownChange = (event) => {
+    const selectedSubmenu = event.target.value;
+    console.log("Selected Submenu:", selectedSubmenu); // Log the selected submenu
+    setSelectedSubmenu(selectedSubmenu);
+  };
+
+  // Run this effect whenever the selectedMenuId changes
 
   return (
     <>
@@ -243,14 +255,12 @@ const SubMenuInfoReport = () => {
                   </option>
                 ))}
               </select>
-
               <button
                 className="btns-for-add-and-remove-documents"
                 onClick={handleAddDocumentClick}
               >
                 Add New Document
               </button>
-
               {/* Add New Document Popup */}
               {isAddDocumentPopupOpen && (
                 <div className="add-document-popup">
@@ -266,7 +276,6 @@ const SubMenuInfoReport = () => {
                   </div>
                 </div>
               )}
-
               {/* Button 2 */}
               <button
                 className="btns-for-add-and-remove-documents"
@@ -275,19 +284,25 @@ const SubMenuInfoReport = () => {
                 Remove Docuement
               </button>
             </section>
-
             <p className="title-of-the-document-report-info">
               Current Document Title: Room
             </p>
-
             <section className="drop-down-and-checkboxes-with-title">
               <p>Include Document In current Template Before Section:</p>
-              <select value={selectedOption} onChange={handleDropdownChange}>
-                <option value="">Select A Document</option>
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                {/* Add more options as needed */}
-              </select>
+              <section className="drop-down-and-checkboxes-with-title">
+                <p>Include Document In current Template Before Section:</p>
+                <select
+                  value={selectedSubmenu}
+                  onChange={handleSubmenuDropdownChange}
+                >
+                  <option value="">Select A Submenu</option>
+                  {submenus.map((submenu, index) => (
+                    <option key={index} value={submenu}>
+                      {submenu}
+                    </option>
+                  ))}
+                </select>
+              </section>
             </section>
             <section className="checkbox-section-for-include-document">
               <p>Checkbox to include document on same page as section</p>
@@ -300,7 +315,6 @@ const SubMenuInfoReport = () => {
               style={{
                 display: "flex",
                 height: "77vh",
-
                 justifyContent: "center",
               }}
             >
@@ -529,5 +543,4 @@ const SubMenuInfoReport = () => {
     </>
   );
 };
-
 export default SubMenuInfoReport;

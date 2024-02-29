@@ -41,7 +41,7 @@
 .container-for-locations-and-recall-component {
   display: flex;
   justify-content: space-between;
-  padding: 5px 0 5px 0;
+  padding: 0px 0 5px 0;
   display: flex;
   justify-content: space-between;
 }
