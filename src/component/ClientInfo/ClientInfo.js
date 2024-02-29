@@ -2,12 +2,6 @@ import React, { useState, useCallback, useEffect } from "react";
 import "./ClientInfo.css";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
-import * as CryptoJS from "crypto-js"; // Import CryptoJS library
-import {
-  downloadFile,
-  readFileAsText,
-  encryptionKey,
-} from "../../component/Function/function";
 
 const ClientInfo = () => {
   const [formData, setFormData] = useState({
@@ -60,110 +54,7 @@ const ClientInfo = () => {
       [name]: value,
     }));
   }, []);
-  const handleSaveInspection = useCallback(() => {
-    const panalData = localStorage.getItem("TempPanelData");
-    const TempPanelData = JSON.parse(panalData);
-    const clientInfoData = JSON.parse(localStorage.getItem("clientInfoData"));
-    const SelectionData = JSON.parse(localStorage.getItem("SelectionData"));
-    const DamageData = JSON.parse(localStorage.getItem("DamageData"));
-    const coverphotoImage = localStorage.getItem("coverphotoImage");
-    const menuData = JSON.parse(localStorage.getItem("menuData"));
-    const outputContent = localStorage.getItem("outputContent");
 
-    // Check if any of the required data is missing
-    if (
-      !TempPanelData ||
-      !clientInfoData ||
-      !SelectionData ||
-      !DamageData ||
-      !menuData ||
-      !coverphotoImage ||
-      !outputContent
-    ) {
-      return alert("Please complete the process");
-    }
-
-    const InspectionData = {
-      clientInfoData,
-      TempPanelData,
-      SelectionData,
-      DamageData,
-      coverphotoImage,
-      menuData,
-      outputContent,
-      id: Date.now(),
-    };
-
-    const encryptedData = encryptData(InspectionData, encryptionKey);
-    downloadFile(encryptedData);
-  }, [formData, encryptionKey]);
-
-  const saveOffline = () => {
-    let existingClient = localStorage.getItem("client");
-
-    // Check if existingClient is null (no data stored)
-    existingClient = existingClient ? JSON.parse(existingClient) : [];
-
-    const clientInfo = {
-      ...formData,
-      id: Date.now(),
-      clientname: formData.firstName + " " + formData.lastName,
-    };
-
-    const updatedClients = [...existingClient, clientInfo];
-    console.log(updatedClients);
-    localStorage.setItem("client", JSON.stringify(updatedClients));
-    setpop(true);
-  };
-
-  const encryptData = (data, key) => {
-    const encryptedData = CryptoJS.AES.encrypt(
-      JSON.stringify(data),
-      key
-    ).toString();
-    return encryptedData;
-  };
-
-  const decryptData = (encryptedData, key) => {
-    const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, key);
-    const decryptedData = decryptedBytes.toString(CryptoJS.enc.Utf8);
-    return JSON.parse(decryptedData);
-  };
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const encryptedData = await readFileAsText(file);
-      const decryptedData = decryptData(encryptedData, encryptionKey);
-      console.log("decryptedData ", decryptedData);
-
-      localStorage.setItem("menuData", JSON.stringify(decryptedData.menuData));
-      localStorage.setItem(
-        "SelectionData",
-        JSON.stringify(decryptedData.SelectionData)
-      );
-      localStorage.setItem(
-        "DamageData",
-        JSON.stringify(decryptedData.DamageData)
-      );
-      localStorage.setItem(
-        "TempPanelData",
-        JSON.stringify(decryptedData.TempPanelData)
-      );
-      localStorage.setItem("outputContent", decryptedData.outputContent);
-      localStorage.setItem("coverphotoImage", decryptedData.coverphotoImage);
-      localStorage.setItem(
-        "clientInfoData",
-        JSON.stringify(decryptedData.clientInfoData)
-      );
-
-      alert("successfully opened");
-
-      const userdata = localStorage.getItem("clientInfoData");
-      const user = JSON.parse(userdata);
-      setFormData(user);
-    }
-  };
   const clearForm = () => {
     setFormData({
       lastName: "",
@@ -211,10 +102,7 @@ const ClientInfo = () => {
       )}
       <div>
         {/* <Header /> */}
-        <Header
-          onSaveInspection={handleSaveInspection}
-          onOpenInspection={handleFileChange}
-        />
+        <Header />
       </div>
 
       <form className="formcont text-sm">

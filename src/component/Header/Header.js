@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import "./Header.css";
 import OpenTemp from "../OpenTemp/OpenTemp";
 import EditTemp from "../EditTemp/EditTemp";
@@ -41,7 +41,7 @@ import {
   downloadFileTpz,
 } from "../Function/function";
 
-const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
+const Header = ({ onButtonClick }) => {
   const navigate = useNavigate();
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
   const [saveTemplatePopup, setSaveTemplatePopup] = useState(false);
@@ -113,6 +113,75 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
 
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
+
+  const onSaveInspection = useCallback(() => {
+    const panalData = localStorage.getItem("TempPanelData");
+    const TempPanelData = JSON.parse(panalData);
+    const clientInfoData = JSON.parse(localStorage.getItem("clientInfoData"));
+    const SelectionData = JSON.parse(localStorage.getItem("SelectionData"));
+    const DamageData = JSON.parse(localStorage.getItem("DamageData"));
+    const coverphotoImage = localStorage.getItem("coverphotoImage");
+    const menuData = JSON.parse(localStorage.getItem("menuData"));
+    const outputContent = localStorage.getItem("outputContent");
+
+    // Check if any of the required data is missing
+    if (
+      !TempPanelData ||
+      !clientInfoData ||
+      !SelectionData ||
+      !DamageData ||
+      !menuData ||
+      !coverphotoImage ||
+      !outputContent
+    ) {
+      return alert("Please complete the process");
+    }
+
+    const InspectionData = {
+      clientInfoData,
+      TempPanelData,
+      SelectionData,
+      DamageData,
+      coverphotoImage,
+      menuData,
+      outputContent,
+      id: Date.now(),
+    };
+
+    const encryptedData = encryptData(InspectionData, encryptionKey);
+    downloadFile(encryptedData);
+  }, []);
+
+  const onOpenInspection = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const encryptedData = await readFileAsText(file);
+      const decryptedData = decryptData(encryptedData, encryptionKey);
+      console.log("decryptedData ", decryptedData);
+
+      localStorage.setItem("menuData", JSON.stringify(decryptedData.menuData));
+      localStorage.setItem(
+        "SelectionData",
+        JSON.stringify(decryptedData.SelectionData)
+      );
+      localStorage.setItem(
+        "DamageData",
+        JSON.stringify(decryptedData.DamageData)
+      );
+      localStorage.setItem(
+        "TempPanelData",
+        JSON.stringify(decryptedData.TempPanelData)
+      );
+      localStorage.setItem("outputContent", decryptedData.outputContent);
+      localStorage.setItem("coverphotoImage", decryptedData.coverphotoImage);
+      localStorage.setItem(
+        "clientInfoData",
+        JSON.stringify(decryptedData.clientInfoData)
+      );
+
+      alert("successfully opened");
+    }
+  };
 
   const handleOpenInspectionClick = () => {
     if (fileInputRef.current) {
