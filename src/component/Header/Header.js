@@ -32,6 +32,14 @@ import { PanalSelect } from "../Function/function";
 import { useNavigate } from "react-router-dom";
 import { useEditTempContext } from "../../Context";
 import SubMenuInfoReport from "./../ExampleComponent/SubMenuInfoReport";
+import {
+  downloadFile,
+  encryptData,
+  decryptData,
+  readFileAsText,
+  encryptionKey,
+  downloadFileTpz,
+} from "../Function/function";
 
 const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
   const navigate = useNavigate();
@@ -126,6 +134,42 @@ const Header = ({ onOpenInspection, onSaveInspection, onButtonClick }) => {
     } else {
       // Inform the user that no file is selected
       console.log("Please select a file for inspection.");
+    }
+  };
+
+  const saveTpz = () => {
+    const getTemp = localStorage.getItem("menuData");
+    const getPanalData = localStorage.getItem("TempPanelData");
+    if (getTemp == null) {
+      return alert("Please Open Template First");
+    }
+    const menuData = JSON.parse(getTemp);
+    const TempPanelData = JSON.parse(getPanalData);
+
+    const tempData = {
+      menuData,
+      TempPanelData,
+    };
+
+    const encryptedData = encryptData(tempData, encryptionKey);
+    downloadFileTpz(encryptedData);
+  };
+
+  const openTpz = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const encryptedData = await readFileAsText(file);
+      const decryptedData = decryptData(encryptedData, encryptionKey);
+      console.log("decryptedData ", decryptedData);
+
+      localStorage.setItem("menuData", JSON.stringify(decryptedData.menuData));
+
+      localStorage.setItem(
+        "TempPanelData",
+        JSON.stringify(decryptedData.TempPanelData)
+      );
+
+      alert("successfully opened tpz file ");
     }
   };
 
@@ -255,10 +299,44 @@ mt-2"
                 textAlign: "center",
               }}
             >
-              <li className="hover:bg-gray-200">Open Inspection</li>
-              <li className="hover:bg-gray-200">Save Inspection</li>
-              <li className="hover:bg-gray-200">Open Template</li>
-              <li className="hover:bg-gray-200">Save Template</li>
+              <li className="hover:bg-gray-200">
+                <label
+                  className="header2-tag-a"
+                  style={{ cursor: "pointer", textDecoration: "underline" }}
+                >
+                  <div>
+                    Open <br /> Inspection
+                    <input
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={onOpenInspection}
+                      accept=".hzf"
+                    />
+                  </div>
+                </label>
+              </li>
+              <li className="hover:bg-gray-200">
+                <button onClick={onSaveInspection}>Save Inspection</button>
+              </li>
+              <li className="hover:bg-gray-200" onClick={saveTpz}>
+                Save Template
+              </li>
+              <li className="hover:bg-gray-200">
+                <label
+                  className="header2-tag-a"
+                  style={{ cursor: "pointer", textDecoration: "underline" }}
+                >
+                  <div>
+                    Open <br /> Template
+                    <input
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={openTpz}
+                      accept=".tpz"
+                    />
+                  </div>
+                </label>
+              </li>
             </ul>
           )}
         </div>

@@ -6,6 +6,7 @@ import * as CryptoJS from "crypto-js"; // Import CryptoJS library
 import {
   downloadFile,
   readFileAsText,
+  encryptionKey,
 } from "../../component/Function/function";
 
 const ClientInfo = () => {
@@ -32,9 +33,9 @@ const ClientInfo = () => {
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("clientInfoData"));
-   if(data){
-    setFormData(data);
-   }
+    if (data) {
+      setFormData(data);
+    }
   }, []);
 
   const hanndleSaveToLocalStorage = (event) => {
@@ -52,8 +53,6 @@ const ClientInfo = () => {
   };
   const [pop, setpop] = useState(false);
 
-  const encryptionKey = "secretkey";
-
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -61,7 +60,6 @@ const ClientInfo = () => {
       [name]: value,
     }));
   }, []);
-
   const handleSaveInspection = useCallback(() => {
     const panalData = localStorage.getItem("TempPanelData");
     const TempPanelData = JSON.parse(panalData);
@@ -71,6 +69,19 @@ const ClientInfo = () => {
     const coverphotoImage = localStorage.getItem("coverphotoImage");
     const menuData = JSON.parse(localStorage.getItem("menuData"));
     const outputContent = localStorage.getItem("outputContent");
+
+    // Check if any of the required data is missing
+    if (
+      !TempPanelData ||
+      !clientInfoData ||
+      !SelectionData ||
+      !DamageData ||
+      !menuData ||
+      !coverphotoImage ||
+      !outputContent
+    ) {
+      return alert("Please complete the process");
+    }
 
     const InspectionData = {
       clientInfoData,
@@ -85,8 +96,6 @@ const ClientInfo = () => {
 
     const encryptedData = encryptData(InspectionData, encryptionKey);
     downloadFile(encryptedData);
-
-    // Parse existingClient only if it exists
   }, [formData, encryptionKey]);
 
   const saveOffline = () => {
@@ -114,20 +123,6 @@ const ClientInfo = () => {
     ).toString();
     return encryptedData;
   };
-
-  const downloadEncryptedFile = useCallback((encryptedData) => {
-    const blob = new Blob([encryptedData], {
-      type: "application/octet-stream",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "encryptedData.hzf";
-    document.body.appendChild(a);
-    a.click();
-    URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-  }, []);
 
   const decryptData = (encryptedData, key) => {
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, key);

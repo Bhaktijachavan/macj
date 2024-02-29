@@ -33,6 +33,21 @@ export const downloadFile = (encryptedData) => {
   URL.revokeObjectURL(url);
   document.body.removeChild(a);
 };
+export const downloadFileTpz = (encryptedData) => {
+  const blob = new Blob([encryptedData], {
+    type: "application/octet-stream",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Template.tpz";
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+};
+
+export const encryptionKey = "secretkey";
 
 export const readFileAsText = (file) => {
   return new Promise((resolve, reject) => {
