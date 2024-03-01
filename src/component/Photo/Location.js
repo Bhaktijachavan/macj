@@ -83,6 +83,7 @@ const Location = ({ id, setId }) => {
       setPanel(PanalSelect(TabData.Radiopanal, TabData));
       setShowPopup(true);
     }
+    alert("please select panel ");
   };
   const handleClosePopup = () => {
     setShowPopup(false); // Close the popup
