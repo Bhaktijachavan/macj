@@ -13,7 +13,7 @@ import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
 import OverLayImage from "./OverLayImage/OverLayImage";
 import { EditTempContext } from "../../Context";
 
-const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
+const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl, id }) => {
   const overlayImageRef = useRef(null);
   const [activeTab, setActiveTab] = useState(1);
   // const [textFromEditor, setTextFromEditor] = useState(null);
@@ -37,6 +37,8 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl }) => {
   const handleColorChange = (color) => {
     setArrowColor(color);
   };
+
+  console.log("edit image id ", id);
 
   const handleSaveChanges = () => {
     // Call the handleDownload function in OverLayImage component

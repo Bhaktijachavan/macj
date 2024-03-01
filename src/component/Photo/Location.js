@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Location.css";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
-const Location = () => {
+const Location = ({ id, setId }) => {
   const [menuData, setMenuData] = useState(null);
   const [selectedMenuId, setSelectedMenuId] = useState(null);
   const [selectedSubmenuId, setSelectedSubmenuId] = useState(null);
@@ -50,7 +50,8 @@ const Location = () => {
   const handleTabChange = (e) => {
     const panelId = e.target.value;
     setPanelId(panelId);
-    setTabData(submenuDetails[panelId]); // Update TabData based on selected panelId
+    setId(panelId);
+    setTabData(submenuDetails[panelId]);
   };
 
   useEffect(() => {

@@ -16,6 +16,7 @@ const PhotoReview = () => {
     Array(rectanglesData.length).fill(null)
   );
   const [coverImage, setCoverImage] = useState(null);
+  const [panelId, setPanelId] = useState();
 
   useEffect(() => {
     const coverImagePath = localStorage.getItem("coverphotoImage");
@@ -74,6 +75,10 @@ const PhotoReview = () => {
     event.currentTarget.classList.remove("drag-over");
   }, []);
 
+  useEffect(() => {
+    console.log("id", panelId);
+  }, [panelId]);
+
   return (
     <>
       <p className="PhotoReview-Main-Para">
@@ -98,7 +103,7 @@ const PhotoReview = () => {
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
           >
-            <Location />
+            <Location id={panelId} setId={setPanelId} />
             <div className="PhotoReview-Drag-Drop-Box">
               {uploadedFiles[index] && (
                 <img
@@ -132,7 +137,10 @@ const PhotoReview = () => {
                 alignItems: "Center",
               }}
             >
-              <Buttons onFileSelect={(file) => handleFileSelect(file, index)} />
+              <Buttons
+                onFileSelect={(file) => handleFileSelect(file, index)}
+                id={panelId}
+              />
             </div>
             <Caption />
           </div>
