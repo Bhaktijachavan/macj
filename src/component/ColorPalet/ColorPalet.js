@@ -188,7 +188,6 @@ const ColorPalette = ({ onClose }) => {
     }
     console.log(localStorageData);
   }, []);
-
   const exportCoverPageToPDF = () => {
     // Retrieve the content from localStorage saved by CoverPageDesigner
     const content = localStorage.getItem("outputContent");
@@ -199,10 +198,10 @@ const ColorPalette = ({ onClose }) => {
     if (content && menuData) {
       // Modify the content to include border, page heading, and adjust page height
       const modifiedContent = `
-        <div style="padding:10px height: 72vw;">
-          ${content}
-        </div>
-      `;
+            <div style="padding:0px height: 72vw;">
+                ${content}
+            </div>
+        `;
 
       // Convert the modified HTML content to a PDF document
       html2pdf()
@@ -210,12 +209,24 @@ const ColorPalette = ({ onClose }) => {
         .toPdf()
         .get("pdf")
         .then((pdf) => {
-          // Add a new page for each menu item
-          const menuNames = JSON.parse(menuData);
-          Object.values(menuNames).forEach((item, index) => {
-            pdf.addPage();
-            pdf.text(`Menu ${index + 1} Name: ${item.name}`, 10, 10);
-          });
+          // Add second page for Report Introduction
+          pdf.addPage();
+          pdf.text("Report Introduction", 10, 10);
+          // Add Lorem Ipsum text for Report Introduction
+          const loremText = generateLoremIpsum(40); // Adjust the number of paragraphs as needed
+          pdf.text(loremText, 10, 20);
+
+          // Add third page for Table of Contents
+          pdf.addPage();
+          pdf.text("Table of Contents", 10, 10);
+          // Add table for Table of Contents
+          addTableOfContents(pdf, JSON.parse(menuData));
+
+          // Add fourth page for Summary
+          pdf.addPage();
+          pdf.text("Summary", 10, 10);
+          // Add summary table
+          addSummaryTable(pdf, JSON.parse(menuData));
 
           // Download the PDF file
           pdf.save("cover_page_layout.pdf");
@@ -225,6 +236,61 @@ const ColorPalette = ({ onClose }) => {
       console.log("No content or menu data found in localStorage");
     }
   };
+
+  // Function to add Table of Contents
+  function addTableOfContents(pdf, parsedMenuData) {
+    Object.values(parsedMenuData).forEach((item, index) => {
+      // pdf.text(` ${item.name}`, 10, 20 + index * 10);
+      // Add subitems
+      item.subitems.forEach((subitem, subindex) => {
+        pdf.text(`    ${subitem.subName}`, 20, 20 + index * 10 + subindex * 10);
+      });
+    });
+  }
+
+  // Function to add Summary Table
+  function addSummaryTable(pdf, menuNames) {
+    const data = [];
+    const headers = []; // Initialize an array for table headers
+
+    // Iterate over the menu names to construct the headers
+    Object.values(menuNames).forEach((item, index) => {
+      item.subitems.forEach((subitem) => {
+        headers.push([subitem.subName]); // Push each subitem's subName to the headers
+      });
+    });
+
+    // Push the header row to the data array
+    data.push(headers);
+
+    // Iterate over the menu names again to populate the table body
+    Object.values(menuNames).forEach((item, index) => {
+      item.subitems.forEach((subitem) => {
+        // Push each data row with three columns
+        data.push(
+          [`Menu ${index + 1}`, subitem.subName, "Summary Text"].slice(0, 3)
+        ); // Adjust the summary text as needed
+      });
+    });
+
+    // Generate the table with the specified headers and data
+    pdf.autoTable({
+      startY: 20,
+      head: headers, // Set the table headers
+      body: data, // Set the table data
+    });
+  }
+
+  // Function to generate Lorem Ipsum text
+  function generateLoremIpsum(paragraphs) {
+    const loremIpsum =
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+    let loremText = "";
+    for (let i = 0; i < paragraphs; i++) {
+      loremText += loremIpsum + "\n\n";
+    }
+    return loremText;
+  }
 
   // const generateCombinedPDF = async () => {
   //   const localStorageContent = localStorage.getItem("outputContent");
