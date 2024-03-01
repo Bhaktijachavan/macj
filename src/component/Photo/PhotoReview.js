@@ -25,7 +25,7 @@ const PhotoReview = () => {
       const newImage = JSON.parse(coverImagePath);
       if (newImage && newImage[panelId]) {
         console.log("New Image:", newImage[panelId]);
-        setCoverImage(newImage[panelId]);
+        setUploadedFiles(newImage[panelId]);
       }
     };
 
@@ -110,15 +110,15 @@ const PhotoReview = () => {
           >
             <Location id={panelId} setId={setPanelId} />
             <div className="PhotoReview-Drag-Drop-Box">
-              {coverImage && (
+              {uploadedFiles[index] && (
                 <img
                   src={
-                    typeof coverImage === "string"
-                      ? coverImage // If it's a string, it's Vedant image
-                      : URL.createObjectURL(coverImage) // If it's a file object, it's uploaded file
+                    typeof uploadedFiles[index] === "string"
+                      ? uploadedFiles[index] // If it's a string, it's Vedant image
+                      : URL.createObjectURL(uploadedFiles[index]) // If it's a file object, it's uploaded file
                   }
                   alt={
-                    typeof coverImage === "string"
+                    typeof uploadedFiles[index] === "string"
                       ? `coverphotoImage`
                       : `Uploaded Image for ${rectangle.label}`
                   }
@@ -129,13 +129,12 @@ const PhotoReview = () => {
                   }}
                 />
               )}
-              {!coverImage && (
+              {!uploadedFiles[index] && (
                 <p className="Drag-Drop-Box-Para">
                   The Selected File will Appear Here !
                 </p>
               )}
             </div>
-
             <div
               style={{
                 display: "flex",
