@@ -1,20 +1,11 @@
-import React, { useCallback, useState, useContext, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import "./PhotoReview.css";
 import Location from "./Location";
 import Buttons from "./Buttons";
 import Caption from "./Caption";
 
 const PhotoReview = () => {
-  const rectanglesData = [
-    { id: 1, label: "Rectangle 1" },
-    { id: 2, label: "Rectangle 2" },
-    { id: 3, label: "Rectangle 3" },
-    { id: 4, label: "Rectangle 4" },
-  ];
-
-  const [uploadedFiles, setUploadedFiles] = useState(
-    Array(rectanglesData.length).fill(null)
-  );
+  const [uploadedFile, setUploadedFile] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
   const [panelId, setPanelId] = useState();
 
@@ -25,7 +16,7 @@ const PhotoReview = () => {
       const newImage = JSON.parse(coverImagePath);
       if (newImage && newImage[panelId]) {
         console.log("New Image:", newImage[panelId]);
-        setUploadedFiles(newImage[panelId]);
+        setUploadedFile(newImage[panelId]);
       }
     };
 
@@ -41,30 +32,20 @@ const PhotoReview = () => {
     return () => clearInterval(intervalId);
   }, [panelId]); // Include panelId as a dependency
 
-  const handleFileSelect = (file, rectangleIndex) => {
+  const handleFileSelect = (file) => {
     console.log("File selected:", file);
-    console.log("Rectangle Index:", rectangleIndex);
-
-    const updatedFiles = [...uploadedFiles];
-    updatedFiles[rectangleIndex] = file;
-    setUploadedFiles(updatedFiles);
+    setUploadedFile(file);
   };
 
-  const handleDrop = useCallback(
-    (event, rectangleIndex) => {
-      event.preventDefault();
-      const files = event.dataTransfer.files;
-      console.log("Files dropped:", files);
-      console.log("Rectangle Index:", rectangleIndex);
+  const handleDrop = useCallback((event) => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    console.log("Files dropped:", files);
 
-      if (files.length > 0) {
-        const updatedFiles = [...uploadedFiles];
-        updatedFiles[rectangleIndex] = files[0];
-        setUploadedFiles(updatedFiles);
-      }
-    },
-    [uploadedFiles]
-  );
+    if (files.length > 0) {
+      setUploadedFile(files[0]);
+    }
+  }, []);
 
   const handleDragOver = useCallback((event) => {
     event.preventDefault();
@@ -99,57 +80,51 @@ const PhotoReview = () => {
         in the Report Summary in addition to the report body.
       </p>
       <div className="PhotoReview-rectangular-container">
-        {rectanglesData.map((rectangle, index) => (
-          <div
-            key={rectangle.id}
-            className="PhotoReview-rectangle"
-            onDrop={(event) => handleDrop(event, index)}
-            onDragOver={handleDragOver}
-            onDragEnter={handleDragEnter}
-            onDragLeave={handleDragLeave}
-          >
-            <Location id={panelId} setId={setPanelId} />
-            <div className="PhotoReview-Drag-Drop-Box">
-              {uploadedFiles[index] && (
-                <img
-                  src={
-                    typeof uploadedFiles[index] === "string"
-                      ? uploadedFiles[index] // If it's a string, it's Vedant image
-                      : URL.createObjectURL(uploadedFiles[index]) // If it's a file object, it's uploaded file
-                  }
-                  alt={
-                    typeof uploadedFiles[index] === "string"
-                      ? `coverphotoImage`
-                      : `Uploaded Image for ${rectangle.label}`
-                  }
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                />
-              )}
-              {!uploadedFiles[index] && (
-                <p className="Drag-Drop-Box-Para">
-                  The Selected File will Appear Here !
-                </p>
-              )}
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "Center",
-              }}
-            >
-              <Buttons
-                onFileSelect={(file) => handleFileSelect(file, index)}
-                id={panelId}
+        <div
+          className="PhotoReview-rectangle"
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
+        >
+          <Location id={panelId} setId={setPanelId} />
+          <div className="PhotoReview-Drag-Drop-Box">
+            {uploadedFile || coverImage ? (
+              <img
+                src={
+                  coverImage
+                    ? typeof coverImage === "string"
+                      ? coverImage // If it's a string, it's a URL from localStorage
+                      : URL.createObjectURL(coverImage) // If it's a file object, it's uploaded file
+                    : typeof uploadedFile === "string"
+                    ? uploadedFile // If it's a string, it's Vedant image
+                    : URL.createObjectURL(uploadedFile) // If it's a file object, it's uploaded file
+                }
+                alt={coverImage ? "coverphotoImage" : "Uploaded Image"}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
               />
-            </div>
-            <Caption />
+            ) : (
+              <p className="Drag-Drop-Box-Para">
+                The Selected File will Appear Here !
+              </p>
+            )}
           </div>
-        ))}
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "Center",
+            }}
+          >
+            <Buttons onFileSelect={handleFileSelect} id={panelId} />
+          </div>
+          <Caption />
+        </div>
       </div>
     </>
   );
