@@ -198,6 +198,20 @@ const SubMenuInfoReport = () => {
     // Step 2: Parse menuData and set it to the state
     const parsedMenuData = JSON.parse(menuDataString);
     setMenuData(parsedMenuData);
+    console.log("parsedMenuData ", parsedMenuData);
+
+Object.keys(parsedMenuData).map((key) => {
+  console.log("MenuData", parsedMenuData[key]);
+
+  // Check if parsedMenuData[key] has subitems property
+  if (parsedMenuData[key].subitems) {
+    // Use forEach instead of map for iterating over subitems
+    parsedMenuData[key].subitems.forEach((sub) => {
+      console.log("submenu", sub);
+    });
+  }
+});
+
 
     // Set menu names along with existing document names
     const menuNames = Object.values(parsedMenuData).map((menu) => menu.name);

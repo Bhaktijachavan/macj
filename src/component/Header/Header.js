@@ -121,15 +121,7 @@ const Header = ({ onButtonClick }) => {
     const outputContent = localStorage.getItem("outputContent");
 
     // Check if any of the required data is missing
-    if (
-      !TempPanelData ||
-      !clientInfoData ||
-  
-   
-      !menuData ||
-    
-      !outputContent
-    ) {
+    if (!TempPanelData || !clientInfoData || !menuData || !outputContent) {
       return alert("Please complete the process");
     }
 
