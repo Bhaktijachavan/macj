@@ -237,6 +237,21 @@ const Location = () => {
     const selectedId = e.target.value;
     setSelectedSubmenuId(selectedId);
   };
+  useEffect(() => {
+    console.log("menuData:", menuData);
+  }, [menuData]);
+
+  useEffect(() => {
+    console.log("selectedMenuId:", selectedMenuId);
+  }, [selectedMenuId]);
+
+  useEffect(() => {
+    console.log("selectedSubmenuId:", selectedSubmenuId);
+  }, [selectedSubmenuId]);
+
+  useEffect(() => {
+    console.log("submenuDetails:", submenuDetails);
+  }, [submenuDetails]);
 
   return (
     <>
@@ -296,11 +311,9 @@ const Location = () => {
               </select>
             </div>
             <div className="PhotoReview-Location-button">
-              <Link
-                to={`/panel1?selectedMenuId=${selectedMenuId}&selectedSubmenuId=${selectedSubmenuId}`}
-              >
-                <button>@</button>
-              </Link>
+              {/* <Link> */}
+              <button>@</button>
+              {/* </Link> */}
             </div>
             <div className="PhotoReview-Location-Checkbox-Container">
               <section className="Section-for-label-and-checkbox">
