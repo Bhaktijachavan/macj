@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Location.css";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { PanalSelect } from "../Function/function";
 
 const Location = ({ id, setId }) => {
   const [menuData, setMenuData] = useState(null);
@@ -9,6 +10,8 @@ const Location = ({ id, setId }) => {
   const [submenuDetails, setSubmenuDetails] = useState(null);
   const [TabData, setTabData] = useState(null);
   const [panelId, setPanelId] = useState(null);
+  const [panel, setPanel] = useState();
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const storedMenuData = localStorage.getItem("menuData");
@@ -75,6 +78,15 @@ const Location = ({ id, setId }) => {
     console.log("TabData:", TabData);
   }, [panelId]);
 
+  const handlePanel = () => {
+    if (panelId && TabData) {
+      setPanel(PanalSelect(TabData.Radiopanal, TabData));
+      setShowPopup(true);
+    }
+  };
+  const handleClosePopup = () => {
+    setShowPopup(false); // Close the popup
+  };
   return (
     <>
       <div className="container-for-locations-and-recall-component">
@@ -141,7 +153,7 @@ const Location = ({ id, setId }) => {
             </div>
             <div className="PhotoReview-Location-button">
               {/* <Link> */}
-              <button>@</button>
+              <button onClick={handlePanel}>@</button>
               {/* </Link> */}
             </div>
             <div className="PhotoReview-Location-Checkbox-Container">
@@ -180,6 +192,22 @@ const Location = ({ id, setId }) => {
           </div>
         </div>
       </div>
+
+      {/* Popup container */}
+      {showPopup && (
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 relative">
+            <button
+              className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+              onClick={handleClosePopup}
+            >
+              Close
+            </button>
+            {/* Render the selected panel component */}
+            {panel}
+          </div>
+        </div>
+      )}
     </>
   );
 };
