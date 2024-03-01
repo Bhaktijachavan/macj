@@ -116,7 +116,7 @@ const Header = ({ onButtonClick }) => {
     const clientInfoData = JSON.parse(localStorage.getItem("clientInfoData"));
     const SelectionData = JSON.parse(localStorage.getItem("SelectionData"));
     const DamageData = JSON.parse(localStorage.getItem("DamageData"));
-    const coverphotoImage = localStorage.getItem("coverphotoImage");
+    const coverphotoImage = JSON.parse(localStorage.getItem("coverphotoImage"));
     const uploadedImage = localStorage.getItem("uploadedImage");
     const menuData = JSON.parse(localStorage.getItem("menuData"));
     const outputContent = localStorage.getItem("outputContent");
@@ -163,7 +163,10 @@ const Header = ({ onButtonClick }) => {
         JSON.stringify(decryptedData.TempPanelData)
       );
       localStorage.setItem("outputContent", decryptedData.outputContent);
-      localStorage.setItem("coverphotoImage", decryptedData.coverphotoImage);
+      localStorage.setItem(
+        "coverphotoImage",
+        JSON.stringify(decryptedData.coverphotoImage)
+      );
       localStorage.setItem("uploadedImage", decryptedData.uploadedImage);
       localStorage.setItem(
         "clientInfoData",
