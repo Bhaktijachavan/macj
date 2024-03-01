@@ -19,22 +19,27 @@ const PhotoReview = () => {
   const [panelId, setPanelId] = useState();
 
   useEffect(() => {
-    const coverImagePath = localStorage.getItem("coverphotoImage");
-    if (coverImagePath) {
-      const indexOfFirstEmptyRectangle = uploadedFiles.findIndex(
-        (file) => file === null
-      );
-      if (indexOfFirstEmptyRectangle === -1) {
-        setCoverImage(coverImagePath);
-      } else {
-        setUploadedFiles((prevUploadedFiles) => {
-          const updatedFiles = [...prevUploadedFiles];
-          updatedFiles[indexOfFirstEmptyRectangle] = coverImagePath;
-          return updatedFiles;
-        });
+    // Function to fetch and set cover image based on panelId
+    const fetchCoverImage = () => {
+      const coverImagePath = localStorage.getItem("coverphotoImage");
+      const newImage = JSON.parse(coverImagePath);
+      if (newImage && newImage[panelId]) {
+        console.log("New Image:", newImage[panelId]);
+        setCoverImage(newImage[panelId]);
       }
-    }
-  }, [uploadedFiles]);
+    };
+
+    // Call the function immediately to fetch cover image initially
+    fetchCoverImage();
+
+    // Set interval to fetch cover image every 4 seconds
+    const intervalId = setInterval(() => {
+      fetchCoverImage();
+    }, 4000);
+
+    // Clear the interval on component unmount to prevent memory leaks
+    return () => clearInterval(intervalId);
+  }, [panelId]); // Include panelId as a dependency
 
   const handleFileSelect = (file, rectangleIndex) => {
     console.log("File selected:", file);
@@ -105,15 +110,15 @@ const PhotoReview = () => {
           >
             <Location id={panelId} setId={setPanelId} />
             <div className="PhotoReview-Drag-Drop-Box">
-              {uploadedFiles[index] && (
+              {coverImage && (
                 <img
                   src={
-                    typeof uploadedFiles[index] === "string"
-                      ? uploadedFiles[index] // If it's a string, it's Vedant image
-                      : URL.createObjectURL(uploadedFiles[index]) // If it's a file object, it's uploaded file
+                    typeof coverImage === "string"
+                      ? coverImage // If it's a string, it's Vedant image
+                      : URL.createObjectURL(coverImage) // If it's a file object, it's uploaded file
                   }
                   alt={
-                    typeof uploadedFiles[index] === "string"
+                    typeof coverImage === "string"
                       ? `coverphotoImage`
                       : `Uploaded Image for ${rectangle.label}`
                   }
@@ -124,12 +129,13 @@ const PhotoReview = () => {
                   }}
                 />
               )}
-              {!uploadedFiles[index] && (
+              {!coverImage && (
                 <p className="Drag-Drop-Box-Para">
                   The Selected File will Appear Here !
                 </p>
               )}
             </div>
+
             <div
               style={{
                 display: "flex",

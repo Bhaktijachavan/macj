@@ -56,11 +56,34 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl, id }) => {
     setDownloadUrl(null);
   };
 
+  const getimage = () => {
+    const image = JSON.parse(localStorage.getItem("coverphotoImage"));
+    console.log("image", image);
+    const currentImage = image[id]
+    console.log("currentImage", currentImage);
+  };
+
   const handleDownloadUrlChange = (url) => {
-    // Handle the download URL change here
-    console.log("Download URL:", url);
-    localStorage.setItem("coverphotoImage", url);
-    setDownloadUrl(url);
+    try {
+      if (!id) {
+        return alert("please select panel ");
+      }
+      let imageData = localStorage.getItem("coverphotoImage");
+      if (!imageData) {
+        imageData = {};
+      } else {
+        imageData = JSON.parse(imageData);
+      }
+
+      // Store the image URL with the associated ID
+      imageData[id] = url;
+
+      // Save the updated image data to local storage
+      localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
+      console.log("Image data saved successfully.");
+    } catch (error) {
+      console.error("Error saving image data:", error);
+    }
   };
 
   const handleCrop = (croppedImageData) => {
@@ -375,6 +398,12 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl, id }) => {
                   onClick={handleDiscardChanges}
                 >
                   Discard Changes
+                </button>
+                <button
+                  className="footer-for-Eidt-image-tabelist-btns-save-and-discard"
+                  onClick={getimage}
+                >
+                  Getimage
                 </button>
               </div>
             </div>
