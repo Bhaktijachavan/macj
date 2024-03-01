@@ -124,10 +124,10 @@ const Header = ({ onButtonClick }) => {
     if (
       !TempPanelData ||
       !clientInfoData ||
-      !SelectionData ||
-      !DamageData ||
+  
+   
       !menuData ||
-      !coverphotoImage ||
+    
       !outputContent
     ) {
       return alert("Please complete the process");
