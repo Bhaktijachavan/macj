@@ -520,6 +520,13 @@ mt-2"
             <li className="ml-5">About</li>
             {/* fetch here localstorage menudtatanad submenu items  */}
             {/* <Link to="/panel1"> */}
+          </ul>
+        </div>
+        <div className="for-the-tabs-header-panel">
+          <ul className="flex">
+            {/* <li className="ml-5">About</li> */}
+            {/* fetch here localstorage menudtatanad submenu items  */}
+            {/* <Link to="/panel1"> */}
             {header &&
               Object.keys(header).map((key) => (
                 <li className="ml-5" key={key}>
