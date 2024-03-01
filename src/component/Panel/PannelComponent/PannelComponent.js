@@ -13,6 +13,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [SelectedLineText, setSelectedLineText] = useState(0);
   const [selectedLineIndex, setSelectedLineIndex] = useState(null);
   const [selectedLineColor, setSelectedLineColor] = useState(null);
+  const [showImage, setShowImage] = useState();
   const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
@@ -28,6 +29,19 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       }
     }
   }, []);
+
+  const NewValue = value;
+  const extractedValue = NewValue.replace(/_(d|s)\d$/, "");
+
+  useEffect(() => {
+    const image = JSON.parse(localStorage.getItem("coverphotoImage"));
+    if (image) {
+      if (image[extractedValue]) {
+        const currentImage = image[extractedValue];
+        setShowImage(currentImage);
+      }
+    }
+  }, [value]);
 
   const handlesave = () => {
     console.log("Saving data...");
@@ -250,30 +264,6 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 ))}
               </div>
             </div>
-            {/* {showAlternateContent ? (
-              <EditComments />
-            ) : (
-              <div className="p-5">
-                {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center mb-2 checkbox-container"
-                  >
-                    <input
-                      type="checkbox"
-                      id={label}
-                      name={label}
-                      value={label}
-                      style={{ backgroundColor: "#3182ce" }}
-                      className="mr-2 focus:ring-2 focus:ring-blue-500 checked:bg-blue-500 checked:border-blue-500"
-                    />
-                    <label htmlFor={label}>{label}</label>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Displaying content from localStorage */}
 
             <div
               className="scroll-box-panel2 p-4 bg-gray-100"
@@ -422,7 +412,20 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 </button>
               </div>
             </div>
-            <div className="scroll-box3-panel2 p-4 bg-gray-100"></div>
+
+            {/* Conditionally render the image */}
+            {showImage && (
+              <img
+                src={showImage}
+                alt="Cover Photo"
+                className="scroll-box3-panel2-image"
+                style={{
+                  width: "25vh",
+                  height: "30vh",
+                  border: "1px solid black",
+                }}
+              />
+            )}
           </div>
         </div>
       </div>
