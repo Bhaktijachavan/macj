@@ -29,6 +29,7 @@ import PanelHeader from "./component/Panel/PanelHeader/PanelHeader";
 import SubMenuInfoReport from "./component/ExampleComponent/SubMenuInfoReport";
 
 import PhotoReviewTablist from "./component/Photo/PhotoReviewTablist/PhotoReviewTablist";
+import Ratings from './component/Rating/Ratings';
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
         <Route path="/mobilesync" element={<MobileUpload />}></Route>
         <Route path="/generateReportPdf" element={<GenerateReport />} />
         <Route path="/submenureport" element={<SubMenuInfoReport />} />
+        <Route path="/ratings" element={<Ratings/>}/>
       </Routes>
     </BrowserRouter>
 

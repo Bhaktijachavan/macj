@@ -28,7 +28,9 @@ import AboutUsMacj from "./../AboutUsMacj/AboutUsMacj";
 import { useNavigate } from "react-router-dom";
 import { useEditTempContext } from "../../Context";
 import SubMenuInfoReport from "./../ExampleComponent/SubMenuInfoReport";
+import Ratings from './../Rating/Ratings';
 import {
+
   downloadFile,
   encryptData,
   decryptData,
@@ -482,6 +484,19 @@ mt-2"
                     Create And Edit Document
                   </li>
                 </Link>
+                <Link to="ratings">
+                <li
+                  className=" hover:bg-gray-200"
+                  style={{
+                    height: "2em",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  Ratings
+                </li>
+              </Link>
                 {/* </Link> */}
               </ul>
             )}
