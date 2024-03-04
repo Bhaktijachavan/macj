@@ -56,6 +56,7 @@ const Header = ({ onButtonClick }) => {
   const [pastedText, setPastedText] = useState("");
   const [value, setValue] = React.useState("");
   const [aboutUsPagePopup, setAboutUsPagePopup] = useState(false);
+  const [ratingPopup,setRatingPopup]=useState(false);
   const { showComment, setShowComment } = useEditTempContext();
 
   const ref = useRef(null);
@@ -71,6 +72,7 @@ const Header = ({ onButtonClick }) => {
   const openOpenTemplatePopup = () => {
     setOpenTemplatePopup(true);
   };
+
 
   const closeOpenTemplatePopup = () => {
     setOpenTemplatePopup(false);
@@ -108,6 +110,13 @@ const Header = ({ onButtonClick }) => {
   const closeCreateEditDocument = () => {
     setEditDocumentPopup(false);
   };
+  const openRatingPopup =()=>{
+    setRatingPopup(true);
+  };
+  const closeRatingPopup=()=>{
+    setRatingPopup(false);
+
+  }
 
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -484,7 +493,7 @@ mt-2"
                     Create And Edit Document
                   </li>
                 </Link>
-                <Link to="ratings">
+             
                 <li
                   className=" hover:bg-gray-200"
                   style={{
@@ -493,10 +502,11 @@ mt-2"
                     justifyContent: "center",
                     alignItems: "center",
                   }}
+                  onClick={openRatingPopup}
                 >
                   Ratings
                 </li>
-              </Link>
+            
                 {/* </Link> */}
               </ul>
             )}
@@ -899,6 +909,14 @@ border-black-900"
           <div className="popup Cover-Page-Design-Popup-ccc">
             {/* Render your color palet component here */}
             <AboutUsMacj onClose={closeAboutUsPopup} />
+          </div>
+        )}
+
+
+        {ratingPopup && (
+          <div className="popup Cover-Page-Design-Popup-ccc">
+            {/* Render your color palet component here */}
+            <Ratings onClose={closeRatingPopup} />
           </div>
         )}
       </div>
