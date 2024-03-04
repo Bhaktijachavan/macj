@@ -8,24 +8,23 @@ const SelectionComponent = ({ panelData, value, classname }) => {
   const [localSelectedText, setLocalSelectedText] = useState(null);
   const selectedTextRef = useRef([]);
 
-useEffect(() => {
-  const fetchData = () => {
-    const storedData = localStorage.getItem("TempPanelData");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      const commentText = parsedData[value] || "";
-      setCommentText(commentText);
-    }
-  };
+  useEffect(() => {
+    const fetchData = () => {
+      const storedData = localStorage.getItem("TempPanelData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        const commentText = parsedData[value] || "";
+        setCommentText(commentText);
+      }
+    };
 
-  fetchData(); // Call the fetchData function immediately
+    fetchData(); // Call the fetchData function immediately
 
-  const intervalId = setInterval(fetchData, 3000); // Set interval to fetch data every 3 seconds
+    const intervalId = setInterval(fetchData, 3000); // Set interval to fetch data every 3 seconds
 
-  // Clean up the interval on component unmount
-  return () => clearInterval(intervalId);
-}, [value]);
-
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [value]);
 
   useEffect(() => {
     const data = localStorage.getItem("SelectionData");
@@ -85,13 +84,41 @@ useEffect(() => {
     }
   };
 
+
+const HandleDeleteText = () => {
+  console.log("HandleDeleteText function called");
+
+  // Retrieve selected text from selectedTextRef
+  const selectedText = selectedTextRef.current[0]; // Assuming you want to delete the first selected text
+
+  if (window.confirm(`Are you sure you want to delete: ${selectedText}`)) {
+    if (selectedText) {
+      // Remove the selected text from commentText
+      const updatedCommentText = commentText.replace(selectedText, "");
+      setCommentText(updatedCommentText);
+      console.log("Text removed from comments:", selectedText);
+
+      // Update localStorage with the modified commentText
+      const storedData = localStorage.getItem("TempPanelData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        parsedData[value] = updatedCommentText;
+        localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
+        setLocalSelectedText(""); // Reset selected text
+        console.log("Updated commentText in localStorage:", parsedData[value]);
+      }
+    }
+  }
+};
+
+
   return (
     <div>
       <div>
         <div className="panel-heading text-center m-2"></div>
         <div className="pl-2 m-2 flex">
           <div className="Editcomments-and-checkbox-container">
-            <EditComments value={value} />
+            <EditComments value={value} handleDelete={HandleDeleteText} />
             <button
               onClick={handlesave}
               type="button"
@@ -126,5 +153,7 @@ useEffect(() => {
     </div>
   );
 };
+
+
 
 export default SelectionComponent;
