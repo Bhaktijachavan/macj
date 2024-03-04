@@ -55,6 +55,8 @@
     background-color: rgb(229, 229, 229);
     padding: 1em;
     font-size: 15px;
+    text-align: left;
+
   }
  .text-ratings{
     font-size: 14px;
