@@ -84,33 +84,38 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     }
   };
 
+  const HandleDeleteText = () => {
+    console.log("HandleDeleteText function called");
 
-const HandleDeleteText = () => {
-  console.log("HandleDeleteText function called");
+    // Retrieve selected texts from selectedTextRef
+    const selectedTexts = selectedTextRef.current;
 
-  // Retrieve selected text from selectedTextRef
-  const selectedText = selectedTextRef.current[0]; // Assuming you want to delete the first selected text
+    if (window.confirm(`Are you sure you want to delete the selected texts?`)) {
+      if (selectedTexts && selectedTexts.length > 0) {
+        let updatedCommentText = commentText;
+        selectedTexts.forEach((selectedText) => {
+          // Remove each selected text from commentText
+          updatedCommentText = updatedCommentText.replace(selectedText, "");
+        });
 
-  if (window.confirm(`Are you sure you want to delete: ${selectedText}`)) {
-    if (selectedText) {
-      // Remove the selected text from commentText
-      const updatedCommentText = commentText.replace(selectedText, "");
-      setCommentText(updatedCommentText);
-      console.log("Text removed from comments:", selectedText);
+        setCommentText(updatedCommentText);
+        console.log("Texts removed from comments:", selectedTexts);
 
-      // Update localStorage with the modified commentText
-      const storedData = localStorage.getItem("TempPanelData");
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        parsedData[value] = updatedCommentText;
-        localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
-        setLocalSelectedText(""); // Reset selected text
-        console.log("Updated commentText in localStorage:", parsedData[value]);
+        // Update localStorage with the modified commentText
+        const storedData = localStorage.getItem("TempPanelData");
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+          parsedData[value] = updatedCommentText;
+          localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
+          setLocalSelectedText(""); // Reset selected text
+          console.log(
+            "Updated commentText in localStorage:",
+            parsedData[value]
+          );
+        }
       }
     }
-  }
-};
-
+  };
 
   return (
     <div>
@@ -153,7 +158,5 @@ const HandleDeleteText = () => {
     </div>
   );
 };
-
-
 
 export default SelectionComponent;
