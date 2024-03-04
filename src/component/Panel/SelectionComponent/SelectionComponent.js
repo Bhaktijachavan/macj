@@ -54,6 +54,20 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     );
   };
 
+    const sortCommentText = () => {
+      const sortedText = commentText.split("\n").sort().join("\n");
+      setCommentText(sortedText);
+      // Update localStorage with the modified commentText
+      const storedData = localStorage.getItem("TempPanelData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        parsedData[value] = sortedText;
+        localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
+        setLocalSelectedText(""); // Reset selected text
+        console.log("Updated commentText in localStorage:", parsedData[value]);
+      }
+    };
+
   const handlesave = () => {
     const concatenatedText = selectedTextRef.current.join("\n");
     console.log(concatenatedText);
@@ -123,7 +137,11 @@ const SelectionComponent = ({ panelData, value, classname }) => {
         <div className="panel-heading text-center m-2"></div>
         <div className="pl-2 m-2 flex">
           <div className="Editcomments-and-checkbox-container">
-            <EditComments value={value} handleDelete={HandleDeleteText} />
+            <EditComments
+              value={value}
+              handleDelete={HandleDeleteText}
+              sortCommentText={sortCommentText}
+            />
             <button
               onClick={handlesave}
               type="button"

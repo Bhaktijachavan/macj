@@ -231,6 +231,20 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
     }
   };
 
+  const sortCommentText = () => {
+    const sortedText = commentText.split("\n").sort().join("\n");
+    setCommentText(sortedText);
+    // Update localStorage with the modified commentText
+    const storedData = localStorage.getItem("TempPanelData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      parsedData[value] = sortedText;
+      localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
+
+      console.log("Updated commentText in localStorage:", parsedData[value]);
+    }
+  };
+
   // Pass redText and blackText states to the parent component
   useEffect(() => {
     setRed(redText);
@@ -243,7 +257,11 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
         <div className="container-panel2">
           <div className="panel2">
             <div className="Editcomments-and-checkbox-container">
-              <EditComments value={value} handleDelete={HandleDeleteText} />
+              <EditComments
+                value={value}
+                handleDelete={HandleDeleteText}
+                sortCommentText={sortCommentText}
+              />
 
               <div className="p-5">
                 {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
