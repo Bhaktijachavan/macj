@@ -28,9 +28,8 @@ import AboutUsMacj from "./../AboutUsMacj/AboutUsMacj";
 import { useNavigate } from "react-router-dom";
 import { useEditTempContext } from "../../Context";
 import SubMenuInfoReport from "./../ExampleComponent/SubMenuInfoReport";
-import Ratings from './../Rating/Ratings';
+import Ratings from "./../Rating/Ratings";
 import {
-
   downloadFile,
   encryptData,
   decryptData,
@@ -56,7 +55,7 @@ const Header = ({ onButtonClick }) => {
   const [pastedText, setPastedText] = useState("");
   const [value, setValue] = React.useState("");
   const [aboutUsPagePopup, setAboutUsPagePopup] = useState(false);
-  const [ratingPopup,setRatingPopup]=useState(false);
+  const [ratingPopup, setRatingPopup] = useState(false);
   const { showComment, setShowComment } = useEditTempContext();
 
   const ref = useRef(null);
@@ -72,7 +71,6 @@ const Header = ({ onButtonClick }) => {
   const openOpenTemplatePopup = () => {
     setOpenTemplatePopup(true);
   };
-
 
   const closeOpenTemplatePopup = () => {
     setOpenTemplatePopup(false);
@@ -110,13 +108,12 @@ const Header = ({ onButtonClick }) => {
   const closeCreateEditDocument = () => {
     setEditDocumentPopup(false);
   };
-  const openRatingPopup =()=>{
+  const openRatingPopup = () => {
     setRatingPopup(true);
   };
-  const closeRatingPopup=()=>{
+  const closeRatingPopup = () => {
     setRatingPopup(false);
-
-  }
+  };
 
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -480,7 +477,7 @@ mt-2"
                   Cover Page Designer
                 </li>
 
-                <Link to="submenureport">
+                <Link to="/submenureport">
                   <li
                     className=" hover:bg-gray-200"
                     style={{
@@ -493,7 +490,7 @@ mt-2"
                     Create And Edit Document
                   </li>
                 </Link>
-             
+
                 <li
                   className=" hover:bg-gray-200"
                   style={{
@@ -506,7 +503,7 @@ mt-2"
                 >
                   Ratings
                 </li>
-            
+
                 {/* </Link> */}
               </ul>
             )}
@@ -911,8 +908,6 @@ border-black-900"
             <AboutUsMacj onClose={closeAboutUsPopup} />
           </div>
         )}
-
-
         {ratingPopup && (
           <div className="popup Cover-Page-Design-Popup-ccc">
             {/* Render your color palet component here */}
