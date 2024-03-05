@@ -62,6 +62,9 @@ function CoverPageDesigner({ onClose }) {
   const [isBorderApplied, setIsBorderApplied] = useState(true);
   const [fontSize, setFontSize] = useState(16);
   const [isHovered, setIsHovered] = useState(false);
+  const [isCompanyLogoChecked, setIsCompanyLogoChecked] = useState(false);
+  const [uploadedLogo, setUploadedLogo] = useState(null);
+
   const [checkedCheckboxes, setCheckedCheckboxes] = useState([
     "Inspection Details",
     "Cover Photo",
@@ -79,6 +82,7 @@ function CoverPageDesigner({ onClose }) {
       ]);
     }
   }, []);
+
   // Export state function
   // const exportState = () => {
   //   const exportedState = {
@@ -196,6 +200,12 @@ function CoverPageDesigner({ onClose }) {
         setIsAgentPhotoUploaded(true);
       };
     }
+    if (file) {
+      // Set the uploaded logo file
+      setUploadedLogo(file);
+      // Set the checkbox state to checked
+      setIsCompanyLogoChecked(true);
+    }
   };
 
   const handleAddImage = () => {
@@ -233,6 +243,18 @@ function CoverPageDesigner({ onClose }) {
 
   const handleCheckboxChange = (event, label) => {
     const isChecked = event.target.checked;
+    // Check if the label is "Company Logo"
+    if (label === "Company Logo") {
+      // If checked, trigger image upload process
+      if (isChecked) {
+        fileInputRef.current.click();
+      } else {
+        // If unchecked, reset uploaded logo state
+        setUploadedLogo(null);
+      }
+      // Update checkbox state
+      setIsCompanyLogoChecked(isChecked);
+    }
     // Toggle the checkbox in the checkedCheckboxes state
     if (checkedCheckboxes.includes(label)) {
       setCheckedCheckboxes(checkedCheckboxes.filter((item) => item !== label));
@@ -410,16 +432,34 @@ function CoverPageDesigner({ onClose }) {
                         />
                         Company Information
                       </label>
+                      {/* <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={isCompanyLogoChecked}
+                          onChange={(e) =>
+                            handleCheckboxChange(e, "Company Logo")
+                          }
+                        />
+                        Company Logo
+                      </label> */}
                       <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
-                          checked={checkedCheckboxes.includes("Company Logo")}
+                          checked={isCompanyLogoChecked}
                           onChange={(e) =>
                             handleCheckboxChange(e, "Company Logo")
                           }
                         />
                         Company Logo
                       </label>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        onChange={handleImageUpload}
+                      />
+                      {/* <CheckboxContent2 uploadedLogo={uploadedLogo} /> */}
                       <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
@@ -660,20 +700,22 @@ function CoverPageDesigner({ onClose }) {
                   </div>
                 ))}{" "}
                 {addedImages.map(({ id, src, height, width }) => (
-                  <div key={id} bounds="parent" className="draggableeeee">
-                    <div>
-                      <img
-                        src={src}
-                        alt={`Image ${id}`}
-                        height={height}
-                        width={width}
-                      />
-                      {/* Add a delete button to remove the image */}
-                      {/* <button onClick={() => handleDeleteImage(id)}>
+                  <Draggable bounds="parent">
+                    <div key={id} className="draggableeeee">
+                      <div>
+                        <img
+                          src={src}
+                          alt={`Image ${id}`}
+                          height={height}
+                          width={width}
+                        />
+                        {/* Add a delete button to remove the image */}
+                        {/* <button onClick={() => handleDeleteImage(id)}>
                     Delete Image
                   </button> */}
+                      </div>
                     </div>
-                  </div>
+                  </Draggable>
                 ))}
               </div>
             </div>
