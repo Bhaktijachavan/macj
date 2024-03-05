@@ -30,6 +30,7 @@ import SubMenuInfoReport from "./component/ExampleComponent/SubMenuInfoReport";
 
 import PhotoReviewTablist from "./component/Photo/PhotoReviewTablist/PhotoReviewTablist";
 import Ratings from './component/Rating/Ratings';
+import Stationery from './component/Stationery/Stationery';
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
         <Route path="/generateReportPdf" element={<GenerateReport />} />
         <Route path="/submenureport" element={<SubMenuInfoReport />} />
         <Route path="/ratings" element={<Ratings/>}/>
+        <Route path="/stationery" element={<Stationery/>}/>
       </Routes>
     </BrowserRouter>
 

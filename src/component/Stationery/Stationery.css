@@ -1,0 +1,45 @@
+.Stationery-para{
+    padding: 5em;
+    margin-left: 7em;
+    margin-right: 7em;
+    align-items: center;
+    text-align: center;
+}
+.cover-page-Stationery {
+    align-items: center;
+    text-align: center;
+
+}
+.cover-page-Stationery-upload{
+    display: flex;
+    justify-content: center;
+}
+.cover-page-Stationery{
+    padding-bottom: 1em;
+}
+
+.cover-page-Stationery-browse,
+.cover-page-Stationery-inputtext,
+.cover-page-Stationery-remove
+{
+    padding: 1em;
+}
+.adding-Stationery-btn{
+  font-size: 14px;
+  width: 100px;
+  height: 30px;
+  background-color: #f3f2f1;
+  color: black;
+  border: 2px solid rgb(191, 189, 189);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.adding-Stationery-btn:hover {
+    background-color: #d7e9f7;
+    border-color: #005a9e; /* Darker green color on hover */
+  }
+.adding-Stationery-inputtext{
+    width: 20em;
+    height: 1.7em;
+    border: 1px solid black;
+}

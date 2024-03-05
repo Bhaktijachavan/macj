@@ -74,7 +74,7 @@ const Ratings = ({ onClose }) => {
         <div className="container-for-the-ratings">
             <div className="width-set-for-the-ratings">
                 <div className="close-button-and-ratings-header-for-popup-box">
-                    <p>Application Setting</p>
+                    <p>Rating</p>
                     <p className="close-btn-ratings" onClick={onClose}>
                         X
                     </p>

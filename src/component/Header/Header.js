@@ -504,8 +504,23 @@ mt-2"
                   Ratings
                 </li>
 
+                <Link to="/stationery">
+                  <li
+                    className=" hover:bg-gray-200"
+                    style={{
+                      height: "2em",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                  Stationery
+                  </li>
+                </Link>
+
                 {/* </Link> */}
               </ul>
+              
             )}
           </div>
         </div>
