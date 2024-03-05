@@ -21,6 +21,8 @@ function CompanyInfo({ id }) {
   };
 
   const handleInputChange = (key, value) => {
+    console.log("Key:", key);
+    console.log("Value:", value);
     setEditableText({
       ...editableText,
       [key]: value,
@@ -36,7 +38,7 @@ function CompanyInfo({ id }) {
     >
       <section className="content-for-the-company-info">
         <section className="fname-and-lname-content-for-the-company-info">
-          <input
+          {/* <input
             type="text"
             value={`${editableText.firstName} ${editableText.lastName}`}
             onChange={(e) => {
@@ -44,6 +46,19 @@ function CompanyInfo({ id }) {
               handleInputChange("firstName", firstName);
               handleInputChange("lastName", lastName);
             }}
+          /> */}
+
+          <input
+            type="text"
+            value={editableText.firstName}
+            onChange={(e) => handleInputChange("firstName", e.target.value)}
+            className="name-input-for-first-name-cover-page"
+          />
+          <input
+            type="text"
+            value={editableText.lastName}
+            onChange={(e) => handleInputChange("lastName", e.target.value)}
+            className="name-input-for-last-name-cover-page"
           />
         </section>
         <section className="email-and-mob-number-section-for-company-info">

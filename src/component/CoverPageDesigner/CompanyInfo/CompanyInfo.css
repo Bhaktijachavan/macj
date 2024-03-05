@@ -13,7 +13,7 @@
   top: 8em;
 } */
 .fname-and-lname-content-for-the-company-info > input {
-  text-align: center;
+  /* text-align: center; */
   height: 2em;
 }
 .email-and-mob-number-section-for-company-info > input {
@@ -21,4 +21,19 @@
   /* display: grid; */
   height: 2.5em;
   width: 100%;
+}
+.name-input-container {
+  display: flex;
+}
+
+.name-input-for-first-name-cover-page {
+  text-align: right;
+}
+
+.name-input-for-last-name-cover-page {
+  text-align: left;
+}
+.fname-and-lname-content-for-the-company-info {
+  display: flex;
+  gap: 1em;
 }
