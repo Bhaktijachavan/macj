@@ -42,7 +42,6 @@ function PhotoReviewTablist() {
               className={`tab1-container-buttons ${
                 activeTab === tab.id ? "active" : ""
               }`}
-             
             >
               {tab.name}
             </button>

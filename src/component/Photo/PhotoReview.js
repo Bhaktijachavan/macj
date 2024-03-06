@@ -5,45 +5,58 @@ import Buttons from "./Buttons";
 import Caption from "./Caption";
 
 const PhotoReview = () => {
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [coverImage, setCoverImage] = useState(null);
-  const [panelId, setPanelId] = useState();
+  const [panels, setPanels] = useState([
+    { id: 1, uploadedFile: null },
+    { id: 2, uploadedFile: null },
+    { id: 3, uploadedFile: null },
+    { id: 4, uploadedFile: null },
+  ]);
 
   useEffect(() => {
-    // Function to fetch and set cover image based on panelId
-    const fetchCoverImage = () => {
+    const fetchCoverImage = (panelId) => {
       const coverImagePath = localStorage.getItem("coverphotoImage");
       const newImage = JSON.parse(coverImagePath);
       if (newImage && newImage[panelId]) {
         console.log("New Image:", newImage[panelId]);
-        setUploadedFile(newImage[panelId]);
+        setPanels((prevPanels) =>
+          prevPanels.map((panel) =>
+            panel.id === panelId
+              ? { ...panel, uploadedFile: newImage[panelId] }
+              : panel
+          )
+        );
       }
     };
 
-    // Call the function immediately to fetch cover image initially
-    fetchCoverImage();
+    panels.forEach((panel) => fetchCoverImage(panel.id));
 
-    // Set interval to fetch cover image every 4 seconds
     const intervalId = setInterval(() => {
-      fetchCoverImage();
+      panels.forEach((panel) => fetchCoverImage(panel.id));
     }, 4000);
 
-    // Clear the interval on component unmount to prevent memory leaks
     return () => clearInterval(intervalId);
-  }, [panelId]); // Include panelId as a dependency
+  }, [panels]);
 
-  const handleFileSelect = (file) => {
+  const handleFileSelect = (file, panelId) => {
     console.log("File selected:", file);
-    setUploadedFile(file);
+    setPanels((prevPanels) =>
+      prevPanels.map((panel) =>
+        panel.id === panelId ? { ...panel, uploadedFile: file } : panel
+      )
+    );
   };
 
-  const handleDrop = useCallback((event) => {
+  const handleDrop = useCallback((event, panelId) => {
     event.preventDefault();
     const files = event.dataTransfer.files;
     console.log("Files dropped:", files);
 
     if (files.length > 0) {
-      setUploadedFile(files[0]);
+      setPanels((prevPanels) =>
+        prevPanels.map((panel) =>
+          panel.id === panelId ? { ...panel, uploadedFile: files[0] } : panel
+        )
+      );
     }
   }, []);
 
@@ -61,10 +74,6 @@ const PhotoReview = () => {
     event.currentTarget.classList.remove("drag-over");
   }, []);
 
-  useEffect(() => {
-    console.log("id", panelId);
-  }, [panelId]);
-
   return (
     <>
       <p className="PhotoReview-Main-Para">
@@ -80,51 +89,53 @@ const PhotoReview = () => {
         in the Report Summary in addition to the report body.
       </p>
       <div className="PhotoReview-rectangular-container">
-        <div
-          className="PhotoReview-rectangle"
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-        >
-          <Location id={panelId} setId={setPanelId} />
-          <div className="PhotoReview-Drag-Drop-Box">
-            {uploadedFile || coverImage ? (
-              <img
-                src={
-                  coverImage
-                    ? typeof coverImage === "string"
-                      ? coverImage // If it's a string, it's a URL from localStorage
-                      : URL.createObjectURL(coverImage) // If it's a file object, it's uploaded file
-                    : typeof uploadedFile === "string"
-                    ? uploadedFile // If it's a string, it's Vedant image
-                    : URL.createObjectURL(uploadedFile) // If it's a file object, it's uploaded file
-                }
-                alt={coverImage ? "coverphotoImage" : "Uploaded Image"}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            ) : (
-              <p className="Drag-Drop-Box-Para">
-                The Selected File will Appear Here !
-              </p>
-            )}
-          </div>
-
+        {panels.map((panel) => (
           <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "Center",
-            }}
+            key={panel.id}
+            className="PhotoReview-rectangle"
+            onDrop={(event) => handleDrop(event, panel.id)}
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
           >
-            <Buttons onFileSelect={handleFileSelect} id={panelId} />
+            <Location id={panel.id} setId={() => {}} />
+            <div className="PhotoReview-Drag-Drop-Box">
+              {panel.uploadedFile ? (
+                <img
+                  src={
+                    typeof panel.uploadedFile === "string"
+                      ? panel.uploadedFile
+                      : URL.createObjectURL(panel.uploadedFile)
+                  }
+                  alt="Uploaded Image"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <p className="Drag-Drop-Box-Para">
+                  The Selected File will Appear Here !
+                </p>
+              )}
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Buttons
+                onFileSelect={(file) => handleFileSelect(file, panel.id)}
+                id={panel.id}
+              />
+            </div>
+            <Caption />
           </div>
-          <Caption />
-        </div>
+        ))}
       </div>
     </>
   );
