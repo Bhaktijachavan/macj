@@ -115,7 +115,6 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       const lines = commentText.split("\n"); // Split commentText into an array of lines
       const index = lines.indexOf(selectedText); // Find the index of the selected text
       if (index > 0) {
-        // Ensure it's not the first line
         const newIndex = index - 1; // Reduce the index by 1 to move it up
         const updatedLines = [...lines]; // Create a copy of the array
         // Swap the selected line with the line above it
@@ -137,12 +136,12 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
     }
   };
 
-  const handleMoveDownDamage = ()=>{
-    console.log("handle move down function called ")
-    if(selectedText){
+  const handleMoveDownDamage = () => {
+    console.log("handle move down function called ");
+    if (selectedText) {
       const lines = commentText.split("\n");
       const index = lines.indexOf(selectedText);
-      if(index < lines.length - 1){
+      if (index < lines.length - 1) {
         const newIndex = index + 1;
         const updatedLines = [...lines];
         [updatedLines[newIndex], updatedLines[index]] = [
@@ -152,7 +151,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
         const updatedCommentText = updatedLines.join("\n");
         setCommentText(updatedCommentText);
         const PanalData = JSON.parse(localStorage.getItem("TempPanelData"));
-        if(PanalData){
+        if (PanalData) {
           PanalData[value] = updatedCommentText;
           localStorage.setItem("TempPanelData", JSON.stringify(PanalData));
           console.log("Text moved down in comments:", updatedCommentText);
@@ -160,8 +159,8 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
         setSelectedText(updatedLines[newIndex]);
       }
     }
-    }
-  
+  };
+
   const HandleDeleteText = () => {
     console.log("HandleDeleteText function called");
     if (window.confirm(`are you want to delete : ${selectedText}`)) {
@@ -320,8 +319,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 moveDown={handleMoveDownDamage}
               />
 
-              <input
-              />
+              <input />
 
               <div className="p-5">
                 {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
