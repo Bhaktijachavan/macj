@@ -11,7 +11,6 @@ import DrawArrowContent from "./DrawArrowContent/DrawArrowContent";
 import DrawRectangleContent from "./DrawRectangleContent/DrawRectangleContent";
 import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
 import OverLayImage from "./OverLayImage/OverLayImage";
-import { EditTempContext } from "../../Context";
 
 const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl, id }) => {
   const overlayImageRef = useRef(null);
@@ -54,13 +53,6 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl, id }) => {
     localStorage.removeItem("coverphotoImage");
     // Clear the download URL state
     setDownloadUrl(null);
-  };
-
-  const getimage = () => {
-    const image = JSON.parse(localStorage.getItem("coverphotoImage"));
-    console.log("image", image);
-    const currentImage = image[id];
-    console.log("currentImage", currentImage);
   };
 
   const handleDownloadUrlChange = (url) => {
@@ -398,12 +390,6 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl, id }) => {
                   onClick={handleDiscardChanges}
                 >
                   Discard Changes
-                </button>
-                <button
-                  className="footer-for-Eidt-image-tabelist-btns-save-and-discard"
-                  onClick={getimage}
-                >
-                  Getimage
                 </button>
               </div>
             </div>
