@@ -1,0 +1,57 @@
+/* Styling for the Stationery paragraph section */
+.Stationery-para {
+    padding: 5em; /* Adds padding around the content */
+    margin-left: 7em; /* Sets left margin */
+    margin-right: 7em; /* Sets right margin */
+    align-items: center; /* Aligns items in the center */
+    text-align: center; /* Centers text */
+}
+
+/* Styling for the Cover Page Stationery section */
+.cover-page-Stationery {
+    align-items: center; /* Aligns items in the center */
+    text-align: center; /* Centers text */
+}
+
+/* Styling for the Cover Page and All Other Page Stationery upload section */
+.cover-page-Stationery-upload {
+    display: flex; /* Displays items in a flex container */
+    justify-content: center; /* Centers items horizontally */
+}
+
+/* Styling for the Cover Page Stationery and All Other Page Stationery sections */
+.cover-page-Stationery {
+    padding-bottom: 1em; /* Adds padding at the bottom */
+}
+
+/* Styling for the Browse, Input Text, and Remove sections within Cover Page and All Other Page Stationery */
+.cover-page-Stationery-browse,
+.cover-page-Stationery-inputtext,
+.cover-page-Stationery-remove {
+    padding: 1em; /* Adds padding around these elements */
+}
+
+/* Styling for the buttons used for Browse and Remove */
+.adding-Stationery-btn {
+    font-size: 14px; /* Sets the font size */
+    width: 100px; /* Sets the width */
+    height: 30px; /* Sets the height */
+    background-color: #f3f2f1; /* Sets the background color */
+    color: black; /* Sets the text color */
+    border: 2px solid rgb(191, 189, 189); /* Sets the border */
+    border-radius: 5px; /* Adds border radius for rounded corners */
+    cursor: pointer; /* Sets cursor to pointer for interactive elements */
+}
+
+/* Styling for the button on hover state */
+.adding-Stationery-btn:hover {
+    background-color: #d7e9f7; /* Changes background color on hover */
+    border-color: #005a9e; /* Darker green color on hover for the border */
+}
+
+/* Styling for the input text field */
+.adding-Stationery-inputtext {
+    width: 20em; /* Sets the width of the input field */
+    height: 1.7em; /* Sets the height of the input field */
+    border: 1px solid black; /* Sets the border for the input field */
+}

@@ -28,6 +28,7 @@ import AboutUsMacj from "./../AboutUsMacj/AboutUsMacj";
 import { useNavigate } from "react-router-dom";
 import { useEditTempContext } from "../../Context";
 import SubMenuInfoReport from "./../ExampleComponent/SubMenuInfoReport";
+import Ratings from "./../Rating/Ratings";
 import {
   downloadFile,
   encryptData,
@@ -54,6 +55,7 @@ const Header = ({ onButtonClick }) => {
   const [pastedText, setPastedText] = useState("");
   const [value, setValue] = React.useState("");
   const [aboutUsPagePopup, setAboutUsPagePopup] = useState(false);
+  const [ratingPopup, setRatingPopup] = useState(false);
   const { showComment, setShowComment } = useEditTempContext();
 
   const ref = useRef(null);
@@ -105,6 +107,12 @@ const Header = ({ onButtonClick }) => {
   };
   const closeCreateEditDocument = () => {
     setEditDocumentPopup(false);
+  };
+  const openRatingPopup = () => {
+    setRatingPopup(true);
+  };
+  const closeRatingPopup = () => {
+    setRatingPopup(false);
   };
 
   const fileInputRef = useRef(null);
@@ -482,8 +490,37 @@ mt-2"
                     Create And Edit Document
                   </li>
                 </Link>
+
+                <li
+                  className=" hover:bg-gray-200"
+                  style={{
+                    height: "2em",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  onClick={openRatingPopup}
+                >
+                  Ratings
+                </li>
+
+                <Link to="/stationery">
+                  <li
+                    className=" hover:bg-gray-200"
+                    style={{
+                      height: "2em",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                  Stationery
+                  </li>
+                </Link>
+
                 {/* </Link> */}
               </ul>
+              
             )}
           </div>
         </div>
@@ -884,6 +921,12 @@ border-black-900"
           <div className="popup Cover-Page-Design-Popup-ccc">
             {/* Render your color palet component here */}
             <AboutUsMacj onClose={closeAboutUsPopup} />
+          </div>
+        )}
+        {ratingPopup && (
+          <div className="popup Cover-Page-Design-Popup-ccc">
+            {/* Render your color palet component here */}
+            <Ratings onClose={closeRatingPopup} />
           </div>
         )}
       </div>

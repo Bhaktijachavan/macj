@@ -28,6 +28,9 @@ import GenerateReport from "./component/ColorPalet/GeneatePdf";
 import PanelHeader from "./component/Panel/PanelHeader/PanelHeader";
 import SubMenuInfoReport from "./component/ExampleComponent/SubMenuInfoReport";
 import PhotoReviewTablist from "./component/Photo/PhotoReviewTablist/PhotoReviewTablist";
+import Ratings from './component/Rating/Ratings';
+import Stationery from './component/Stationery/Stationery';
+import LayoutOptions from './component/LayoutOptions/LayoutOptions';
 
 function App() {
   console.log("app started");
@@ -68,6 +71,11 @@ function App() {
         <Route path="/mobilesync" element={<MobileUpload />}></Route>
         <Route path="/generateReportPdf" element={<GenerateReport />} />
         <Route path="/submenureport" element={<SubMenuInfoReport />} />
+        <Route path="/ratings" element={<Ratings/>}/>
+        <Route path="/stationery" element={<Stationery/>}/>
+        <Route path="/layoutOptions" element={<LayoutOptions/>}/>
+
+
       </Routes>
     </HashRouter>
 
