@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import EditComments from "../../EditComments/EditComments";
 import Header from "./../../Header/Header";
+import Panel1 from "../Panel1/Panel1";
 
 const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [selectedText, setSelectedText] = useState("");
@@ -107,6 +108,60 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       container.nodeType === 3 ? container.nodeValue : container.innerText;
     setSelectedText(selectedText);
   };
+
+  const handleMoveUpDamage = () => {
+    console.log("handleMoveUpDamage function called");
+    if (selectedText) {
+      const lines = commentText.split("\n"); // Split commentText into an array of lines
+      const index = lines.indexOf(selectedText); // Find the index of the selected text
+      if (index > 0) {
+        // Ensure it's not the first line
+        const newIndex = index - 1; // Reduce the index by 1 to move it up
+        const updatedLines = [...lines]; // Create a copy of the array
+        // Swap the selected line with the line above it
+        [updatedLines[newIndex], updatedLines[index]] = [
+          updatedLines[index],
+          updatedLines[newIndex],
+        ];
+        const updatedCommentText = updatedLines.join("\n"); // Join the array back into text
+        setCommentText(updatedCommentText);
+        const PanalData = JSON.parse(localStorage.getItem("TempPanelData"));
+        if (PanalData) {
+          PanalData[value] = updatedCommentText;
+          localStorage.setItem("TempPanelData", JSON.stringify(PanalData));
+          console.log("Text moved up in comments:", updatedCommentText);
+        }
+
+        setSelectedText(updatedLines[newIndex]);
+      }
+    }
+  };
+
+  const handleMoveDownDamage = ()=>{
+    console.log("handle move down function called ")
+    if(selectedText){
+      const lines = commentText.split("\n");
+      const index = lines.indexOf(selectedText);
+      if(index < lines.length - 1){
+        const newIndex = index + 1;
+        const updatedLines = [...lines];
+        [updatedLines[newIndex], updatedLines[index]] = [
+          updatedLines[index],
+          updatedLines[newIndex],
+        ];
+        const updatedCommentText = updatedLines.join("\n");
+        setCommentText(updatedCommentText);
+        const PanalData = JSON.parse(localStorage.getItem("TempPanelData"));
+        if(PanalData){
+          PanalData[value] = updatedCommentText;
+          localStorage.setItem("TempPanelData", JSON.stringify(PanalData));
+          console.log("Text moved down in comments:", updatedCommentText);
+        }
+        setSelectedText(updatedLines[newIndex]);
+      }
+    }
+    }
+  
   const HandleDeleteText = () => {
     console.log("HandleDeleteText function called");
     if (window.confirm(`are you want to delete : ${selectedText}`)) {
@@ -261,6 +316,11 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 value={value}
                 handleDelete={HandleDeleteText}
                 sortCommentText={sortCommentText}
+                moveUp={handleMoveUpDamage}
+                moveDown={handleMoveDownDamage}
+              />
+
+              <input
               />
 
               <div className="p-5">

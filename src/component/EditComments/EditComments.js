@@ -4,7 +4,14 @@ import Footer from "./../Footer/Footer";
 import AddComment from "./popEditComments/AddComment";
 import "./EditComments.css";
 
-const EditComments = ({ onClose, value, handleDelete, sortCommentText }) => {
+const EditComments = ({
+  onClose,
+  value,
+  handleDelete,
+  sortCommentText,
+  moveUp,
+  moveDown,
+}) => {
   const [isAddModalVisible, setAddModalVisible] = useState(false);
 
   const handleAddButtonClick = () => {
@@ -22,10 +29,20 @@ const EditComments = ({ onClose, value, handleDelete, sortCommentText }) => {
         <div className="button-editcomm">
           <div className="">
             <div className="flex flex-col">
-              <button className="btn-editcomm mr-2 w-24 text-sm">
+              <button
+                className="btn-editcomm mr-2 w-24 text-sm"
+                onClick={() => {
+                  moveUp();
+                }}
+              >
                 Move Up
               </button>
-              <button className="btn-editcomm mr-2 w-24 text-sm">
+              <button
+                className="btn-editcomm mr-2 w-24 text-sm"
+                onClick={() => {
+                  moveDown();
+                }}
+              >
                 Move Down
               </button>
               <button
