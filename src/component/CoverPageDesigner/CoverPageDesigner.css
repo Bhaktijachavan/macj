@@ -176,12 +176,12 @@ fieldset {
 }
 .content-that-is-draggable-and-adjustable-within-div {
   width: 100%;
-  display: flex;
+  display: grid;
   justify-content: center;
   align-items: center;
   height: 48vw;
   /* flex-wrap: wrap; */
-  gap: 4em;
+  gap: 1em;
   flex-direction: column;
 }
 .contains-added-image-with-the-delete-button-ouput-section {
