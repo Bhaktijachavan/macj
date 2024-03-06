@@ -12,6 +12,6 @@
   padding-left: 0.5em;
 }
 
-.tab1-container-buttons:hover {
-  color: blue;
+.tab1-container-buttons.active {
+  background-color: rgb(193, 193, 203);
 }

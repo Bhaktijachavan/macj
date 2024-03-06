@@ -59,7 +59,7 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl, id }) => {
   const getimage = () => {
     const image = JSON.parse(localStorage.getItem("coverphotoImage"));
     console.log("image", image);
-    const currentImage = image[id]
+    const currentImage = image[id];
     console.log("currentImage", currentImage);
   };
 

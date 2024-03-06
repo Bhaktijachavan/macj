@@ -39,7 +39,10 @@ function PhotoReviewTablist() {
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab.id)}
-              className="tab1-container-buttons"
+              className={`tab1-container-buttons ${
+                activeTab === tab.id ? "active" : ""
+              }`}
+             
             >
               {tab.name}
             </button>
