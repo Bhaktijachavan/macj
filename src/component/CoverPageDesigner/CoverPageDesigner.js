@@ -511,12 +511,14 @@ function CoverPageDesigner({ onClose }) {
                       <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
-                          // onClick={() => fileInputRef.current.click()}
-                          // onChange={(e) => handleCheckboxChange(e, "Agent Photo")}
-                          checked={checkedCheckboxes.includes("Agent Photo")}
+                          onClick={() => fileInputRef.current.click()}
                           onChange={(e) =>
                             handleCheckboxChange(e, "Agent Photo")
                           }
+                          // checked={checkedCheckboxes.includes("Agent Photo")}
+                          // onChange={(e) =>
+                          //   handleCheckboxChange(e, "Agent Photo")
+                          // }
                           // disabled={isAgentPhotoUploaded} // Disable the checkbox if an image is already uploaded
                         />
                         Agent Photo
@@ -684,7 +686,11 @@ function CoverPageDesigner({ onClose }) {
               >
                 {/* Render editable text elements */}
                 {editableTexts.map(({ id, text }) => (
-                  <div key={id} bounds="parent" className="draggableeeee">
+                  <div
+                    key={id}
+                    bounds="parent"
+                    className="draggableeeee-for-inspection"
+                  >
                     <div>
                       <EditableText initialText={text} />
                     </div>

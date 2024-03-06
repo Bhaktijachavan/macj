@@ -1,7 +1,7 @@
 .main-container-for-the-cover-page-designer-popup-page {
   /* position: relative;
   z-index: 1; */
-  height: auto;
+  height: 49vw;
 }
 .width-set-for-cover-page-container-popup-contains-all-the-info-abt-cover-page {
   width: 100em;
@@ -63,7 +63,7 @@
   align-items: center;
   /* height: 70%; */
   /* border: 1px solid #80808066; */
-  padding: 1em;
+  padding: 0.1em 1em 1em 1em;
   width: 100%;
   justify-content: space-between;
 }
@@ -176,12 +176,13 @@ fieldset {
 }
 .content-that-is-draggable-and-adjustable-within-div {
   width: 100%;
-  display: grid;
+  display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  flex-wrap: wrap;
-  gap: 1em;
+  height: 48vw;
+  /* flex-wrap: wrap; */
+  gap: 4em;
+  flex-direction: column;
 }
 .contains-added-image-with-the-delete-button-ouput-section {
   display: grid;
@@ -192,11 +193,11 @@ fieldset {
 .all-the-output-screen-with-all-the-changes-reflect-here {
   border: 1px solid black;
   /* padding: 1em; */
-  height: 100vh;
+  height: 48vw;
 }
 .with-borders {
   border: 5px solid rgb(62, 41, 255);
-  height: 49.5vw;
+  height: 48vw;
 }
 
 .react-draggable-dragged {
@@ -209,4 +210,6 @@ fieldset {
   cursor: pointer;
   display: flex;
   justify-content: center;
+}
+.draggableeeee-for-inspection {
 }
