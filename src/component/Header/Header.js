@@ -28,9 +28,8 @@ import { useNavigate } from "react-router-dom";
 import { useEditTempContext } from "../../Context";
 import SubMenuInfoReport from "./../ExampleComponent/SubMenuInfoReport";
 import Ratings from "./../Rating/Ratings";
-import LayoutOptions from './../LayoutOptions/LayoutOptions';
+import LayoutOptions from "./../LayoutOptions/LayoutOptions";
 import {
-
   downloadFile,
   encryptData,
   decryptData,
@@ -488,7 +487,7 @@ mt-2"
                       alignItems: "center",
                     }}
                   >
-                  Stationery
+                    Stationery
                   </li>
                 </Link>
                 {/* </Link> */}
@@ -625,8 +624,7 @@ border-black-900">
                 </a>
               </li> */}
             <li className="list-for-header-section-main-nav">
-              <a
-                href="#file"
+              <button
                 onClick={handleOpenInspectionClick}
                 className="header2-tag-a"
               >
@@ -636,7 +634,7 @@ border-black-900">
                 <div className="">
                   Open <br /> Inspection
                 </div>
-              </a>
+              </button>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -649,7 +647,7 @@ border-black-900">
                 className="list-for-header-section-main-nav border-r
 border-black-900"
               >
-                <a
+                <button
                   href="#edit"
                   onClick={handleSaveInspectionClick}
                   className="header2-tag-a"
@@ -660,7 +658,7 @@ border-black-900"
                   <div>
                     Save <br /> Inspection
                   </div>
-                </a>
+                </button>
               </li>
             </button>
             <hr />
