@@ -1,67 +1,64 @@
 /* body {
   overflow: hidden;
   } */
-  
-  .main-container-book {
-    background-color: #FEE4C3;
-    padding: 1px;
-    height: 100vh;
-    align-items: center;
-    padding-top: 0px;
-    z-index: 0;
 
-  }
-  
-  .formcont-book {
-    /* margin-right: 20vh; */
-    margin-left: 5px;
-    align-items: center;
-    /* width: %;  */
-    /* Adjust the width as needed */
-  }
-  
-  .text-book {
-    color: #333;
-    text-align: center;
-    margin-left: 15%;
-    font-weight: normal;
-    font-size: 18px;
-    margin-bottom: 1%;
-  }
-  
-  .form-group-book {
-    display: flex;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-  
-  .label-book {
-    text-align: left; /* Align labels to the left */
-    width: 20%;
-    font-size: 14px;
+.main-container-book {
+  background-color: #fee4c3;
+  padding: 1px;
+  height: 100vh;
+  align-items: center;
+  padding-top: 0px;
+  z-index: 0;
+}
 
-  }
-  
-  .input-for-form-book {
-    flex: 1;
-    padding: 10px;
-    height: 20px;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-  }
-  
-  .input-for-form-book:focus {
-    border-color: #007bff;
-  }
-  
-  /* Center both labels and input fields */
-  .form-group-book .label-book,
-  .form-group-book .input-for-form-book {
-    /* margin-left: auto; */
-    /* margin-right: auto; */
-    text-align: right;
-  }
-  
-  /* Add any additional styles for other form elements if needed */
-  
+.formcont-book {
+  /* margin-right: 20vh; */
+  margin-left: 5px;
+  align-items: center;
+  /* width: %;  */
+  /* Adjust the width as needed */
+}
+
+.text-book {
+  color: #333;
+  text-align: center;
+  margin-left: 15%;
+  font-weight: normal;
+  font-size: 18px;
+  margin-bottom: 1%;
+}
+
+.form-group-book {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.label-book {
+  text-align: left; /* Align labels to the left */
+  width: 20%;
+  font-size: 14px;
+}
+
+.input-for-form-book {
+  flex: 1;
+  padding: 10px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.input-for-form-book:focus {
+  border-color: #007bff;
+}
+
+/* Center both labels and input fields */
+.form-group-book .label-book,
+.form-group-book .input-for-form-book {
+  /* margin-left: auto; */
+  /* margin-right: auto; */
+  /* text-align: right; */
+}
+
+/* Add any additional styles for other form elements if needed */

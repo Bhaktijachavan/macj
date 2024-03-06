@@ -14,7 +14,28 @@ const Book = () => {
   // const [workPhone, setworkPhone] = useState("");
 
   // const [formData, setFormData] = useState({ id: '', agentlastname: '', firstName: '', Company: '', workPhone: '' });
-  const [formData, setFormData] = useState({ entries: [] });
+  const [formData, setFormData] = useState({
+    agentlastname: "",
+    firstName: "",
+    Company: "",
+    workPhone: "",
+    WorkFax: "",
+    HomePhone: "",
+    HomeFax: "",
+    Cellphone: "",
+    Pager: "",
+    Address: "",
+    addressLine2: "",
+    City: "",
+    Province: "",
+    PostalCode: "",
+    Country: "",
+    EmailAddress: "",
+    Website: "",
+    state: "",
+    zipCode: "",
+    Notes: "",
+  });
   const [tableData, setTableData] = useState([]);
   const [selectedAgentId, setSelectedAgentId] = useState(null);
 
@@ -78,7 +99,9 @@ const Book = () => {
     setIsUploading(false);
     setSelectedFile(null);
   };
-
+  useEffect(() => {
+    localStorage.setItem("formData", JSON.stringify(tableData));
+  }, [tableData]);
   useEffect(() => {
     const existingData = JSON.parse(localStorage.getItem("formData")) || [];
     setTableData(existingData);
@@ -106,21 +129,13 @@ const Book = () => {
     const newId = uuidv4();
     const newData = {
       id: newId,
-      agentlastname: formData.agentlastname,
-      firstName: formData.firstName,
-      Company: formData.Company,
-      workPhone: formData.workPhone,
-      // Add other properties as needed
+      ...formData,
     };
 
-    // Update the state with the new data entry
-    setFormData((prevData) => ({ entries: [...prevData.entries, newData] }));
-
-    // Save the updated data to localStorage
-    const dataToSave = JSON.stringify({
-      formData: { entries: [...formData.entries, newData] },
-    });
-    localStorage.setItem("yourDataKey", dataToSave);
+    setTableData((prevData) => [...prevData, newData]);
+    clearForm();
+    setSelectedAgentId(null);
+    localStorage.setItem("formData", JSON.stringify([...tableData, newData]));
   };
 
   const clearLocalStorage = (agentId) => {
@@ -135,11 +150,26 @@ const Book = () => {
 
     // Clear the form data for the selected agent
     setFormData({
-      id: "",
       agentlastname: "",
       firstName: "",
       Company: "",
       workPhone: "",
+      WorkFax: "",
+      HomePhone: "",
+      HomeFax: "",
+      Cellphone: "",
+      Pager: "",
+      Address: "",
+      addressLine2: "",
+      City: "",
+      Province: "",
+      PostalCode: "",
+      Country: "",
+      EmailAddress: "",
+      Website: "",
+      state: "",
+      zipCode: "",
+      Notes: "",
     });
 
     // Clear the selectedAgentId
@@ -148,12 +178,26 @@ const Book = () => {
 
   const clearForm = () => {
     setFormData({
-      id: "",
       agentlastname: "",
       firstName: "",
       Company: "",
       workPhone: "",
-      // ... other form fields
+      WorkFax: "",
+      HomePhone: "",
+      HomeFax: "",
+      Cellphone: "",
+      Pager: "",
+      Address: "",
+      addressLine2: "",
+      City: "",
+      Province: "",
+      PostalCode: "",
+      Country: "",
+      EmailAddress: "",
+      Website: "",
+      state: "",
+      zipCode: "",
+      Notes: "",
     });
 
     // Clear other state variables as needed
@@ -210,15 +254,15 @@ const Book = () => {
       </div>
 
       <div class="flex flex-row mt-4" style={{ lineHeight: "25px" }}>
-        <div class="basis-1/1">
-          <div className="box1-book flex ml-5 ">
+        <div class="basis-1/1 ml-4">
+          <div className="box1-book flex ">
             <form className="formcont-book ">
               <h1 className="text-book text-lg">
                 Real Estate Agent Information
               </h1>
 
               <div className="form-group-book">
-                <label htmlFor="inputlastname" className="label-book">
+                {/* <label htmlFor="inputlastname" className="label-book">
                   Agent Last Name
                 </label>
                 <input
@@ -248,10 +292,41 @@ const Book = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, firstName: e.target.value })
                   }
+                /> */}
+                <label htmlFor="inputlastname" className="label-book">
+                  Agent Last Name
+                </label>
+                <input
+                  type="text"
+                  className="input-for-form-book"
+                  id="agentlastname"
+                  value={formData.agentlastname}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      agentlastname: e.target.value,
+                    }))
+                  }
+                />
+
+                <label htmlFor="inputfirstname" className="label-book">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  className="input-for-form-book"
+                  id="firstName"
+                  value={formData.firstName}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      firstName: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="form-group-book">
-                <label htmlFor="inputCompany" className="label-book">
+                {/* <label htmlFor="inputCompany" className="label-book">
                   Company
                 </label>
                 <input
@@ -262,6 +337,21 @@ const Book = () => {
                   style={{ width: "12%" }}
                   onChange={(e) =>
                     setFormData({ ...formData, Company: e.target.value })
+                  }
+                /> */}
+                <label htmlFor="inputCompany" className="label-book">
+                  Company
+                </label>
+                <input
+                  type="text"
+                  className="input-for-form-book"
+                  id="Company"
+                  value={formData.Company}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      Company: e.target.value,
+                    }))
                   }
                 />
               </div>
@@ -317,24 +407,29 @@ const Book = () => {
                   type="text"
                   className="input-for-form-book"
                   id="inputHomePhone"
-                  value={HomePhone}
-                  style={{ width: "12%", marginLeft: "5px" }}
-                  onChange={(e) => setHomePhone(e.target.value)}
+                  value={formData.HomePhone}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      HomePhone: e.target.value,
+                    }))
+                  }
                 />
 
-                <label
-                  htmlFor="inputHomeFax"
-                  className="label-book"
-                  style={{ width: "12%", marginLeft: "5px" }}
-                >
+                <label htmlFor="inputHomeFax" className="label-book">
                   Home Fax
                 </label>
                 <input
                   type="text"
                   className="input-for-form-book"
                   id="inputHomeFax"
-                  value={HomeFax}
-                  onChange={(e) => setHomeFax(e.target.value)}
+                  value={formData.HomeFax}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      HomeFax: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="form-group-book">
@@ -345,24 +440,29 @@ const Book = () => {
                   type="text"
                   className="input-for-form-book"
                   id="inputCellphone"
-                  value={Cellphone}
-                  style={{ width: "12%", marginLeft: "5px" }}
-                  onChange={(e) => setCellphone(e.target.value)}
+                  value={formData.Cellphone}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      Cellphone: e.target.value,
+                    }))
+                  }
                 />
 
-                <label
-                  htmlFor="inputfax"
-                  className="label-book"
-                  style={{ width: "12%", marginLeft: "5px" }}
-                >
+                <label htmlFor="inputPager" className="label-book">
                   Pager
                 </label>
                 <input
                   type="text"
                   className="input-for-form-book"
                   id="inputPager"
-                  value={Pager}
-                  onChange={(e) => setPager(e.target.value)}
+                  value={formData.Pager}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      Pager: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="form-group-book">
@@ -370,25 +470,33 @@ const Book = () => {
                   Address
                 </label>
                 <input
-                  type="Address"
+                  type="text"
                   className="input-for-form-book"
                   id="inputAddress"
-                  value={Address}
-                  style={{ width: "12%", marginLeft: "5px" }}
-                  onChange={(e) => setAddress(e.target.value)}
+                  value={formData.Address}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      Address: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="form-group-book">
-                <label htmlFor="inputaddress2" className="label-book">
-                  Address (Line 2):
+                <label htmlFor="inputAddressLine2" className="label-book">
+                  Address (Line 2)
                 </label>
                 <input
                   type="text"
                   className="input-for-form-book"
-                  id="inputaddress2"
-                  value={addressLine2}
-                  style={{ width: "12%", marginLeft: "5px" }}
-                  onChange={(e) => setAddressLine2(e.target.value)}
+                  id="inputAddressLine2"
+                  value={formData.AddressLine2}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      AddressLine2: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="form-group-book">
@@ -399,24 +507,29 @@ const Book = () => {
                   type="text"
                   className="input-for-form-book"
                   id="inputCity"
-                  value={City}
-                  style={{ width: "12%", marginLeft: "5px" }}
-                  onChange={(e) => setCity(e.target.value)}
+                  value={formData.City}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      City: e.target.value,
+                    }))
+                  }
                 />
 
-                <label
-                  htmlFor="inputProvince"
-                  className="label-book"
-                  style={{ width: "12%", marginLeft: "5px" }}
-                >
+                <label htmlFor="inputProvince" className="label-book">
                   Province
                 </label>
                 <input
                   type="text"
                   className="input-for-form-book"
                   id="inputProvince"
-                  value={Province}
-                  onChange={(e) => setProvince(e.target.value)}
+                  value={formData.Province}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      Province: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="form-group-book">
@@ -427,24 +540,29 @@ const Book = () => {
                   type="text"
                   className="input-for-form-book"
                   id="inputPostalCode"
-                  value={PostalCode}
-                  style={{ width: "12%", marginLeft: "5px" }}
-                  onChange={(e) => setPostalCode(e.target.value)}
+                  value={formData.PostalCode}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      PostalCode: e.target.value,
+                    }))
+                  }
                 />
 
-                <label
-                  htmlFor="inputfaxCountry"
-                  className="label-book"
-                  style={{ width: "12%", marginLeft: "5px" }}
-                >
+                <label htmlFor="inputCountry" className="label-book">
                   Country
                 </label>
                 <input
                   type="text"
                   className="input-for-form-book"
                   id="inputCountry"
-                  value={Country}
-                  onChange={(e) => setCountry(e.target.value)}
+                  value={formData.Country}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      Country: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="form-group-book">
@@ -455,9 +573,14 @@ const Book = () => {
                   type="text"
                   className="input-for-form-book"
                   id="inputEmailAddress"
-                  value={EmailAddress}
+                  value={formData.EmailAddress}
                   style={{ width: "12%", marginLeft: "5px" }}
-                  onChange={(e) => setEmailAddress(e.target.value)}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      EmailAddress: e.target.value,
+                    }))
+                  }
                 />
               </div>
 
@@ -470,9 +593,14 @@ const Book = () => {
                     type="text"
                     className="input-for-form-book"
                     id="inputWebsite"
-                    value={Website}
+                    value={formData.formWebsite}
                     style={{ width: "12%", marginLeft: "5px" }}
-                    onChange={(e) => setWebsite(e.target.value)}
+                    onChange={(e) =>
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        formWebsite: e.target.value,
+                      }))
+                    }
                   />
 
                   <label
@@ -486,8 +614,13 @@ const Book = () => {
                     type="text"
                     className="input-for-form-book"
                     id="inputstate"
-                    value={state}
-                    onChange={(e) => setState(e.target.value)}
+                    value={formData.state}
+                    onChange={(e) =>
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        state: e.target.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="form-group-book">
@@ -498,9 +631,14 @@ const Book = () => {
                     type="text"
                     className="input-for-form-book"
                     id="inputzip"
-                    value={zipCode}
+                    value={formData.zipCode}
                     style={{ width: "12%", marginLeft: "5px" }}
-                    onChange={(e) => setZipCode(e.target.value)}
+                    onChange={(e) =>
+                      setFormData((prevData) => ({
+                        ...prevData,
+                        zipCode: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>
@@ -512,9 +650,14 @@ const Book = () => {
                   className="input-for-form-book"
                   id="inputNotes"
                   rows="5"
-                  value={Notes}
+                  value={formData.Notes}
                   style={{ width: "12%", marginLeft: "5px" }}
-                  onChange={(e) => setNotes(e.target.value)}
+                  onChange={(e) =>
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      Notes: e.target.value,
+                    }))
+                  }
                 ></textarea>
               </div>
             </form>
@@ -573,36 +716,35 @@ const Book = () => {
           style={{ hight: "45%" }}
         >
           <div className="">
-            <table className="table-auto border border-black ml-5 mt-2 ">
+            <table className="table-auto border border-black ml-5 mt-2">
               <thead>
                 <tr>
-                  <td
+                  <th
                     className="border border-black p-2 text-center"
                     style={{ width: "20%" }}
                   >
                     First
-                  </td>
-                  <td
+                  </th>
+                  <th
                     className="border border-black p-2 text-center"
                     style={{ width: "20%" }}
                   >
                     Agent Last Name
-                  </td>
-                  <td
+                  </th>
+                  <th
                     className="border border-black p-2 text-center"
                     style={{ width: "20%" }}
                   >
                     Company
-                  </td>
-                  <td
+                  </th>
+                  <th
                     className="border border-black p-2 text-center"
                     style={{ width: "20%" }}
                   >
                     Work Phone
-                  </td>
+                  </th>
                 </tr>
               </thead>
-
               <tbody>
                 {tableData.map((data) => (
                   <tr
@@ -615,10 +757,10 @@ const Book = () => {
                     }`}
                   >
                     <td style={{ border: "1px solid black" }}>
-                      {data.agentlastname}
+                      {data.firstName}
                     </td>
                     <td style={{ border: "1px solid black" }}>
-                      {data.firstName}
+                      {data.agentlastname}
                     </td>
                     <td style={{ border: "1px solid black" }}>
                       {data.Company}
@@ -626,7 +768,6 @@ const Book = () => {
                     <td style={{ border: "1px solid black" }}>
                       {data.workPhone}
                     </td>
-                    {/* Optionally include a button here if you want it per row */}
                   </tr>
                 ))}
               </tbody>
