@@ -1,17 +1,28 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+// import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { ContextProvider } from "./Context";  // Import named export
+import { ContextProvider } from "./Context"; // Import named export
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
+// const root = ReactDOM.createRoot(document.getElementById("root"));
+// root.render(
+//   <React.StrictMode>
+//     <ContextProvider> {/* Use named export here */}
+//       <App />
+//     </ContextProvider>
+//   </React.StrictMode>
+// );
+
+ReactDOM.render(
   <React.StrictMode>
-    <ContextProvider> {/* Use named export here */}
+    <ContextProvider>
       <App />
+      
     </ContextProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

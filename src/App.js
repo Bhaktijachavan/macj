@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import ClientInfo from "./component/ClientInfo/ClientInfo";
 import Footer from "./component/Footer/Footer";
 import ColorPalet from "./component/ColorPalet/ColorPalet";
@@ -27,16 +27,25 @@ import EditComments from "./component/EditComments/EditComments";
 import GenerateReport from "./component/ColorPalet/GeneatePdf";
 import PanelHeader from "./component/Panel/PanelHeader/PanelHeader";
 import SubMenuInfoReport from "./component/ExampleComponent/SubMenuInfoReport";
-
 import PhotoReviewTablist from "./component/Photo/PhotoReviewTablist/PhotoReviewTablist";
 import Ratings from './component/Rating/Ratings';
 import Stationery from './component/Stationery/Stationery';
+import LayoutOptions from './component/LayoutOptions/LayoutOptions';
 
 function App() {
+  console.log("app started");
   return (
-    <BrowserRouter>
+    // <div>
+    //   <h1>
+    //     Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nulla
+    //     molestias, tenetur repudiandae illo praesentium delectus deserunt quam
+    //     asperiores adipisci quaerat iste autem perspiciatis excepturi nemo fugit
+    //     nostrum magni. Placeat, explicabo.
+    //   </h1>
+    // </div>
+    <HashRouter>
       <Routes>
-        <Route path="/" element={<ClientInfo />}></Route>
+        <Route path="/" element={<ClientInfo />} index></Route>
         <Route path="/" element={<Footer />}></Route>
         <Route path="/colorpalet" element={<ColorPalet />}></Route>
         <Route path="/insertpdf" element={<InsertPdf />}></Route>
@@ -48,7 +57,6 @@ function App() {
         <Route path="/panel5" element={<Panel5 />}></Route>
         <Route path="/panel6" element={<Panel6 />}></Route>
         <Route path="/EditComments" element={<EditComments />}></Route>
-
         <Route path="/photoreview" element={<PhotoReviewTablist />}></Route>
         <Route path="/batchaddphotos" element={<BatchAddPhotos />}></Route>
         <Route path="/contractpage" element={<ContractPage />}></Route>
@@ -65,8 +73,11 @@ function App() {
         <Route path="/submenureport" element={<SubMenuInfoReport />} />
         <Route path="/ratings" element={<Ratings/>}/>
         <Route path="/stationery" element={<Stationery/>}/>
+        <Route path="/layoutOptions" element={<LayoutOptions/>}/>
+
+
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
 
     // <Editor />
   );

@@ -297,7 +297,6 @@ const DynamicMenuComponent = ({ onClose }) => {
     });
     setIsEditing(false);
   };
-
   // Function to cancel editing and revert changes
   const handleCancelEdit = () => {
     setIsEditing(false);
@@ -596,7 +595,7 @@ const DynamicMenuComponent = ({ onClose }) => {
                   <button onClick={handleCancelEdit}>Cancel</button>
                 </div>
               ) : (
-                <div onDoubleClick={() => handleSubNameDoubleClick(submenu)}>
+                <div onDoubleClick={handleSubNameDoubleClick}>
                   {submenu.subName}
                 </div>
               )}

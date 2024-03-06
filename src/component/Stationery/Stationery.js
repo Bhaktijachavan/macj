@@ -9,8 +9,10 @@ const Stationery = () => {
             <div>
                 <Header />
             </div>
+            {/* Container for the Stationery page content */}
             <div className="Stationery-page-cont">
                 <div className="Stationery-para">
+                 {/* Paragraph explaining the use of Report Stationery */}
                     <p>Report Stationery uses PDF files to create  adigital stationery that your report will be printed over.
                         this give the ultimate in report design customization. Use it to create a detailed cover page layout and to
                         create watermarks, border and footers on the rest of the page of your report</p>
@@ -21,6 +23,7 @@ const Stationery = () => {
                         We recommend saving your stationery into the Data folder of Home Inspector Pro before loading it there will (which make it easier to locate the future) but thia is not required</p>
                 </div>
                 <div className="adding-Stationery">
+                 {/* Section for Cover Page Stationery */}
                     <div className="cover-page-Stationery">
                         <h2>Cover Page Stationery</h2>
                         <div className="cover-page-Stationery-upload">
@@ -36,6 +39,7 @@ const Stationery = () => {
                         </div>
                     </div>
                     <div className="cover-page-Stationery">
+                     {/* Section for All Other Page Stationery */}
                     <h2>All Other Page Stationery</h2>
                     <div className="cover-page-Stationery-upload">
                         <div className="cover-page-Stationery-browse">
