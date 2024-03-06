@@ -3,7 +3,6 @@ import "./Header.css";
 import OpenTemp from "../OpenTemp/OpenTemp";
 import EditTemp from "../EditTemp/EditTemp";
 import SaveTemp from "../SaveTemp/SaveTemp";
-
 import img1 from "../../Assets/icons/open_inspection.png";
 import img2 from "../../Assets/icons/save_inspection.png";
 import img3 from "../../Assets/icons/open_template.png";
@@ -29,7 +28,9 @@ import { useNavigate } from "react-router-dom";
 import { useEditTempContext } from "../../Context";
 import SubMenuInfoReport from "./../ExampleComponent/SubMenuInfoReport";
 import Ratings from "./../Rating/Ratings";
+import LayoutOptions from './../LayoutOptions/LayoutOptions';
 import {
+
   downloadFile,
   encryptData,
   decryptData,
@@ -37,7 +38,6 @@ import {
   encryptionKey,
   downloadFileTpz,
 } from "../Function/function";
-
 const Header = ({ onButtonClick }) => {
   const navigate = useNavigate();
   const [openTemplatePopup, setOpenTemplatePopup] = useState(false);
@@ -49,29 +49,24 @@ const Header = ({ onButtonClick }) => {
   const [editDocumentPopup, setEditDocumentPopup] = useState(false);
   const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] =
     useState(false);
-
   const [activePopup, setActivePopup] = useState(null);
   const [colorPaletPopup, setOpenColorPaletPopup] = useState(false);
   const [pastedText, setPastedText] = useState("");
   const [value, setValue] = React.useState("");
   const [aboutUsPagePopup, setAboutUsPagePopup] = useState(false);
   const [ratingPopup, setRatingPopup] = useState(false);
+  const [optionsPopup, setOptionsPopup] = useState(false);
+
   const { showComment, setShowComment } = useEditTempContext();
-
   const ref = useRef(null);
-
   const [header, setHeader] = useState();
-
   const [activeDropdown, setActiveDropdown] = useState(null);
-
   const toggleDropdown = (key) => {
     setActiveDropdown(activeDropdown === key ? null : key);
   };
-
   const openOpenTemplatePopup = () => {
     setOpenTemplatePopup(true);
   };
-
   const closeOpenTemplatePopup = () => {
     setOpenTemplatePopup(false);
   };
@@ -84,15 +79,12 @@ const Header = ({ onButtonClick }) => {
   const openSaveTemplatePopup = () => {
     setSaveTemplatePopup(true);
   };
-
   const closeSaveTemplatePopup = () => {
     setSaveTemplatePopup(false);
   };
-
   const openEditTemplatePopup = () => {
     setEditTemplatePopup(true);
   };
-
   const closeEditTemplatePopup = () => {
     setEditTemplatePopup(false);
   };
@@ -114,10 +106,14 @@ const Header = ({ onButtonClick }) => {
   const closeRatingPopup = () => {
     setRatingPopup(false);
   };
-
+  const openOptionsPopup = () => {
+    setOptionsPopup(true);
+  };
+  const closeOptionsPopup = () => {
+    setOptionsPopup(false);
+  };
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
-
   const onSaveInspection = useCallback(() => {
     const panalData = localStorage.getItem("TempPanelData");
     const TempPanelData = JSON.parse(panalData);
@@ -128,12 +124,10 @@ const Header = ({ onButtonClick }) => {
     const uploadedImage = localStorage.getItem("uploadedImage");
     const menuData = JSON.parse(localStorage.getItem("menuData"));
     const outputContent = localStorage.getItem("outputContent");
-
     // Check if any of the required data is missing
     if (!TempPanelData || !clientInfoData || !menuData || !outputContent) {
       return alert("Please complete the process");
     }
-
     const InspectionData = {
       clientInfoData,
       TempPanelData,
@@ -145,18 +139,15 @@ const Header = ({ onButtonClick }) => {
       uploadedImage,
       id: Date.now(),
     };
-
     const encryptedData = encryptData(InspectionData, encryptionKey);
     downloadFile(encryptedData);
   }, []);
-
   const onOpenInspection = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const encryptedData = await readFileAsText(file);
       const decryptedData = decryptData(encryptedData, encryptionKey);
       console.log("decryptedData ", decryptedData);
-
       localStorage.setItem("menuData", JSON.stringify(decryptedData.menuData));
       localStorage.setItem(
         "SelectionData",
@@ -180,22 +171,18 @@ const Header = ({ onButtonClick }) => {
         "clientInfoData",
         JSON.stringify(decryptedData.clientInfoData)
       );
-
       alert("successfully opened");
     }
   };
-
   const handleOpenInspectionClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
-
   const handleSaveInspectionClick = () => {
     if (selectedFile) {
       // Perform save operation using the selectedFile
@@ -207,7 +194,6 @@ const Header = ({ onButtonClick }) => {
       console.log("Please select a file for inspection.");
     }
   };
-
   const saveTpz = () => {
     const getTemp = localStorage.getItem("menuData");
     const getPanalData = localStorage.getItem("TempPanelData");
@@ -216,52 +202,40 @@ const Header = ({ onButtonClick }) => {
     }
     const menuData = JSON.parse(getTemp);
     const TempPanelData = JSON.parse(getPanalData);
-
     const tempData = {
       menuData,
       TempPanelData,
     };
-
     const encryptedData = encryptData(tempData, encryptionKey);
     downloadFileTpz(encryptedData);
   };
-
   const openTpz = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const encryptedData = await readFileAsText(file);
       const decryptedData = decryptData(encryptedData, encryptionKey);
       console.log("decryptedData ", decryptedData);
-
       localStorage.setItem("menuData", JSON.stringify(decryptedData.menuData));
-
       localStorage.setItem(
         "TempPanelData",
         JSON.stringify(decryptedData.TempPanelData)
       );
-
       alert("successfully opened tpz file ");
     }
   };
-
   const [activeMenu, setActiveMenu] = useState(null);
-
   const handleMenuClick = (menuId) => {
     setActiveMenu(activeMenu === menuId ? null : menuId);
   };
-
   // const [activePopup, setActivePopup] = useState(null);
-
   const openPopup = (popupId) => {
     console.log(`Opening ${popupId} popup`);
     setActivePopup(popupId);
   };
-
   const closePopup = () => {
     console.log("Closing popup");
     setActivePopup(null);
   };
-
   const openisInternetLoginPopup = () => {
     setInternetLoginPopup(true);
   };
@@ -277,7 +251,6 @@ const Header = ({ onButtonClick }) => {
   const internetLogin = () => {
     console.log("Login Popup Clicked");
   };
-
   const openAboutUsPopup = () => {
     setAboutUsPagePopup(true);
   };
@@ -292,7 +265,6 @@ const Header = ({ onButtonClick }) => {
       setEditTemplatePopup(false);
     };
   }, []);
-
   const handleCopy = () => {
     // Get the selected text
     const selectedText = window.getSelection().toString();
@@ -306,7 +278,6 @@ const Header = ({ onButtonClick }) => {
         console.error("Error copying text:", error);
       });
   };
-
   const handlePaste = () => {
     // Paste the text from the clipboard
     navigator.clipboard
@@ -319,7 +290,6 @@ const Header = ({ onButtonClick }) => {
         console.error("Error pasting text:", error);
       });
   };
-
   useEffect(() => {
     const fetchMenuData = () => {
       const storedMenuData = localStorage.getItem("menuData");
@@ -332,20 +302,15 @@ const Header = ({ onButtonClick }) => {
         }
       }
     };
-
     // Execute the function immediately when the component mounts
     fetchMenuData();
-
     // Set up interval to check for updates every 50 seconds
     const intervalId = setInterval(fetchMenuData, 3000);
-
     return () => clearInterval(intervalId);
   }, []);
-
   const handleNavigate = (value) => {
     console.log("navigate", value);
   };
-
   return (
     <>
       <div
@@ -476,7 +441,6 @@ mt-2"
                 >
                   Cover Page Designer
                 </li>
-
                 <Link to="/submenureport">
                   <li
                     className=" hover:bg-gray-200"
@@ -490,7 +454,6 @@ mt-2"
                     Create And Edit Document
                   </li>
                 </Link>
-
                 <li
                   className=" hover:bg-gray-200"
                   style={{
@@ -503,7 +466,18 @@ mt-2"
                 >
                   Ratings
                 </li>
-
+                <li
+                  className=" hover:bg-gray-200"
+                  style={{
+                    height: "2em",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  onClick={openOptionsPopup}
+                >
+                  Options
+                </li>
                 <Link to="/stationery">
                   <li
                     className=" hover:bg-gray-200"
@@ -517,14 +491,11 @@ mt-2"
                   Stationery
                   </li>
                 </Link>
-
                 {/* </Link> */}
               </ul>
-              
             )}
           </div>
         </div>
-
         <div className="menu-item relative ml-4">
           <div
             className="main-label cursor-pointer"
@@ -693,7 +664,6 @@ border-black-900"
               </li>
             </button>
             <hr />
-
             {/* <Link to="/EditComments"> */}
             <li className="list-for-header-section-main-nav">
               <button
@@ -716,7 +686,6 @@ border-black-900"
               </button>
             </li>
             {/* </Link> */}
-
             <li
               className="list-for-header-section-main-nav  border-r
 border-black-900"
@@ -929,9 +898,14 @@ border-black-900"
             <Ratings onClose={closeRatingPopup} />
           </div>
         )}
+        {optionsPopup && (
+          <div className="popup Cover-Page-Design-Popup-ccc">
+            {/* Render your color palet component here */}
+            <LayoutOptions onClose={closeOptionsPopup} />
+          </div>
+        )}
       </div>
     </>
   );
 };
-
 export default Header;
