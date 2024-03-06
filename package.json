@@ -11,7 +11,6 @@
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "crypto-js": "^4.2.0",
-    "electron-packager": "^17.1.2",
     "html2canvas": "^1.4.1",
     "html2pdf": "^0.0.11",
     "html2pdf.js": "^0.10.1",
@@ -43,14 +42,14 @@
     "dev": "concurrently -k \"cross-env BROWSER=none npm start\" \"npm run electron:start\"",
     "electron:build": "yarn build && electron-builder -c.extraMetadata.main=build/main.js",
     "electron:start": "wait-on tcp:3000 && electron .",
-    "package": "electron-packager . electron-react --platform=win32 --arch=x64 --out=dist --overwrite"
+    "package": "electron-packager . electron-react --platform=win32 --arch=x64 --out=dist --overwrite",
+    "package-win":"electron-packager . macj --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"macj\""
   },
   "build": {
     "directories": {
       "output": "dist"
     }
   },
-
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -72,6 +71,7 @@
   "devDependencies": {
     "electron": "^28.1.1",
     "electron-builder": "^24.9.1",
+    "electron-packager": "^17.1.2",
     "tailwindcss": "^3.4.1"
   }
 }

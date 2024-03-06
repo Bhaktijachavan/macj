@@ -469,7 +469,7 @@ mt-2"
                   Cover Page Designer
                 </li>
 
-                <Link to="submenureport">
+                <Link to="/submenureport">
                   <li
                     className=" hover:bg-gray-200"
                     style={{
