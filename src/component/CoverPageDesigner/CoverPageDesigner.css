@@ -182,7 +182,7 @@ fieldset {
   width: 100%;
   display: grid;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
   height: 71vw;
   /* flex-wrap: wrap; */
   gap: 1em;
