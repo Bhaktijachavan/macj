@@ -8,6 +8,7 @@ import img6 from "../../../Assets/icons/gallery.png";
 import img7 from "../../../Assets/icons/remove.png";
 import CreateListEditComm from "./CreateListEditComm";
 import InsertListPopup from "./InsertListPopup/InsertListPopup";
+import AddLinkPopup from "./AddLinkPopup/AddLinkPopup";
 
 const AddComment = ({ onClose, value }) => {
   const [isCreateListVisible, setIsCreateListVisible] = useState(false);
@@ -16,6 +17,15 @@ const AddComment = ({ onClose, value }) => {
   const [isUnderline, setIsUnderline] = useState(false);
   const [text, setText] = useState("");
   const [insertListPopup, setInsertListPopup] = useState(false);
+  const [addLinkPopup, setAddLinkPopup] = useState(false);
+
+  const openAddLinkPopup = () => {
+    setAddLinkPopup(true);
+  };
+
+  const closeAddLinkPopup = () => {
+    setAddLinkPopup(false);
+  };
 
   const openInsertListPopup = () => {
     setInsertListPopup(true);
@@ -143,7 +153,7 @@ const AddComment = ({ onClose, value }) => {
               </div>
 
               <div className="text-sm hover:bg-gray-300 cursor-pointer">
-                <li className="p-2">
+                <li className="p-2" onClick={openAddLinkPopup}>
                   <div className="flex justify-center">
                     <img
                       src={img5}
@@ -151,8 +161,9 @@ const AddComment = ({ onClose, value }) => {
                       style={{ width: "30px", height: "30px" }}
                     />
                   </div>
+
                   <span>Link</span>
-                </li>
+                </li>{" "}
               </div>
 
               <div className="text-sm hover:bg-gray-300 cursor-pointer">
@@ -225,6 +236,11 @@ const AddComment = ({ onClose, value }) => {
               {insertListPopup && (
                 <div className="popup">
                   <InsertListPopup onClose={closeInsertListPopup} />
+                </div>
+              )}
+              {addLinkPopup && (
+                <div className="popup">
+                  <AddLinkPopup onClose={closeAddLinkPopup} />
                 </div>
               )}
               <textarea
