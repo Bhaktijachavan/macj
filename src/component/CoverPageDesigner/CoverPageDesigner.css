@@ -116,8 +116,12 @@ fieldset {
   border: 1px solid #00000038;
   background-color: white;
   font-size: 13px;
-  width: 10em;
+  width: 12em;
   height: 4em;
+  padding: 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .flex-containerdcdcdcdcd {
   display: flex;
@@ -179,7 +183,7 @@ fieldset {
   display: grid;
   justify-content: center;
   align-items: center;
-  height: 72vw;
+  height: 71vw;
   /* flex-wrap: wrap; */
   gap: 1em;
   flex-direction: column;
@@ -193,11 +197,11 @@ fieldset {
 .all-the-output-screen-with-all-the-changes-reflect-here {
   border: 1px solid black;
   /* padding: 1em; */
-  height: 48vw;
+  height: 71vw;
 }
 .with-borders {
   border: 5px solid rgb(62, 41, 255);
-  height: 72vw;
+  height: 71vw;
 }
 
 .react-draggable-dragged {
@@ -212,4 +216,10 @@ fieldset {
   justify-content: center;
 }
 .draggableeeee-for-inspection {
+}
+.buttons-with-apply-export-import-discard-changes-apply {
+  display: grid;
+  justify-content: center;
+  gap: 1em;
+  padding: 1em;
 }

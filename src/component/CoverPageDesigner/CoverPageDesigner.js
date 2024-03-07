@@ -653,34 +653,39 @@ function CoverPageDesigner({ onClose }) {
                   </div>
                 </div>
               </fieldset>
-              <div className="contains-bottom-section-with-buttons-design-cover-page">
-                <div className="buttons-with-apply-export-import-discard-changes-apply">
-                  <button
-                    onClick={exportStateSave}
-                    className="button-for-footer-for-changes-in-cover-page"
-                  >
-                    Apply Changes <br /> to Template Template
-                  </button>{" "}
-                  <button
-                    onClick={exportState}
-                    className="button-for-footer-for-changes-in-cover-page"
-                  >
-                    Export Layout to a <br /> File for Future Use
-                  </button>
-                  <button
-                    onClick={() => fileInputRef.current.click()}
-                    className="button-for-footer-for-changes-in-cover-page"
-                  >
-                    Import Layout <br /> from File
-                  </button>{" "}
-                  <button
-                    className="button-for-footer-for-changes-in-cover-page"
-                    onClick={() => setAddedImages([])}
-                  >
-                    Discard <br /> Changes
-                  </button>
+              <fieldset className="bordered-text">
+                <legend className="tag-for-line-draw-through-text">
+                  Buttons
+                </legend>
+                <div className="contains-bottom-section-with-buttons-design-cover-page">
+                  <div className="buttons-with-apply-export-import-discard-changes-apply">
+                    <button
+                      onClick={exportStateSave}
+                      className="button-for-footer-for-changes-in-cover-page"
+                    >
+                      Apply Changes <br /> to Template Template
+                    </button>{" "}
+                    <button
+                      onClick={exportState}
+                      className="button-for-footer-for-changes-in-cover-page"
+                    >
+                      Export Layout to a <br /> File for Future Use
+                    </button>
+                    <button
+                      onClick={() => fileInputRef.current.click()}
+                      className="button-for-footer-for-changes-in-cover-page"
+                    >
+                      Import Layout <br /> from File
+                    </button>{" "}
+                    <button
+                      className="button-for-footer-for-changes-in-cover-page"
+                      onClick={() => setAddedImages([])}
+                    >
+                      Discard <br /> Changes
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </fieldset>
             </div>
             {/* Layering Column */}
             <fieldset className="bordered-text w-1/4">
