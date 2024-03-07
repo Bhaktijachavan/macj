@@ -11,6 +11,9 @@ const SelectionComponent = ({ panelData, value, classname }) => {
   useEffect(() => {
     const fetchData = () => {
       const storedData = localStorage.getItem("TempPanelData");
+      selectedTextRef.current = selectedTextRef.current.filter(
+        (text) => text !== ""
+      );
       if (storedData) {
         const parsedData = JSON.parse(storedData);
         const commentText = parsedData[value] || "";
@@ -25,6 +28,10 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
   }, [value]);
+
+  useEffect(() => {
+    console.log("selectedTextRef.current", selectedTextRef.current);
+  });
 
   useEffect(() => {
     const data = localStorage.getItem("SelectionData");
@@ -115,18 +122,38 @@ const SelectionComponent = ({ panelData, value, classname }) => {
         setCommentText(updatedCommentText);
         console.log("Texts removed from comments:", selectedTexts);
 
-        // Update localStorage with the modified commentText
+        // Update localStorage with the modified commentText in TempPanelData
         const storedData = localStorage.getItem("TempPanelData");
         if (storedData) {
           const parsedData = JSON.parse(storedData);
           parsedData[value] = updatedCommentText;
           localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
-          setLocalSelectedText(""); // Reset selected text
           console.log(
-            "Updated commentText in localStorage:",
+            "Updated commentText in TempPanelData:",
             parsedData[value]
           );
         }
+
+        // Remove the deleted text from SelectionData
+        const selectionData = localStorage.getItem("SelectionData");
+        if (selectionData) {
+          const parsedSelectionData = JSON.parse(selectionData);
+          if (parsedSelectionData[value]) {
+            parsedSelectionData[value].selectionText = parsedSelectionData[
+              value
+            ].selectionText.replace(selectedTexts.join("\n"), "");
+            localStorage.setItem(
+              "SelectionData",
+              JSON.stringify(parsedSelectionData)
+            );
+            console.log("Updated SelectionData:", parsedSelectionData);
+          }
+        }
+
+        // Remove the deleted text from selectedTextRef
+        selectedTextRef.current = selectedTextRef.current.filter(
+          (text) => !selectedTexts.includes(text)
+        );
       }
     }
   };
