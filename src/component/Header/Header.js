@@ -662,6 +662,39 @@ border-black-900"
               </li>
             </button>
             <hr />
+            <div className="list-for-header-section-main-nav
+             hover:bg-gray-200">
+              <div className="flex justify-center mt-1">
+                <img src={img4} alt="" />
+              </div>
+              <li >
+                <label
+                  className="header2-tag-a"
+                  style={{ cursor: "pointer" }}
+                >
+                  <div>
+                    Open <br /> Template
+                    <input
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={openTpz}
+                      accept=".tpz"
+                    />
+                  </div>
+                </label>
+              </li>
+            </div>
+            <div className="list-for-header-section-main-nav border-r
+            border-black-900 mt-2">
+
+              <li className="hover:bg-gray-200" onClick={saveTpz}>
+                <div className="flex justify-center">
+                  <img src={img3} alt="" />
+                </div>
+                Save <br />Template
+              </li>
+            </div>
+
             {/* <Link to="/EditComments"> */}
             <li className="list-for-header-section-main-nav">
               <button
@@ -782,7 +815,7 @@ border-black-900"
                   );
                   setValue(paste);
                 }}
-                // onClick={handlePaste}
+              // onClick={handlePaste}
               >
                 <div className="flex justify-center">
                   <img src={img11} alt="" />
