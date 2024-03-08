@@ -49,11 +49,14 @@
 }
 .button-container-editcomm {
   display: flex;
-  margin-top: 5px;
+  /* margin-top: 5px; */
   /* justify-content: space-between; */
-  width: 200px;
-  margin-left: 40%;
-  padding: 5px;
+  /* width: 200px; */
+  /* margin-left: 40%; */
+  /* padding: 5px; */
+  justify-content: center;
+  align-items: center;
+  height: 5em;
 }
 
 .open-button-editcomm {
