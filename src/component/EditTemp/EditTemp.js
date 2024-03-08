@@ -715,8 +715,7 @@ ml-2"
                     id="submenuName"
                     value={submenuName}
                     onChange={(e) => setSubmenuName(e.target.value)}
-                    className="w-40 h-7 border border-black p-2 m-1
-ml-2"
+                    className="w-40 h-7 border border-black p-2 m-1 ml-2"
                     placeholder="Submenu Name"
                   />
                   <button onClick={handleAddSubmenu}>Add Submenu</button>
