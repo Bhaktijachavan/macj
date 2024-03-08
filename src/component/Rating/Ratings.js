@@ -70,6 +70,21 @@ const Ratings = ({ onClose }) => {
   const handleCheckbox2Change = () => {
     setCheckbox2(!checkbox2);
   };
+  const handleDone = () => {
+    // Create an object to store the rating names
+    const ratingsData = {
+      ratingName1,
+      ratingName2,
+      ratingName3,
+      ratingName4,
+      ratingName5,
+    };
+
+    // Convert the object to a JSON string and store it in localStorage
+    localStorage.setItem('ratingsData', JSON.stringify(ratingsData));
+    alert("the data has been saved " , JSON.stringify(ratingsData))
+  };
+
   return (
     <div className="container-for-the-ratings">
       <div className="width-set-for-the-ratings">
@@ -242,7 +257,7 @@ const Ratings = ({ onClose }) => {
                 </div>
                 {/* Button to complete Ratings configuration */}
                 <div className="Ratings-done-btn">
-                  <button className="rating-done-btn">Done</button>
+                  <button className="rating-done-btn" onClick={handleDone}>Done</button>
                 </div>
               </div>
             )}

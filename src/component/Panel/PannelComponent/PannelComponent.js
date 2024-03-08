@@ -16,6 +16,18 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [selectedLineColor, setSelectedLineColor] = useState(null);
   const [showImage, setShowImage] = useState();
   const [commentText, setCommentText] = useState("");
+  const [rating , setRating ] = useState()
+
+
+
+  useEffect(()=>{
+    const newData = localStorage.getItem('ratingsData')
+    const parseData = JSON.parse(newData)
+    setRating(parseData)
+
+    
+    console.log(parseData)
+  },[])
 
   useEffect(() => {
     const data = localStorage.getItem("DamageData");
@@ -334,22 +346,26 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
 
            <div className="flex p-2">
            <div className="p-5 pt-7">
-           {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
-             <div
-               key={index}
-               className="flex items-center mb-2 checkbox-container"
-             >
-               <input
-                 type="checkbox"
-                 id={label}
-                 name={label}
-                 value={label}
-                 style={{ backgroundColor: "#3182ce" }}
-                 className="mr-2 focus:ring-2 focus:ring-blue-500 checked:bg-blue-500 checked:border-blue-500"
-               />
-               <label htmlFor={label}>{label}</label>
-             </div>
-           ))}
+           {!rating ? (
+            <div>
+              ....Loading
+            </div>
+          ) : (
+            Object.keys(rating).map((key, index) => (
+              <div key={index} className="flex items-center mb-2 checkbox-container">
+                <input
+                  type="checkbox"
+                  id={key}
+                  name={key}
+                  value={rating[key]}
+                  style={{ backgroundColor: "#3182ce" }}
+                  className="mr-2 focus:ring-2 focus:ring-blue-500 checked:bg-blue-500 checked:border-blue-500"
+                />
+                <label htmlFor={key}>{rating[key]}</label>
+              </div>
+            ))
+          )}
+          
          </div>
 
        <div className="flex flex-col space-y-2 ml-2 mr-2 text-sm pt-10">
