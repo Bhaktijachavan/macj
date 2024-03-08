@@ -398,9 +398,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
          <button className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-0 py-0 rounded">
            Show Photos
          </button>
-         <button className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-0 py-0 rounded">
-           Show PDFs
-         </button>
+
        </div>
 
        <div className="container1-panel2">
