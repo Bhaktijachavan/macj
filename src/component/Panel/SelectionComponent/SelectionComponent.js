@@ -163,47 +163,56 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     const selectedTexts = selectedTextRef.current;
     if (selectedTexts) {
       const lines = commentText.split("\n");
-      const index = lines.indexOf(selectedTexts[0]);
-      if (index > 0) {
-        const newIndex = index - 1;
-        const updatedLines = [...lines];
-        [updatedLines[newIndex], updatedLines[index]] = [
-          updatedLines[index],
-          updatedLines[newIndex],
-        ];
-        const updatedCommentText = updatedLines.join("\n");
-        setCommentText(updatedCommentText);
+      const updatedLines = [...lines];
 
-        const PanelData = JSON.parse(localStorage.getItem("TempPanelData"));
-        if (PanelData) {
-          PanelData[value] = updatedCommentText;
-          localStorage.setItem("TempPanelData", JSON.stringify(PanelData));
-          console.log("Text moved up in comments:", updatedCommentText);
+      selectedTexts.forEach((selectedText) => {
+        const index = updatedLines.indexOf(selectedText);
+        if (index > 0) {
+          const newIndex = index - 1;
+          [updatedLines[newIndex], updatedLines[index]] = [
+            updatedLines[index],
+            updatedLines[newIndex],
+          ];
         }
+      });
+
+      const updatedCommentText = updatedLines.join("\n");
+      setCommentText(updatedCommentText);
+
+      const PanelData = JSON.parse(localStorage.getItem("TempPanelData"));
+      if (PanelData) {
+        PanelData[value] = updatedCommentText;
+        localStorage.setItem("TempPanelData", JSON.stringify(PanelData));
+        console.log("Text moved up in comments:", updatedCommentText);
       }
     }
   };
 
   const handleMoveDownSelection = () => {
-    const selectedText = selectedTextRef.current[0];
-    if (selectedText) {
+    const selectedTexts = selectedTextRef.current;
+    if (selectedTexts) {
       const lines = commentText.split("\n");
-      const index = lines.indexOf(selectedText);
-      if (index < lines.length - 1) {
-        const newIndex = index + 1;
-        const updatedLines = [...lines];
-        [updatedLines[newIndex], updatedLines[index]] = [
-          updatedLines[index],
-          updatedLines[newIndex],
-        ];
-        const updatedCommentText = updatedLines.join("\n");
-        setCommentText(updatedCommentText);
-        const PanelData = JSON.parse(localStorage.getItem("TempPanelData"));
-        if (PanelData) {
-          PanelData[value] = updatedCommentText;
-          localStorage.setItem("TempPanelData", JSON.stringify(PanelData));
-          console.log("Text moved up in comments:", updatedCommentText);
+      const updatedLines = [...lines];
+
+      selectedTexts.forEach((selectedText) => {
+        const index = updatedLines.indexOf(selectedText);
+        if (index < updatedLines.length - 1) {
+          const newIndex = index + 1;
+          [updatedLines[newIndex], updatedLines[index]] = [
+            updatedLines[index],
+            updatedLines[newIndex],
+          ];
         }
+      });
+
+      const updatedCommentText = updatedLines.join("\n");
+      setCommentText(updatedCommentText);
+
+      const PanelData = JSON.parse(localStorage.getItem("TempPanelData"));
+      if (PanelData) {
+        PanelData[value] = updatedCommentText;
+        localStorage.setItem("TempPanelData", JSON.stringify(PanelData));
+        console.log("Text moved down in comments:", updatedCommentText);
       }
     }
   };
@@ -213,7 +222,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       <div>
         <div className="panel-heading text-center m-2"></div>
         <div className="pl-2 m-2 flex">
-          <div className="Editcomments-and-checkbox-container">
+          <div className="Editcomments-and-checkbox-container pl-4">
             <EditComments
               value={value}
               handleDelete={HandleDeleteText}
@@ -225,14 +234,13 @@ const SelectionComponent = ({ panelData, value, classname }) => {
               onClick={handlesave}
               type="button"
               className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black py-0 rounded text-sm w-24"
-              >
-              Save Data For report
+            >
+              Save Data
+              <br /> For report
             </button>
           </div>
           <div
-            className={
-              classname ? classname : "scroll-box-panel2 p-4 bg-gray-100"
-            }
+            className={classname ? classname : "scroll-box-panel3 bg-gray-100"}
             style={{ cursor: "pointer" }}
             onMouseUp={handleTextSelectionforSelectionChange}
           >

@@ -18,7 +18,37 @@ const AddComment = ({ onClose, value }) => {
   const [text, setText] = useState("");
   const [insertListPopup, setInsertListPopup] = useState(false);
   const [addLinkPopup, setAddLinkPopup] = useState(false);
+  const [notesAndCaptions, setNotesAndCaptions] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      // Preview the selected image
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+
+      // You can also save the file object if needed
+      // setFileObject(file);
+    }
+  };
+  const handleDeletePhoto = () => {
+    setSelectedImage(null);
+    window.alert("Are you want to delete this photo?");
+  };
+  const handleEditNote = () => {
+    setNotesAndCaptions([...notesAndCaptions, { type: "note", text }]);
+    setText((prevText) => `${prevText}\n[[note]]`);
+  };
+
+  const handleEditCaption = () => {
+    setNotesAndCaptions([...notesAndCaptions, { type: "caption", text }]);
+    setText((prevText) => `${prevText}\n[[caption]]`);
+  };
   const openAddLinkPopup = () => {
     setAddLinkPopup(true);
   };
@@ -56,6 +86,15 @@ const AddComment = ({ onClose, value }) => {
 
   const SaveText = () => {
     console.log("Saving text:", text);
+    try {
+      // Handle saving notes and captions to local storage or your desired storage mechanism
+      // ...
+
+      // Reset the notes and captions state
+      setNotesAndCaptions([]);
+    } catch (error) {
+      console.error("Error saving notes and captions:", error);
+    }
     try {
       // Check if TempPanelData already exists in local storage
       let tempPanelData = localStorage.getItem("TempPanelData");
@@ -135,7 +174,7 @@ const AddComment = ({ onClose, value }) => {
                       style={{ width: "30px", height: "30px" }}
                     />
                   </div>
-                  <span>Add Note</span>
+                  <button onClick={handleEditNote}>Add Note</button>
                 </li>
               </div>
 
@@ -148,7 +187,7 @@ const AddComment = ({ onClose, value }) => {
                       style={{ width: "30px", height: "30px" }}
                     />
                   </div>
-                  <span>Add Caption</span>
+                  <button onClick={handleEditCaption}>Add Caption</button>
                 </li>
               </div>
 
@@ -175,7 +214,10 @@ const AddComment = ({ onClose, value }) => {
                       style={{ width: "30px", height: "30px" }}
                     />
                   </div>
-                  <span>Link Photo</span>
+                  <label className="custom-file-upload">
+                    <input type="file" onChange={handleImageChange} hidden />
+                    Link Photo
+                  </label>
                 </li>
               </div>
 
@@ -188,7 +230,7 @@ const AddComment = ({ onClose, value }) => {
                       style={{ width: "30px", height: "30px" }}
                     />
                   </div>
-                  <span>Delete Photo</span>
+                  <span onClick={handleDeletePhoto}>Delete Photo</span>
                 </li>
               </div>
 
@@ -247,7 +289,7 @@ const AddComment = ({ onClose, value }) => {
                 style={{
                   fontWeight: isBold ? "bold" : "normal",
                   fontStyle: isItalic ? "italic" : "normal",
-                  width: "115vh",
+                  width: "100%",
                   height: "40vh",
                   boxSizing: "border-box",
                 }}
@@ -258,6 +300,13 @@ const AddComment = ({ onClose, value }) => {
           </div>
 
           <div className="button-container-editcomm">
+            {selectedImage && (
+              <img
+                src={selectedImage}
+                alt="Selected"
+                style={{ width: "100px", height: "100px" }}
+              />
+            )}
             <button className="open-button-editcomm" onClick={SaveText}>
               Ok
             </button>
