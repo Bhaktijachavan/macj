@@ -222,7 +222,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       <div>
         <div className="panel-heading text-center m-2"></div>
         <div className="pl-2 m-2 flex">
-          <div className="Editcomments-and-checkbox-container">
+          <div className="Editcomments-and-checkbox-container pl-4">
             <EditComments
               value={value}
               handleDelete={HandleDeleteText}
@@ -235,13 +235,12 @@ const SelectionComponent = ({ panelData, value, classname }) => {
               type="button"
               className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black py-0 rounded text-sm w-24"
             >
-              Save Data For report
+              Save Data
+              <br /> For report
             </button>
           </div>
           <div
-            className={
-              classname ? classname : "scroll-box-panel2 p-4 bg-gray-100"
-            }
+            className={classname ? classname : "scroll-box-panel3 bg-gray-100"}
             style={{ cursor: "pointer" }}
             onMouseUp={handleTextSelectionforSelectionChange}
           >
