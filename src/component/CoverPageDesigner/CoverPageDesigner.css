@@ -205,7 +205,7 @@ fieldset {
 }
 
 .react-draggable-dragged {
-  /* width: 10em; */
+  width: 10em;
 }
 .draggableeeee::selection {
   background-color: skyblue;
