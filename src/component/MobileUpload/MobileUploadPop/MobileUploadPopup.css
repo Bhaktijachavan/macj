@@ -1,0 +1,159 @@
+/* Styles for the header containing the close button */
+.close-button-and-mobileuploadpopup-header-for-popup-box {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0 0 1em;
+    align-items: center;
+    background-color: rgb(242, 236, 236);
+  }
+  
+  .close-btn-mobileuploadpopup {
+    width: 2em;
+    height: 31px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Hover effect for the close button */
+  .close-btn-mobileuploadpopup:hover {
+    background-color: red;
+    cursor: pointer;
+    color: white;
+  }
+ 
+  
+ 
+  
+  /* Styling for the width and position of the popup */
+  .width-set-for-the-mobileuploadpopup {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    width: 70%;
+    height: 80%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(229, 229, 229);
+    border: 1px solid #ccc;
+    z-index: 9999; /* Ensure the popup is above other elements */
+  }
+  
+ 
+  /* Styling for text in the mobileuploadpopup section */
+  .text-mobileuploadpopup {
+    font-size: 14px;
+  }
+  
+  
+  
+  /* Styling for the "Delete" button */
+  .delete-button-mobileuploadpopup {
+    font-size: 14px;
+    width: 160px;
+    height: 30px;
+    background-color: #f3f2f1;
+    color: black;
+    border: 2px solid rgb(191, 189, 189);
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+
+  }
+  
+  /* Hover effect for the "Delete" button */
+  .delete-button-mobileuploadpopup:hover {
+    background-color: #d7e9f7;
+    border-color: #005a9e; /* Darker green color on hover */
+  }
+ 
+  /* Styling for the "Refresh" button */
+  .refresh-button-mobileuploadpopup {
+    font-size: 14px;
+    width: 160px;
+    height: 30px;
+    background-color: #f3f2f1;
+    color: black;
+    border: 2px solid rgb(191, 189, 189);
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+
+    
+  }
+  
+  /* Hover effect for the "Refresh" button */
+  .refresh-button-mobileuploadpopup:hover {
+    background-color: #d7e9f7;
+    border-color: #005a9e; /* Darker green color on hover */
+  }
+
+  
+  .custom-table-mobileuploadpopup {
+    width: 95%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    margin: 25px;
+    
+  }
+  
+  .custom-table-mobileuploadpopup th,
+  .custom-table-mobileuploadpopup td {
+    border: 1px solid #c9c8c8;
+    padding: 6px;
+    text-align: center;
+    background-color: #f2f2f2;
+    font-size: 14px;
+  }
+  
+  .custom-table-mobileuploadpopup th {
+    background-color: #f2f2f2;
+  }
+  
+  .container-header-mobileuploadpopup {
+    margin: 2px;
+    padding: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+  }
+  
+  .container-button-mobileuploadpopup {
+    margin: 1px;
+    padding: 2px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    display: flex;
+    gap: 1em;
+  }
+
+  .close-button-mobileuploadpopup{
+    font-size: 14px;
+    width: 100px;
+    height: 30px;
+    background-color: #f3f2f1;
+    color: black;
+    border: 2px solid rgb(191, 189, 189);
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 945px;
+  }
+ 
+  .close-button-mobileuploadpopup:hover {
+    background-color: #d7e9f7;
+    border-color: #005a9e; /* Darker green color on hover */
+  }
+ 
+  

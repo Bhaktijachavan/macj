@@ -1,10 +1,24 @@
-import React from "react";
+import React, {useState} from "react";
 import "./MobileUpload.css";
 import Header from "./../Header/Header";
 import Footer from "./../Footer/Footer";
+import { Link } from "react-router-dom";
+import MobileUploadPopup from "./MobileUploadPop/MobileUploadPopup";
+const MobileUpload = ({onClose}) => {
+  const [mobileUploadPopup, setMobileUploadPopup] = useState(false);
 
-const MobileUpload = () => {
+  const openMobileUploadPopup = () => {
+    setMobileUploadPopup(true);
+  };
+
+  const closeMobileUploadPopup = () => {
+    setMobileUploadPopup(false);
+  };
+
+
+
   return (
+
     <>
       <Header />
       <div className="container-mobileupload">
@@ -24,7 +38,7 @@ const MobileUpload = () => {
         <div className="flex-container-mobileupload">
           <div className="template-mobileupload">
             <div className="title-mobileupload">
-              <h1>TEMPLATES</h1>
+                <h1>TEMPLATES</h1>
               <p>
                 Click Upload Template to select a template on this computer and
                 send it to the Cloud. <br />
@@ -69,14 +83,23 @@ const MobileUpload = () => {
                 please wait until you receive confirmation message.
               </p>
             </div>
-            <div className="buttons-mobileupload">
-              <button className="button-mobileupload">
-                {/* <i className="fa fa-upload" className="i-mobileupload"></i>   */}
-                <br />
+            <div className="buttons-mobileupload" onClick={openMobileUploadPopup}>
+          
+              <button className="button-mobileupload" > 
                 Upload Template
               </button>
+             
             </div>
           </div>
+          {/* <i className="fa fa-upload" className="i-mobileupload"></i>   */}
+          {/* <br /> */}
+                {mobileUploadPopup && (
+              
+                  <MobileUploadPopup 
+                    onClose={() => closeMobileUploadPopup(false)}
+                  />
+              
+              )}
         </div>
         <div className="container-footer-mobileupload">
           <button className="button-footer-mobileupload">

@@ -31,6 +31,7 @@ import PhotoReviewTablist from "./component/Photo/PhotoReviewTablist/PhotoReview
 import Ratings from './component/Rating/Ratings';
 import Stationery from './component/Stationery/Stationery';
 import LayoutOptions from './component/LayoutOptions/LayoutOptions';
+import MobileUploadPopup from "./component/MobileUpload/MobileUploadPop/MobileUploadPopup";
 
 function App() {
   console.log("app started");
@@ -74,7 +75,7 @@ function App() {
         <Route path="/ratings" element={<Ratings/>}/>
         <Route path="/stationery" element={<Stationery/>}/>
         <Route path="/layoutOptions" element={<LayoutOptions/>}/>
-
+        <Route path="/mobileuploadpopup" element={<MobileUploadPopup/>}/>  
 
       </Routes>
     </HashRouter>
