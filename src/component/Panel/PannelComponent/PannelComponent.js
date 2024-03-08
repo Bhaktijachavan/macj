@@ -115,7 +115,6 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       const lines = commentText.split("\n"); // Split commentText into an array of lines
       const index = lines.indexOf(selectedText); // Find the index of the selected text
       if (index > 0) {
-        // Ensure it's not the first line
         const newIndex = index - 1; // Reduce the index by 1 to move it up
         const updatedLines = [...lines]; // Create a copy of the array
         // Swap the selected line with the line above it
@@ -137,12 +136,12 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
     }
   };
 
-  const handleMoveDownDamage = ()=>{
-    console.log("handle move down function called ")
-    if(selectedText){
+  const handleMoveDownDamage = () => {
+    console.log("handle move down function called ");
+    if (selectedText) {
       const lines = commentText.split("\n");
       const index = lines.indexOf(selectedText);
-      if(index < lines.length - 1){
+      if (index < lines.length - 1) {
         const newIndex = index + 1;
         const updatedLines = [...lines];
         [updatedLines[newIndex], updatedLines[index]] = [
@@ -152,7 +151,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
         const updatedCommentText = updatedLines.join("\n");
         setCommentText(updatedCommentText);
         const PanalData = JSON.parse(localStorage.getItem("TempPanelData"));
-        if(PanalData){
+        if (PanalData) {
           PanalData[value] = updatedCommentText;
           localStorage.setItem("TempPanelData", JSON.stringify(PanalData));
           console.log("Text moved down in comments:", updatedCommentText);
@@ -160,8 +159,8 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
         setSelectedText(updatedLines[newIndex]);
       }
     }
-    }
-  
+  };
+
   const HandleDeleteText = () => {
     console.log("HandleDeleteText function called");
     if (window.confirm(`are you want to delete : ${selectedText}`)) {
@@ -311,39 +310,15 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       <div>
         <div className="container-panel2">
           <div className="panel2">
-            <div className="Editcomments-and-checkbox-container">
+            <div className="Editcomments-and-checkbox-container flex pl-5">
               <EditComments
                 value={value}
                 handleDelete={HandleDeleteText}
-                sortCommentText={sortCommentText}
+                sortCommentText={sortCommentText} 
                 moveUp={handleMoveUpDamage}
                 moveDown={handleMoveDownDamage}
               />
-
-              <input
-              />
-
-              <div className="p-5">
-                {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center mb-2 checkbox-container"
-                  >
-                    <input
-                      type="checkbox"
-                      id={label}
-                      name={label}
-                      value={label}
-                      style={{ backgroundColor: "#3182ce" }}
-                      className="mr-2 focus:ring-2 focus:ring-blue-500 checked:bg-blue-500 checked:border-blue-500"
-                    />
-                    <label htmlFor={label}>{label}</label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div
+              <div
               className="scroll-box-panel2 p-4 bg-gray-100"
               style={{ cursor: "pointer" }}
               onMouseUp={handleTextSelection}
@@ -352,158 +327,183 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 <p key={index}>{line}</p>
               ))}
             </div>
+             
 
-            <div className="flex flex-col space-y-2 ml-2 mr-2 text-sm">
-              <button
-                onClick={handlesave}
-                type="button"
-                className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-              >
-                Save Data For report
-              </button>
-              <button
-                className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
-                onClick={() => handleAddText("black")}
-              >
-                Black
-              </button>
-
-              <button
-                className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
-                onClick={() => handleAddText("red")}
-              >
-                Red
-              </button>
-              <button
-                className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
-                onClick={handleDelete}
-              >
-                Delete
-              </button>
-              <button className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-0 py-0 rounded">
-                Show Photos
-              </button>
-              <button className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-0 py-0 rounded">
-                Show PDFs
-              </button>
+              
             </div>
 
-            <div className="container1-panel2">
-              <div
-                className="scroll-box1-panel2"
-                onClick={() => handleLineClick(index, "black")}
-              >
-                {blackText &&
-                  blackText.split("\n").map((line, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor:
-                          selectedLineColor === "black" &&
-                          selectedLineIndex === index
-                            ? "#ddd"
-                            : "transparent",
-                      }}
-                      onClick={() => {
-                        setSelectedLine(line);
-                        setSelectedLineText(index);
-                        handleLineClick(index, "black");
-                      }}
-                    >
-                      {line}
-                    </div>
-                  ))}
-              </div>
+           <div className="flex p-2">
+           <div className="p-5 pt-7">
+           {["Good", "Fair", "Poor", "N/A", "None"].map((label, index) => (
+             <div
+               key={index}
+               className="flex items-center mb-2 checkbox-container"
+             >
+               <input
+                 type="checkbox"
+                 id={label}
+                 name={label}
+                 value={label}
+                 style={{ backgroundColor: "#3182ce" }}
+                 className="mr-2 focus:ring-2 focus:ring-blue-500 checked:bg-blue-500 checked:border-blue-500"
+               />
+               <label htmlFor={label}>{label}</label>
+             </div>
+           ))}
+         </div>
 
-              <div
-                className="scroll-box1-panel2"
-                style={{ padding: "10px", color: "red" }}
-              >
-                {redText &&
-                  redText.split("\n").map((line, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor:
-                          selectedLineColor === "red" &&
-                          selectedLineIndex === index
-                            ? "#ddd"
-                            : "transparent",
-                      }}
-                      onClick={() => {
-                        setSelectedLine(line);
-                        setSelectedLineText(index);
-                        handleLineClick(index, "red");
-                      }}
-                    >
-                      {line}
-                    </div>
-                  ))}
-              </div>
-            </div>
-            <div className="panelupdown-panel2">
-              <div className="button-container-panel2">
-                <button
-                  className="image-button-panel2"
-                  onClick={() => handleMoveUp(blackText, setBlackText)}
-                >
-                  <img src="ic_up.png" alt="Button 1" width={20} />
-                </button>
+       <div className="flex flex-col space-y-2 ml-2 mr-2 text-sm pt-10">
+         <button
+           onClick={handlesave}
+           type="button"
+           className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+         >
+           Save Data For report
+         </button>
+         <button
+           className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+           onClick={() => handleAddText("black")}
+         >
+           Black
+         </button>
 
-                <button
-                  className="image-button-panel2"
-                  onClick={() => handleMoveDown(blackText, setBlackText)}
-                >
-                  <img src="ic_down.png" alt="Button 2" width={20} />
-                </button>
+         <button
+           className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+           onClick={() => handleAddText("red")}
+         >
+           Red
+         </button>
+         <button
+           className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+           onClick={handleDelete}
+         >
+           Delete
+         </button>
+         <button className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-0 py-0 rounded">
+           Show Photos
+         </button>
+         <button className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-0 py-0 rounded">
+           Show PDFs
+         </button>
+       </div>
 
-                <button
-                  className="image-button-panel2"
-                  onClick={handleMoveDownRedBox}
-                >
-                  <img src="ic_down2.png" alt="Button 3" width={20} />
-                </button>
-              </div>
+       <div className="container1-panel2">
+         <div
+           className="scroll-box1-panel2"
+           onClick={() => handleLineClick(index, "black")}
+         >
+           {blackText &&
+             blackText.split("\n").map((line, index) => (
+               <div
+                 key={index}
+                 style={{
+                   cursor: "pointer",
+                   backgroundColor:
+                     selectedLineColor === "black" &&
+                     selectedLineIndex === index
+                       ? "#ddd"
+                       : "transparent",
+                 }}
+                 onClick={() => {
+                   setSelectedLine(line);
+                   setSelectedLineText(index);
+                   handleLineClick(index, "black");
+                 }}
+               >
+                 {line}
+               </div>
+             ))}
+         </div>
 
-              <div className="button-container-panel2">
-                <button
-                  className="image-button-panel2"
-                  onClick={handleMoveUpBlackBox}
-                >
-                  <img src="ic_up2.png" alt="Button 3" width={20} />
-                </button>
+         <div
+           className="scroll-box1-panel2"
+           style={{ padding: "10px", color: "red" }}
+         >
+           {redText &&
+             redText.split("\n").map((line, index) => (
+               <div
+                 key={index}
+                 style={{
+                   cursor: "pointer",
+                   backgroundColor:
+                     selectedLineColor === "red" &&
+                     selectedLineIndex === index
+                       ? "#ddd"
+                       : "transparent",
+                 }}
+                 onClick={() => {
+                   setSelectedLine(line);
+                   setSelectedLineText(index);
+                   handleLineClick(index, "red");
+                 }}
+               >
+                 {line}
+               </div>
+             ))}
+         </div>
+       </div>
+       <div className="panelupdown-panel2">
+         <div className="button-container-panel2">
+           <button
+             className="image-button-panel2"
+             onClick={() => handleMoveUp(blackText, setBlackText)}
+           >
+             <img src="ic_up.png" alt="Button 1" width={20} />
+           </button>
 
-                <button
-                  className="image-button-panel2"
-                  onClick={() => handleMoveUp(redText, setRedText)}
-                >
-                  <img src="ic_up.png" alt="Button 1" width={20} />
-                </button>
+           <button
+             className="image-button-panel2"
+             onClick={() => handleMoveDown(blackText, setBlackText)}
+           >
+             <img src="ic_down.png" alt="Button 2" width={20} />
+           </button>
 
-                <button
-                  className="image-button-panel2"
-                  onClick={() => handleMoveDown(redText, setRedText)}
-                >
-                  <img src="ic_down.png" alt="Button 2" width={20} />
-                </button>
-              </div>
-            </div>
+           <button
+             className="image-button-panel2"
+             onClick={handleMoveDownRedBox}
+           >
+             <img src="ic_down2.png" alt="Button 3" width={20} />
+           </button>
+         </div>
 
-            {/* Conditionally render the image */}
-            {showImage && (
-              <img
-                src={showImage}
-                alt="Cover Photo"
-                className="scroll-box3-panel2-image"
-                style={{
-                  width: "25vh",
-                  height: "30vh",
-                  border: "1px solid black",
-                }}
-              />
-            )}
+         <div className="button-container-panel2">
+           <button
+             className="image-button-panel2"
+             onClick={handleMoveUpBlackBox}
+           >
+             <img src="ic_up2.png" alt="Button 3" width={20} />
+           </button>
+
+           <button
+             className="image-button-panel2"
+             onClick={() => handleMoveUp(redText, setRedText)}
+           >
+             <img src="ic_up.png" alt="Button 1" width={20} />
+           </button>
+
+           <button
+             className="image-button-panel2"
+             onClick={() => handleMoveDown(redText, setRedText)}
+           >
+             <img src="ic_down.png" alt="Button 2" width={20} />
+           </button>
+         </div>
+       </div>
+
+       {/* Conditionally render the image */}
+       {showImage && (
+         <img
+           src={showImage}
+           alt="Cover Photo"
+           className="scroll-box3-panel2-image"
+           style={{
+             width: "25vh",
+             height: "30vh",
+             border: "1px solid black",
+           }}
+         />
+       )}
+           </div>
           </div>
         </div>
       </div>

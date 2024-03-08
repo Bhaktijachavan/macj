@@ -1,71 +1,170 @@
-
 .close-button-and-option-popup-header-for-popup-box {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 0 0 1em;
-    align-items: center;
-    background-color: rgb(242, 236, 236);
-  }
-  
-  .close-btn-option-popup-popup {
-    width: 2em;
-    height: 31px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .close-btn-option-popup-popup:hover {
-    background-color: red;
-    cursor: pointer;
-    color: white;
-  }
-  .tablist-section-for-the-controls-and-appearance {
-  }
-  .container-for-the-option-popup-popup-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .width-set-for-the-option-popup-popup {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    width: 50%;
-    height: 70%;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    border: 1px solid #ccc;
-    z-index: 9999; /* Ensure the popup is above other elements */
-  }
-  .horizontal-tab-list-option-popup {
-    background-color: rgb(229, 229, 229);
-    display: flex;
-    border-bottom: 1px solid #8080804a;
-  }
-  .active-tab-list-option-popup {
-    width: 6em;
-    height: 2.5em;
-    text-align: center;
-    text-align: center;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    cursor: pointer;
-  }
-  .tab-content-area-option-popup {
-    background-color: rgb(229, 229, 229);
-    padding: 1em;
-    font-size: 15px;
-  }
-.Loptions-Auto-save{
-    padding: 1em;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0 0 1em;
+  align-items: center;
+  background-color: rgb(242, 236, 236);
 }
-.Loptions-Auto-save-dropsdown{
-    padding-top: 1em;
+
+.close-btn-option-popup-popup {
+  width: 2em;
+  height: 31px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.Loptions-Auto-save-dropsdown-select{
-    width: 20em;
-    height: 2em;
-    border: 2px solid black;
+
+.close-btn-option-popup-popup:hover {
+  background-color: red;
+  cursor: pointer;
+  color: white;
+}
+
+.tablist-section-for-the-controls-and-appearance {}
+
+.container-for-the-option-popup-popup-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.width-set-for-the-option-popup-popup {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width: 65%;
+  height: 80%;
+  position: fixed;
+  top: 41%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgb(229, 229, 229);
+  border: 1px solid #ccc;
+  z-index: 9999;
+  /* Ensure the popup is above other elements */
+}
+
+.horizontal-tab-list-option-popup {
+  background-color: rgb(229, 229, 229);
+  display: flex;
+  border-bottom: 1px solid #8080804a;
+}
+
+.active-tab-list-option-popup {
+  width: 6em;
+  height: 2.5em;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.tab-content-area-option-popup {
+  background-color: rgb(229, 229, 229);
+  padding: 1em;
+  font-size: 15px;
+}
+
+
+
+.layoutoptions-layout-text-chechbox{
+  text-align: left;
+  margin-top: 1em;
+}
+.layoutoptions-layout-text2-inputfileds{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1em;
+}
+.layoutoptions-layout-btn-dropwon{
+  width: 20em;
+  height: 1.7em;
+  border: 2px solid black;
+}
+.layoutoptions-itemoptions-para{
+  text-align: center;
+  align-items: center;
+  padding: 0 1em 0 1em;
+}
+.layoutoptions-itemoptions-text{
+  text-align: left;
+}
+.layoutoptions-itemoptions-text1-btn{
+  margin-top: 2%;
+}
+.layoutoptions-itemoptions-text1-col{
+  margin-top: 2%;
+}
+.layoutoptions-itemoptions-text1-btn-col{
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+}
+
+.layoutoptions-itemoptions-btn-col{
+  display: flex;
+}
+.layoutoptions-itemoptions-btn-dropwon{
+  width: 15em;
+  height: 1.7em;
+  border: 2px solid black;
+}
+.layoutoptions-itemoptions-btn-reset{
+  font-size: 14px;
+  width: 97%;
+  height: 50px;
+  background-color: #f3f2f1;
+  color: black;
+  border: 2px solid rgb(191, 189, 189);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Hover effect for the "Done" button */
+.layoutoptions-itemoptions-btn-reset:hover {
+  background-color: #d7e9f7;
+  border-color: #005a9e; /* Darker green color on hover */
+}
+.layoutoptions-itemoptions-btn-ok{
+  font-size: 14px;
+  width: 10%;
+  height: 30px;
+  background-color: #f3f2f1;
+  color: black;
+  border: 2px solid rgb(191, 189, 189);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Hover effect for the "Done" button */
+.layoutoptions-itemoptions-btn-ok:hover {
+  background-color: #d7e9f7;
+  border-color: #005a9e; /* Darker green color on hover */
+
+}
+.layoutoptions-security {
+  position: absolute;
+  top: 35%;
+}
+
+.layoutoptions-security-para {
+  text-align: center;
+  align-items: center;
+}
+
+
+.layoutoptions-security-text{
+  margin-top: 5%;
+}
+.Loptions-Auto-save {
+  padding: 1em;
+}
+
+.Loptions-Auto-save-dropsdown {
+  padding-top: 1em;
+}
+
+.Loptions-Auto-save-dropsdown-select {
+  width: 20em;
+  height: 2em;
+  border: 2px solid black;
 }

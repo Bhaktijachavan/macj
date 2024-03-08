@@ -17,7 +17,7 @@
   transform: translate(-50%, -50%);
   width: 150vh;
   max-width: 950px; /* Adjust the max-width as needed */
-  height: 63vh;
+  height: 72vh;
   padding: 0;
   z-index: 9999;
   border: 1px solid rgb(191, 189, 189);
@@ -49,11 +49,16 @@
 }
 .button-container-editcomm {
   display: flex;
-  margin-top: 5px;
+  /* margin-top: 30px; */
   /* justify-content: space-between; */
-  width: 200px;
-  margin-left: 40%;
-  padding: 5px;
+  /* width: 200px; */
+  /* margin-left: 40%; */
+  /* padding: 5px; */
+  justify-content: center;
+  align-items: center;
+  height: 5em;
+  padding: 4em 0;
+  gap: 1em;
 }
 
 .open-button-editcomm {

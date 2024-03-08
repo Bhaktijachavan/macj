@@ -100,7 +100,6 @@ const Buttons = ({ onFileSelect, id }) => {
 
         // Save the image data to local storage
         localStorage.setItem("uploadedImage", imageData);
-        console.log("Uploaded image data saved to local storage.");
       };
       // Read the uploaded image file as a data URL
       reader.readAsDataURL(uploadedFileRef.current);
@@ -184,55 +183,54 @@ const Buttons = ({ onFileSelect, id }) => {
             </div>
           </li>
           <li>
-            <a href="#file">
-              <div
-                className={`Buttons-orderlist-to-adjust-images ${
-                  isImageUploaded ? "active" : ""
-                }`}
-              >
-                <img
-                  src={img2}
-                  alt=""
-                  onClick={isImageUploaded ? handlePopupOpen : undefined}
-                />
-                {isPopupOpen && (
-                  <div className="edit-image-main-popup-container-css">
-                    <EditImageTabList
-                      isOpen={isPopupOpen}
-                      onRequestClose={closePopup}
-                      uploadedImageUrl={uploadedImageUrl}
-                      id={id}
-                    />
-                  </div>
-                )}
-              </div>
-            </a>
+            {/* <a href="#file"> */}
+            <div
+              className={`Buttons-orderlist-to-adjust-images ${
+                isImageUploaded ? "active" : ""
+              }`}
+            >
+              <img
+                src={img2}
+                alt=""
+                onClick={isImageUploaded ? handlePopupOpen : undefined}
+              />
+              {isPopupOpen && (
+                <div className="edit-image-main-popup-container-css">
+                  <EditImageTabList
+                    isOpen={isPopupOpen}
+                    onRequestClose={closePopup}
+                    uploadedImageUrl={uploadedImageUrl}
+                  />
+                </div>
+              )}
+            </div>
+            {/* </a> */}
           </li>
 
           <li>
-            <a href="#file">
-              <div
-                className={`Buttons-orderlist-to-adjust-images ${
-                  isImageUploaded ? "active" : ""
-                }`}
-                onClick={isImageUploaded ? handleImg6Click : undefined}
-              >
-                <img src={img6} alt="" />
-              </div>
-            </a>
+            {/* <a href="#file"> */}
+            <div
+              className={`Buttons-orderlist-to-adjust-images ${
+                isImageUploaded ? "active" : ""
+              }`}
+              onClick={isImageUploaded ? handleImg6Click : undefined}
+            >
+              <img src={img6} alt="" />
+            </div>
+            {/* </a> */}
           </li>
 
           <li>
-            <a href="#file">
-              <div
-                className={`Buttons-orderlist-to-adjust-images ${
-                  isImageUploaded ? "active" : ""
-                }`}
-                onClick={isImageUploaded ? handleImg8Click : undefined}
-              >
-                <img src={img8} alt="" />
-              </div>
-            </a>
+            {/* <a href="#file"> */}
+            <div
+              className={`Buttons-orderlist-to-adjust-images ${
+                isImageUploaded ? "active" : ""
+              }`}
+              onClick={isImageUploaded ? handleImg8Click : undefined}
+            >
+              <img src={img8} alt="" />
+            </div>
+            {/* </a> */}
           </li>
         </ul>
 
@@ -243,45 +241,45 @@ const Buttons = ({ onFileSelect, id }) => {
         <ul className="Buttons-unoorderlist-for-icons-buttons">
           {/* ... other list items */}
           <li>
-            <a href="#file">
-              <div
-                className={`Buttons-orderlist-for-icons-buttons ${
-                  isImageUploaded ? "active" : ""
-                }`}
-              >
-                <img
-                  src={img9}
-                  alt=""
-                  onClick={isImageUploaded ? openPopup : undefined}
-                />
-              </div>
-            </a>
+            {/* <a href="#file"> */}
+            <div
+              className={`Buttons-orderlist-for-icons-buttons ${
+                isImageUploaded ? "active" : ""
+              }`}
+            >
+              <img
+                src={img9}
+                alt=""
+                onClick={isImageUploaded ? openPopup : undefined}
+              />
+            </div>
+            {/* </a> */}
           </li>
           <li>
-            <a href="#file">
-              <div
-                className={`Buttons-orderlist-for-icons-buttons ${
-                  isImageUploaded ? "active" : ""
-                }`}
-              >
-                {selectedPreviewIcon ? (
-                  <img src={selectedPreviewIcon} alt="" />
-                ) : (
-                  <img src={img10} alt="" />
-                )}
-              </div>
-            </a>
+            {/* <a href="#file"> */}
+            <div
+              className={`Buttons-orderlist-for-icons-buttons ${
+                isImageUploaded ? "active" : ""
+              }`}
+            >
+              {selectedPreviewIcon ? (
+                <img src={selectedPreviewIcon} alt="" />
+              ) : (
+                <img src={img10} alt="" />
+              )}
+            </div>
+            {/* </a> */}
           </li>
           <li>
-            <a href="#file">
-              <div
-                className={`Buttons-orderlist-for-icons-buttons ${
-                  isImageUploaded ? "active" : ""
-                }`}
-              >
-                <img src={img11} alt="" onClick={handleDeletePreviewIcon} />
-              </div>
-            </a>
+            {/* <a href="#file"> */}
+            <div
+              className={`Buttons-orderlist-for-icons-buttons ${
+                isImageUploaded ? "active" : ""
+              }`}
+            >
+              <img src={img11} alt="" onClick={handleDeletePreviewIcon} />
+            </div>
+            {/* </a> */}
           </li>
         </ul>
       </div>

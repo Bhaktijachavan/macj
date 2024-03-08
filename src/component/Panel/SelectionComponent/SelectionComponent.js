@@ -11,6 +11,9 @@ const SelectionComponent = ({ panelData, value, classname }) => {
   useEffect(() => {
     const fetchData = () => {
       const storedData = localStorage.getItem("TempPanelData");
+      selectedTextRef.current = selectedTextRef.current.filter(
+        (text) => text !== ""
+      );
       if (storedData) {
         const parsedData = JSON.parse(storedData);
         const commentText = parsedData[value] || "";
@@ -25,6 +28,10 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
   }, [value]);
+
+  useEffect(() => {
+    console.log("selectedTextRef.current", selectedTextRef.current);
+  });
 
   useEffect(() => {
     const data = localStorage.getItem("SelectionData");
@@ -54,19 +61,19 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     );
   };
 
-    const sortCommentText = () => {
-      const sortedText = commentText.split("\n").sort().join("\n");
-      setCommentText(sortedText);
-      // Update localStorage with the modified commentText
-      const storedData = localStorage.getItem("TempPanelData");
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        parsedData[value] = sortedText;
-        localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
-        setLocalSelectedText(""); // Reset selected text
-        console.log("Updated commentText in localStorage:", parsedData[value]);
-      }
-    };
+  const sortCommentText = () => {
+    const sortedText = commentText.split("\n").sort().join("\n");
+    setCommentText(sortedText);
+    // Update localStorage with the modified commentText
+    const storedData = localStorage.getItem("TempPanelData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      parsedData[value] = sortedText;
+      localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
+      setLocalSelectedText(""); // Reset selected text
+      console.log("Updated commentText in localStorage:", parsedData[value]);
+    }
+  };
 
   const handlesave = () => {
     const concatenatedText = selectedTextRef.current.join("\n");
@@ -115,18 +122,97 @@ const SelectionComponent = ({ panelData, value, classname }) => {
         setCommentText(updatedCommentText);
         console.log("Texts removed from comments:", selectedTexts);
 
-        // Update localStorage with the modified commentText
+        // Update localStorage with the modified commentText in TempPanelData
         const storedData = localStorage.getItem("TempPanelData");
         if (storedData) {
           const parsedData = JSON.parse(storedData);
           parsedData[value] = updatedCommentText;
           localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
-          setLocalSelectedText(""); // Reset selected text
           console.log(
-            "Updated commentText in localStorage:",
+            "Updated commentText in TempPanelData:",
             parsedData[value]
           );
         }
+
+        // Remove the deleted text from SelectionData
+        const selectionData = localStorage.getItem("SelectionData");
+        if (selectionData) {
+          const parsedSelectionData = JSON.parse(selectionData);
+          if (parsedSelectionData[value]) {
+            parsedSelectionData[value].selectionText = parsedSelectionData[
+              value
+            ].selectionText.replace(selectedTexts.join("\n"), "");
+            localStorage.setItem(
+              "SelectionData",
+              JSON.stringify(parsedSelectionData)
+            );
+            console.log("Updated SelectionData:", parsedSelectionData);
+          }
+        }
+
+        // Remove the deleted text from selectedTextRef
+        selectedTextRef.current = selectedTextRef.current.filter(
+          (text) => !selectedTexts.includes(text)
+        );
+      }
+    }
+  };
+
+  const handleMoveUpSelection = () => {
+    console.log("handleMoveUpSelection function called");
+    const selectedTexts = selectedTextRef.current;
+    if (selectedTexts) {
+      const lines = commentText.split("\n");
+      const updatedLines = [...lines];
+
+      selectedTexts.forEach((selectedText) => {
+        const index = updatedLines.indexOf(selectedText);
+        if (index > 0) {
+          const newIndex = index - 1;
+          [updatedLines[newIndex], updatedLines[index]] = [
+            updatedLines[index],
+            updatedLines[newIndex],
+          ];
+        }
+      });
+
+      const updatedCommentText = updatedLines.join("\n");
+      setCommentText(updatedCommentText);
+
+      const PanelData = JSON.parse(localStorage.getItem("TempPanelData"));
+      if (PanelData) {
+        PanelData[value] = updatedCommentText;
+        localStorage.setItem("TempPanelData", JSON.stringify(PanelData));
+        console.log("Text moved up in comments:", updatedCommentText);
+      }
+    }
+  };
+
+  const handleMoveDownSelection = () => {
+    const selectedTexts = selectedTextRef.current;
+    if (selectedTexts) {
+      const lines = commentText.split("\n");
+      const updatedLines = [...lines];
+
+      selectedTexts.forEach((selectedText) => {
+        const index = updatedLines.indexOf(selectedText);
+        if (index < updatedLines.length - 1) {
+          const newIndex = index + 1;
+          [updatedLines[newIndex], updatedLines[index]] = [
+            updatedLines[index],
+            updatedLines[newIndex],
+          ];
+        }
+      });
+
+      const updatedCommentText = updatedLines.join("\n");
+      setCommentText(updatedCommentText);
+
+      const PanelData = JSON.parse(localStorage.getItem("TempPanelData"));
+      if (PanelData) {
+        PanelData[value] = updatedCommentText;
+        localStorage.setItem("TempPanelData", JSON.stringify(PanelData));
+        console.log("Text moved down in comments:", updatedCommentText);
       }
     }
   };
@@ -136,24 +222,25 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       <div>
         <div className="panel-heading text-center m-2"></div>
         <div className="pl-2 m-2 flex">
-          <div className="Editcomments-and-checkbox-container">
+          <div className="Editcomments-and-checkbox-container pl-4">
             <EditComments
               value={value}
               handleDelete={HandleDeleteText}
               sortCommentText={sortCommentText}
+              moveUp={handleMoveUpSelection}
+              moveDown={handleMoveDownSelection}
             />
             <button
               onClick={handlesave}
               type="button"
-              className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+              className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black py-0 rounded text-sm w-24"
             >
-              Save Data For report
+              Save Data
+              <br /> For report
             </button>
           </div>
           <div
-            className={
-              classname ? classname : "scroll-box-panel2 p-4 bg-gray-100"
-            }
+            className={classname ? classname : "scroll-box-panel3 bg-gray-100"}
             style={{ cursor: "pointer" }}
             onMouseUp={handleTextSelectionforSelectionChange}
           >

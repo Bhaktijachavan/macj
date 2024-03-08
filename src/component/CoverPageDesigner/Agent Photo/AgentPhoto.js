@@ -13,7 +13,7 @@ function AgentPhoto({ text, id }) {
         onDragStart={handleDragStart}
         className="draggable-text"
       >
-        Agent Photo 
+        Agent Photo
       </div>
     </>
   );

@@ -511,12 +511,14 @@ function CoverPageDesigner({ onClose }) {
                       <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
-                          // onClick={() => fileInputRef.current.click()}
-                          // onChange={(e) => handleCheckboxChange(e, "Agent Photo")}
-                          checked={checkedCheckboxes.includes("Agent Photo")}
+                          onClick={() => fileInputRef.current.click()}
                           onChange={(e) =>
                             handleCheckboxChange(e, "Agent Photo")
                           }
+                          // checked={checkedCheckboxes.includes("Agent Photo")}
+                          // onChange={(e) =>
+                          //   handleCheckboxChange(e, "Agent Photo")
+                          // }
                           // disabled={isAgentPhotoUploaded} // Disable the checkbox if an image is already uploaded
                         />
                         Agent Photo
@@ -651,6 +653,39 @@ function CoverPageDesigner({ onClose }) {
                   </div>
                 </div>
               </fieldset>
+              <fieldset className="bordered-text">
+                <legend className="tag-for-line-draw-through-text">
+                  Buttons
+                </legend>
+                <div className="contains-bottom-section-with-buttons-design-cover-page">
+                  <div className="buttons-with-apply-export-import-discard-changes-apply">
+                    <button
+                      onClick={exportStateSave}
+                      className="button-for-footer-for-changes-in-cover-page"
+                    >
+                      Apply Changes <br /> to Template Template
+                    </button>{" "}
+                    <button
+                      onClick={exportState}
+                      className="button-for-footer-for-changes-in-cover-page"
+                    >
+                      Export Layout to a <br /> File for Future Use
+                    </button>
+                    <button
+                      onClick={() => fileInputRef.current.click()}
+                      className="button-for-footer-for-changes-in-cover-page"
+                    >
+                      Import Layout <br /> from File
+                    </button>{" "}
+                    <button
+                      className="button-for-footer-for-changes-in-cover-page"
+                      onClick={() => setAddedImages([])}
+                    >
+                      Discard <br /> Changes
+                    </button>
+                  </div>
+                </div>
+              </fieldset>
             </div>
             {/* Layering Column */}
             <fieldset className="bordered-text w-1/4">
@@ -684,7 +719,11 @@ function CoverPageDesigner({ onClose }) {
               >
                 {/* Render editable text elements */}
                 {editableTexts.map(({ id, text }) => (
-                  <div key={id} bounds="parent" className="draggableeeee">
+                  <div
+                    key={id}
+                    bounds="parent"
+                    className="draggableeeee-for-inspection"
+                  >
                     <div>
                       <EditableText initialText={text} />
                     </div>
@@ -720,7 +759,7 @@ function CoverPageDesigner({ onClose }) {
               </div>
             </div>
           </div>
-          <div className="contains-bottom-section-with-buttons-design-cover-page">
+          {/* <div className="contains-bottom-section-with-buttons-design-cover-page">
             <div className="buttons-with-apply-export-import-discard-changes-apply">
               <button
                 onClick={exportStateSave}
@@ -747,7 +786,7 @@ function CoverPageDesigner({ onClose }) {
                 Discard <br /> Changes
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

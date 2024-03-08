@@ -9,7 +9,8 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   /* margin-top: 6px; */
-  margin-left: 20px;
+  /* margin-left: 20px; */
+  margin: 0 10px 10px 10px;
 }
 
 .PhotoReview-rectangle {
@@ -71,4 +72,5 @@ body {
   margin-left: 10px;
   cursor: pointer;
   border-bottom: 2px solid;
+  overflow-x: auto;
 }
