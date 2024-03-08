@@ -1,10 +1,10 @@
 body{
     background-color: #fee4c3;
+  
 }
 .container-panel2 {
     display: flex;
     /* justify-content: center; */
-    
     
 }
 
@@ -32,7 +32,7 @@ body{
     width: 95vh;
     height: 30vh;
     border: solid black 1px;
-    margin-left: 50px;
+    margin-left: 10px;
 }
 
 .scroll-box1-panel2 {

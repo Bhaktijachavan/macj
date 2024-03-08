@@ -19,7 +19,7 @@ function Panel2({ panelData }) {
   return (
     <>
       <div>
-        <div className="panel-heading text-center m-2">{panelData.damage1}</div>{" "}
+        <div className="panel-heading text-center">{panelData.damage1}</div>{" "}
         <div>
           <PannelComponent
             showAlternateContent={showAlternateContent}
@@ -28,22 +28,24 @@ function Panel2({ panelData }) {
             value={panelData.Damage1Data}
           />
         </div>
-        <div className="panel-heading text-center m-2">
-          {panelData.selection1}
-          <div>
-            <SelectionComponent
-              panelData={panelData}
-              value={panelData.Selection1Data}
-            />
+        <div className="flex">
+          <div className="panel-heading text-center">
+            {panelData.selection1}
+            <div>
+              <SelectionComponent
+                panelData={panelData}
+                value={panelData.Selection1Data}
+              />
+            </div>
           </div>
-        </div>
-        <div className="panel-heading text-center m-2">
-          {panelData.selection2}
-          <div>
-            <SelectionComponent
-              panelData={panelData}
-              value={panelData.Selection2Data}
-            />
+          <div className="panel-heading text-center">
+            {panelData.selection2}
+            <div>
+              <SelectionComponent
+                panelData={panelData}
+                value={panelData.Selection2Data}
+              />
+            </div>
           </div>
         </div>
       </div>
