@@ -4,6 +4,8 @@ import Header from "./../Header/Header";
 import Footer from "./../Footer/Footer";
 import { Link } from "react-router-dom";
 import MobileUploadPopup from "./MobileUploadPop/MobileUploadPopup";
+import img from '../../Assets/icons/icons8-upload-64.png'
+import img1 from '../../Assets/icons/icons8-search-in-cloud-50.png'
 const MobileUpload = ({onClose}) => {
   const [mobileUploadPopup, setMobileUploadPopup] = useState(false);
 
@@ -49,19 +51,18 @@ const MobileUpload = ({onClose}) => {
             </div>
             <div className="buttons-mobileupload">
               <button className="button-mobileupload">
-                {/* <i className="fa fa-upload" className='i-mobileupload' ></i> */}
-                <br />
+              <img src={img} alt="" className="img-mobileupload"/>
+              
                 Upload Template
               </button>
               <br /> <br />
-              <br />
               <p>
                 Manage the list of the templates you have previously saved in
                 the Cloud.
               </p>
               <button className="button-mobileupload">
-                {/* <i className="fa fa-search" className="i-mobileupload"></i> */}
-                <br />
+              <img className="img-mobileupload" src={img1} alt="" />
+          
                 View Templates
               </button>
             </div>
@@ -84,15 +85,16 @@ const MobileUpload = ({onClose}) => {
               </p>
             </div>
             <div className="buttons-mobileupload" onClick={openMobileUploadPopup}>
-          
-              <button className="button-mobileupload" > 
+           
+              <button className="button-mobileupload" >
+              <img src={img} alt="" className="img-mobileupload"/> 
                 Upload Template
               </button>
              
             </div>
           </div>
-          {/* <i className="fa fa-upload" className="i-mobileupload"></i>   */}
-          {/* <br /> */}
+        
+          
                 {mobileUploadPopup && (
               
                   <MobileUploadPopup 
