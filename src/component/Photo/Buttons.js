@@ -200,6 +200,7 @@ const Buttons = ({ onFileSelect, id }) => {
                     isOpen={isPopupOpen}
                     onRequestClose={closePopup}
                     uploadedImageUrl={uploadedImageUrl}
+                    id={id}
                   />
                 </div>
               )}

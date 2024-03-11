@@ -6,7 +6,7 @@ import Caption from "./Caption";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { PanalSelect } from "../Function/function";
 
-const Location = ({ id, setId }) => {
+const Location = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [menuData, setMenuData] = useState(null);
   const [selectedMenuId, setSelectedMenuId] = useState(null);
@@ -63,30 +63,9 @@ const Location = ({ id, setId }) => {
   const handleTabChange = (e) => {
     const panelId = e.target.value;
     setPanelId(panelId);
-    setId(panelId);
+
     setTabData(submenuDetails[panelId]);
   };
-
-  // useEffect(() => {
-  //   console.log("menuData:", menuData);
-  // }, [menuData]);
-
-  // useEffect(() => {
-  //   console.log("selectedMenuId:", selectedMenuId);
-  // }, [selectedMenuId]);
-
-  // useEffect(() => {
-  //   console.log("selectedSubmenuId:", selectedSubmenuId);
-  // }, [selectedSubmenuId]);
-
-  // useEffect(() => {
-  //   console.log("submenuDetails:", submenuDetails);
-  // }, [submenuDetails]);
-
-  // useEffect(() => {
-  //   console.log("panelId:", panelId);
-  //   console.log("TabData:", TabData);
-  // }, [panelId]);
 
   const handlePanel = () => {
     if (panelId && TabData) {
@@ -225,6 +204,7 @@ const Location = ({ id, setId }) => {
                 The Selected File will Appear Here !
               </p>
             )}
+            <p>{panelId}</p>
           </div>
           <div
             style={{
@@ -233,9 +213,9 @@ const Location = ({ id, setId }) => {
               alignItems: "center",
             }}
           >
-            <Buttons onFileSelect={handleFileSelect} />
+            <Buttons id={panelId} onFileSelect={handleFileSelect} />
           </div>
-          <Caption />
+          <Caption id={panelId} />
         </div>
       </div>
 

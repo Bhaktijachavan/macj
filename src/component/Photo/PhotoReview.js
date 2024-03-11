@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useContext, useEffect } from "react";
+import React from "react";
 import "./PhotoReview.css";
 import Location from "./Location";
 

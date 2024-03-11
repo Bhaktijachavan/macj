@@ -68,11 +68,14 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl, id }) => {
       }
 
       // Store the image URL with the associated ID
-      imageData[id] = url;
+      imageData[id] = {
+        caption: "",
+        url: url,
+      };
 
       // Save the updated image data to local storage
       localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
-      console.log("Image data saved successfully.");
+      alert("Image data saved successfully.");
     } catch (error) {
       console.error("Error saving image data:", error);
     }
