@@ -15,7 +15,7 @@ import EditImageTabList from "./../EditImageTabList/EditImageTabList";
 import Editor from "./../Editor/Editor";
 import PropTypes from "prop-types";
 
-const Buttons = ({ onFileSelect, id }) => {
+const Buttons = ({ onFileSelect, id, SetImageIndex }) => {
   // tablistconst [isPopupOpen, setIsPopupOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -201,6 +201,7 @@ const Buttons = ({ onFileSelect, id }) => {
                     onRequestClose={closePopup}
                     uploadedImageUrl={uploadedImageUrl}
                     id={id}
+                    SetImageIndex={SetImageIndex}
                   />
                 </div>
               )}

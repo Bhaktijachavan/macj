@@ -17,7 +17,24 @@ const Location = () => {
   const [panel, setPanel] = useState();
   const [showPopup, setShowPopup] = useState(false);
   const [panels, setPanels] = useState([]);
+  const [imageIndex, SetImageIndex] = useState();
+  const [selectedImage, setSelectedImage] = useState(null); // Add selectedImage state
 
+  useEffect(() => {
+    console.log("image index", imageIndex);
+    // Retrieve image data from local storage based on the imageIndex
+    const imageData = localStorage.getItem("coverphotoImage");
+    if (imageData) {
+      const parsedImageData = JSON.parse(imageData);
+      const imagesArray = parsedImageData[panelId] || [];
+      const selectedImage = imagesArray[imageIndex];
+      console.log("selectedImage", selectedImage);
+      if (selectedImage) {
+        // Set the selected image to state
+        setSelectedImage(selectedImage);
+      }
+    }
+  }, [imageIndex, selectedMenuId]);
   const handleFileSelect = (file) => {
     console.log("File selected:", file);
     setUploadedFile(file);
@@ -185,7 +202,17 @@ const Location = () => {
             </div>
           </div>
           <div className="PhotoReview-Drag-Drop-Box">
-            {uploadedFile ? (
+            {selectedImage ? (
+              <img
+                src={selectedImage.url} // Use the URL of the selected image
+                alt="Selected Image"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            ) : uploadedFile ? (
               <img
                 src={
                   typeof uploadedFile === "string"
@@ -213,7 +240,11 @@ const Location = () => {
               alignItems: "center",
             }}
           >
-            <Buttons id={panelId} onFileSelect={handleFileSelect} />
+            <Buttons
+              id={panelId}
+              SetImageIndex={SetImageIndex}
+              onFileSelect={handleFileSelect}
+            />
           </div>
           <Caption id={panelId} />
         </div>
