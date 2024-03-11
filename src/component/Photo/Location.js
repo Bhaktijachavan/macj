@@ -16,7 +16,7 @@ const Location = ({ id, setId }) => {
   const [panelId, setPanelId] = useState(null);
   const [panel, setPanel] = useState();
   const [showPopup, setShowPopup] = useState(false);
-  const [panels, setpanels] = useState([]);
+  const [panels, setPanels] = useState([]);
 
   //code to preview photo
   const handleFileSelect = (file) => {
