@@ -231,7 +231,6 @@ const Location = () => {
                 The Selected File will Appear Here !
               </p>
             )}
-            <p>{panelId}</p>
           </div>
           <div
             style={{
