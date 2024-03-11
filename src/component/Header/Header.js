@@ -722,7 +722,7 @@ border-black-900"
 border-black-900"
             >
               <a
-                href="#"
+                
                 onClick={openEditTemplatePopup}
                 className="header2-tag-a"
               >
@@ -827,7 +827,7 @@ border-black-900"
             {/* <Link to="/generateReport"> */}
             <li className="list-for-header-section-main-nav">
               <a
-                href="#"
+                
                 className="header2-tag-a"
                 onClick={openColorPaletPopup}
               >
