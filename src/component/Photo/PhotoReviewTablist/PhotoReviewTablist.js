@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-// import PhotoReview from "../PhotoReview";
-import Location from "../Location";
+import PhotoReview from "../PhotoReview";
+
 import Header from "../../Header/Header";
 import Footer from "./../../Footer/Footer";
 import "./PhotoReviewTablist.css";
 
 function PhotoReviewTablist() {
   const [tabs, setTabs] = useState([
-    { id: "tab1", name: "Tab 1", content: <Location /> },
-    { id: "tab2", name: "Tab 2", content: <Location /> },
-    { id: "tab3", name: "Tab 3", content: <Location /> },
-    { id: "tab4", name: "Tab 4", content: <Location /> },
-    { id: "tab5", name: "Tab 5", content: <Location /> },
+    { id: "tab1", name: "Tab 1", content: <PhotoReview /> },
+    { id: "tab2", name: "Tab 2", content: <PhotoReview /> },
+    { id: "tab3", name: "Tab 3", content: <PhotoReview /> },
+    { id: "tab4", name: "Tab 4", content: <PhotoReview /> },
+    { id: "tab5", name: "Tab 5", content: <PhotoReview /> },
   ]);
   const [activeTab, setActiveTab] = useState("tab1");
 
@@ -22,7 +22,7 @@ function PhotoReviewTablist() {
   const handleNewTabClick = () => {
     const newTabId = `tab${tabs.length + 1}`;
     const newTabName = `Tab ${tabs.length + 1}`;
-    const newTabContent = <Location />;
+    const newTabContent = <PhotoReview />;
     const newTabs = [
       ...tabs,
       { id: newTabId, name: newTabName, content: newTabContent },
