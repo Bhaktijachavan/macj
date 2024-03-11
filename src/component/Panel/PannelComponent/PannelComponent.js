@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import EditComments from "../../EditComments/EditComments";
 import Header from "./../../Header/Header";
 import Panel1 from "../Panel1/Panel1";
+import PhotosModal from "./PhotosModal";
 const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [selectedText, setSelectedText] = useState("");
   const [blackText, setBlackText] = useState("");
@@ -12,9 +13,14 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [SelectedLineText, setSelectedLineText] = useState(0);
   const [selectedLineIndex, setSelectedLineIndex] = useState(null);
   const [selectedLineColor, setSelectedLineColor] = useState(null);
-  const [showImage, setShowImage] = useState();
+
   const [commentText, setCommentText] = useState("");
   const [rating, setRating] = useState();
+  const [showPhotosModal, setShowPhotosModal] = useState(false);
+  const handleShowPhotosClick = () => {
+    setShowPhotosModal(true);
+  };
+
   useEffect(() => {
     const newData = localStorage.getItem("ratingsData");
     const parseData = JSON.parse(newData);
@@ -36,15 +42,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   }, []);
   const NewValue = value;
   const extractedValue = NewValue.replace(/_(d|s)\d$/, "");
-  useEffect(() => {
-    const image = JSON.parse(localStorage.getItem("coverphotoImage"));
-    if (image) {
-      if (image[extractedValue]) {
-        const currentImage = image[extractedValue];
-        setShowImage(currentImage.url);
-      }
-    }
-  }, [value]);
+
   const handlesave = () => {
     console.log("Saving data...");
     try {
@@ -348,7 +346,10 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 >
                   Delete
                 </button>
-                <button className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-0 py-0 rounded">
+                <button
+                  onClick={handleShowPhotosClick}
+                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-0 py-0 rounded"
+                >
                   Show Photos
                 </button>
               </div>
@@ -449,16 +450,10 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 </div>
               </div>
               {/* Conditionally render the image */}
-              {showImage && (
-                <img
-                  src={showImage}
-                  alt="Cover Photo"
-                  className="scroll-box3-panel2-image"
-                  style={{
-                    width: "25vh",
-                    height: "30vh",
-                    border: "1px solid black",
-                  }}
+              {showPhotosModal && (
+                <PhotosModal
+                  onClose={() => setShowPhotosModal(false)}
+                  imageId={extractedValue}
                 />
               )}
             </div>
