@@ -19,21 +19,12 @@
   border: 1px solid black;
 }
 .Caption-main-popup-container {
-  position: absolute;
-  /* top: 30%;
-  left: 50%; */
-  transform: translate(30%, -70%);
+  position: fixed;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: #d3d3d3;
-  /* padding-left: 18px;
-  padding-right: 25px;
-  padding-top: 10px;
-  padding-bottom: 10px; */
-  /* width: 1000px; */
-  height: 550px;
-
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 2; /* Ensure the popup is above other elements */
+  border: solid 1px rgb(191, 189, 189);
 }
 .caption-popupbox-input-filed {
   width: 960px;
