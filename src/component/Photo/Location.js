@@ -16,6 +16,7 @@ const Location = ({ id, setId }) => {
   const [panelId, setPanelId] = useState(null);
   const [panel, setPanel] = useState();
   const [showPopup, setShowPopup] = useState(false);
+  const [panels, setPanels] = useState([]);
 
   const handleFileSelect = (file) => {
     console.log("File selected:", file);
