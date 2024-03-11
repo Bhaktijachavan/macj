@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./Location.css";
+import "./PhotoReview.css";
+import Buttons from "./Buttons";
+import Caption from "./Caption";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { PanalSelect } from "../Function/function";
 
 const Location = ({ id, setId }) => {
+  const [uploadedFile, setUploadedFile] = useState(null);
   const [menuData, setMenuData] = useState(null);
   const [selectedMenuId, setSelectedMenuId] = useState(null);
   const [selectedSubmenuId, setSelectedSubmenuId] = useState(null);
@@ -12,6 +16,13 @@ const Location = ({ id, setId }) => {
   const [panelId, setPanelId] = useState(null);
   const [panel, setPanel] = useState();
   const [showPopup, setShowPopup] = useState(false);
+  const [panels, setpanels] = useState([]);
+
+  //code to preview photo
+  const handleFileSelect = (file) => {
+    console.log("File selected:", file);
+    setUploadedFile(file);
+  };
 
   useEffect(() => {
     const storedMenuData = localStorage.getItem("menuData");
@@ -27,6 +38,31 @@ const Location = ({ id, setId }) => {
       setSubmenuDetails(null);
     }
   }, [selectedSubmenuId, menuData, selectedMenuId]);
+
+  useEffect(() => {
+    const fetchCoverImage = (panelId) => {
+      const coverImagePath = localStorage.getItem("coverphotoImage");
+      const newImage = JSON.parse(coverImagePath);
+      if (newImage && newImage[panelId]) {
+        console.log("New Image:", newImage[panelId]);
+        setPanels((prevPanels) =>
+          prevPanels.map((panel) =>
+            panel.id === panelId
+              ? { ...panel, uploadedFile: newImage[panelId] }
+              : panel
+          )
+        );
+      }
+    };
+
+    panels.forEach((panel) => fetchCoverImage(panel.id));
+
+    const intervalId = setInterval(() => {
+      panels.forEach((panel) => fetchCoverImage(panel.id));
+    }, 4000);
+
+    return () => clearInterval(intervalId);
+  }, [panels]);
 
   const handleMenuChange = (e) => {
     const selectedId = e.target.value;
@@ -57,26 +93,26 @@ const Location = ({ id, setId }) => {
     setTabData(submenuDetails[panelId]);
   };
 
-  useEffect(() => {
-    console.log("menuData:", menuData);
-  }, [menuData]);
+  // useEffect(() => {
+  //   console.log("menuData:", menuData);
+  // }, [menuData]);
 
-  useEffect(() => {
-    console.log("selectedMenuId:", selectedMenuId);
-  }, [selectedMenuId]);
+  // useEffect(() => {
+  //   console.log("selectedMenuId:", selectedMenuId);
+  // }, [selectedMenuId]);
 
-  useEffect(() => {
-    console.log("selectedSubmenuId:", selectedSubmenuId);
-  }, [selectedSubmenuId]);
+  // useEffect(() => {
+  //   console.log("selectedSubmenuId:", selectedSubmenuId);
+  // }, [selectedSubmenuId]);
 
-  useEffect(() => {
-    console.log("submenuDetails:", submenuDetails);
-  }, [submenuDetails]);
+  // useEffect(() => {
+  //   console.log("submenuDetails:", submenuDetails);
+  // }, [submenuDetails]);
 
-  useEffect(() => {
-    console.log("panelId:", panelId);
-    console.log("TabData:", TabData);
-  }, [panelId]);
+  // useEffect(() => {
+  //   console.log("panelId:", panelId);
+  //   console.log("TabData:", TabData);
+  // }, [panelId]);
 
   const handlePanel = () => {
     if (panelId && TabData) {
@@ -90,106 +126,162 @@ const Location = ({ id, setId }) => {
   };
   return (
     <>
-      <div className="container-for-locations-and-recall-component">
-        <div className="syysysysy">
-          <div className="PhotoReview-Location-container">
-            <label htmlFor="menuDropdown">Location</label>
-            <div>
-              <select
-                id="menuDropdown"
-                className="PhotoReview-Location-first-inputfields"
-                onChange={handleMenuChange}
-              >
-                <option value="">Select Menu</option>
-                {menuData &&
-                  Object.keys(menuData).map((menuId) => (
-                    <option key={menuId} value={menuId}>
-                      {menuData[menuId].name}
-                    </option>
-                  ))}
-              </select>
-              <br />
-              <label htmlFor="submenuDropdown"></label>
+      <div>
+        <p className="PhotoReview-Main-Para">
+          The photo added to the top-left box will appear on the cover of the
+          report <br />
+          the drop-down boxes are automatically preloaded with the sectors from
+          The photo added to the top left box will appear on the cover of the
+          the current template. The photo will print in the location specified
+          using both drop-down boxes, unless you check "Print At End" for a
+          photo.
+          <br />
+          The caption will be placed under each photo unless you check the 'Use
+          Location As Caption' button check the 'Summary' box to include the
+          photo in the Report Summary in addition to the report body.
+        </p>
+        <div className="PhotoReview-rectangular-container">
+          <div className="PhotoReview-rectangle">
+            <div className="container-for-locations-and-recall-component">
+              <div className="syysysysy">
+                <div className="PhotoReview-Location-container">
+                  <label htmlFor="menuDropdown">Location</label>
+                  <div>
+                    <select
+                      id="menuDropdown"
+                      className="PhotoReview-Location-first-inputfields"
+                      onChange={handleMenuChange}
+                    >
+                      <option value="">Select Menu</option>
+                      {menuData &&
+                        Object.keys(menuData).map((menuId) => (
+                          <option key={menuId} value={menuId}>
+                            {menuData[menuId].name}
+                          </option>
+                        ))}
+                    </select>
+                    <br />
+                    <label htmlFor="submenuDropdown"></label>
 
-              <select
-                id="submenuDropdown"
-                className="PhotoReview-Location-first-inputfields"
-                onChange={handleSubmenuChange}
-                disabled={!selectedMenuId}
-              >
-                <option value="">Select Submenu</option>
-                {selectedMenuId &&
-                  Object.keys(menuData[selectedMenuId].subitems).map(
-                    (subkey) => (
-                      <option
-                        key={subkey}
-                        value={menuData[selectedMenuId].subitems[subkey].si}
+                    <select
+                      id="submenuDropdown"
+                      className="PhotoReview-Location-first-inputfields"
+                      onChange={handleSubmenuChange}
+                      disabled={!selectedMenuId}
+                    >
+                      <option value="">Select Submenu</option>
+                      {selectedMenuId &&
+                        Object.keys(menuData[selectedMenuId].subitems).map(
+                          (subkey) => (
+                            <option
+                              key={subkey}
+                              value={
+                                menuData[selectedMenuId].subitems[subkey].si
+                              }
+                            >
+                              {
+                                menuData[selectedMenuId].subitems[subkey]
+                                  .subName
+                              }
+                            </option>
+                          )
+                        )}
+                    </select>
+
+                    <label htmlFor="damageDropdown"></label>
+                    <br />
+                    <select
+                      id="damageDropdown"
+                      className="PhotoReview-Location-first-inputfields"
+                      disabled={!selectedSubmenuId}
+                      onChange={handleTabChange}
+                    >
+                      <option value="">Select Damage</option>
+                      {submenuDetails &&
+                        Object.keys(submenuDetails)
+                          .filter(
+                            (subdetailkey) =>
+                              !["id", "si"].includes(subdetailkey)
+                          )
+                          .map((subdetailkey) => (
+                            <option key={subdetailkey} value={subdetailkey}>
+                              {submenuDetails[subdetailkey].tabname}
+                            </option>
+                          ))}
+                    </select>
+                  </div>
+                  <div className="PhotoReview-Location-button">
+                    {/* <Link> */}
+                    <button onClick={handlePanel}>@</button>
+                    {/* </Link> */}
+                  </div>
+                  <div className="PhotoReview-Location-Checkbox-Container">
+                    <section className="Section-for-label-and-checkbox">
+                      <input type="checkbox" name="agree" />
+                      <label
+                        htmlFor="agree"
+                        className="PhotoReview-Location-Checkbox-label"
                       >
-                        {menuData[selectedMenuId].subitems[subkey].subName}
-                      </option>
-                    )
-                  )}
-              </select>
-
-              <label htmlFor="damageDropdown"></label>
-              <br />
-              <select
-                id="damageDropdown"
-                className="PhotoReview-Location-first-inputfields"
-                disabled={!selectedSubmenuId}
-                onChange={handleTabChange}
-              >
-                <option value="">Select Damage</option>
-                {submenuDetails &&
-                  Object.keys(submenuDetails)
-                    .filter(
-                      (subdetailkey) => !["id", "si"].includes(subdetailkey)
-                    )
-                    .map((subdetailkey) => (
-                      <option key={subdetailkey} value={subdetailkey}>
-                        {submenuDetails[subdetailkey].tabname}
-                      </option>
-                    ))}
-              </select>
+                        Print At End
+                      </label>
+                    </section>
+                    <section className="Section-for-label-and-checkbox">
+                      <input
+                        type="checkbox"
+                        className="PhotoReview-Location-Checkbox-label"
+                        name="agree"
+                      />
+                      <label
+                        htmlFor="agree"
+                        className="PhotoReview-Location-Checkbox-label"
+                      >
+                        Summary
+                      </label>
+                    </section>
+                    <section className="Section-for-label-and-checkbox">
+                      <input type="checkbox" id="agree" name="agree" />
+                      <label
+                        htmlFor="agree"
+                        className="PhotoReview-Location-Checkbox-label"
+                      >
+                        Use Location As Caption
+                      </label>
+                    </section>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="PhotoReview-Location-button">
-              {/* <Link> */}
-              <button onClick={handlePanel}>@</button>
-              {/* </Link> */}
-            </div>
-            <div className="PhotoReview-Location-Checkbox-Container">
-              <section className="Section-for-label-and-checkbox">
-                <input type="checkbox" name="agree" />
-                <label
-                  htmlFor="agree"
-                  className="PhotoReview-Location-Checkbox-label"
-                >
-                  Print At End
-                </label>
-              </section>
-              <section className="Section-for-label-and-checkbox">
-                <input
-                  type="checkbox"
-                  className="PhotoReview-Location-Checkbox-label"
-                  name="agree"
+            <div className="PhotoReview-Drag-Drop-Box">
+              {uploadedFile ? (
+                <img
+                  src={
+                    typeof uploadedFile === "string"
+                      ? uploadedFile
+                      : URL.createObjectURL(uploadedFile)
+                  }
+                  alt="Uploaded Image"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
                 />
-                <label
-                  htmlFor="agree"
-                  className="PhotoReview-Location-Checkbox-label"
-                >
-                  Summary
-                </label>
-              </section>
-              <section className="Section-for-label-and-checkbox">
-                <input type="checkbox" id="agree" name="agree" />
-                <label
-                  htmlFor="agree"
-                  className="PhotoReview-Location-Checkbox-label"
-                >
-                  Use Location As Caption
-                </label>
-              </section>
+              ) : (
+                <p className="Drag-Drop-Box-Para">
+                  The Selected File will Appear Here !
+                </p>
+              )}
             </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Buttons onFileSelect={handleFileSelect} />
+            </div>
+            <Caption />
           </div>
         </div>
       </div>
