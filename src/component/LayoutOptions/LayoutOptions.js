@@ -1,8 +1,12 @@
+// Importing necessary dependencies
 import React, { useState } from "react";
-import "./LayoutOptions.css"
-import { flatMap } from "lodash";
+import "./LayoutOptions.css"; // Importing the stylesheet
+import { flatMap } from "lodash"; // Importing the flatMap function from lodash
+
+// Functional component definition
 const LayoutOptions = ({ onClose }) => {
-    const [activeTab, setActiveTab] = useState("Layout"); // State to track active tab
+    // State variables for tracking the active tab and various input values
+    const [activeTab, setActiveTab] = useState("Layout");
     const [selectValue, setselectValue] = useState('');
     const [selectValue1, setselectValue1] = useState('');
     const [selectValue2, setselectValue2] = useState('');
@@ -10,12 +14,9 @@ const LayoutOptions = ({ onClose }) => {
     const [selectValue4, setselectValue4] = useState('');
     const [selectValue5, setselectValue5] = useState('');
     const [selectValue6, setselectValue6] = useState('');
-
     const [inputValue, setInputValue] = useState('Report Summary');
     const [inputValue1, setInputValue1] = useState('Property Inspection Report');
     const [inputValue2, setInputValue2] = useState('Table Of Contents');
-
-
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkboxValues, setCheckboxValues] = useState({
         printItemDescription: false,
@@ -34,10 +35,7 @@ const LayoutOptions = ({ onClose }) => {
         printCompanyName: false,
         printClientAddress: false,
         printBorderlessSummary: false,
-
-
     });
-
 
     // Event handler for input changes
     const handleInputChange = (event) => {
@@ -49,15 +47,21 @@ const LayoutOptions = ({ onClose }) => {
     const handleInputChange2 = (event) => {
         setInputValue2(event.target.value);
     };
+
+    // Event handler for checkbox changes
     const handleCheckboxChange = (checkboxName) => {
         setCheckboxValues((prevValues) => ({
             ...prevValues,
             [checkboxName]: !prevValues[checkboxName],
         }));
     };
+
+    // Event handler for tab clicks
     const handleTabClick = (tabName) => {
         setActiveTab(tabName);
     };
+
+    // Event handler for select changes
     const handleSelectChange = (event) => {
         setselectValue(event.target.value);
     };
@@ -79,9 +83,12 @@ const LayoutOptions = ({ onClose }) => {
     const handleSelectChange6 = (event) => {
         setselectValue6(event.target.value);
     };
+
+    // Event handler for a specific checkbox
     const handleCheckbox1Change = () => {
         setCheckbox1(!checkbox1);
     };
+
     return (
         <>
             {/* container for the Application setting for the Macj project button in the footer component */}
@@ -162,7 +169,6 @@ const LayoutOptions = ({ onClose }) => {
                                             Use roman numerals instead of intergers for labeling area(requried for texas)
                                         </label><br /><br />
                                         <label>
-
                                             <input
                                                 type="checkbox"
                                                 checked={checkboxValues.insteadNumber}
