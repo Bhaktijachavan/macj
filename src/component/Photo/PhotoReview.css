@@ -5,11 +5,8 @@
   letter-spacing: 0.6px;
 }
 .PhotoReview-rectangular-container {
-  /* position: relative; */
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  /* margin-top: 6px; */
-  /* margin-left: 20px; */
   margin: 0 10px 10px 10px;
 }
 

@@ -12,7 +12,13 @@ import DrawRectangleContent from "./DrawRectangleContent/DrawRectangleContent";
 import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
 import OverLayImage from "./OverLayImage/OverLayImage";
 
-const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl, id }) => {
+const EditImageTabList = ({
+  isOpen,
+  onRequestClose,
+  uploadedImageUrl,
+  id,
+  SetImageIndex,
+}) => {
   const overlayImageRef = useRef(null);
   const [activeTab, setActiveTab] = useState(1);
   // const [textFromEditor, setTextFromEditor] = useState(null);
@@ -55,11 +61,12 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl, id }) => {
     setDownloadUrl(null);
   };
 
-  const handleDownloadUrlChange = (url) => {
+  const handleDownloadUrlChange = (url, setIdIndex) => {
     try {
       if (!id) {
-        return alert("please select panel ");
+        return alert("Please provide a valid image ID");
       }
+
       let imageData = localStorage.getItem("coverphotoImage");
       if (!imageData) {
         imageData = {};
@@ -67,12 +74,28 @@ const EditImageTabList = ({ isOpen, onRequestClose, uploadedImageUrl, id }) => {
         imageData = JSON.parse(imageData);
       }
 
-      // Store the image URL with the associated ID
-      imageData[id] = url;
+      // Check if there's already an array for the given id
+      if (!Array.isArray(imageData[id])) {
+        // If not, initialize it as an empty array
+        imageData[id] = [];
+      }
+
+      // Get the next index for the new image object
+      const index = imageData[id].length;
+
+      // Push the new image object to the array associated with the id
+      imageData[id].push({
+        id: index, // Set the index as the id for the image object
+        caption: "",
+        url: url,
+      });
+
+      // Call the setIndex callback with the index of the newly saved image
+      SetImageIndex(index);
 
       // Save the updated image data to local storage
       localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
-      console.log("Image data saved successfully.");
+      alert("Image data saved successfully.");
     } catch (error) {
       console.error("Error saving image data:", error);
     }

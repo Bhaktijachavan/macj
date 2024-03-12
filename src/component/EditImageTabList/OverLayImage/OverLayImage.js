@@ -162,23 +162,7 @@ const OverLayImage = forwardRef(
     const drawOverlayElements = (context, scaleFactor) => {
       // Draw text overlays
       textsWithPositions.forEach((text) => {
-        context.fillStyle = text.textColor;
-
-        // Set font style
-        let fontStyle = "";
-        if (text.isBold) fontStyle += "bold ";
-        if (text.isItalic) fontStyle += "italic ";
-        context.font = `${fontStyle}${text.fontSize}px ${text.font}`;
-
-        context.textAlign = "left";
-        context.textBaseline = "top";
-        context.fillText(
-          text.content,
-          text.position.x * scaleFactor,
-          text.position.y * scaleFactor
-        );
-
-        // Additional properties
+        // Draw highlight rectangle first
         if (text.isHighlighted) {
           context.fillStyle = `${text.highlightColor}${Math.round(
             text.highlightOpacity * 255
@@ -190,6 +174,20 @@ const OverLayImage = forwardRef(
             text.fontSize
           );
         }
+
+        // Draw text on top of the highlight rectangle
+        context.fillStyle = text.textColor;
+        let fontStyle = "";
+        if (text.isBold) fontStyle += "bold ";
+        if (text.isItalic) fontStyle += "italic ";
+        context.font = `${fontStyle}${text.fontSize}px ${text.font}`;
+        context.textAlign = "left";
+        context.textBaseline = "top";
+        context.fillText(
+          text.content,
+          text.position.x * scaleFactor,
+          text.position.y * scaleFactor
+        );
       });
 
       // Draw arrows

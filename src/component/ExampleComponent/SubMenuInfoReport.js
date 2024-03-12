@@ -251,11 +251,56 @@ Object.keys(parsedMenuData).map((key) => {
     setSelectedSubmenu(selectedSubmenu);
   };
 
+
+  const handleSave = () => {
+    const selectedOptionId = generateUniqueId(); // Generate a unique ID
+    const dataToSave = {
+      [selectedOptionId]: {
+        selectedOption,
+        textareaValue: text,
+        // Add other data you want to save
+      },
+    };
+
+    // Fetch existing data from localStorage
+    const existingData = JSON.parse(localStorage.getItem('savedSummaryData')) || {};
+
+    // Merge existing data with the new data
+    const mergedData = { ...existingData, ...dataToSave };
+
+    // Save the merged data to localStorage
+    localStorage.setItem('savedSummaryData', JSON.stringify(mergedData));
+
+    console.log('Data saved to localStorage:', mergedData);
+
+    const jsonData = JSON.stringify(mergedData);
+    const blob = new Blob([jsonData], { type: 'application/json' });
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'yourFileName.hdf';
+
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  };
+
+  // Function to generate a unique ID
+  const generateUniqueId = () => {
+    return Math.random().toString(36).substring(2) + Date.now().toString(36);
+  };
+
+
+
   // Run this effect whenever the selectedMenuId changes
 
   return (
     <>
       <Header />
+      <div>
       <div className="main-container-for-the-info-of-generate-report-page">
         <div className="width-set-for-main-container-for-the-info-of-generate-report-page">
           <div className="section-for-page-that-contains-drop-downs-and-btns-and-checkboxes">
@@ -328,7 +373,7 @@ Object.keys(parsedMenuData).map((key) => {
             <div
               style={{
                 display: "flex",
-                height: "77vh",
+                height: "60vh",
                 justifyContent: "center",
               }}
             >
@@ -541,8 +586,12 @@ Object.keys(parsedMenuData).map((key) => {
                     onChange={(e) => setText(e.target.value)}
                     className="px-2"
                   />
+
+
                 </div>
+
               </div>
+
               <input
                 type="file"
                 ref={fileInputRef}
@@ -550,9 +599,20 @@ Object.keys(parsedMenuData).map((key) => {
                 onChange={handleFileChange}
               />
             </div>
+
           </div>
+
         </div>
+
       </div>
+      <div className="flex justify-center">
+      <button className="border border-black p-1" onClick={handleSave}>
+          Save
+        </button>
+                  </div>
+      </div>
+
+
       <Footer />
     </>
   );

@@ -80,14 +80,13 @@
   z-index: 1;
 }
 .Add-Icons-popup-main-container {
-  position: absolute;
-  /* top: 41%;
-  left: 50%; */
-  transform: translate(70%, -6%);
+  position: fixed;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: #d3d3d3;
+  border: solid 1px rgb(191, 189, 189);
 
-  /* border-radius: 8px; */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 1;
   width: 40em;
   height: 35em;
