@@ -1,6 +1,16 @@
+.caption-main-input-field-container {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 14px;
+  padding: 5px 0 5px 5px;
+}
 .Caption-main-input-filed {
-  width: 690px;
-  /* margin-left: 15px; */
+  width: 710px;
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+  border-radius: 2px;
 }
 .Caption-main-input-filed:hover {
   border: 1px solid orange;
@@ -9,8 +19,8 @@
   /* cursor: pointer; */
   /* background-color: white; */
   padding: 3px;
-  margin-top: -25px;
-  margin-left: 703px;
+  /* margin-top: -25px;
+  margin-left: 703px; */
   width: 25px;
   height: 25px;
   cursor: pointer;
@@ -103,4 +113,13 @@
 }
 .caption-main-input-field {
   margin: 10px 0 0 5px;
+}
+.tag-for-line-draw-through-text {
+  padding: 0 4px 0 4px;
+  margin-left: 0.5em;
+  font-size: 17px;
+}
+.bordered-text-caption {
+  border: 1px solid gray;
+  margin-top: 12px;
 }

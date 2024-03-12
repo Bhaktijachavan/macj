@@ -364,7 +364,7 @@ const ColorPalette = ({ onClose }) => {
           pdf.text(subName, 10, 40);
 
           // Display the image on each page
-          pdf.addImage(uploadedImage, 'JPEG', 10, 10, 30, 30);
+          // pdf.addImage(uploadedImage, 'JPEG', 10, 10, 30, 30);
         },
         head: headers, // Set the table headers
         body: data,    // Set the table data

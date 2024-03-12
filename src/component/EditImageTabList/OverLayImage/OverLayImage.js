@@ -103,8 +103,8 @@ const OverLayImage = forwardRef(
     };
 
     const handleDownload = () => {
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
+      const offScreenCanvas = document.createElement("canvas");
+      const offScreenContext = offScreenCanvas.getContext("2d");
 
       const maxWidth = 776;
       const maxHeight = 576;
@@ -127,30 +127,30 @@ const OverLayImage = forwardRef(
             scaledHeight * Math.cos((rotationAngle * Math.PI) / 180)
         );
 
-        canvas.width = scaledWidth;
-        canvas.height = scaledHeight;
-        context.filter = `contrast(${contrast}%) brightness(${brightness}%)`;
-        context.translate(canvas.width / 2, canvas.height / 2);
-        context.rotate((rotationAngle * Math.PI) / 180);
-        context.translate(-canvas.width / 2, -canvas.height / 2);
+        offScreenCanvas.width = rotatedWidth;
+        offScreenCanvas.height = rotatedHeight; // Set canvas dimensions to rotated image dimensions
+        offScreenContext.filter = `contrast(${contrast}%) brightness(${brightness}%)`;
+        offScreenContext.translate(rotatedWidth / 2, rotatedHeight / 2);
+        offScreenContext.rotate((rotationAngle * Math.PI) / 180);
+        offScreenContext.translate(-rotatedWidth / 2, -rotatedHeight / 2);
 
-        context.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+        offScreenContext.drawImage(img, 0, 0, scaledWidth, scaledHeight);
 
         if (uploadedPhoto) {
           const overlayImg = new Image();
           overlayImg.src = uploadedPhoto;
           overlayImg.onload = () => {
-            context.drawImage(overlayImg, position.x, position.y);
-            drawOverlayElements(context, scaleFactor);
-            const combinedImageUrl = canvas.toDataURL("image/jpeg");
+            offScreenContext.drawImage(overlayImg, position.x, position.y);
+            drawOverlayElements(offScreenContext, scaleFactor);
+            const combinedImageUrl = offScreenCanvas.toDataURL("image/jpeg");
             console.log("Combined Image URL:", combinedImageUrl);
             if (onDownloadUrlChange) {
               onDownloadUrlChange(combinedImageUrl);
             }
           };
         } else {
-          drawOverlayElements(context, scaleFactor);
-          const imageUrl = canvas.toDataURL("image/jpeg");
+          drawOverlayElements(offScreenContext, scaleFactor);
+          const imageUrl = offScreenCanvas.toDataURL("image/jpeg");
           console.log("Original Image URL:", imageUrl);
           if (onDownloadUrlChange) {
             onDownloadUrlChange(imageUrl);

@@ -170,122 +170,130 @@ const Buttons = ({ onFileSelect, id, SetImageIndex }) => {
         ref={fileInputRef}
         onChange={handleFileChange}
       />
-      <div className="jkdshfkjashfkjahksalk">
-        <ul className="Buttons-unorderlist-container">
-          <li>
-            <div
-              className={`Buttons-orderlist-to-adjust-images img1 ${
-                activeTab === 1 ? "active" : ""
-              }`}
-              onClick={handleImg1Click}
-            >
-              <img src={img1} alt="gallery" />
-            </div>
-          </li>
-          <li>
-            {/* <a href="#file"> */}
-            <div
-              className={`Buttons-orderlist-to-adjust-images ${
-                isImageUploaded ? "active" : ""
-              }`}
-            >
-              <img
-                src={img2}
-                alt=""
-                onClick={isImageUploaded ? handlePopupOpen : undefined}
-              />
-              {isPopupOpen && (
-                <div className="edit-image-main-popup-container-css">
-                  <EditImageTabList
-                    isOpen={isPopupOpen}
-                    onRequestClose={closePopup}
-                    uploadedImageUrl={uploadedImageUrl}
-                    id={id}
-                    SetImageIndex={SetImageIndex}
-                  />
-                </div>
-              )}
-            </div>
-            {/* </a> */}
-          </li>
+      <div className="Buttons-super-container-for-all-Buttons-Photo">
+        <div className="Buttons-main-contianer-for-unorder-list-container">
+          <ul className="Buttons-unorderlist-container">
+            <li>
+              <div
+                className={`Buttons-orderlist-to-adjust-images img1 ${
+                  activeTab === 1 ? "active" : ""
+                }`}
+                onClick={handleImg1Click}
+              >
+                <img src={img1} title="Add Image" alt="gallery" />
+              </div>
+            </li>
+            <li>
+              {/* <a href="#file"> */}
+              <div
+                className={`Buttons-orderlist-to-adjust-images ${
+                  isImageUploaded ? "active" : ""
+                }`}
+              >
+                <img
+                  src={img2}
+                  alt=""
+                  title="Edit Image"
+                  onClick={isImageUploaded ? handlePopupOpen : undefined}
+                />
+                {isPopupOpen && (
+                  <div className="edit-image-main-popup-container-css">
+                    <EditImageTabList
+                      isOpen={isPopupOpen}
+                      onRequestClose={closePopup}
+                      uploadedImageUrl={uploadedImageUrl}
+                      id={id}
+                      SetImageIndex={SetImageIndex}
+                    />
+                  </div>
+                )}
+              </div>
+              {/* </a> */}
+            </li>
 
-          <li>
-            {/* <a href="#file"> */}
-            <div
-              className={`Buttons-orderlist-to-adjust-images ${
-                isImageUploaded ? "active" : ""
-              }`}
-              onClick={isImageUploaded ? handleImg6Click : undefined}
-            >
-              <img src={img6} alt="" />
-            </div>
-            {/* </a> */}
-          </li>
+            <li>
+              {/* <a href="#file"> */}
+              <div
+                className={`Buttons-orderlist-to-adjust-images ${
+                  isImageUploaded ? "active" : ""
+                }`}
+                onClick={isImageUploaded ? handleImg6Click : undefined}
+              >
+                <img src={img6} title="Delete Image" alt="" />
+              </div>
+              {/* </a> */}
+            </li>
 
-          <li>
-            {/* <a href="#file"> */}
-            <div
-              className={`Buttons-orderlist-to-adjust-images ${
-                isImageUploaded ? "active" : ""
-              }`}
-              onClick={isImageUploaded ? handleImg8Click : undefined}
-            >
-              <img src={img8} alt="" />
-            </div>
-            {/* </a> */}
-          </li>
-        </ul>
+            <li>
+              {/* <a href="#file"> */}
+              <div
+                className={`Buttons-orderlist-to-adjust-images ${
+                  isImageUploaded ? "active" : ""
+                }`}
+                onClick={isImageUploaded ? handleImg8Click : undefined}
+              >
+                <img src={img8} title="Save Image" alt="" />
+              </div>
+              {/* </a> */}
+            </li>
+          </ul>
 
-        <label>Caption</label>
+          {/* <label>Caption</label> */}
+        </div>
+
+        <div className="Buttons-main-container-for-icons-buttons">
+          <ul className="Buttons-unoorderlist-for-icons-buttons">
+            {/* ... other list items */}
+            <li>
+              {/* <a href="#file"> */}
+              <div
+                className={`Buttons-orderlist-for-icons-buttons ${
+                  isImageUploaded ? "active" : ""
+                }`}
+              >
+                <img
+                  src={img9}
+                  alt=""
+                  title="Add Icons"
+                  onClick={isImageUploaded ? openPopup : undefined}
+                />
+              </div>
+              {/* </a> */}
+            </li>
+            <li>
+              {/* <a href="#file"> */}
+              <div
+                className={`Buttons-orderlist-for-icons-buttons ${
+                  isImageUploaded ? "active" : ""
+                }`}
+              >
+                {selectedPreviewIcon ? (
+                  <img src={selectedPreviewIcon} alt="" />
+                ) : (
+                  <img src={img10} title="Preview Icon" alt="" />
+                )}
+              </div>
+              {/* </a> */}
+            </li>
+            <li>
+              {/* <a href="#file"> */}
+              <div
+                className={`Buttons-orderlist-for-icons-buttons ${
+                  isImageUploaded ? "active" : ""
+                }`}
+              >
+                <img
+                  src={img11}
+                  title="Delete Icon"
+                  alt=""
+                  onClick={handleDeletePreviewIcon}
+                />
+              </div>
+              {/* </a> */}
+            </li>
+          </ul>
+        </div>
       </div>
-
-      <div>
-        <ul className="Buttons-unoorderlist-for-icons-buttons">
-          {/* ... other list items */}
-          <li>
-            {/* <a href="#file"> */}
-            <div
-              className={`Buttons-orderlist-for-icons-buttons ${
-                isImageUploaded ? "active" : ""
-              }`}
-            >
-              <img
-                src={img9}
-                alt=""
-                onClick={isImageUploaded ? openPopup : undefined}
-              />
-            </div>
-            {/* </a> */}
-          </li>
-          <li>
-            {/* <a href="#file"> */}
-            <div
-              className={`Buttons-orderlist-for-icons-buttons ${
-                isImageUploaded ? "active" : ""
-              }`}
-            >
-              {selectedPreviewIcon ? (
-                <img src={selectedPreviewIcon} alt="" />
-              ) : (
-                <img src={img10} alt="" />
-              )}
-            </div>
-            {/* </a> */}
-          </li>
-          <li>
-            {/* <a href="#file"> */}
-            <div
-              className={`Buttons-orderlist-for-icons-buttons ${
-                isImageUploaded ? "active" : ""
-              }`}
-            >
-              <img src={img11} alt="" onClick={handleDeletePreviewIcon} />
-            </div>
-            {/* </a> */}
-          </li>
-        </ul>
-      </div>
-
       {showPopup && (
         <div className="Add-Icons-popup-main-container">
           <div className="Add-Icons-Popup-header-container">
@@ -342,7 +350,7 @@ const Buttons = ({ onFileSelect, id, SetImageIndex }) => {
                 ) : (
                   <span className="Add-icons-No-Icons-found">
                     No Icons found
-                  </span>
+                  </span>img
                 )}
               </div> */}
               <div>

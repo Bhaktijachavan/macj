@@ -1,5 +1,8 @@
 .PhotoReview-Location-container {
-  margin-left: 6px;
+  /* margin-left: 6px; */
+  /* border: 2px solid; */
+  width: 12em;
+  height: 13em;
 }
 .PhotoReview-Location-first-inputfields {
   font-size: 10px;
@@ -29,6 +32,7 @@
   /* align-items: center; */
   justify-content: start;
   font-size: 13px;
+  margin-top: 5px;
 }
 .PhotoReview-Location-Checkbox-label {
   /* margin-left: 3px; */
@@ -44,4 +48,9 @@
   padding: 0px 0 5px 0;
   display: flex;
   justify-content: space-between;
+}
+.PhotoReview-rectangle {
+  display: flex;
+  align-items: center;
+  gap: 6em;
 }
