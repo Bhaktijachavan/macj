@@ -23,7 +23,7 @@ const AddComment = ({ onClose, value }) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-
+    
     if (file) {
       // Preview the selected image
       const reader = new FileReader();
@@ -42,12 +42,12 @@ const AddComment = ({ onClose, value }) => {
   };
   const handleEditNote = () => {
     setNotesAndCaptions([...notesAndCaptions, { type: "note", text }]);
-    setText((prevText) => `${prevText}\n[[note]]`);
+    setText((prevText) => `${prevText} [[note]]`);
   };
 
   const handleEditCaption = () => {
     setNotesAndCaptions([...notesAndCaptions, { type: "caption", text }]);
-    setText((prevText) => `${prevText}\n[[caption]]`);
+    setText((prevText) => `${prevText} [[caption]]`);
   };
   const openAddLinkPopup = () => {
     setAddLinkPopup(true);
