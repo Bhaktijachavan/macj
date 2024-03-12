@@ -128,7 +128,7 @@ const OverLayImage = forwardRef(
         );
 
         offScreenCanvas.width = rotatedWidth;
-        offScreenCanvas.height = rotatedHeight; // Set canvas dimensions to rotated image dimensions
+        offScreenCanvas.height = rotatedHeight;
         offScreenContext.filter = `contrast(${contrast}%) brightness(${brightness}%)`;
         offScreenContext.translate(rotatedWidth / 2, rotatedHeight / 2);
         offScreenContext.rotate((rotationAngle * Math.PI) / 180);
@@ -141,6 +141,7 @@ const OverLayImage = forwardRef(
           overlayImg.src = uploadedPhoto;
           overlayImg.onload = () => {
             offScreenContext.drawImage(overlayImg, position.x, position.y);
+
             drawOverlayElements(offScreenContext, scaleFactor);
             const combinedImageUrl = offScreenCanvas.toDataURL("image/jpeg");
             console.log("Combined Image URL:", combinedImageUrl);
@@ -192,32 +193,41 @@ const OverLayImage = forwardRef(
 
       // Draw arrows
       drawnArrows.forEach((arrow) => {
+        // Calculate arrow length and angle
+        const dx = arrow.end.x - arrow.start.x;
+        const dy = arrow.end.y - arrow.start.y;
+        const length = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx);
+
+        // Calculate arrowhead positions relative to the arrow line
+        const arrowheadLength = 15;
+        const arrowheadX1 =
+          arrow.end.x - arrowheadLength * Math.cos(angle - Math.PI / 6);
+        const arrowheadY1 =
+          arrow.end.y - arrowheadLength * Math.sin(angle - Math.PI / 6);
+        const arrowheadX2 =
+          arrow.end.x - arrowheadLength * Math.cos(angle + Math.PI / 6);
+        const arrowheadY2 =
+          arrow.end.y - arrowheadLength * Math.sin(angle + Math.PI / 6);
+
         // Draw arrow line
         context.strokeStyle = arrow.color;
         context.lineWidth = 4;
         context.beginPath();
-        context.moveTo(
-          arrow.start.x * scaleFactor,
-          arrow.start.y * scaleFactor
-        );
-        context.lineTo(arrow.end.x * scaleFactor, arrow.end.y * scaleFactor);
+        context.moveTo(arrow.start.x, arrow.start.y);
+        context.lineTo(arrow.end.x, arrow.end.y);
         context.stroke();
 
         // Draw arrowhead
         context.beginPath();
-        context.moveTo(arrow.end.x * scaleFactor, arrow.end.y * scaleFactor);
-        context.lineTo(
-          arrow.end.x * scaleFactor - 10,
-          arrow.end.y * scaleFactor - 5
-        );
-        context.lineTo(
-          arrow.end.x * scaleFactor - 10,
-          arrow.end.y * scaleFactor + 5
-        );
+        context.moveTo(arrowheadX1, arrowheadY1);
+        context.lineTo(arrow.end.x, arrow.end.y);
+        context.lineTo(arrowheadX2, arrowheadY2);
         context.closePath();
         context.fillStyle = arrow.color;
         context.fill();
       });
+
       drawnLines.forEach((line) => {
         // Calculate line length and angle
         const length = Math.sqrt(
@@ -232,64 +242,47 @@ const OverLayImage = forwardRef(
         context.strokeStyle = line.color;
         context.lineWidth = 2;
         context.beginPath();
-        context.moveTo(line.start.x * scaleFactor, line.start.y * scaleFactor);
-        context.lineTo(line.end.x * scaleFactor, line.end.y * scaleFactor);
-        context.stroke();
-      });
-      drawnOvals.forEach((oval, index) => {
-        // Calculate properties of the oval
-        const width = Math.abs(oval.end.x - oval.start.x);
-        const height = Math.abs(oval.end.y - oval.start.y);
-        const centerX = oval.start.x + width / 2;
-        const centerY = oval.start.y + height / 2;
-
-        // Draw oval
-        context.strokeStyle = oval.color;
-        context.lineWidth = 2;
-        context.beginPath();
-        context.ellipse(
-          centerX * scaleFactor,
-          centerY * scaleFactor,
-          (width / 2) * scaleFactor,
-          (height / 2) * scaleFactor,
-          0,
-          0,
-          2 * Math.PI
-        );
+        context.moveTo(line.start.x, line.start.y); // Start position
+        context.lineTo(line.end.x, line.end.y); // End position
         context.stroke();
       });
 
-      drawnRectangles.forEach((rectangle, index) => {
-        // Draw rectangle
+      drawnRectangles.forEach((rectangle) => {
+        // Calculate width and height of the rectangle
+        const width = rectangle.end.x - rectangle.start.x;
+        const height = rectangle.end.y - rectangle.start.y;
+
+        // Draw the rectangle
         context.strokeStyle = rectangle.color;
         context.lineWidth = 2;
         context.beginPath();
-        context.rect(
-          rectangle.start.x * scaleFactor,
-          rectangle.start.y * scaleFactor,
-          (rectangle.end.x - rectangle.start.x) * scaleFactor,
-          (rectangle.end.y - rectangle.start.y) * scaleFactor
-        );
+        context.rect(rectangle.start.x, rectangle.start.y, width, height);
         context.stroke();
       });
 
       {
-        drawnOvals.map((oval, index) => (
-          <div
-            key={index}
-            className="oval-overlay"
-            style={{
-              position: "absolute",
-              top: `${Math.min(oval.start.y, oval.end.y)}px`,
-              left: `${Math.min(oval.start.x, oval.end.x)}px`,
-              width: `${Math.abs(oval.end.x - oval.start.x)}px`,
-              height: `${Math.abs(oval.end.y - oval.start.y)}px`,
-              border: `2px solid ${oval.color}`,
-              borderRadius: "50%",
-              pointerEvents: "none",
-            }}
-          />
-        ));
+        drawnOvals.forEach((oval, index) => {
+          // Calculate properties of the oval
+          const width = Math.abs(oval.end.x - oval.start.x);
+          const height = Math.abs(oval.end.y - oval.start.y);
+          const centerX = oval.start.x + width / 2;
+          const centerY = oval.start.y + height / 2;
+
+          // Draw oval
+          context.strokeStyle = oval.color;
+          context.lineWidth = 2;
+          context.beginPath();
+          context.ellipse(
+            centerX,
+            centerY,
+            width / 2,
+            height / 2,
+            0,
+            0,
+            2 * Math.PI
+          );
+          context.stroke();
+        });
       }
     };
 
@@ -441,7 +434,10 @@ const OverLayImage = forwardRef(
                   src={uploadedPhoto}
                   alt="Uploaded"
                   className="Overlay-Image-overlay"
-                  style={{ transform: `rotate(${rotationAngles}deg)` }}
+                  style={{
+                    transform: `rotate(${rotationAngles}deg)`,
+                    position: "absolute",
+                  }}
                 />
               </Draggable>
             )}
