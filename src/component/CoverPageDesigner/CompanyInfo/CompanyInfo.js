@@ -1,20 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./CompanyInfo.css";
 
 function CompanyInfo({ id }) {
-  const clientInfoDataString = localStorage.getItem("clientInfoData");
-  const clientInfoData = clientInfoDataString
-    ? JSON.parse(clientInfoDataString)
-    : {};
-
-  const { firstName, lastName, email, phone } = clientInfoData;
-
   const [editableText, setEditableText] = useState({
-    firstName: firstName || "",
-    lastName: lastName || "",
-    email: email || "",
-    phone: phone || "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    fax: "",
+    inspectionAddress: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    agent: "macj-home-inspector",
+    dateOfInspection: "",
+    timeOfInspection: "",
+    ageOfHome: "",
+    size: "",
+    inspectionFee: "",
+    weather: "",
+    otherInfo: "",
   });
+
+  useEffect(() => {
+    const clientInfoDataString = localStorage.getItem("clientInfoData");
+    const clientInfoData = clientInfoDataString
+      ? JSON.parse(clientInfoDataString)
+      : {};
+    setEditableText(clientInfoData);
+  }, []); 
 
   const handleDragStart = (event) => {
     event.dataTransfer.setData("text/plain", event.target.id);

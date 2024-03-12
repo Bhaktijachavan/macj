@@ -3,6 +3,7 @@ const PhotosModal = ({ onClose, imageId }) => {
   const imageData = localStorage.getItem("coverphotoImage");
   if (imageData) {
     const parsedImageData = JSON.parse(imageData);
+    console.log("parsedImageData", parsedImageData);
     imagesArray = parsedImageData[imageId] || []; // Assign value to imagesArray
     console.log("selectedImage", imagesArray);
   }
