@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./AddLinkPopup.css";
 
-const AddLinkPopup = ({ onClose, value }) => {
+const AddLinkPopup = ({ onClose, value, setText }) => {
   const [Link, setLink] = useState({
     name: "",
     link: "",
@@ -12,39 +12,25 @@ const AddLinkPopup = ({ onClose, value }) => {
     setLink({ ...Link, [name]: value });
   };
 
- const handleSubmit = (e) => {
-   e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-   console.log(Link);
-   try {
-     // Check if TempPanelData already exists in local storage
-     let tempPanelData = localStorage.getItem("TempPanelData");
-     if (!tempPanelData) {
-       // If not, create an empty object
-       tempPanelData = {};
-     } else {
-       // If it exists, parse the JSON string to an object
-       tempPanelData = JSON.parse(tempPanelData);
-     }
+    console.log(Link);
+    try {
+      // Check if TempPanelData already exists in local storage
 
-     // Check if value already exists in tempPanelData
-     const storedText = tempPanelData[value];
-     const newText = storedText
-       ? `${storedText}\n${Link.name}: ${Link.link}`
-       : `${Link.name}: ${Link.link}`;
+      // Check if value already exists in tempPanelData
+      const newText = `${Link.name}: ${Link.link}___underline___`;
+      setText(newText);
 
-     // Update the value under the specified key
-     tempPanelData[value] = newText;
+      // Save the updated data back to local storage
 
-     // Save the updated data back to local storage
-     localStorage.setItem("TempPanelData", JSON.stringify(tempPanelData));
-
-     console.log("Data saved successfully.");
-     setLink({ name: "", link: "" });
-   } catch (error) {
-     console.error("Error saving data:", error);
-   }
- };
+      console.log("Data saved successfully.");
+      setLink({ name: "", link: "" });
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  };
 
   return (
     <>

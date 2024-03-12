@@ -282,7 +282,7 @@ const AddComment = ({ onClose, value }) => {
               )}
               {addLinkPopup && (
                 <div className="popup">
-                  <AddLinkPopup onClose={closeAddLinkPopup} value={value} />
+                  <AddLinkPopup onClose={closeAddLinkPopup} value={value} setText={setText}/>
                 </div>
               )}
               <textarea
