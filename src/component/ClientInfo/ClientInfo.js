@@ -31,7 +31,16 @@ const ClientInfo = () => {
       setFormData(data);
     }
   }, []);
-
+  // Filter out empty fields
+  const nonEmptyFields = Object.entries(formData).reduce(
+    (acc, [key, value]) => {
+      if (value !== "") {
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {}
+  );
   const hanndleSaveToLocalStorage = (event) => {
     event.preventDefault();
 

@@ -1,5 +1,44 @@
+// import React from "react";
+// import "./InspectionDetails.css";
+// function InspectionDetails({ text, id }) {
+//   const handleDragStart = (event) => {
+//     event.dataTransfer.setData("text/plain", event.target.id);
+//   };
+
+//   return (
+//     <>
+//       <div
+//         // id={id}
+//         // draggable="true"
+//         // onDragStart={handleDragStart}
+//         className="draggable-text-inspection"
+//         // style={{}}
+//       >
+//         <p
+//           className="N-G-Home-Inspection-Services"
+//           style={{
+//             fontSize: "20px",
+//           }}
+//         >
+//           N G Home Inspection Services <br />
+//         </p>
+//         <p
+//           className=" Property-Inspection-Report"
+//           style={{
+//             fontSize: "15px",
+//           }}
+//         >
+//           Property Inspection Report
+//         </p>
+//       </div>
+//     </>
+//   );
+// }
+
+// export default InspectionDetails;
 import React from "react";
 import "./InspectionDetails.css";
+
 function InspectionDetails({ text, id }) {
   const handleDragStart = (event) => {
     event.dataTransfer.setData("text/plain", event.target.id);
@@ -19,16 +58,20 @@ function InspectionDetails({ text, id }) {
           style={{
             fontSize: "20px",
           }}
+          contentEditable={true}
+          suppressContentEditableWarning={true}
         >
-          N G Home Inspection Services <br />
+          {text || "N G Home Inspection Services"}
         </p>
         <p
-          className=" Property-Inspection-Report"
+          className="Property-Inspection-Report"
           style={{
             fontSize: "15px",
           }}
+          contentEditable={true}
+          suppressContentEditableWarning={true}
         >
-          Property Inspection Report
+          {text || "Property Inspection Report"}
         </p>
       </div>
     </>

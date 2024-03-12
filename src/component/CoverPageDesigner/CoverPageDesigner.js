@@ -464,11 +464,11 @@ function CoverPageDesigner({ onClose }) {
                         <input
                           type="checkbox"
                           checked={checkedCheckboxes.includes(
-                            " Inspection Details"
+                            "Inspection Details"
                           )}
-                          onChange={(e) =>
-                            handleCheckboxChange(e, " Inspection Details")
-                          }
+                          // onChange={(e) =>
+                          //   handleCheckboxChange(e, "Inspection Details")
+                          // }
                         />
                         Inspection Details
                       </label>

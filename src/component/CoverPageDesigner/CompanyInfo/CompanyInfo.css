@@ -16,6 +16,10 @@
   /* text-align: center; */
   height: 2em;
 }
+.email-and-mob-number-section-for-company-info {
+  display: grid;
+  justify-content: center;
+}
 .email-and-mob-number-section-for-company-info > input {
   text-align: center;
   /* display: grid; */
@@ -36,4 +40,17 @@
 .fname-and-lname-content-for-the-company-info {
   display: flex;
   gap: 1em;
+}
+.other-client-info-for-cover-page-genearate-report {
+  display: grid;
+  justify-content: center;
+  /* gap: 1em; */
+}
+.for-flexing-input-and-label-cover-page {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+.for-flexing-input-and-label-cover-page > input {
+  height: 2em;
 }
