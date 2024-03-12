@@ -92,16 +92,18 @@ const Location = () => {
     alert("please select panel ");
   };
   const handleClosePopup = () => {
-    setShowPopup(false); // Close the popup
+    setShowPopup(false);
   };
   return (
     <>
       <div className="PhotoReview-rectangular-container-super">
-        <div className="PhotoReview-rectangle">
-          <div className="container-for-locations-and-recall-component">
-            <div className="syysysysy">
-              <div className="PhotoReview-Location-container">
-                <label htmlFor="menuDropdown">Location</label>
+        <div className="PhotoReview-rectangular-container-main-container">
+          <div className="PhotoReview-rectangle">
+            <div className="PhotoReview-Location-container">
+              {/* <label htmlFor="menuDropdown">Location</label> */}
+              <fieldset className=" border-1 border-gray-400 px-[4px] py-[4px]  ">
+                <legend className="ml-2 text-[17px]">Location</legend>
+
                 <div>
                   <select
                     id="menuDropdown"
@@ -160,93 +162,88 @@ const Location = () => {
                         ))}
                   </select>
                 </div>
-                <div className="PhotoReview-Location-button">
-                  {/* <Link> */}
-                  <button onClick={handlePanel}>@</button>
-                  {/* </Link> */}
-                </div>
-                <div className="PhotoReview-Location-Checkbox-Container">
-                  <section className="Section-for-label-and-checkbox">
-                    <input type="checkbox" name="agree" />
-                    <label
-                      htmlFor="agree"
-                      className="PhotoReview-Location-Checkbox-label"
-                    >
-                      Print At End
-                    </label>
-                  </section>
-                  <section className="Section-for-label-and-checkbox">
-                    <input
-                      type="checkbox"
-                      className="PhotoReview-Location-Checkbox-label"
-                      name="agree"
-                    />
-                    <label
-                      htmlFor="agree"
-                      className="PhotoReview-Location-Checkbox-label"
-                    >
-                      Summary
-                    </label>
-                  </section>
-                  <section className="Section-for-label-and-checkbox">
-                    <input type="checkbox" id="agree" name="agree" />
-                    <label
-                      htmlFor="agree"
-                      className="PhotoReview-Location-Checkbox-label"
-                    >
-                      Use Location As Caption
-                    </label>
-                  </section>
-                </div>
+              </fieldset>
+              <div className="PhotoReview-Location-button">
+                {/* <Link> */}
+                <button onClick={handlePanel} title="Navigate to Panel">
+                  @
+                </button>
+                {/* </Link> */}
+              </div>
+              <div className="PhotoReview-Location-Checkbox-Container">
+                <section className="Section-for-label-and-checkbox">
+                  <input type="checkbox" name="agree" />
+                  <label
+                    htmlFor="agree"
+                    className="PhotoReview-Location-Checkbox-label"
+                  >
+                    Print At End
+                  </label>
+                </section>
+                <section className="Section-for-label-and-checkbox">
+                  <input
+                    type="checkbox"
+                    className="PhotoReview-Location-Checkbox-label"
+                    name="agree"
+                  />
+                  <label
+                    htmlFor="agree"
+                    className="PhotoReview-Location-Checkbox-label"
+                  >
+                    Summary
+                  </label>
+                </section>
+                <section className="Section-for-label-and-checkbox">
+                  <input type="checkbox" id="agree" name="agree" />
+                  <label
+                    htmlFor="agree"
+                    className="PhotoReview-Location-Checkbox-label"
+                  >
+                    Use Location As Caption
+                  </label>
+                </section>
               </div>
             </div>
+
+            <div className="PhotoReview-Drag-Drop-Box">
+              {selectedImage ? (
+                <img
+                  src={selectedImage.url}
+                  alt="Selected Image"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : uploadedFile ? (
+                <img
+                  src={
+                    typeof uploadedFile === "string"
+                      ? uploadedFile
+                      : URL.createObjectURL(uploadedFile)
+                  }
+                  alt="Uploaded Image"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <p className="Drag-Drop-Box-Para">
+                  The Selected Image will Appear Here !
+                </p>
+              )}
+            </div>
           </div>
-          <div className="PhotoReview-Drag-Drop-Box">
-            {selectedImage ? (
-              <img
-                src={selectedImage.url} // Use the URL of the selected image
-                alt="Selected Image"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            ) : uploadedFile ? (
-              <img
-                src={
-                  typeof uploadedFile === "string"
-                    ? uploadedFile
-                    : URL.createObjectURL(uploadedFile)
-                }
-                alt="Uploaded Image"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            ) : (
-              <p className="Drag-Drop-Box-Para">
-                The Selected File will Appear Here !
-              </p>
-            )}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Buttons
-              id={panelId}
-              SetImageIndex={SetImageIndex}
-              onFileSelect={handleFileSelect}
-            />
-          </div>
-          <Caption id={panelId} />
+          <Buttons
+            id={panelId}
+            SetImageIndex={SetImageIndex}
+            onFileSelect={handleFileSelect}
+          />
         </div>
+        <Caption id={panelId} />
       </div>
 
       {/* Popup container */}

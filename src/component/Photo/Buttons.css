@@ -1,4 +1,9 @@
-/* Buttons.module.css */
+.Buttons-super-container-for-all-Buttons-Photo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 5px;
+}
 
 .Buttons-unorderlist-container {
   list-style-type: none;
@@ -39,10 +44,8 @@
   cursor: pointer;
 } */
 .Buttons-unoorderlist-for-icons-buttons {
-  display: grid;
-  margin-top: -40px;
-  margin-left: 300px;
-  gap: 5px;
+  display: flex;
+  gap: 1em;
 }
 .Buttons-orderlist-for-icons-buttons {
   /* background-color: white; */
