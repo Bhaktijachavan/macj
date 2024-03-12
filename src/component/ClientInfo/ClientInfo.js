@@ -38,7 +38,7 @@ const ClientInfo = () => {
     const { firstName, lastName, email, phone } = formData;
 
     if (!firstName || !lastName || !email || !phone) {
-      console.error("Incomplete data. Please fill in all required fields.");
+      alert("Incomplete data. Please fill in all required fields.");
       return;
     }
 
@@ -76,6 +76,30 @@ const ClientInfo = () => {
       weather: "",
       otherInfo: "",
     });
+
+    const newFormData = {
+      lastName: "",
+      firstName: "",
+      phone: "",
+      fax: "",
+      email: "",
+      inspectionAddress: "",
+      addressLine2: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      agent: "macj-home-inspector",
+      dateOfInspection: "",
+      timeOfInspection: "",
+      ageOfHome: "",
+      size: "",
+      inspectionFee: "",
+      weather: "",
+      otherInfo: "",
+    };
+
+    localStorage.setItem("clientInfoData", JSON.stringify(newFormData));
+    alert("Client Info Has been clear");
   };
   return (
     <div className="main-container-clientinfo">
