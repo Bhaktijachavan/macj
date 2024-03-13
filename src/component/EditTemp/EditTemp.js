@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "../../component/EditTemp/DynamicMenuComponent.css";
+import Buttons from './../Photo/Buttons';
 const SubdetailsDisplay = ({
   subdetails,
   selectedMenuId,
@@ -44,6 +45,9 @@ const DynamicMenuComponent = ({ onClose }) => {
   const [selectedRadio, setSelectedRadio] = useState("");
   const [showOptions, setShowOptions] = useState(false);
   const [selectedTabNameId, setSelectedTabNameId] = useState(null);
+  const [showMovePopup, setShowMovePopup] = useState(false);
+  const [selectedMoveTab, setSelectedMoveTab] = useState(null);
+  const [selectedMoveSubmenu, setSelectedMoveSubmenu] = useState(null);
   const [inputValues, setInputValues] = useState({
     tabname: "",
     damage1: "",
@@ -133,35 +137,6 @@ const DynamicMenuComponent = ({ onClose }) => {
       setSelectedMenuId(null);
       setSelectedSubMenuId(null);
     }
-  };
-  // Function to delete a tabname
-  const handleDeleteTab = () => {
-    if (!selectedMenuId || !selectedSubMenuId || !selectedTabNameId) {
-      alert("Please select a menu, submenu, and tabname first");
-      return;
-    }
-
-    // Create a copy of the selectedMenu, removing the selected tabname
-    const updatedMenu = { ...selectedMenu };
-    delete updatedMenu.subdetails[selectedSubMenuId][selectedTabNameId];
-
-    // Update state with the modified menu
-    setMenuData((prevMenuData) => ({
-      ...prevMenuData,
-      [selectedMenuId]: {
-        ...selectedMenu,
-        subdetails: {
-          ...selectedMenu.subdetails,
-          [selectedSubMenuId]: {
-            ...selectedMenu.subdetails[selectedSubMenuId],
-            [selectedTabNameId]: undefined,
-          },
-        },
-      },
-    }));
-
-    // You may want to clear the selectedTabNameId if needed
-    setSelectedTabNameId(null);
   };
   const handleAddSubmenu = () => {
     if (submenuName.trim() === "") {
@@ -273,13 +248,11 @@ const DynamicMenuComponent = ({ onClose }) => {
   };
   const [isEditing, setIsEditing] = useState(false);
   const [editedSubName, setEditedSubName] = useState("");
-
   // Function to handle double-click and initiate editing
   const handleSubNameDoubleClick = (submenu) => {
     setIsEditing(true);
     setEditedSubName(submenu.subName);
   };
-
   // Function to apply changes when the user clicks on OK
   const handleEditSubName = (submenu) => {
     setMenuData((prevMenuData) => {
@@ -639,6 +612,88 @@ const DynamicMenuComponent = ({ onClose }) => {
       );
     });
   };
+  const [selectedTabIndex, setSelectedTabIndex] = useState(null);
+  const handleTabClick = (index) => {
+    // Toggle selection: if the clicked tab is already selected, deselect it; otherwise, select it.
+    setSelectedTabIndex((prevIndex) => (prevIndex === index ? null : index));
+  };
+  const handleMoveUp = () => {
+    if (selectedTabIndex > 0) {
+      const selectedSubmenuCopy = { ...selectedMenu.subdetails[selectedSubMenuId] };
+      const tabnamesArray = Object.keys(selectedSubmenuCopy);
+      // Swap positions
+      [tabnamesArray[selectedTabIndex - 1], tabnamesArray[selectedTabIndex]] = [
+        tabnamesArray[selectedTabIndex],
+        tabnamesArray[selectedTabIndex - 1],
+      ];
+      // Update state
+      setMenuData((prevMenuData) => ({
+        ...prevMenuData,
+        [selectedMenuId]: {
+          ...selectedMenu,
+          subdetails: {
+            ...selectedMenu.subdetails,
+            [selectedSubMenuId]: {
+              ...selectedSubmenuCopy,
+              [tabnamesArray[selectedTabIndex - 1]]: selectedSubmenuCopy[tabnamesArray[selectedTabIndex]],
+              [tabnamesArray[selectedTabIndex]]: selectedSubmenuCopy[tabnamesArray[selectedTabIndex - 1]],
+            },
+          },
+        },
+      }));
+      setSelectedTabIndex(selectedTabIndex - 1);
+    }
+  };
+  const handleDeleteTab = () => {
+    if (!selectedMenuId || !selectedSubMenuId || selectedTabIndex === null) {
+      alert("Please select a menu, submenu, and tab first");
+      return;
+    }
+    setMenuData((prevMenuData) => {
+      const updatedMenuData = { ...prevMenuData };
+      const selectedSubmenu = updatedMenuData[selectedMenuId].subdetails[selectedSubMenuId];
+      if (!selectedSubmenu) {
+        alert("Please select a valid submenu");
+        return prevMenuData;
+      }
+      const tabnamesArray = Object.keys(selectedSubmenu);
+      if (selectedTabIndex < 0 || selectedTabIndex >= tabnamesArray.length) {
+        alert("Please select a valid tab");
+        return prevMenuData;
+      }
+      // Delete the selected tabname
+      delete selectedSubmenu[tabnamesArray[selectedTabIndex]];
+      return updatedMenuData;
+    });
+  };
+  const handleMoveDown = () => {
+    const maxIndex = Object.keys(selectedMenu?.subdetails[selectedSubMenuId] || {}).length - 1;
+    if (selectedTabIndex < maxIndex) {
+      const selectedSubmenuCopy = { ...selectedMenu.subdetails[selectedSubMenuId] };
+      const tabnamesArray = Object.keys(selectedSubmenuCopy);
+      // Swap positions
+      [tabnamesArray[selectedTabIndex], tabnamesArray[selectedTabIndex + 1]] = [
+        tabnamesArray[selectedTabIndex + 1],
+        tabnamesArray[selectedTabIndex],
+      ];
+      // Update state
+      setMenuData((prevMenuData) => ({
+        ...prevMenuData,
+        [selectedMenuId]: {
+          ...selectedMenu,
+          subdetails: {
+            ...selectedMenu.subdetails,
+            [selectedSubMenuId]: {
+              ...selectedSubmenuCopy,
+              [tabnamesArray[selectedTabIndex]]: selectedSubmenuCopy[tabnamesArray[selectedTabIndex + 1]],
+              [tabnamesArray[selectedTabIndex + 1]]: selectedSubmenuCopy[tabnamesArray[selectedTabIndex]],
+            },
+          },
+        },
+      }));
+      setSelectedTabIndex(selectedTabIndex + 1);
+    }
+  };
   return (
     <div>
       {/* Popup Wrapper */}
@@ -653,42 +708,28 @@ const DynamicMenuComponent = ({ onClose }) => {
             </div>
             <div className="text-left height-for-data">
               <h2>Items</h2>
-              <div>
-                <div>
-                  {/* Display all added subdetails for the selected
-submenu
-                    */}
-                  {selectedSubMenuId && (
-                    <div>
-                      {Object.keys(
-                        selectedMenu?.subdetails[selectedSubMenuId] || {}
-                      ).map((radioValue) => (
+              <div><div>
+                {/* Display all added subdetails for the selected submenu */}
+                {selectedSubMenuId && (
+                  <div>
+                    {Object.keys(selectedMenu?.subdetails[selectedSubMenuId] || {}).map(
+                      (radioValue, index) => (
                         <div
                           key={radioValue}
+                          onClick={() => handleTabClick(index)}
                           style={{
-                            backgroundColor:
-                              radioValue === selectedTabNameId
-                                ? "#c0c0c0"
-                                : "transparent",
-                            cursor:
-                              radioValue === selectedTabNameId
-                                ? "your_selected_cursor_style"
-                                : "pointer",
+                            backgroundColor: index === selectedTabIndex ? '#c0c0c0' : 'transparent',
+                            cursor: 'pointer',
                           }}
                         >
-                          <h3>
-                            {
-                              selectedMenu?.subdetails[selectedSubMenuId][
-                                radioValue
-                              ]?.tabname
-                            }
-                          </h3>
+                          <h3>{selectedMenu?.subdetails[selectedSubMenuId][radioValue]?.tabname}</h3>
                           {/* Display other details as needed */}
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                      )
+                    )}
+                  </div>
+                )}
+              </div>
               </div>
             </div>
           </div>
@@ -724,7 +765,7 @@ ml-2"
               <div className="">
                 <div className="p-l m-1">
                   {" "}
-                  <button onClick={handleRemoveItem}>Remove</button>
+                  <button>Remove</button>
                 </div>
                 <div className="ml-1">
                   {" "}
@@ -759,17 +800,20 @@ ml-2"
                     {menuData[selectedMenuId].subitems.find(
                       (submenu) => submenu.id === selectedSubMenuId
                     )?.subName && (
-                      <button onClick={handleAddSubdetails} className="mt-1">
-                        Add Subdetails
-                      </button>
-                    )}
+                        <button onClick={handleAddSubdetails} className="mt-1">
+                          Add Subdetails
+                        </button>
+                      )}
                     {/* Display added subdetails */}
                   </div>
                 )}
               </div>
               <div className="p-l m-1">
                 {" "}
-                <button onClick={() => handleDeleteTab}>Delete</button>
+                <button onClick={handleDeleteTab}>Delete</button>
+                <button onClick={handleMoveUp}>Move Up</button>
+                <button onClick={handleMoveDown}>Move Down</button>
+                <button>Move</button>
               </div>
             </div>
           </div>
