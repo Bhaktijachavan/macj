@@ -163,32 +163,55 @@ const OverLayImage = forwardRef(
     const drawOverlayElements = (context, scaleFactor) => {
       // Draw text overlays
       textsWithPositions.forEach((text) => {
-        // Draw highlight rectangle first
-        if (text.isHighlighted) {
-          context.fillStyle = `${text.highlightColor}${Math.round(
-            text.highlightOpacity * 255
-          ).toString(16)}`;
-          context.fillRect(
-            text.position.x * scaleFactor,
-            text.position.y * scaleFactor,
-            context.measureText(text.content).width,
-            text.fontSize
-          );
-        }
-
-        // Draw text on top of the highlight rectangle
-        context.fillStyle = text.textColor;
+        // Set up font style
         let fontStyle = "";
         if (text.isBold) fontStyle += "bold ";
         if (text.isItalic) fontStyle += "italic ";
-        context.font = `${fontStyle}${text.fontSize}px ${text.font}`;
-        context.textAlign = "left";
-        context.textBaseline = "top";
-        context.fillText(
-          text.content,
-          text.position.x * scaleFactor,
-          text.position.y * scaleFactor
-        );
+        const font = `${fontStyle}${text.fontSize}px ${text.font}`;
+
+        // Set up text alignment
+        const textAlign = "left";
+
+        // Set up text baseline
+        const textBaseline = "top";
+
+        // Set up text color
+        const textColor = text.textColor;
+
+        // Set up background color (highlight color)
+        const backgroundColor = text.isHighlighted
+          ? `${text.highlightColor}${Math.round(
+              text.highlightOpacity * 255
+            ).toString(16)}`
+          : "transparent";
+
+        // Set up text position
+        const x = text.position.x;
+        const y = text.position.y;
+
+        // Set up text content
+        const content = text.content;
+
+        // Measure the width of the text
+        const textWidth = context.measureText(content).width;
+
+        // Draw transparent highlight rectangle separately
+        // Draw transparent highlight rectangle separately
+        // Draw transparent highlight rectangle separately
+        // Draw transparent highlight rectangle separately
+        if (text.isHighlighted) {
+          context.fillStyle = backgroundColor;
+          const highlightWidth = 2 * textWidth; // Calculate the width of the highlight rectangle
+          const highlightX = x; // Start the highlight from the left side of the text
+          context.fillRect(highlightX, y, highlightWidth, text.fontSize); // Use calculated width and original y position
+        }
+
+        // Draw text on canvas
+        context.fillStyle = textColor;
+        context.font = font;
+        context.textAlign = textAlign;
+        context.textBaseline = textBaseline;
+        context.fillText(content, x, y);
       });
 
       // Draw arrows
