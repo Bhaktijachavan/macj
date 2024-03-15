@@ -1,0 +1,16 @@
+.ratinng-panel-component{
+    width: 34%; 
+   
+
+
+}
+.rating-break-word-wrap {
+    /* Set a fixed width for the container */
+    width: 200px; /* Adjust as needed */
+  
+    /* Enable text ellipsis */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  

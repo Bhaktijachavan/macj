@@ -696,7 +696,7 @@ border-black-900"
             </div>
 
             {/* <Link to="/EditComments"> */}
-            <li className="list-for-header-section-main-nav">
+           {/* <li className="list-for-header-section-main-nav">
               <button
                 // onClick={() => {
                 //   if (showComment === true) {

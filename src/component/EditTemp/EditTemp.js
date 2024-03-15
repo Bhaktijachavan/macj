@@ -589,19 +589,21 @@ const DynamicMenuComponent = ({ onClose }) => {
                         for selecting types of materials, locations, etc:
                       </p>
                       {/* Radio buttons for subdetails */}
-                      {[1, 2, 3, 4, 5, 6].map((radioValue) => (
-                        <label key={radioValue}>
-                          <input
-                            type="radio"
-                            name={`subdetails_${submenu.id}`}
-                            attribute
-                            value={radioValue}
-                            checked={selectedRadio === radioValue}
-                            onChange={() => handleRadioChange(radioValue)}
-                          />
-                          {getOptionLabel(radioValue)}
-                        </label>
-                      ))}
+                      <div className="">
+                        {[1, 2, 3, 4, 5, 6].map((radioValue) => (
+                          <label key={radioValue}>
+                            <input
+                              type="radio"
+                              name={`subdetails_${submenu.id}`}
+                              attribute
+                              value={radioValue}
+                              checked={selectedRadio === radioValue}
+                              onChange={() => handleRadioChange(radioValue)}
+                            />
+                            {getOptionLabel(radioValue)}
+                          </label>
+                        ))}
+                      </div>
                       {/* Input fields for selected radio */}
                     </div>
                   )}
