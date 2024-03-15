@@ -205,24 +205,24 @@ const ColorPalette = ({ onClose }) => {
 
       // Convert the modified HTML content to a PDF document
       html2pdf()
-      .from(modifiedContent)
-      .toPdf()
-      .get("pdf")
-      .then((pdf) => {
-        // Add second page for Report Introduction
-        pdf.addPage();
+        .from(modifiedContent)
+        .toPdf()
+        .get("pdf")
+        .then((pdf) => {
+          // Add second page for Report Introduction
+          pdf.addPage();
           pdf.text("Report", 10, 10);
           pdf.setFontSize(16);
 
-        // Add fixed text or content
-        const largeText = generateLoremIpsum(); // Replace this with your large text
-        const options = {
-          maxWidth: 200, // Adjust the maximum width for wrapping
-        };
-        pdf.text(largeText, 10, 20, options);
+          // Add fixed text or content
+          const largeText = generateLoremIpsum(); // Replace this with your large text
+          const options = {
+            maxWidth: 200, // Adjust the maximum width for wrapping
+          };
+          pdf.text(largeText, 10, 20, options);
 
-        const paddingRight = 20;
-        pdf.text("".padStart(paddingRight), 10, 20); // Empty text with padding
+          const paddingRight = 20;
+          pdf.text("".padStart(paddingRight), 10, 20); // Empty text with padding
 
           // Add third page for Table of Contents
           pdf.addPage();
@@ -235,16 +235,16 @@ const ColorPalette = ({ onClose }) => {
           pdf.text("Summary", 10, 10);
 
           // Fetch the savedSummaryData from localStorage
-          const savedSummaryData = localStorage.getItem('savedSummaryData');
+          const savedSummaryData = localStorage.getItem("savedSummaryData");
 
           // Parse the JSON data
           const parsedSummaryData = JSON.parse(savedSummaryData);
 
           // Get the textareaValue from the parsed data
-          const textareaValue = parsedSummaryData?.textareaValue || '';
+          const textareaValue = parsedSummaryData?.textareaValue || "";
 
           // Add summary to the PDF
-          pdf.text('Summary', 10, 10);
+          pdf.text("Summary", 10, 10);
           pdf.text(textareaValue, 10, 30); // Add summary data
           // Add summary table
           addSummaryTable(pdf, JSON.parse(menuData));
@@ -289,7 +289,6 @@ const ColorPalette = ({ onClose }) => {
     pdf.setDrawColor(0); // Reset draw color (box shadow) to black
   }
 
-
   // Function to add Summary Table
   // function addSummaryTable(pdf, menuNames) {
   //   // Iterate over the menu names to construct the tables
@@ -330,27 +329,26 @@ const ColorPalette = ({ onClose }) => {
   //   });
   // }
 
-
   function addSummaryTable(pdf, menuNames) {
     // Iterate over the menu names to construct the tables
     Object.values(menuNames).forEach((item, index) => {
       // Initialize data and headers for each submenu
       const data = [];
       const subName = item.subitems[0].subName; // Extract subName from menuData
-      const headers = [['Page No', 'Item No', 'Red Text']]; // Table headers
+      const headers = [["Page No", "Item No", "Red Text"]]; // Table headers
 
       // Get the relevant data from local storage (replace with your own logic)
-      const localStorageData = JSON.parse(localStorage.getItem('DamageData'));
+      const localStorageData = JSON.parse(localStorage.getItem("DamageData"));
 
       // Get the image data from local storage
-      const imageKey = 'uploadedImage'; // Replace with the actual key used to store the image data
-      const uploadedImage = localStorage.getItem(imageKey) || ''; // Retrieve the image data
+      const imageKey = "uploadedImage"; // Replace with the actual key used to store the image data
+      const uploadedImage = localStorage.getItem(imageKey) || ""; // Retrieve the image data
 
       // Iterate over the current submenu to populate the table body
       item.subitems.forEach((subitem, subitemIndex) => {
         // Get the relevant data from local storage for the current subitem
         const damageDataKey = `item_${index + 1}_subitem_${subitemIndex + 1}`;
-        const redText = localStorageData[damageDataKey]?.Damage1red || '';
+        const redText = localStorageData[damageDataKey]?.Damage1red || "";
 
         // Push each data row with three columns for the current submenu
         data.push([index + 1, subitemIndex + 1, redText]);
@@ -367,9 +365,9 @@ const ColorPalette = ({ onClose }) => {
           // pdf.addImage(uploadedImage, 'JPEG', 10, 10, 30, 30);
         },
         head: headers, // Set the table headers
-        body: data,    // Set the table data
+        body: data, // Set the table data
       });
-      console.log("Uploaded Image ",uploadedImage)
+      console.log("Uploaded Image ", uploadedImage);
 
       // Add a new page for the next submenu (optional)
       if (index < Object.values(menuNames).length - 1) {
@@ -377,12 +375,6 @@ const ColorPalette = ({ onClose }) => {
       }
     });
   }
-
-
-
-
-
-
 
   // Function to generate Lorem Ipsum text
   function generateLoremIpsum() {
@@ -406,8 +398,6 @@ const ColorPalette = ({ onClose }) => {
   // Example: Generate Lorem Ipsum with a single block
   const singleLoremIpsum = generateLoremIpsum();
   // console.log(singleLoremIpsum);
-
-
 
   // Function to strip HTML tags and convert to plain text
   function stripHtml(html) {
@@ -525,120 +515,102 @@ hover:text-white"
                       <th className="border font-semibold p-2">
                         Section title font
                       </th>
-                      <th
-                        className="border font-semibold
-p-2"
-                      >
-                        Print
-                      </th>
-                      <th
-                        className="border font-semibold p-2
-color-column"
-                      >
+                      <th className="border font-semibold p-2">Print</th>
+                      <th className="border font-semibold p-2 color-column">
                         Border
                       </th>
-                      <th
-                        className="border font-semibold p-2
-color-column"
-                      >
+                      <th className="border font-semibold p-2 color-column">
                         Header Background
                       </th>
                       <th className="border font-semibold p-2">Header Font</th>
-                      <th
-                        className="border font-semibold p-2
-color-column"
-                      >
+                      <th className="border font-semibold p-2 color-column">
                         Footer Background
                       </th>
                       <th className="border font-semibold p-2">Footer Font</th>
                       <th className="border font-semibold p-2">Section Icon</th>
-                      <th
-                        className="border font-semibold p-2
-color-column"
-                      >
+                      <th className="border font-semibold p-2 color-column">
                         TOC background
                       </th>
                       <th className="border font-semibold p-2">TOC Font</th>
                     </tr>
                   </thead>
-                </table>
-
-                {Object.keys(dummyData).map((key, index) => (
-                  <tbody key={key}>
-                    {Object.keys(dummyData[key].subitems).map((subKey) => (
-                      <tr key={subKey}>
-                        <td>{dummyData[key].subitems[subKey].subName}</td>
-                        <td className="border p-2">
-                          {JSON.stringify(dummyData[key].selectedOption)}
-                        </td>
-                        <td className="border p-2"></td>
-                        <td className="border p-2">
-                          <input
-                            type="checkbox"
-                            checked={dummyData[key].print}
-                            onChange={() => {}}
-                          />
-                        </td>
-                        <td className="border p-2">
-                          <input
-                            type="color"
-                            id={`border_color_${index}`}
-                            name={`border_color_${index}`}
-                            value={rowColors[index].border}
-                            onChange={(e) =>
-                              handleColorChange(
-                                dummyData[key].id,
-                                "border",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </td>
-                        <td className="border p-2">
-                          <input
-                            type="color"
-                            id={`header_bg_color_${index}`}
-                            name={`header_bg_color_${index}`}
-                            value={rowColors[index].headerBackground}
-                            onChange={(e) =>
-                              handleColorChange(
-                                dummyData[key].id,
-                                "headerBackground",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </td>
-                        <td className="border p-2"></td>
-                        <td className="border p-2">
-                          <input
-                            type="color"
-                            id={`footer_bg_color_${index}`}
-                            name={`footer_bg_color_${index}`}
-                            value={rowColors[index].footerBackground}
-                            onChange={(e) =>
-                              handleColorChange(
-                                dummyData[key].id,
-                                "footerBackground",
-                                e.target.value
-                              )
-                            }
-                          />
-                        </td>
-                        <td className="border p-2"></td>
-                        <td className="border p-2"></td>
-                        <td className="border p-2">
-                          <div>
-                            <input type="color" />
-                          </div>
-                        </td>
-                        <td className="border p-2"></td>
-                      </tr>
-                    ))}
+                  <tbody>
+                    {Object.keys(dummyData).map((key, index) =>
+                      Object.keys(dummyData[key].subitems).map((subKey) => (
+                        <tr key={subKey}>
+                          <td>{dummyData[key].subitems[subKey].subName}</td>
+                          <td className="border p-2">
+                            {JSON.stringify(dummyData[key].selectedOption)}
+                          </td>
+                          <td className="border p-2">
+                            <input
+                              type="checkbox"
+                              checked={dummyData[key].print}
+                              onChange={() => {}}
+                            />
+                          </td>
+                          <td className="border p-2">
+                            <input
+                              type="color"
+                              id={`border_color_${index}`}
+                              name={`border_color_${index}`}
+                              value={rowColors[index].border}
+                              onChange={(e) =>
+                                handleColorChange(
+                                  dummyData[key].id,
+                                  "border",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                          <td className="border p-2">
+                            <input
+                              type="color"
+                              id={`header_bg_color_${index}`}
+                              name={`header_bg_color_${index}`}
+                              value={rowColors[index].headerBackground}
+                              onChange={(e) =>
+                                handleColorChange(
+                                  dummyData[key].id,
+                                  "headerBackground",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                          <td className="border p-2"></td>
+                          <td className="border p-2">
+                            <input
+                              type="color"
+                              id={`footer_bg_color_${index}`}
+                              name={`footer_bg_color_${index}`}
+                              value={rowColors[index].footerBackground}
+                              onChange={(e) =>
+                                handleColorChange(
+                                  dummyData[key].id,
+                                  "footerBackground",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                          <td className="border p-2"></td>
+                          <td className="border p-2"></td>
+                          <td className="border p-2">
+                            <div>
+                              <input
+                                type="color"
+                                id={`section_icon_color_${index}`}
+                              />
+                            </div>
+                          </td>
+                          <td className="border p-2"></td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
-                ))}
-
-                <tbody></tbody>
+                </table>
               </div>
               <div
                 className="text-center mx-2 text-sm"
