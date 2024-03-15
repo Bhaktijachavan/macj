@@ -113,66 +113,137 @@ const Header = ({ onButtonClick }) => {
   };
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const onSaveInspection = useCallback(() => {
-    const panalData = localStorage.getItem("TempPanelData");
-    const TempPanelData = JSON.parse(panalData);
-    const clientInfoData = JSON.parse(localStorage.getItem("clientInfoData"));
-    const SelectionData = JSON.parse(localStorage.getItem("SelectionData"));
-    const DamageData = JSON.parse(localStorage.getItem("DamageData"));
-    const coverphotoImage = JSON.parse(localStorage.getItem("coverphotoImage"));
-    const uploadedImage = localStorage.getItem("uploadedImage");
-    const menuData = JSON.parse(localStorage.getItem("menuData"));
-    const outputContent = localStorage.getItem("outputContent");
-    // Check if any of the required data is missing
-    if (!TempPanelData || !clientInfoData || !menuData || !outputContent) {
-      return alert("Please complete the process");
-    }
-    const InspectionData = {
-      clientInfoData,
-      TempPanelData,
-      SelectionData,
-      DamageData,
-      coverphotoImage,
-      menuData,
-      outputContent,
-      uploadedImage,
-      id: Date.now(),
-    };
-    const encryptedData = encryptData(InspectionData, encryptionKey);
-    downloadFile(encryptedData);
-  }, []);
-  const onOpenInspection = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const encryptedData = await readFileAsText(file);
-      const decryptedData = decryptData(encryptedData, encryptionKey);
-      console.log("decryptedData ", decryptedData);
-      localStorage.setItem("menuData", JSON.stringify(decryptedData.menuData));
-      localStorage.setItem(
-        "SelectionData",
-        JSON.stringify(decryptedData.SelectionData)
-      );
-      localStorage.setItem(
-        "DamageData",
-        JSON.stringify(decryptedData.DamageData)
-      );
-      localStorage.setItem(
-        "TempPanelData",
-        JSON.stringify(decryptedData.TempPanelData)
-      );
-      localStorage.setItem("outputContent", decryptedData.outputContent);
-      localStorage.setItem(
-        "coverphotoImage",
-        JSON.stringify(decryptedData.coverphotoImage)
-      );
-      localStorage.setItem("uploadedImage", decryptedData.uploadedImage);
-      localStorage.setItem(
-        "clientInfoData",
-        JSON.stringify(decryptedData.clientInfoData)
-      );
-      alert("successfully opened");
-    }
-  };
+ const onSaveInspection = useCallback(() => {
+   const panalData = localStorage.getItem("TempPanelData");
+   const TempPanelData = panalData ? JSON.parse(panalData) : null;
+   const clientInfoData = localStorage.getItem("clientInfoData")
+     ? JSON.parse(localStorage.getItem("clientInfoData"))
+     : null;
+   const SelectionData = localStorage.getItem("SelectionData")
+     ? JSON.parse(localStorage.getItem("SelectionData"))
+     : null;
+   const DamageData = localStorage.getItem("DamageData")
+     ? JSON.parse(localStorage.getItem("DamageData"))
+     : null;
+   const coverphotoImage = localStorage.getItem("coverphotoImage")
+     ? JSON.parse(localStorage.getItem("coverphotoImage"))
+     : null;
+   const uploadedImage = localStorage.getItem("uploadedImage");
+   const menuData = localStorage.getItem("menuData")
+     ? JSON.parse(localStorage.getItem("menuData"))
+     : null;
+   const outputContent = localStorage.getItem("outputContent");
+   const ratingsData = localStorage.getItem("ratingsData")
+     ? JSON.parse(localStorage.getItem("ratingsData"))
+     : null;
+   // Construct InspectionData dynamically
+   const InspectionData = {
+     ...(clientInfoData && { clientInfoData }),
+     ...(TempPanelData && { TempPanelData }),
+     ...(SelectionData && { SelectionData }),
+     ...(DamageData && { DamageData }),
+     ...(coverphotoImage && { coverphotoImage }),
+     ...(menuData && { menuData }),
+     ...(outputContent && { outputContent }),
+     ...(uploadedImage && { uploadedImage }),
+     ...(ratingsData && { ratingsData }),
+     id: Date.now(),
+   };
+   // Check if any of the required data is missing
+   if (
+     !InspectionData.clientInfoData ||
+     !InspectionData.TempPanelData ||
+     !InspectionData.menuData ||
+     !InspectionData.outputContent
+   ) {
+     return alert("Please complete the process");
+   }
+   const encryptedData = encryptData(InspectionData, encryptionKey);
+   downloadFile(encryptedData);
+ }, []);
+
+ const onOpenInspection = async (e) => {
+   const file = e.target.files[0];
+   if (file) {
+     const encryptedData = await readFileAsText(file);
+     const decryptedData = decryptData(encryptedData, encryptionKey);
+     console.log("decryptedData ", decryptedData);
+     if (
+       decryptedData.clientInfoData !== null &&
+       decryptedData.clientInfoData !== undefined
+     ) {
+       localStorage.setItem(
+         "clientInfoData",
+         JSON.stringify(decryptedData.clientInfoData)
+       );
+     }
+     if (
+       decryptedData.TempPanelData !== null &&
+       decryptedData.TempPanelData !== undefined
+     ) {
+       localStorage.setItem(
+         "TempPanelData",
+         JSON.stringify(decryptedData.TempPanelData)
+       );
+     }
+     if (
+       decryptedData.SelectionData !== null &&
+       decryptedData.SelectionData !== undefined
+     ) {
+       localStorage.setItem(
+         "SelectionData",
+         JSON.stringify(decryptedData.SelectionData)
+       );
+     }
+     if (
+       decryptedData.DamageData !== null &&
+       decryptedData.DamageData !== undefined
+     ) {
+       localStorage.setItem(
+         "DamageData",
+         JSON.stringify(decryptedData.DamageData)
+       );
+     }
+     if (
+       decryptedData.coverphotoImage !== null &&
+       decryptedData.coverphotoImage !== undefined
+     ) {
+       localStorage.setItem(
+         "coverphotoImage",
+         JSON.stringify(decryptedData.coverphotoImage)
+       );
+     }
+     if (
+       decryptedData.uploadedImage !== null &&
+       decryptedData.uploadedImage !== undefined
+     ) {
+       localStorage.setItem("uploadedImage", decryptedData.uploadedImage);
+     }
+     if (
+       decryptedData.menuData !== null &&
+       decryptedData.menuData !== undefined
+     ) {
+       localStorage.setItem("menuData", JSON.stringify(decryptedData.menuData));
+     }
+     if (
+       decryptedData.outputContent !== null &&
+       decryptedData.outputContent !== undefined
+     ) {
+       localStorage.setItem("outputContent", decryptedData.outputContent);
+     }
+     if (
+       decryptedData.ratingsData !== null &&
+       decryptedData.ratingsData !== undefined
+     ) {
+       localStorage.setItem(
+         "ratingsData",
+         JSON.stringify(decryptedData.ratingsData)
+       );
+     }
+     alert("successfully opened");
+   }
+ };
+
   const handleOpenInspectionClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
