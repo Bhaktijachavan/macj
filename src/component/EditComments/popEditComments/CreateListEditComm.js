@@ -211,9 +211,10 @@ const CreateListEditComm = ({ onClose }) => {
               </div>{" "}
               {isAddCommentsPopUp && (
                 <AddCommentsPopUp
-                  onClose={() => setSelectedText("")} // Reset selectedText when popup is closed
+                  // onClose={() => setSelectedText("")} // Reset selectedText when popup is closed
                   selectedText={selectedText}
                   onSubmit={handleAddCommentsSubmit}
+                  onClose={handlePopUpClose}
                 />
               )}
             </div>

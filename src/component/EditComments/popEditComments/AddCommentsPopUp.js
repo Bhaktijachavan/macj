@@ -60,7 +60,7 @@ const AddCommentsPopUp = ({ onClose, selectedText, onSubmit }) => {
                 </button>
                 <button
                   className="btn-editcomm mr-2 w-24 text-sm"
-                  onClick={onClose}
+                  onClick={onClose} // Close the popup when Cancel is clicked
                 >
                   Cancel
                 </button>
