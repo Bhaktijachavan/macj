@@ -55,7 +55,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const handleCheckboxChange = (key, ratingValue) => {
     setSelectedCheckboxes((prevState) => ({
       ...prevState,
-      [key]: ratingValue,
+      [key]: prevState[key] === ratingValue ? null : ratingValue,
     }));
   };
 

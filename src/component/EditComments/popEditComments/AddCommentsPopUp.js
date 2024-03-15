@@ -42,7 +42,7 @@ const AddCommentsPopUp = ({ onClose, selectedText, onSubmit }) => {
                 <input
                   type="text"
                   placeholder="Enter new list"
-                  class="w-72 px-1 py-1 border rounded text-left w-full"
+                  class="px-1 py-1 border rounded text-left w-full"
                   value={editedText}
                   onChange={handleInputChange}
                 />

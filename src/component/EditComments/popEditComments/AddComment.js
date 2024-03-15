@@ -20,6 +20,7 @@ const AddComment = ({ onClose, value }) => {
   const [addLinkPopup, setAddLinkPopup] = useState(false);
   const [notesAndCaptions, setNotesAndCaptions] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(""); // State to track the selected option
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -121,6 +122,22 @@ const AddComment = ({ onClose, value }) => {
     } catch (error) {
       console.error("Error saving text:", error);
     }
+  };
+  // Function to handle change in selected option
+  // const handleOptionChange = (event) => {
+  //   setSelectedOption(event.target.value);
+  // };
+  // const onSelectOption = (option) => {
+  //   // Handle the selected option here
+  //   console.log("Selected option:", option);
+  // };
+
+  // Function to handle change in selected option
+  const onSelectOption = (option) => {
+    // Set the selected option to the text area
+    setText(option);
+    // Close the insert list popup
+    setInsertListPopup(false);
   };
   return (
     <div>
@@ -277,7 +294,12 @@ const AddComment = ({ onClose, value }) => {
             <div>
               {insertListPopup && (
                 <div className="popup">
-                  <InsertListPopup onClose={closeInsertListPopup} />
+                  <InsertListPopup
+                    onClose={closeInsertListPopup}
+                    // selectedOption={selectedOption}
+                    // onSelectOption={setSelectedOption}
+                    onSelectOption={onSelectOption}
+                  />
                 </div>
               )}
               {addLinkPopup && (

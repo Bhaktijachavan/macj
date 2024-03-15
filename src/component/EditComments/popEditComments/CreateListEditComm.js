@@ -48,7 +48,15 @@ const CreateListEditComm = ({ onClose }) => {
   const handleAddCommentsSubmit = (editedText) => {
     setText2((prevText) => `${prevText}${editedText}`);
   };
-
+  // Function to save text2 to local storage
+  const saveText2ToLocalStorage = () => {
+    try {
+      localStorage.setItem("text2", text2);
+      console.log("Text saved to local storage:", text2);
+    } catch (error) {
+      console.error("Error saving text to local storage:", error);
+    }
+  };
   return (
     <div>
       <div className="Contant-create">
@@ -233,7 +241,12 @@ const CreateListEditComm = ({ onClose }) => {
             </div>
 
             <div className="text-center pt-5">
-              <button className="btn-editcomm mr-2 w-24 text-sm">Ok</button>
+              <button
+                className="btn-editcomm mr-2 w-24 text-sm"
+                onClick={saveText2ToLocalStorage}
+              >
+                Ok
+              </button>
               <button className="btn-editcomm mr-2 w-24 text-sm">Cancel</button>
             </div>
           </div>

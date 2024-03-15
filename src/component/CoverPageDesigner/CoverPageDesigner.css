@@ -108,9 +108,8 @@ fieldset {
   align-items: center;
   flex-shrink: 0;
   background-color: grey;
-  /* height: 7em; */
+  height: 23.9em;
   background-color: #e5e7eb;
-  /* padding: 1em; */
 }
 .button-for-footer-for-changes-in-cover-page {
   border: 1px solid #00000038;
