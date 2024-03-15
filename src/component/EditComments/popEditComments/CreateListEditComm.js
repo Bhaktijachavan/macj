@@ -12,7 +12,12 @@ const CreateListEditComm = ({ onClose }) => {
   const [isAddCommentsPopUp, setIsAddCommentsPopUp] = useState(false);
   const [deletetlistPopup, setDeletetlistPopup] = useState(false);
   const [editCommentListPopup, setEditCommentListPopup] = useState(false);
+  const [selectedText, setSelectedText] = useState(""); // To store selected text
 
+  const handleTextSelect = () => {
+    const selection = window.getSelection().toString(); // Get selected text
+    setSelectedText(selection); // Store selected text
+  };
   const openDeletetListPopup = () => {
     setDeletetlistPopup(true);
   };
@@ -36,6 +41,12 @@ const CreateListEditComm = ({ onClose }) => {
   };
   const handleAddCommPopopClick = () => {
     setIsAddCommentsPopUp(true);
+  };
+  const handleAddListSubmit = (listName) => {
+    setText1((prevText) => `${prevText}${listName}`);
+  };
+  const handleAddCommentsSubmit = (editedText) => {
+    setText2((prevText) => `${prevText}${editedText}`);
   };
 
   return (
@@ -77,7 +88,10 @@ const CreateListEditComm = ({ onClose }) => {
 
                         <div className="w-full">
                           {isAddListPopUp && (
-                            <AddListPopUp onClose={handlePopUpClose} />
+                            <AddListPopUp
+                              onClose={handlePopUpClose}
+                              onSubmit={handleAddListSubmit}
+                            />
                           )}
                         </div>
                       </div>
@@ -117,16 +131,20 @@ const CreateListEditComm = ({ onClose }) => {
                   <div className="pl-4">
                     <textarea
                       style={{
-                        width: "54vh",
+                        width: "56vh",
                         height: "42vh",
                         boxSizing: "border-box",
                       }}
                       value={text1}
                       onChange={(e) => setText1(e.target.value)}
+                      onSelect={handleTextSelect} // Call handleTextSelect when text is selected
                     />
                   </div>
                 </div>
-                <div className="second-cont-create">
+                <div
+                  className="second-cont-create"
+                  // onMouseUp={handleTextSelection}
+                >
                   <div>
                     <ul className="flex gap-2 items-center text-center">
                       <div>
@@ -192,7 +210,11 @@ const CreateListEditComm = ({ onClose }) => {
                 </div>
               </div>{" "}
               {isAddCommentsPopUp && (
-                <AddCommentsPopUp onClose={handlePopUpClose} />
+                <AddCommentsPopUp
+                  onClose={() => setSelectedText("")} // Reset selectedText when popup is closed
+                  selectedText={selectedText}
+                  onSubmit={handleAddCommentsSubmit}
+                />
               )}
             </div>
             <div className="text-center p-2">

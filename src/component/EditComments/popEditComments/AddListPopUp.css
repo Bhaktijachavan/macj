@@ -1,42 +1,41 @@
 /* popbox */
 .template-card-addlistpopup {
-    position: fixed;
-    /* top: 50%;
+  position: fixed;
+  /* top: 50%;
     left: 50%; */
-    z-index: 99;
-    /* transform: translate(-50%, -50%); */
-    width: 100vh;
-    max-width: 500px; /* Adjust the max-width as needed */
-    height: 21vh;
-    z-index: 9999;
-    border: 1px solid rgb(191, 189, 189);
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    background-color: rgb(229, 229, 229);
-  }
-  
-  .template-selector-addlistpopup {
-    width: 500px;
-    height: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgb(242, 236, 236);
-    border: solid 1px rgb(191, 189, 189);
-    padding: 12px;
-    z-index: 1;
-    position: absolute;
-  }
-  
- 
-  
-  .close-button-addlistpopup {
-    background-color: transparent;
-    border: none;
-    padding: 0 10px;
-  }
-  
-  .close-button-addlistpopup:hover {
-    background-color: #e60000;
-  }
-  
+  z-index: 99;
+  transform: translate(-50%, -50%);
+  width: 100vh;
+  max-width: 500px; /* Adjust the max-width as needed */
+  height: 21vh;
+  z-index: 9999;
+  border: 1px solid rgb(191, 189, 189);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  background-color: rgb(229, 229, 229);
+  top: 50%;
+  left: 50%;
+}
+
+.template-selector-addlistpopup {
+  width: 500px;
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(242, 236, 236);
+  border: solid 1px rgb(191, 189, 189);
+  padding: 12px;
+  z-index: 1;
+  position: absolute;
+}
+
+.close-button-addlistpopup {
+  background-color: transparent;
+  border: none;
+  padding: 0 10px;
+}
+
+.close-button-addlistpopup:hover {
+  background-color: #e60000;
+}

@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./AddCommentsPopUp.css";
 import InspectionSignature from "./../../CoverPageDesigner/Inspection Signature/InspectionSignature";
 
-const AddCommentsPopUp = ({ onClose }) => {
+const AddCommentsPopUp = ({ onClose, selectedText, onSubmit }) => {
+  const [editedText, setEditedText] = useState(selectedText); // Initialize input field with selected text
+
+  // Function to handle input field change
+  const handleInputChange = (e) => {
+    setEditedText(e.target.value); // Update edited text state
+  };
+
+  const handleSubmit = () => {
+    onSubmit(editedText);
+    onClose();
+  };
+
+  // Update editedText when selectedText changes
+  useEffect(() => {
+    setEditedText(selectedText);
+  }, [selectedText]);
   return (
     <div>
       <div className="Contant-addCommentsPopUp">
@@ -27,6 +43,8 @@ const AddCommentsPopUp = ({ onClose }) => {
                   type="text"
                   placeholder="Enter new list"
                   class="w-72 px-1 py-1 border rounded text-left w-full"
+                  value={editedText}
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
@@ -34,8 +52,16 @@ const AddCommentsPopUp = ({ onClose }) => {
             <div>
               {" "}
               <div className="text-center">
-                <button className="btn-editcomm mr-2 w-24 text-sm">Ok</button>
-                <button className="btn-editcomm mr-2 w-24 text-sm">
+                <button
+                  className="btn-editcomm mr-2 w-24 text-sm"
+                  onClick={handleSubmit}
+                >
+                  Ok
+                </button>
+                <button
+                  className="btn-editcomm mr-2 w-24 text-sm"
+                  onClick={onClose}
+                >
                   Cancel
                 </button>
               </div>
