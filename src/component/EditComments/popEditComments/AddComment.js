@@ -23,7 +23,7 @@ const AddComment = ({ onClose, value }) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    
+
     if (file) {
       // Preview the selected image
       const reader = new FileReader();
@@ -202,7 +202,7 @@ const AddComment = ({ onClose, value }) => {
                   </div>
 
                   <span>Link</span>
-                </li>{" "}
+                </li>
               </div>
 
               <div className="text-sm hover:bg-gray-300 cursor-pointer">
@@ -267,9 +267,9 @@ const AddComment = ({ onClose, value }) => {
                   U
                 </span>
               </li>
-              <li className="text-sm flex items-center">
+              {/* <li className="text-sm flex items-center">
                 <input type="color"></input>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -282,7 +282,11 @@ const AddComment = ({ onClose, value }) => {
               )}
               {addLinkPopup && (
                 <div className="popup">
-                  <AddLinkPopup onClose={closeAddLinkPopup} value={value} setText={setText}/>
+                  <AddLinkPopup
+                    onClose={closeAddLinkPopup}
+                    value={value}
+                    setText={setText}
+                  />
                 </div>
               )}
               <textarea

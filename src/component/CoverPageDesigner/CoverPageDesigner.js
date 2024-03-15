@@ -737,7 +737,7 @@ function CoverPageDesigner({ onClose }) {
                   >
                     <div>{renderCheckboxContent(label)}</div>
                   </div>
-                ))}{" "}
+                ))}
                 {addedImages.map(({ id, src, height, width }) => (
                   <Draggable bounds="parent">
                     <div key={id} className="draggableeeee">

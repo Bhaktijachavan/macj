@@ -139,9 +139,9 @@ const CreateListEditComm = ({ onClose }) => {
                           </li>
                         </div>
 
-                        {isAddCommentsPopUp && (
+                        {/* {isAddCommentsPopUp && (
                           <AddCommentsPopUp onClose={handlePopUpClose} />
-                        )}
+                        )} */}
                       </div>
                       <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
                         <li>
@@ -190,7 +190,10 @@ const CreateListEditComm = ({ onClose }) => {
                     />
                   </div>
                 </div>
-              </div>
+              </div>{" "}
+              {isAddCommentsPopUp && (
+                <AddCommentsPopUp onClose={handlePopUpClose} />
+              )}
             </div>
             <div className="text-center p-2">
               <div className="mx-auto">
