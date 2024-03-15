@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from "react";
 import EditComments from "../../EditComments/EditComments";
-import Header from "./../../Header/Header";
-import Panel1 from "../Panel1/Panel1";
 import PhotosModal from "./PhotosModal";
+import { set } from "lodash";
 const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [selectedText, setSelectedText] = useState("");
   const [blackText, setBlackText] = useState("");
   const [redText, setRedText] = useState("");
   const [index] = "";
-  const [lines, setLines] = useState("");
   const [selectedLine, setSelectedLine] = useState(0);
   const [SelectedLineText, setSelectedLineText] = useState(0);
   const [selectedLineIndex, setSelectedLineIndex] = useState(null);
   const [selectedLineColor, setSelectedLineColor] = useState(null);
-
   const [commentText, setCommentText] = useState("");
-  const [rating, setRating] = useState();
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState({});
+  const [rating, setRating] = useState(null);
   const [discriptionText, setDiscriptionText] = useState("");
   const [showPhotosModal, setShowPhotosModal] = useState(false);
   const handleShowPhotosClick = () => {
@@ -24,27 +22,46 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
 
   useEffect(() => {
     const newData = localStorage.getItem("ratingsData");
-    const parseData = JSON.parse(newData);
-    setRating(parseData);
-    console.log(parseData);
+    if (newData) {
+      const parseData = JSON.parse(newData);
+      console.log("rating data ", parseData);
+      setRating(parseData);
+    }
   }, []);
-
   useEffect(() => {
     const data = localStorage.getItem("DamageData");
     if (data) {
-      const parsedData = JSON.parse(data);
-      console.log("parsedData", parsedData);
-      const Damage1Data = parsedData[value];
-      console.log("Damage1Data", Damage1Data);
-      if (Damage1Data) {
-        setRedText(Damage1Data.Damage1red);
-        setBlackText(Damage1Data.Damage1black);
-        setDiscriptionText(Damage1Data.description);
+      try {
+        const parsedData = JSON.parse(data);
+        console.log("parsedData", parsedData);
+        const Damage1Data = parsedData[value];
+        console.log("Damage1Data", Damage1Data);
+        if (Damage1Data) {
+          setRedText(Damage1Data.Damage1red || "");
+          setBlackText(Damage1Data.Damage1black || "");
+          setDiscriptionText(Damage1Data.description || "");
+          setSelectedCheckboxes(Damage1Data.rating || {});
+        }
+      } catch (error) {
+        console.error("Error parsing data:", error);
+        // Handle error here, for example:
+        // Display an error message or set default values
       }
     }
-  }, []);
+  }, [value]);
+
   const NewValue = value;
   const extractedValue = NewValue.replace(/_(d|s)\d$/, "");
+  const handleCheckboxChange = (key, ratingValue) => {
+    setSelectedCheckboxes((prevState) => ({
+      ...prevState,
+      [key]: ratingValue,
+    }));
+  };
+
+  useEffect(() => {
+    console.log("selected cheakbox ", selectedCheckboxes);
+  }, [selectedCheckboxes]);
 
   const handlesave = () => {
     console.log("Saving data...");
@@ -66,6 +83,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       tempPanelData[value]["Damage1red"] = redText;
       tempPanelData[value]["Damage1black"] = blackText;
       tempPanelData[value]["description"] = discriptionText;
+      tempPanelData[value]["rating"] = selectedCheckboxes;
       console.log("tempPanelData", tempPanelData);
       // Save the updated data back to local storage
       localStorage.setItem("DamageData", JSON.stringify(tempPanelData));
@@ -320,7 +338,10 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                         value={rating[key]}
                         style={{ backgroundColor: "#3182ce" }}
                         className="mr-2 focus:ring-2 focus:ring-blue-500 checked:bg-blue-500 checked:border-blue-500"
+                        checked={selectedCheckboxes[key] === rating[key]}
+                        onChange={() => handleCheckboxChange(key, rating[key])}
                       />
+
                       <label htmlFor={key}>{rating[key]}</label>
                     </div>
                   ))
