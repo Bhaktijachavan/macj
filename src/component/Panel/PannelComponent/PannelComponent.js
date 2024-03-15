@@ -7,7 +7,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [selectedText, setSelectedText] = useState("");
   const [blackText, setBlackText] = useState("");
   const [redText, setRedText] = useState("");
-  const [index] = ""; // Remove this line or provide a valid value
+  const [index] = "";
   const [lines, setLines] = useState("");
   const [selectedLine, setSelectedLine] = useState(0);
   const [SelectedLineText, setSelectedLineText] = useState(0);
@@ -16,6 +16,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
 
   const [commentText, setCommentText] = useState("");
   const [rating, setRating] = useState();
+  const [discriptionText, setDiscriptionText] = useState("");
   const [showPhotosModal, setShowPhotosModal] = useState(false);
   const handleShowPhotosClick = () => {
     setShowPhotosModal(true);
@@ -27,6 +28,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
     setRating(parseData);
     console.log(parseData);
   }, []);
+
   useEffect(() => {
     const data = localStorage.getItem("DamageData");
     if (data) {
@@ -37,6 +39,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       if (Damage1Data) {
         setRedText(Damage1Data.Damage1red);
         setBlackText(Damage1Data.Damage1black);
+        setDiscriptionText(Damage1Data.description);
       }
     }
   }, []);
@@ -62,6 +65,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       // Store Damage1red and Damage1black values under Damage1Data
       tempPanelData[value]["Damage1red"] = redText;
       tempPanelData[value]["Damage1black"] = blackText;
+      tempPanelData[value]["description"] = discriptionText;
       console.log("tempPanelData", tempPanelData);
       // Save the updated data back to local storage
       localStorage.setItem("DamageData", JSON.stringify(tempPanelData));
@@ -286,6 +290,8 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 sortCommentText={sortCommentText}
                 moveUp={handleMoveUpDamage}
                 moveDown={handleMoveDownDamage}
+                setDiscriptionText={setDiscriptionText}
+                discriptionText={discriptionText}
               />
               <div
                 className="scroll-box-panel2 p-4 bg-gray-100"

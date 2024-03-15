@@ -6,6 +6,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
   const [commentText, setCommentText] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [localSelectedText, setLocalSelectedText] = useState(null);
+  const [discriptionText, setDiscriptionText] = useState("");
   const selectedTextRef = useRef([]);
 
   useEffect(() => {
@@ -38,7 +39,8 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     if (data) {
       const parsedData = JSON.parse(data);
       const selectionText = parsedData[value]?.selectionText || "";
-      setLocalSelectedText(selectionText);
+      const description = parsedData[value]?.description || "";
+      setDiscriptionText(description);
       selectedTextRef.current = selectionText.split("\n");
     }
   }, [value]);
@@ -91,6 +93,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       }
 
       tempPanelData[value]["selectionText"] = concatenatedText;
+      tempPanelData[value]["description"] = discriptionText;
 
       console.log("selectionData", tempPanelData);
 
@@ -229,6 +232,8 @@ const SelectionComponent = ({ panelData, value, classname }) => {
               sortCommentText={sortCommentText}
               moveUp={handleMoveUpSelection}
               moveDown={handleMoveDownSelection}
+              setDiscriptionText={setDiscriptionText}
+              discriptionText={discriptionText}
             />
             <button
               onClick={handlesave}

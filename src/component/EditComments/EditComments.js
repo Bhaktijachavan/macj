@@ -1,26 +1,21 @@
 import React, { useState } from "react";
-import Header from "../Header/Header";
-import Footer from "./../Footer/Footer";
+
 import AddComment from "./popEditComments/AddComment";
 import "./EditComments.css";
 
 const EditComments = ({
-  onClose,
   value,
   handleDelete,
   sortCommentText,
   moveUp,
   moveDown,
+  setDiscriptionText,
+  discriptionText,
 }) => {
   const [isAddModalVisible, setAddModalVisible] = useState(false);
 
   const handleAddButtonClick = () => {
     setAddModalVisible(true);
-  };
-
-  const handleCancelButtonClick = () => {
-    setAddModalVisible(false);
-    onClose();
   };
 
   return (
@@ -89,7 +84,11 @@ const EditComments = ({
               <label className="block text-sm font-semibold text-gray-600">
                 Description text
               </label>
-              <textarea className="btn-editcomm w-24 h-7 border"></textarea>
+              <textarea
+                className="btn-editcomm w-24 h-7 border"
+                value={discriptionText ? discriptionText : ""}
+                onChange={(e) => setDiscriptionText(e.target.value)}
+              ></textarea>
             </div>
           </div>
         </div>
