@@ -8,7 +8,7 @@ const CheckboxContent1 = () => {
     <>
       <div className="content-for-the-cover-photo-check-box">
         {uploadedImage ? (
-          <img src={uploadedImage} alt="Cover Photo" />
+          <img src={uploadedImage} alt="Cover Photo" className="content-for-the-cover-photo-check-box-image-height-width"/>
         ) : (
           "Cover Photo"
         )}
