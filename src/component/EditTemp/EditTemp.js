@@ -773,48 +773,53 @@ ml-2"
                 </div>
               </div>
             </div>
-            <div className="flex">
-              <div className="m-1">
-                {/* Render "Add option" button outside the submenu loop
-                 */}
-                {selectedMenuId &&
-                  menuData[selectedMenuId].subitems.length > 0 && (
-                    <button
-                      onClick={() => {
-                        setShowOptions(false);
-                        handleAddOptionClick(
-                          menuData[selectedMenuId].subitems[0].id
-                        );
-                      }}
-                    >
-                      Add Panel
-                    </button>
+            <div className="">
+              <div className="flex">
+                <div className="ml-1">
+                  {/* Render "Add option" button outside the submenu loop
+              */}
+                  {selectedMenuId &&
+                    menuData[selectedMenuId].subitems.length > 0 && (
+                      <button
+                        onClick={() => {
+                          setShowOptions(false);
+                          handleAddOptionClick(
+                            menuData[selectedMenuId].subitems[0].id
+                          );
+                        }}
+                      >
+                        Add Panel
+                      </button>
+                    )}
+                </div>
+                <div>
+                  {selectedRadio && selectedSubMenuId && (
+                    <div>
+                      {renderInputFields(selectedRadio)}
+                      {/* Conditionally render the "Add Subdetails" button
+                  */}
+                      {menuData[selectedMenuId].subitems.find(
+                        (submenu) => submenu.id === selectedSubMenuId
+                      )?.subName && (
+                          <button onClick={handleAddSubdetails} className="ml-1">
+                            Add Subdetails
+                          </button>
+                        )}
+                      {/* Display added subdetails */}
+                    </div>
                   )}
+                </div>
+                <div className="mi-1"><button onClick={handleDeleteTab}>Delete</button></div>
               </div>
-              <div>
-                {selectedRadio && selectedSubMenuId && (
-                  <div>
-                    {renderInputFields(selectedRadio)}
-                    {/* Conditionally render the "Add Subdetails" button
-                     */}
-                    {menuData[selectedMenuId].subitems.find(
-                      (submenu) => submenu.id === selectedSubMenuId
-                    )?.subName && (
-                        <button onClick={handleAddSubdetails} className="mt-1">
-                          Add Subdetails
-                        </button>
-                      )}
-                    {/* Display added subdetails */}
-                  </div>
-                )}
-              </div>
-              <div className="p-l m-1">
+              <div className="p-l m-1 flex gap-1">
                 {" "}
-                <button onClick={handleDeleteTab}>Delete</button>
-                <button onClick={handleMoveUp}>Move Up</button>
-                <button onClick={handleMoveDown}>Move Down</button>
-                <button>Move</button>
+
+                <div><button onClick={handleMoveUp}>Move Up</button></div>
+                <div><button onClick={handleMoveDown}>Move Down</button></div>
+                <div> <button>Move</button></div>
+
               </div>
+
             </div>
           </div>
           <div className="flex justify-end">
