@@ -42,6 +42,7 @@ const DynamicMenuComponent = ({ onClose }) => {
   const [submenuName, setSubmenuName] = useState("");
   const [selectedMenuId, setSelectedMenuId] = useState(null);
   const [selectedSubMenuId, setSelectedSubMenuId] = useState(null);
+  const [selectedSubName , setSelectedSubName] = useState();
   const [selectedRadio, setSelectedRadio] = useState("");
   const [showOptions, setShowOptions] = useState(false);
   const [selectedTabNameId, setSelectedTabNameId] = useState(null);
@@ -252,6 +253,7 @@ const DynamicMenuComponent = ({ onClose }) => {
   const handleSubNameDoubleClick = (submenu) => {
     setIsEditing(true);
     setEditedSubName(submenu.subName);
+    console.log("subname " , submenu)
   };
   // Function to apply changes when the user clicks on OK
   const handleEditSubName = (submenu) => {
@@ -553,9 +555,13 @@ const DynamicMenuComponent = ({ onClose }) => {
                     ? "#c0c0c0"
                     : "transparent",
               }}
-              onClick={() => setSelectedSubMenuId(submenu.id)}
+              onClick={() => {setSelectedSubMenuId(submenu.id)
+                            setSelectedSubName(submenu.subName)
+              }
+              
+              }
             >
-              {isEditing && selectedSubMenuId === submenu.id ? (
+              {isEditing && selectedSubMenuId === submenu.id && selectedSubName === submenu.subName ? (
                 <div className="">
                   <input
                     type="text"
@@ -568,7 +574,7 @@ const DynamicMenuComponent = ({ onClose }) => {
                   <button onClick={handleCancelEdit}>Cancel</button>
                 </div>
               ) : (
-                <div onDoubleClick={handleSubNameDoubleClick}>
+                <div onDoubleClick={() => handleSubNameDoubleClick(submenu)}>
                   {submenu.subName}
                 </div>
               )}
@@ -613,6 +619,7 @@ const DynamicMenuComponent = ({ onClose }) => {
         </div>
       );
     });
+    
   };
   const [selectedTabIndex, setSelectedTabIndex] = useState(null);
   const handleTabClick = (index) => {
