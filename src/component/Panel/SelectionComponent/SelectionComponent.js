@@ -4,8 +4,9 @@ import EditComments from "../../EditComments/EditComments";
 
 const SelectionComponent = ({ panelData, value, classname }) => {
   const [commentText, setCommentText] = useState("");
+
   const [selectedRow, setSelectedRow] = useState(null);
-  const [localSelectedText, setLocalSelectedText] = useState(null);
+
   const [discriptionText, setDiscriptionText] = useState("");
   const selectedTextRef = useRef([]);
 
@@ -68,7 +69,6 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       prevSelectedRow === line ? null : line
     );
   };
-
   const sortCommentText = () => {
     const sortedText = commentText.split("\n").sort().join("\n");
     setCommentText(sortedText);
@@ -78,7 +78,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       const parsedData = JSON.parse(storedData);
       parsedData[value] = sortedText;
       localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
-      setLocalSelectedText(""); // Reset selected text
+
       console.log("Updated commentText in localStorage:", parsedData[value]);
     }
   };
