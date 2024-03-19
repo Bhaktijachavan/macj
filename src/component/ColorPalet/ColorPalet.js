@@ -152,7 +152,7 @@ const ColorPalette = ({ onClose }) => {
   };
   useEffect(() => {
     const storedMenuData = localStorage.getItem("menuData");
-    console.log("storedMenuData:", storedMenuData);
+    // console.log("storedMenuData:", storedMenuData);
 
     if (storedMenuData) {
       try {
@@ -163,13 +163,11 @@ const ColorPalette = ({ onClose }) => {
         // Accessing the properties directly as per the JSON structure
         const name = parsedMenuData[1].name;
 
-        console.log("Name:", name);
+        // console.log("Name:", name);
 
-        console.log("subitems", parsedMenuData[1].subitems[0].si);
+        // console.log("subitems", parsedMenuData[1].subitems[0].si);
 
-        Object.keys(parsedMenuData).map((key) =>
-          console.log("hello ", parsedMenuData[key])
-        );
+        Object.keys(parsedMenuData).map((key) => console.log("hello "));
       } catch (error) {
         console.error("Error parsing JSON:", error);
       }
@@ -177,7 +175,7 @@ const ColorPalette = ({ onClose }) => {
   }, []);
 
   useEffect(() => {
-    console.log("parsed object ", dummyData);
+    // console.log("parsed object ", dummyData);
   }, []);
 
   useEffect(() => {
@@ -186,7 +184,7 @@ const ColorPalette = ({ onClose }) => {
     if (storedData) {
       setLocalStorageData(JSON.parse(storedData));
     }
-    console.log(localStorageData);
+    console.log("localStorage", localStorageData);
   }, []);
   const exportCoverPageToPDF = () => {
     // Retrieve the content from localStorage saved by CoverPageDesigner
@@ -198,10 +196,10 @@ const ColorPalette = ({ onClose }) => {
     if (content && menuData) {
       // Modify the content to include border, page heading, and adjust page height
       const modifiedContent = `
-        <div style="padding: 0px; height: 72vw; width: 100%;">
-          ${content}
-        </div>
-      `;
+            <div style="padding: 0px; height: 72vw; width: 100%;">
+                ${content}
+            </div>
+        `;
 
       // Convert the modified HTML content to a PDF document
       html2pdf()
@@ -236,20 +234,37 @@ const ColorPalette = ({ onClose }) => {
 
           // Fetch the savedSummaryData from localStorage
           const savedSummaryData = localStorage.getItem("savedSummaryData");
+          console.log("savedSummaryData", savedSummaryData);
+          if (savedSummaryData) {
+            try {
+              // Parse the JSON data
+              const parsedSummaryData = JSON.parse(savedSummaryData);
+              console.log("parsedSummaryData", parsedSummaryData);
 
-          // Parse the JSON data
-          const parsedSummaryData = JSON.parse(savedSummaryData);
+              // Get the textareaValue from the parsed data
+              const textareaValue =
+                parsedSummaryData &&
+                parsedSummaryData.textareaValue !== undefined
+                  ? parsedSummaryData.textareaValue
+                  : "";
+              console.log("textareaValue", textareaValue);
 
-          // Get the textareaValue from the parsed data
-          const textareaValue = parsedSummaryData?.textareaValue || "";
-
-          // Add summary to the PDF
-          pdf.text("Summary", 10, 10);
-          pdf.text(textareaValue, 10, 30); // Add summary data
-          // Add summary table
-          addSummaryTable(pdf, JSON.parse(menuData));
+              // Add summary to the PDF
+              pdf.text("Summary", 10, 10);
+              pdf.text(textareaValue, 10, 30); // Add summary data
+              // Add summary table
+              addSummaryTable(pdf, JSON.parse(menuData));
+            } catch (error) {
+              console.error("Error parsing savedSummaryData JSON:", error);
+            }
+          } else {
+            console.log("No savedSummaryData found in localStorage");
+          }
 
           pdf.save("cover_page_layout.pdf");
+        })
+        .catch((error) => {
+          console.error("Error generating PDF:", error);
         });
     } else {
       // Handle case where content or menuData is not found in localStorage
@@ -290,50 +305,156 @@ const ColorPalette = ({ onClose }) => {
   }
 
   function addSummaryTable(pdf, menuNames) {
-    // Iterate over the menu names to construct the tables
+    const LocalStorageSummaryData = {
+      DamageData: JSON.parse(localStorage.getItem("DamageData")),
+      SelectionData: JSON.parse(localStorage.getItem("SelectionData")),
+      TempPanelData: JSON.parse(localStorage.getItem("TempPanelData")),
+      ratingsData: JSON.parse(localStorage.getItem("ratingsData")),
+      savedSummaryData: JSON.parse(localStorage.getItem("savedSummaryData")),
+    };
+
     Object.values(menuNames).forEach((item, index) => {
-      // Initialize data and headers for each submenu
+      const headers = [["Page No", "TabName", "Red Text"]];
       const data = [];
-      const subName = item.subitems[0].subName; // Extract subName from menuData
-      const headers = [["Page No", "Item No", "Red Text"]]; // Table headers
 
-      // Get the relevant data from local storage (replace with your own logic)
-      const localStorageData = JSON.parse(localStorage.getItem("DamageData"));
-
-      // Get the image data from local storage
-      const imageKey = "uploadedImage"; // Replace with the actual key used to store the image data
-      const uploadedImage = localStorage.getItem(imageKey) || ""; // Retrieve the image data
-
-      // Iterate over the current submenu to populate the table body
-      item.subitems.forEach((subitem, subitemIndex) => {
-        // Get the relevant data from local storage for the current subitem
-        const damageDataKey = `item_${index + 1}_subitem_${subitemIndex + 1}`;
-        const redText = localStorageData[damageDataKey]?.Damage1red || "";
-
-        // Push each data row with three columns for the current submenu
-        data.push([index + 1, subitemIndex + 1, redText]);
+      item.subitems.forEach((subitem) => {
+        const subItemId = subitem.id;
+        const subdetails = item.subdetails[subItemId];
+        const tabName = subdetails.tabname || ""; // Fetching tab name
+        const damageDataKey = subdetails.Damage1Data; // Assuming Damage1Data contains the key for DamageData
+        const redText =
+          LocalStorageSummaryData.DamageData[damageDataKey]?.Damage1red || ""; // Fetching red text
+        data.push([index + 1, tabName, redText]);
       });
 
-      // Generate the table for the current submenu with the specified headers and data
       pdf.autoTable({
-        startY: 60, // Adjust the startY value to leave space after the summary
-        didDrawPage: function (tableData) {
-          // Add the subName as the title at the top of each page
-          pdf.text(subName, 10, 40);
-
-          // Display the image on each page
-          // pdf.addImage(uploadedImage, 'JPEG', 10, 10, 30, 30);
-        },
-        head: headers, // Set the table headers
-        body: data, // Set the table data
+        startY: 60,
+        head: headers,
+        body: data,
       });
-      console.log("Uploaded Image ", uploadedImage);
 
-      // Add a new page for the next submenu (optional)
+      // Display additional data after the table
+      const startY = pdf.autoTable.previous.finalY + 10;
+      displayAdditionalData(
+        pdf,
+        item,
+        index,
+        menuNames,
+        LocalStorageSummaryData,
+        startY
+      );
+
       if (index < Object.values(menuNames).length - 1) {
         pdf.addPage();
       }
     });
+  }
+  function displayAdditionalData(
+    pdf,
+    item,
+    index,
+    menuNames,
+    LocalStorageSummaryData,
+    startY
+  ) {
+    const damageData = LocalStorageSummaryData.DamageData;
+    const tableSequenceNumber = index + 1;
+
+    // Retrieve image data from localStorage
+    const imageData = localStorage.getItem("coverphotoImage");
+    let image = null;
+
+    // Check if image data is available
+    if (imageData) {
+      try {
+        const parsedImageData = JSON.parse(imageData);
+        console.log("parsedImageData", parsedImageData);
+
+        // Determine which image corresponds to the current tableSequenceNumber
+        const imageId = `some_id_based_on_table_sequence_number_${tableSequenceNumber}`;
+        const imagesArray = parsedImageData[imageId] || [];
+
+        // Check if there are images for the current sequence number
+        if (imagesArray.length > 0) {
+          // Assuming you're using a single image per sequence number
+          const imageBase64 = imagesArray[0]; // Assuming imagesArray contains base64 encoded images
+          image = new Image();
+          image.onload = () => {
+            console.log("Image loaded successfully");
+            // Draw the image onto the PDF
+            pdf.addImage(image, "JPEG", 10, startY + 40, 100, 100);
+            // Now, call the function to display other data after the image is added
+            displayDamagePanelData(
+              pdf,
+              startY,
+              damageData,
+              tableSequenceNumber
+            );
+          };
+          image.onerror = (error) => {
+            console.error("Error loading image:", error);
+            // If image loading fails, proceed to display other data
+            displayDamagePanelData(
+              pdf,
+              startY,
+              damageData,
+              tableSequenceNumber
+            );
+          };
+          image.src = imageBase64; // Start loading the image
+        } else {
+          console.warn("No images found for the current sequence number");
+          // If no image is found, proceed to display other data
+          displayDamagePanelData(pdf, startY, damageData, tableSequenceNumber);
+        }
+      } catch (error) {
+        console.error("Error parsing image data:", error);
+        // If an error occurs while parsing image data, proceed to display other data
+        displayDamagePanelData(pdf, startY, damageData, tableSequenceNumber);
+      }
+    } else {
+      console.warn("No image data found in localStorage");
+      // If no image data is found, proceed to display other data
+      displayDamagePanelData(pdf, startY, damageData, tableSequenceNumber);
+    }
+  }
+
+  function displayDamagePanelData(
+    pdf,
+    startY,
+    damageData,
+    tableSequenceNumber
+  ) {
+    // Iterate through the keys in DamageData
+    for (const key in damageData) {
+      // Check if the key matches the expected pattern
+      if (key.endsWith(`_d${tableSequenceNumber}`)) {
+        const damagePanelData = damageData[key];
+        pdf.text(
+          10,
+          startY,
+          `Description: ${damagePanelData.description || ""}`
+        );
+
+        // Display Rating
+        pdf.text(
+          10,
+          startY + 10,
+          ` ${damagePanelData.rating?.ratingName1 || ""}`
+        );
+
+        // Display Materials (black text and red text)
+        const materialsText = `Materials: 
+          Red Text: `;
+        const redText = damagePanelData.Damage1red || "";
+        pdf.setTextColor(255, 0, 0); // Set text color to red
+        pdf.text(50, startY + 10, redText);
+        pdf.setTextColor(0); // Reset text color to black
+        pdf.text(50, startY + 20, ` ${damagePanelData.Damage1black || ""}`);
+
+        break; // Exit loop after displaying data for the first matching sequence number
+      }
+    }
   }
 
   // Function to generate Lorem Ipsum text
