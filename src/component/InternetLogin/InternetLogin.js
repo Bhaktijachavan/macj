@@ -13,10 +13,13 @@ const InternetLogin = () => {
     console.log("Password:", password);
 
     try {
-      const res = await axios.post("http://localhost:7000/api/user/login", {
-        username,
-        password,
-      });
+      const res = await axios.post(
+        "https://macj-backend.onrender.com/api/user/login",
+        {
+          username,
+          password,
+        }
+      );
 
       alert("Login successful!");
       localStorage.setItem("user", JSON.stringify(res.data.data));
