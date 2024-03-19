@@ -1,19 +1,40 @@
 import React, { useState } from "react";
 import "./InternetLogin.css";
+import axios from "axios";
 
 const InternetLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isPopupOpen, setPopupOpen] = useState(true);
 
-  const handleLogin = () => {
-    // Add your login logic here
+  const handleLogin = async () => {
     console.log("Login button clicked!");
-    // You can access the username and password states here for further processing
     console.log("Username:", username);
     console.log("Password:", password);
-    // Close the popup after successful login
-    setPopupOpen(false);
+
+    try {
+      const res = await axios.post("http://localhost:7000/api/user/login", {
+        username,
+        password,
+      });
+
+      alert("Login successful!");
+      localStorage.setItem("user", JSON.stringify(res.data.data));
+      setPopupOpen(false);
+    } catch (error) {
+      if (error.response) {
+        const errorMessage = error.response.data.error;
+        console.error("Login Error:", errorMessage);
+        // Show alert with error message
+        window.alert(errorMessage);
+      } else {
+        console.error("Login Error:", error.message);
+        // Show alert for network or other errors
+        window.alert(
+          "Network or server error occurred. Please try again later."
+        );
+      }
+    }
   };
 
   const handleClose = () => {
