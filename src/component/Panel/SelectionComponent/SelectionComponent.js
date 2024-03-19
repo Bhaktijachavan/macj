@@ -9,12 +9,17 @@ const SelectionComponent = ({ panelData, value, classname }) => {
   const [discriptionText, setDiscriptionText] = useState("");
   const selectedTextRef = useRef([]);
 
+  // Define a function to filter empty strings from selectedTextRef.current
+  const filterEmptyStrings = () => {
+    selectedTextRef.current = selectedTextRef.current.filter(
+      (text) => text !== ""
+    );
+  };
+
   useEffect(() => {
     const fetchData = () => {
       const storedData = localStorage.getItem("TempPanelData");
-      selectedTextRef.current = selectedTextRef.current.filter(
-        (text) => text !== ""
-      );
+      filterEmptyStrings(); // Call the filtering function
       if (storedData) {
         const parsedData = JSON.parse(storedData);
         const commentText = parsedData[value] || "";
@@ -28,9 +33,10 @@ const SelectionComponent = ({ panelData, value, classname }) => {
 
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
-  }, [value]);
+  }, [value, selectedTextRef]); // Include selectedTextRef in the dependencies array to trigger the effect whenever it changes
 
   useEffect(() => {
+    filterEmptyStrings();
     console.log("selectedTextRef.current", selectedTextRef.current);
   });
 
@@ -142,6 +148,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
         if (selectionData) {
           const parsedSelectionData = JSON.parse(selectionData);
           if (parsedSelectionData[value]) {
+            // Replace selectedTexts with an empty string
             parsedSelectionData[value].selectionText = parsedSelectionData[
               value
             ].selectionText.replace(selectedTexts.join("\n"), "");
@@ -153,10 +160,8 @@ const SelectionComponent = ({ panelData, value, classname }) => {
           }
         }
 
-        // Remove the deleted text from selectedTextRef
-        selectedTextRef.current = selectedTextRef.current.filter(
-          (text) => !selectedTexts.includes(text)
-        );
+        // Empty the selectedTextRef array
+        selectedTextRef.current = [];
       }
     }
   };
