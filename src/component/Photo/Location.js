@@ -155,6 +155,12 @@ const Location = () => {
                         .filter(
                           (subdetailkey) => !["id", "si"].includes(subdetailkey)
                         )
+                        .filter(
+                          (subdetailkey) =>
+                            ![1, 4].includes(
+                              submenuDetails[subdetailkey].Radiopanal
+                            )
+                        )
                         .map((subdetailkey) => (
                           <option key={subdetailkey} value={subdetailkey}>
                             {submenuDetails[subdetailkey].tabname}
