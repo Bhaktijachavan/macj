@@ -49,6 +49,7 @@ const DynamicMenuComponent = ({ onClose }) => {
   const [showMovePopup, setShowMovePopup] = useState(false);
   const [selectedMoveTab, setSelectedMoveTab] = useState(null);
   const [selectedMoveSubmenu, setSelectedMoveSubmenu] = useState(null);
+  const [allSubNames, setAllSubNames] = useState([]);
   const [inputValues, setInputValues] = useState({
     tabname: "",
     damage1: "",
@@ -558,7 +559,6 @@ const DynamicMenuComponent = ({ onClose }) => {
               onClick={() => {setSelectedSubMenuId(submenu.id)
                             setSelectedSubName(submenu.subName)
               }
-              
               }
             >
               {isEditing && selectedSubMenuId === submenu.id && selectedSubName === submenu.subName ? (
@@ -619,7 +619,6 @@ const DynamicMenuComponent = ({ onClose }) => {
         </div>
       );
     });
-    
   };
   const [selectedTabIndex, setSelectedTabIndex] = useState(null);
   const handleTabClick = (index) => {
@@ -703,6 +702,52 @@ const DynamicMenuComponent = ({ onClose }) => {
       setSelectedTabIndex(selectedTabIndex + 1);
     }
   };
+  // Function to handle moving the tabname to another subname
+  const handleMove = () => {
+    if (selectedTabNameId === null || selectedMoveSubmenu === null) {
+        alert("Please select a tabname and target subname first");
+        return;
+    }
+    setMenuData((prevMenuData) => {
+        const updatedMenuData = { ...prevMenuData };
+        const selectedMenu = updatedMenuData[selectedMenuId];
+        const selectedSubmenu = selectedMenu.subdetails[selectedSubMenuId];
+        const tabname = Object.keys(selectedSubmenu)[selectedTabNameId];
+        if (!selectedSubmenu[tabname]) {
+            alert("Please select a valid tabname");
+            return prevMenuData;
+        }
+        // Move the tabname to the target subname
+        const updatedTab = selectedSubmenu[tabname];
+        delete selectedSubmenu[tabname]; // Remove from current subname
+        // Check if the target subname already exists, if not create a new one
+        if (!updatedMenuData[selectedMenuId].subdetails[selectedMoveSubmenu]) {
+            updatedMenuData[selectedMenuId].subdetails[selectedMoveSubmenu] = {};
+        }
+        updatedMenuData[selectedMenuId].subdetails[selectedMoveSubmenu][tabname] = updatedTab; // Add to target subname
+        return updatedMenuData;
+    });
+    // Hide the move popup after moving
+    setShowMovePopup(false);
+    // Clear selected tabname and target subname
+    setSelectedTabNameId(null);
+    setSelectedMoveSubmenu(null);
+};
+useEffect(() => {
+  // Extract all subnames from the menu data
+  const subNames = Object.values(menuData).reduce((acc, menu) => {
+    return acc.concat(menu.subitems.map(subitem => subitem.subName));
+  }, []);
+  setAllSubNames(subNames);
+}, [menuData]);
+// Function to handle displaying the move popup
+const handleMoveClick = () => {
+  if (!selectedMenuId || !selectedSubMenuId) {
+    alert("Please select a menu and submenu first");
+    return;
+  }
+  setShowMovePopup(true);
+};
   return (
     <div>
       {/* Popup Wrapper */}
@@ -740,6 +785,27 @@ const DynamicMenuComponent = ({ onClose }) => {
                 )}
               </div>
               </div>
+              <div>
+              {showMovePopup && (
+                <div className="popup-move" style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "8px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)", position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: "1000" }}>
+                  <select
+                    value={selectedMoveSubmenu}
+                    onChange={(e) => setSelectedMoveSubmenu(e.target.value)}
+                    style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+                  >
+                    <option value="" disabled>Select a Submenu</option>
+                    {/* Populate dropdown with all subnames */}
+                    {allSubNames.map((subName) => (
+                      <option key={subName} value={subName}>{subName}</option>
+                    ))}
+                  </select>
+                  <div style={{ textAlign: "right" }}>
+                    <button onClick={handleMove}>OK</button>
+                    <button onClick={() => setShowMovePopup(false)} >Cancel</button>
+                  </div>
+                </div>
+              )}
+              </div>
             </div>
           </div>
           <div className="flex gap-8 ml-1 mt-2">
@@ -774,7 +840,7 @@ ml-2"
               <div className="">
                 <div className="p-l m-1">
                   {" "}
-                  <button>Remove</button>
+                  <button onClick={handleRemoveItem}>Remove</button>
                 </div>
                 <div className="ml-1">
                   {" "}
@@ -822,13 +888,10 @@ ml-2"
               </div>
               <div className="p-l m-1 flex gap-1">
                 {" "}
-
                 <div><button onClick={handleMoveUp}>Move Up</button></div>
                 <div><button onClick={handleMoveDown}>Move Down</button></div>
-                <div> <button>Move</button></div>
-
+<button onClick={handleMoveClick}>Move</button>
               </div>
-
             </div>
           </div>
           <div className="flex justify-end">
