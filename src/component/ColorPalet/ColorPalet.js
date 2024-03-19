@@ -289,46 +289,6 @@ const ColorPalette = ({ onClose }) => {
     pdf.setDrawColor(0); // Reset draw color (box shadow) to black
   }
 
-  // Function to add Summary Table
-  // function addSummaryTable(pdf, menuNames) {
-  //   // Iterate over the menu names to construct the tables
-  //   Object.values(menuNames).forEach((item, index) => {
-  //     // Initialize data and headers for each submenu
-  //     const data = [];
-  //     const mainHeader = [item.subitems[0].subName]; // Main header with subname
-  //     const subheader = ['Page No item No', 'Tab Name', 'Red Text']; // Subheaders
-
-  //     // Fetch relevant data from local storage (replace with your own logic)
-  //     const localStorageData = JSON.parse(localStorage.getItem('DamageData'));
-
-  //     // Iterate over each key in DamageData
-  //     Object.keys(localStorageData).forEach((damageDataKey, damageDataIndex) => {
-  //       // Extract the subdata for the current damageDataKey
-  //       const damageData = localStorageData[damageDataKey];
-
-  //       // Get tabname and Damage1red values
-  //       const tabName = damageData.tabname || '';
-  //       const redText = damageData.Damage1red || '';
-
-  //       // Push each data row with four columns for the current submenu
-  //       data.push([index + 1, damageDataIndex + 1, tabName, redText]);
-  //     });
-
-  //     // Generate the table for the current submenu with the specified headers and data
-  //     pdf.autoTable({
-  //       startY: 20,
-  //       head: [mainHeader], // Set the main header with subname
-  //       subheader: [subheader], // Set the subheaders
-  //       body: data, // Set the table data
-  //     });
-
-  //     // Add a new page for the next submenu (optional)
-  //     if (index < Object.values(menuNames).length - 1) {
-  //       pdf.addPage();
-  //     }
-  //   });
-  // }
-
   function addSummaryTable(pdf, menuNames) {
     // Iterate over the menu names to construct the tables
     Object.values(menuNames).forEach((item, index) => {
