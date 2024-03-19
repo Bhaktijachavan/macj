@@ -108,14 +108,17 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       console.log("Data saved successfully.");
       alert("Data saved successfully.");
       // Clear the selected text after saving
-      selectedTextRef.current = [];
+      // selectedTextRef.current = [];
     } catch (error) {
       console.error("Error saving data:", error);
     }
   };
 
   const HandleDeleteText = () => {
-    console.log("HandleDeleteText function called");
+    if (!selectedTextRef.current || selectedTextRef.current.length === 0) {
+      console.log("No selected texts to delete");
+      return;
+    }
 
     // Retrieve selected texts from selectedTextRef
     const selectedTexts = selectedTextRef.current;
