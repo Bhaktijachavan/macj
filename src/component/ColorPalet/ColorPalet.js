@@ -196,7 +196,7 @@ const ColorPalette = ({ onClose }) => {
     if (content && menuData) {
       // Modify the content to include border, page heading, and adjust page height
       const modifiedContent = `
-        <div style="padding: 0px; height: 72vw; width: 100%;">
+        <div style="padding: 0px; height: 73vw; width: 100%;">
           ${content}
         </div>
       `;
