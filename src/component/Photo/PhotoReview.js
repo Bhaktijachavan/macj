@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./PhotoReview.css";
 import Location from "./Location";
 
-const PhotoReview = () => {
+const PhotoReview = ({ images }) => {
+  useEffect(() => {
+    console.log("images ", images);
+  });
+
   return (
     <>
       <p className="PhotoReview-Main-Para">
@@ -18,10 +22,9 @@ const PhotoReview = () => {
         in the Report Summary in addition to the report body.
       </p>
       <div className="PhotoReview-rectangular-container">
-        <Location />
-        <Location />
-        <Location />
-        <Location />
+        {images.map((imageUrl, index) => (
+          <Location key={index} imageUrl={imageUrl} />
+        ))}
       </div>
     </>
   );

@@ -6,8 +6,8 @@ import Caption from "./Caption";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { PanalSelect } from "../Function/function";
 
-const Location = () => {
-  const [uploadedFile, setUploadedFile] = useState(null);
+const Location = ({ imageUrl }) => {
+  const [uploadedFile, setUploadedFile] = useState(!imageUrl ? null : imageUrl);
   const [menuData, setMenuData] = useState(null);
   const [selectedMenuId, setSelectedMenuId] = useState(null);
   const [selectedSubmenuId, setSelectedSubmenuId] = useState(null);
@@ -19,6 +19,10 @@ const Location = () => {
   const [imageIndex, SetImageIndex] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [caption, setCaption] = useState("");
+
+ useEffect(() => {
+    setUploadedFile(imageUrl); // Update uploadedFileState when uploadedFile prop changes
+  }, [uploadedFile]);
 
   useEffect(() => {
     console.log("image index", imageIndex);

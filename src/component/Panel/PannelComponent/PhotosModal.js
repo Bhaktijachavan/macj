@@ -17,20 +17,24 @@ const PhotosModal = ({ onClose, imageId }) => {
         >
           Close
         </button>
-        <div className="grid grid-cols-3 gap-4">
-          {imagesArray.map((image, index) => (
-            <img
-              key={index}
-              src={image.url}
-              alt={`Image ${index + 1}`}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          ))}
-        </div>
+        {imagesArray.length > 0 ? (
+          <div className="grid grid-cols-3 gap-4">
+            {imagesArray.map((image, index) => (
+              <img
+                key={index}
+                src={image.url}
+                alt={`Image ${index + 1}`}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            ))}
+          </div>
+        ) : (
+          <div>No images available for this ID.</div>
+        )}
       </div>
     </div>
   );
