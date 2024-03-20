@@ -20,8 +20,10 @@ const Location = ({ imageUrl }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [caption, setCaption] = useState("");
 
- useEffect(() => {
-    setUploadedFile(imageUrl); // Update uploadedFileState when uploadedFile prop changes
+  useEffect(() => {
+    if (imageUrl != null) {
+      return setUploadedFile(imageUrl);
+    }
   }, [uploadedFile]);
 
   useEffect(() => {
