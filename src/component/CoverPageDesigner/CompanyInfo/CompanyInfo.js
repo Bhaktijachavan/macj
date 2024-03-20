@@ -289,38 +289,55 @@ function CompanyInfo({ id }) {
     >
       <section className="content-for-the-company-info">
         <section className="fname-and-lname-content-for-the-company-info">
-          <input
-            type="text"
-            value={editableText.firstName}
-            onChange={(e) => handleInputChange("firstName", e.target.value)}
-            className="name-input-for-first-name-cover-page"
-          />
-          <input
-            type="text"
-            value={editableText.lastName}
-            onChange={(e) => handleInputChange("lastName", e.target.value)}
-            className="name-input-for-last-name-cover-page"
-          />
+          <div className="first-name-and-last-name-inputs">
+            {" "}
+            <label htmlFor="">First Name:</label>
+            <input
+              type="text"
+              value={editableText.firstName}
+              onChange={(e) => handleInputChange("firstName", e.target.value)}
+              className="name-input-for-first-name-cover-page"
+            />{" "}
+            <label htmlFor="">Last Name:</label>
+            <input
+              type="text"
+              value={editableText.lastName}
+              onChange={(e) => handleInputChange("lastName", e.target.value)}
+              className="name-input-for-last-name-cover-page"
+            />
+          </div>
+          <section className="only-for-email-input">
+            {" "}
+            <label htmlFor="">Email:</label>
+            <input
+              type="text"
+              value={editableText.email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              className="email-input-for-cover-page"
+            />
+          </section>
         </section>
-        <section className="email-and-mob-number-section-for-company-info">
-          {renderInputField("Email", "email")}
-          {renderInputField("Phone", "phone")}
-        </section>
-        <section className="other-client-info-for-cover-page-genearate-report">
-          {renderInputField("Fax", "fax")}
-          {renderInputField("Inspection Address", "inspectionAddress")}
-          {renderInputField("Address Line-2", "addressLine2")}
-          {renderInputField("City", "city")}
-          {renderInputField("State", "state")}
-          {renderInputField("Zipcode", "zipCode")}
-          {renderInputField("Date Of Inspection", "dateOfInspection")}
-          {renderInputField("Time Of Inspection", "timeOfInspection")}
-          {renderInputField("Age Of Home", "ageOfHome")}
-          {renderInputField("Size", "size")}
-          {renderInputField("Inspection Fee", "inspectionFee")}
-          {renderInputField("Weather", "weather")}
-          {renderInputField("Other Info", "otherInfo")}
-        </section>
+        <div className="other-client-info-flex-direction">
+          <section className="email-and-mob-number-section-for-company-info">
+            {/* {renderInputField("Email", "email")} */}
+            {renderInputField("Time Of Inspection", "timeOfInspection")}
+            {renderInputField("Age Of Home", "ageOfHome")}
+            {renderInputField("Size", "size")}
+            {renderInputField("Inspection Fee", "inspectionFee")}
+            {renderInputField("Weather", "weather")}
+            {renderInputField("Other Info", "otherInfo")}{" "}
+            {renderInputField("Inspection Address", "inspectionAddress")}
+            {renderInputField("Address Line-2", "addressLine2")}
+          </section>
+          <section className="other-client-info-for-cover-page-genearate-report">
+            {renderInputField("Phone", "phone")}{" "}
+            {renderInputField("Fax", "fax")}
+            {renderInputField("City", "city")}
+            {renderInputField("State", "state")}
+            {renderInputField("Zipcode", "zipCode")}
+            {renderInputField("Date Of Inspection", "dateOfInspection")}
+          </section>
+        </div>
       </section>
     </div>
   );

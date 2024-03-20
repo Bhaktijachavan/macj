@@ -69,6 +69,7 @@ function CoverPageDesigner({ onClose }) {
     "Inspection Details",
     "Cover Photo",
     "Company Information",
+    "Agent Information",
     "Company Logo",
     "Page Borders",
   ]); // State to track checked checkboxes
@@ -308,6 +309,7 @@ function CoverPageDesigner({ onClose }) {
       case "Company Information":
         return <CompanyInfo />;
       case "Agent Information":
+        return <AgentInformation />;
       case "Cover Company":
       case "Report Title":
       case "Inspection Signature":

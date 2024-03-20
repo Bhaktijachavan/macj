@@ -13,7 +13,9 @@ function AgentInformation({ text, id }) {
         onDragStart={handleDragStart}
         className="draggable-text"
       >
-        Agent Information
+        <p>Inspector: Nitin Gujarathi</p>
+        <p>Phone: +919890002635</p>
+        <p>Email: niting@macj.in</p>
       </div>
     </>
   );

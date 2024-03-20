@@ -5,6 +5,9 @@
   width: 100%;
   text-align: center;
   /* padding-bottom: 12em; */
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
 /* .draggable-text {
   display: flex;
@@ -31,15 +34,22 @@
 }
 
 .name-input-for-first-name-cover-page {
-  text-align: right;
+  text-align: center;
+  width: 4em;
 }
 
 .name-input-for-last-name-cover-page {
   text-align: left;
 }
+.email-input-for-cover-page {
+  width: 13em;
+  height: 2em;
+}
 .fname-and-lname-content-for-the-company-info {
   display: flex;
   gap: 1em;
+  flex-direction: column;
+  width: 34em;
 }
 .other-client-info-for-cover-page-genearate-report {
   display: grid;
@@ -52,5 +62,26 @@
   align-items: center;
 }
 .for-flexing-input-and-label-cover-page > input {
+  height: 2em;
+  width: 6em;
+}
+.other-client-info-flex-direction {
+  display: flex;
+  justify-content: center;
+}
+.first-name-and-last-name-inputs {
+  justify-content: right;
+  display: flex;
+  gap: 0.3em;
+  width: 34em;
+  align-items: center;
+}
+.only-for-email-input {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  align-items: center;
+}
+.first-name-and-last-name-inputs > input {
   height: 2em;
 }
