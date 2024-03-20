@@ -53,6 +53,7 @@ const ClientInfo = () => {
 
     // Convert the object to a string and store it in local storage
     localStorage.setItem("clientInfoData", JSON.stringify(formData));
+    setpop(true);
   };
   const [pop, setpop] = useState(false);
 
@@ -114,8 +115,8 @@ const ClientInfo = () => {
     <div className="main-container-clientinfo">
       {pop && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="absolute inset-0 bg-gray-500 opacity-50"></div>
-          <div className="relative bg-white p-8 max-w-md rounded shadow-lg">
+          <div className=""></div>
+          <div className="relative max-w-md ">
             <div className="popup">
               <div className="popup-content">
                 <h2 className="text-xl font-semibold mb-2">Inspection Saved</h2>
