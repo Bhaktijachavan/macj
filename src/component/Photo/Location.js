@@ -265,6 +265,7 @@ const Location = ({ imageUrl }) => {
           </div>
           <Buttons
             caption={caption}
+            url={!uploadedFile ? null : uploadedFile}
             id={panelId}
             SetImageIndex={SetImageIndex}
             onFileSelect={handleFileSelect}

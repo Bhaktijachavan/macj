@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState , useEffect} from "react";
 import img1 from "./icons/gallery.png";
 import img2 from "./icons/document.png";
 // import img5 from "./icons/camera-48.png";
@@ -8,14 +8,13 @@ import img8 from "./icons/diskette.png";
 import img9 from "./icons/search-in-browser-64.png";
 import img10 from "./icons/preview-48.png";
 import img11 from "./icons/delete.png";
-// import check from "./icons/check-mark.png";
-import close from "./icons/close_2997911.png";
+
 import "./Buttons.css";
 import EditImageTabList from "./../EditImageTabList/EditImageTabList";
-import Editor from "./../Editor/Editor";
+
 import PropTypes from "prop-types";
 
-const Buttons = ({ onFileSelect, id, SetImageIndex, caption }) => {
+const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
   // tablistconst [isPopupOpen, setIsPopupOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -45,7 +44,7 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption }) => {
 
   const [captionValue, setCaptionValue] = useState("");
   const fileInputRef = useRef(null);
-  const uploadedFileRef = useRef(null);
+  const uploadedFileRef = useRef(url ? url : null);
   const [showPopup, setShowPopup] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [selectedFolder, setSelectedFolder] = useState(null);
@@ -60,6 +59,13 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption }) => {
       openPopup(); // Open the popup when a non-img9 icon is clicked
     }
   };
+  useEffect(() => {
+    // Set uploaded image URL when URL prop changes
+    if (url) {
+      setUploadedImageUrl(url);
+      uploadedFileRef.current = url;
+    }
+  }, [url]);
   const handleDeletePreviewIcon = () => {
     // Delete the previewed icon
     setSelectedPreviewIcon(null);
