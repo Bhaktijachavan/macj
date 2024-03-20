@@ -113,136 +113,132 @@ const Header = ({ onButtonClick }) => {
   };
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
- const onSaveInspection = useCallback(() => {
-   const panalData = localStorage.getItem("TempPanelData");
-   const TempPanelData = panalData ? JSON.parse(panalData) : null;
-   const clientInfoData = localStorage.getItem("clientInfoData")
-     ? JSON.parse(localStorage.getItem("clientInfoData"))
-     : null;
-   const SelectionData = localStorage.getItem("SelectionData")
-     ? JSON.parse(localStorage.getItem("SelectionData"))
-     : null;
-   const DamageData = localStorage.getItem("DamageData")
-     ? JSON.parse(localStorage.getItem("DamageData"))
-     : null;
-   const coverphotoImage = localStorage.getItem("coverphotoImage")
-     ? JSON.parse(localStorage.getItem("coverphotoImage"))
-     : null;
-   const uploadedImage = localStorage.getItem("uploadedImage");
-   const menuData = localStorage.getItem("menuData")
-     ? JSON.parse(localStorage.getItem("menuData"))
-     : null;
-   const outputContent = localStorage.getItem("outputContent");
-   const ratingsData = localStorage.getItem("ratingsData")
-     ? JSON.parse(localStorage.getItem("ratingsData"))
-     : null;
-   // Construct InspectionData dynamically
-   const InspectionData = {
-     ...(clientInfoData && { clientInfoData }),
-     ...(TempPanelData && { TempPanelData }),
-     ...(SelectionData && { SelectionData }),
-     ...(DamageData && { DamageData }),
-     ...(coverphotoImage && { coverphotoImage }),
-     ...(menuData && { menuData }),
-     ...(outputContent && { outputContent }),
-     ...(uploadedImage && { uploadedImage }),
-     ...(ratingsData && { ratingsData }),
-     id: Date.now(),
-   };
-   // Check if any of the required data is missing
-   if (
-     !InspectionData.clientInfoData ||
-     !InspectionData.TempPanelData ||
-     !InspectionData.menuData ||
-     !InspectionData.outputContent
-   ) {
-     return alert("Please complete the process");
-   }
-   const encryptedData = encryptData(InspectionData, encryptionKey);
-   downloadFile(encryptedData);
- }, []);
+  const onSaveInspection = useCallback(() => {
+    const panalData = localStorage.getItem("TempPanelData");
+    const TempPanelData = panalData ? JSON.parse(panalData) : null;
+    const clientInfoData = localStorage.getItem("clientInfoData")
+      ? JSON.parse(localStorage.getItem("clientInfoData"))
+      : null;
+    const SelectionData = localStorage.getItem("SelectionData")
+      ? JSON.parse(localStorage.getItem("SelectionData"))
+      : null;
+    const DamageData = localStorage.getItem("DamageData")
+      ? JSON.parse(localStorage.getItem("DamageData"))
+      : null;
+    const coverphotoImage = localStorage.getItem("coverphotoImage")
+      ? JSON.parse(localStorage.getItem("coverphotoImage"))
+      : null;
+    const uploadedImage = localStorage.getItem("uploadedImage");
+    const menuData = localStorage.getItem("menuData")
+      ? JSON.parse(localStorage.getItem("menuData"))
+      : null;
+    const outputContent = localStorage.getItem("outputContent");
+    const ratingsData = localStorage.getItem("ratingsData")
+      ? JSON.parse(localStorage.getItem("ratingsData"))
+      : null;
+    // Construct InspectionData dynamically
+    const InspectionData = {
+      ...(clientInfoData && { clientInfoData }),
+      ...(TempPanelData && { TempPanelData }),
+      ...(SelectionData && { SelectionData }),
+      ...(DamageData && { DamageData }),
+      ...(coverphotoImage && { coverphotoImage }),
+      ...(menuData && { menuData }),
+      ...(outputContent && { outputContent }),
+      ...(uploadedImage && { uploadedImage }),
+      ...(ratingsData && { ratingsData }),
+      id: Date.now(),
+    };
+    // Check if any of the required data is missing
 
- const onOpenInspection = async (e) => {
-   const file = e.target.files[0];
-   if (file) {
-     const encryptedData = await readFileAsText(file);
-     const decryptedData = decryptData(encryptedData, encryptionKey);
-     console.log("decryptedData ", decryptedData);
-     if (
-       decryptedData.clientInfoData !== null &&
-       decryptedData.clientInfoData !== undefined
-     ) {
-       localStorage.setItem(
-         "clientInfoData",
-         JSON.stringify(decryptedData.clientInfoData)
-       );
-     }
-     if (
-       decryptedData.TempPanelData !== null &&
-       decryptedData.TempPanelData !== undefined
-     ) {
-       localStorage.setItem(
-         "TempPanelData",
-         JSON.stringify(decryptedData.TempPanelData)
-       );
-     }
-     if (
-       decryptedData.SelectionData !== null &&
-       decryptedData.SelectionData !== undefined
-     ) {
-       localStorage.setItem(
-         "SelectionData",
-         JSON.stringify(decryptedData.SelectionData)
-       );
-     }
-     if (
-       decryptedData.DamageData !== null &&
-       decryptedData.DamageData !== undefined
-     ) {
-       localStorage.setItem(
-         "DamageData",
-         JSON.stringify(decryptedData.DamageData)
-       );
-     }
-     if (
-       decryptedData.coverphotoImage !== null &&
-       decryptedData.coverphotoImage !== undefined
-     ) {
-       localStorage.setItem(
-         "coverphotoImage",
-         JSON.stringify(decryptedData.coverphotoImage)
-       );
-     }
-     if (
-       decryptedData.uploadedImage !== null &&
-       decryptedData.uploadedImage !== undefined
-     ) {
-       localStorage.setItem("uploadedImage", decryptedData.uploadedImage);
-     }
-     if (
-       decryptedData.menuData !== null &&
-       decryptedData.menuData !== undefined
-     ) {
-       localStorage.setItem("menuData", JSON.stringify(decryptedData.menuData));
-     }
-     if (
-       decryptedData.outputContent !== null &&
-       decryptedData.outputContent !== undefined
-     ) {
-       localStorage.setItem("outputContent", decryptedData.outputContent);
-     }
-     if (
-       decryptedData.ratingsData !== null &&
-       decryptedData.ratingsData !== undefined
-     ) {
-       localStorage.setItem(
-         "ratingsData",
-         JSON.stringify(decryptedData.ratingsData)
-       );
-     }
-     alert("successfully opened");
-   }
- };
+    const encryptedData = encryptData(InspectionData, encryptionKey);
+    downloadFile(encryptedData);
+  }, []);
+
+  const onOpenInspection = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const encryptedData = await readFileAsText(file);
+      const decryptedData = decryptData(encryptedData, encryptionKey);
+      console.log("decryptedData ", decryptedData);
+      if (
+        decryptedData.clientInfoData !== null &&
+        decryptedData.clientInfoData !== undefined
+      ) {
+        localStorage.setItem(
+          "clientInfoData",
+          JSON.stringify(decryptedData.clientInfoData)
+        );
+      }
+      if (
+        decryptedData.TempPanelData !== null &&
+        decryptedData.TempPanelData !== undefined
+      ) {
+        localStorage.setItem(
+          "TempPanelData",
+          JSON.stringify(decryptedData.TempPanelData)
+        );
+      }
+      if (
+        decryptedData.SelectionData !== null &&
+        decryptedData.SelectionData !== undefined
+      ) {
+        localStorage.setItem(
+          "SelectionData",
+          JSON.stringify(decryptedData.SelectionData)
+        );
+      }
+      if (
+        decryptedData.DamageData !== null &&
+        decryptedData.DamageData !== undefined
+      ) {
+        localStorage.setItem(
+          "DamageData",
+          JSON.stringify(decryptedData.DamageData)
+        );
+      }
+      if (
+        decryptedData.coverphotoImage !== null &&
+        decryptedData.coverphotoImage !== undefined
+      ) {
+        localStorage.setItem(
+          "coverphotoImage",
+          JSON.stringify(decryptedData.coverphotoImage)
+        );
+      }
+      if (
+        decryptedData.uploadedImage !== null &&
+        decryptedData.uploadedImage !== undefined
+      ) {
+        localStorage.setItem("uploadedImage", decryptedData.uploadedImage);
+      }
+      if (
+        decryptedData.menuData !== null &&
+        decryptedData.menuData !== undefined
+      ) {
+        localStorage.setItem(
+          "menuData",
+          JSON.stringify(decryptedData.menuData)
+        );
+      }
+      if (
+        decryptedData.outputContent !== null &&
+        decryptedData.outputContent !== undefined
+      ) {
+        localStorage.setItem("outputContent", decryptedData.outputContent);
+      }
+      if (
+        decryptedData.ratingsData !== null &&
+        decryptedData.ratingsData !== undefined
+      ) {
+        localStorage.setItem(
+          "ratingsData",
+          JSON.stringify(decryptedData.ratingsData)
+        );
+      }
+      alert("successfully opened");
+    }
+  };
 
   const handleOpenInspectionClick = () => {
     if (fileInputRef.current) {
@@ -733,16 +729,15 @@ border-black-900"
               </li>
             </button>
             <hr />
-            <div className="list-for-header-section-main-nav
-             hover:bg-gray-200">
+            <div
+              className="list-for-header-section-main-nav
+             hover:bg-gray-200"
+            >
               <div className="flex justify-center mt-1">
                 <img src={img4} alt="" />
               </div>
-              <li >
-                <label
-                  className="header2-tag-a"
-                  style={{ cursor: "pointer" }}
-                >
+              <li>
+                <label className="header2-tag-a" style={{ cursor: "pointer" }}>
                   <div>
                     Open <br /> Template
                     <input
@@ -755,19 +750,21 @@ border-black-900"
                 </label>
               </li>
             </div>
-            <div className="list-for-header-section-main-nav border-r
-            border-black-900 mt-2">
-
+            <div
+              className="list-for-header-section-main-nav border-r
+            border-black-900 mt-2"
+            >
               <li className="hover:bg-gray-200" onClick={saveTpz}>
                 <div className="flex justify-center">
                   <img src={img3} alt="" />
                 </div>
-                Save <br />Template
+                Save <br />
+                Template
               </li>
             </div>
 
             {/* <Link to="/EditComments"> */}
-           {/* <li className="list-for-header-section-main-nav">
+            {/* <li className="list-for-header-section-main-nav">
               <button
                 // onClick={() => {
                 //   if (showComment === true) {
@@ -792,11 +789,7 @@ border-black-900"
               className="list-for-header-section-main-nav  border-r
 border-black-900"
             >
-              <a
-                
-                onClick={openEditTemplatePopup}
-                className="header2-tag-a"
-              >
+              <a onClick={openEditTemplatePopup} className="header2-tag-a">
                 <div className="flex justify-center">
                   <img src={img6} alt="" />
                 </div>
@@ -886,7 +879,7 @@ border-black-900"
                   );
                   setValue(paste);
                 }}
-              // onClick={handlePaste}
+                // onClick={handlePaste}
               >
                 <div className="flex justify-center">
                   <img src={img11} alt="" />
@@ -897,11 +890,7 @@ border-black-900"
             <hr />
             {/* <Link to="/generateReport"> */}
             <li className="list-for-header-section-main-nav">
-              <a
-                
-                className="header2-tag-a"
-                onClick={openColorPaletPopup}
-              >
+              <a className="header2-tag-a" onClick={openColorPaletPopup}>
                 <div className="flex justify-center">
                   <img src={img12} alt="" />
                 </div>
