@@ -18,6 +18,7 @@ const EditImageTabList = ({
   uploadedImageUrl,
   id,
   SetImageIndex,
+  caption,
 }) => {
   const overlayImageRef = useRef(null);
   const [activeTab, setActiveTab] = useState(1);
@@ -83,10 +84,9 @@ const EditImageTabList = ({
       // Get the next index for the new image object
       const index = imageData[id].length;
 
-      // Push the new image object to the array associated with the id
       imageData[id].push({
-        id: index, // Set the index as the id for the image object
-        caption: "",
+        id: index,
+        caption: caption,
         url: url,
       });
 

@@ -16,9 +16,9 @@ const Location = () => {
   const [panelId, setPanelId] = useState(null);
   const [panel, setPanel] = useState();
   const [showPopup, setShowPopup] = useState(false);
-  const [panels, setPanels] = useState([]);
-  const [imageIndex, SetImageIndex] = useState();
-  const [selectedImage, setSelectedImage] = useState(null); // Add selectedImage state
+  const [imageIndex, SetImageIndex] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [caption, setCaption] = useState("");
 
   useEffect(() => {
     console.log("image index", imageIndex);
@@ -27,11 +27,13 @@ const Location = () => {
     if (imageData) {
       const parsedImageData = JSON.parse(imageData);
       const imagesArray = parsedImageData[panelId] || [];
+      console.log("imagesArray", imagesArray);
       const selectedImage = imagesArray[imageIndex];
       console.log("selectedImage", selectedImage);
       if (selectedImage) {
         // Set the selected image to state
         setSelectedImage(selectedImage);
+        setCaption(selectedImage.caption);
       }
     }
   }, [imageIndex, selectedMenuId]);
@@ -41,10 +43,21 @@ const Location = () => {
   };
 
   useEffect(() => {
-    const storedMenuData = localStorage.getItem("menuData");
-    if (storedMenuData) {
-      setMenuData(JSON.parse(storedMenuData));
-    }
+    const fetchData = () => {
+      const storedMenuData = localStorage.getItem("menuData");
+      if (storedMenuData) {
+        setMenuData(JSON.parse(storedMenuData));
+      }
+    };
+
+    // Call fetchData initially
+    fetchData();
+
+    // Set interval to call fetchData every 3 seconds
+    const intervalId = setInterval(fetchData, 3000);
+
+    // Clear interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -244,12 +257,18 @@ const Location = () => {
             </div>
           </div>
           <Buttons
+            caption={caption}
             id={panelId}
             SetImageIndex={SetImageIndex}
             onFileSelect={handleFileSelect}
           />
         </div>
-        <Caption id={panelId} />
+        <Caption
+          id={panelId}
+          setCap={setCaption}
+          caption={caption}
+          index={imageIndex}
+        />
       </div>
 
       {/* Popup container */}
