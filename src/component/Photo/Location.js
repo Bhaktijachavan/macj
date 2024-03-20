@@ -98,11 +98,12 @@ const Location = () => {
   };
 
   const handlePanel = () => {
-    if (panelId && TabData) {
-      setPanel(PanalSelect(TabData.Radiopanal, TabData));
-      setShowPopup(true);
+    if (!panelId || !TabData) {
+      return alert("please select panel ");
     }
-    alert("please select panel ");
+
+    setPanel(PanalSelect(TabData.Radiopanal, TabData));
+    setShowPopup(true);
   };
   const handleClosePopup = () => {
     setShowPopup(false);
