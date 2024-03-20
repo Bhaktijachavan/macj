@@ -157,7 +157,7 @@ const Location = () => {
                         )
                         .filter(
                           (subdetailkey) =>
-                            ![5, 4].includes(
+                            ![3, 4].includes(
                               submenuDetails[subdetailkey].Radiopanal
                             )
                         )
