@@ -40,7 +40,7 @@ const Book = () => {
   const [selectedAgentId, setSelectedAgentId] = useState(null);
 
   const [selectedImage, setSelectedImage] = useState(
-    localStorage.getItem("uploadedImage") || null
+    localStorage.getItem("uploadedphot") || null
   );
 
   const [WorkFax, setWorkFax] = useState("");
@@ -232,11 +232,11 @@ const Book = () => {
 
         const reader = new FileReader();
         reader.onload = (event) => {
-          const imageUrl = event.target.result;
-          setSelectedImage(imageUrl);
+          const photoUrl = event.target.result;
+          setSelectedImage(photoUrl);
 
           // Save imageUrl to localStorage
-          localStorage.setItem("uploadedImage", imageUrl);
+          localStorage.setItem("uploadedphot", photoUrl);
         };
         reader.readAsDataURL(compressedFile);
       } catch (error) {
@@ -699,7 +699,7 @@ const Book = () => {
                         // Clear the file input value
                         document.getElementById("imageInput").value = "";
                         // Remove imageUrl from localStorage
-                        localStorage.removeItem("uploadedImage");
+                        localStorage.removeItem("uploadedphot");
                       }}
                     >
                       Cancel
