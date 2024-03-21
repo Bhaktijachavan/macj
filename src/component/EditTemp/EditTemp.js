@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "../../component/EditTemp/DynamicMenuComponent.css";
-import Buttons from './../Photo/Buttons';
+import Buttons from "./../Photo/Buttons";
 const SubdetailsDisplay = ({
   subdetails,
   selectedMenuId,
@@ -42,14 +42,14 @@ const DynamicMenuComponent = ({ onClose }) => {
   const [submenuName, setSubmenuName] = useState("");
   const [selectedMenuId, setSelectedMenuId] = useState(null);
   const [selectedSubMenuId, setSelectedSubMenuId] = useState(null);
-  const [selectedSubName , setSelectedSubName] = useState();
+  const [selectedSubName, setSelectedSubName] = useState();
   const [selectedRadio, setSelectedRadio] = useState("");
   const [showOptions, setShowOptions] = useState(false);
   const [selectedTabNameId, setSelectedTabNameId] = useState(null);
   const [showMovePopup, setShowMovePopup] = useState(false);
   const [selectedMoveTab, setSelectedMoveTab] = useState(null);
   const [selectedMoveSubmenu, setSelectedMoveSubmenu] = useState(null);
-  const [allSubNames, setAllSubNames] = useState([]);
+  const [subdetails, setSubDetails] = useState([]);
   const [inputValues, setInputValues] = useState({
     tabname: "",
     damage1: "",
@@ -250,11 +250,13 @@ const DynamicMenuComponent = ({ onClose }) => {
   };
   const [isEditing, setIsEditing] = useState(false);
   const [editedSubName, setEditedSubName] = useState("");
+  const [allSubItems, setAllSubItems] = useState([]);
+  const [subIndex, setSubIndex] = useState();
   // Function to handle double-click and initiate editing
   const handleSubNameDoubleClick = (submenu) => {
     setIsEditing(true);
     setEditedSubName(submenu.subName);
-    console.log("subname " , submenu)
+    console.log("subname ", submenu);
   };
   // Function to apply changes when the user clicks on OK
   const handleEditSubName = (submenu) => {
@@ -545,7 +547,7 @@ const DynamicMenuComponent = ({ onClose }) => {
           onClick={() => setSelectedMenuId(menuId)}
         >
           {menu.name}
-          {menu.subitems.map((submenu) => (
+          {menu.subitems.map((submenu, index) => (
             <div
               key={submenu.id}
               style={{
@@ -556,12 +558,15 @@ const DynamicMenuComponent = ({ onClose }) => {
                     ? "#c0c0c0"
                     : "transparent",
               }}
-              onClick={() => {setSelectedSubMenuId(submenu.id)
-                            setSelectedSubName(submenu.subName)
-              }
-              }
+              onClick={() => {
+                setSelectedSubMenuId(submenu.id);
+                setSelectedSubName(submenu.subName);
+                setSubIndex(index);
+              }}
             >
-              {isEditing && selectedSubMenuId === submenu.id && selectedSubName === submenu.subName ? (
+              {isEditing &&
+              selectedSubMenuId === submenu.id &&
+              selectedSubName === submenu.subName ? (
                 <div className="">
                   <input
                     type="text"
@@ -621,34 +626,72 @@ const DynamicMenuComponent = ({ onClose }) => {
     });
   };
   const [selectedTabIndex, setSelectedTabIndex] = useState(null);
-  const handleTabClick = (index) => {
+  const [pastSubDetails, setPastSubDetails] = useState(null);
+
+  const handleTabClick = (index, value, radiovalue, sub, menuId) => {
     // Toggle selection: if the clicked tab is already selected, deselect it; otherwise, select it.
     setSelectedTabIndex((prevIndex) => (prevIndex === index ? null : index));
+    console.log("sub ", sub);
+
+    if (
+      value === null ||
+      value === undefined ||
+      radiovalue === null ||
+      radiovalue === undefined ||
+      sub === null ||
+      sub === undefined ||
+      menuId === null ||
+      menuId === undefined
+    ) {
+      return;
+    }
+
+    const newValue = {
+      [radiovalue]: {
+        ...value,
+      },
+    };
+    const Subitems = {
+      menuId: menuId,
+      panelId: radiovalue,
+      ...sub,
+    };
+
+    setSubDetails(newValue);
+    setPastSubDetails(Subitems);
   };
   const handleMoveUp = () => {
     if (selectedTabIndex > 0) {
-      const selectedSubmenuCopy = { ...selectedMenu.subdetails[selectedSubMenuId] };
-      const tabnamesArray = Object.keys(selectedSubmenuCopy);
-      // Swap positions
-      [tabnamesArray[selectedTabIndex - 1], tabnamesArray[selectedTabIndex]] = [
-        tabnamesArray[selectedTabIndex],
-        tabnamesArray[selectedTabIndex - 1],
-      ];
-      // Update state
-      setMenuData((prevMenuData) => ({
-        ...prevMenuData,
-        [selectedMenuId]: {
-          ...selectedMenu,
-          subdetails: {
-            ...selectedMenu.subdetails,
-            [selectedSubMenuId]: {
-              ...selectedSubmenuCopy,
-              [tabnamesArray[selectedTabIndex - 1]]: selectedSubmenuCopy[tabnamesArray[selectedTabIndex]],
-              [tabnamesArray[selectedTabIndex]]: selectedSubmenuCopy[tabnamesArray[selectedTabIndex - 1]],
+      setMenuData((prevMenuData) => {
+        const selectedMenuCopy = { ...selectedMenu };
+        const selectedSubmenuCopy = {
+          ...selectedMenu.subdetails[selectedSubMenuId],
+        };
+        const tabnamesArray = Object.keys(selectedSubmenuCopy);
+        // Swap positions
+        [tabnamesArray[selectedTabIndex - 1], tabnamesArray[selectedTabIndex]] =
+          [
+            tabnamesArray[selectedTabIndex],
+            tabnamesArray[selectedTabIndex - 1],
+          ];
+        // Update state
+        return {
+          ...prevMenuData,
+          [selectedMenuId]: {
+            ...selectedMenuCopy,
+            subdetails: {
+              ...selectedMenuCopy.subdetails,
+              [selectedSubMenuId]: {
+                ...selectedSubmenuCopy,
+                [tabnamesArray[selectedTabIndex - 1]]:
+                  selectedSubmenuCopy[tabnamesArray[selectedTabIndex]],
+                [tabnamesArray[selectedTabIndex]]:
+                  selectedSubmenuCopy[tabnamesArray[selectedTabIndex - 1]],
+              },
             },
           },
-        },
-      }));
+        };
+      });
       setSelectedTabIndex(selectedTabIndex - 1);
     }
   };
@@ -659,7 +702,8 @@ const DynamicMenuComponent = ({ onClose }) => {
     }
     setMenuData((prevMenuData) => {
       const updatedMenuData = { ...prevMenuData };
-      const selectedSubmenu = updatedMenuData[selectedMenuId].subdetails[selectedSubMenuId];
+      const selectedSubmenu =
+        updatedMenuData[selectedMenuId].subdetails[selectedSubMenuId];
       if (!selectedSubmenu) {
         alert("Please select a valid submenu");
         return prevMenuData;
@@ -675,79 +719,117 @@ const DynamicMenuComponent = ({ onClose }) => {
     });
   };
   const handleMoveDown = () => {
-    const maxIndex = Object.keys(selectedMenu?.subdetails[selectedSubMenuId] || {}).length - 1;
+    const maxIndex =
+      Object.keys(selectedMenu?.subdetails[selectedSubMenuId] || {}).length - 1;
     if (selectedTabIndex < maxIndex) {
-      const selectedSubmenuCopy = { ...selectedMenu.subdetails[selectedSubMenuId] };
-      const tabnamesArray = Object.keys(selectedSubmenuCopy);
-      // Swap positions
-      [tabnamesArray[selectedTabIndex], tabnamesArray[selectedTabIndex + 1]] = [
-        tabnamesArray[selectedTabIndex + 1],
-        tabnamesArray[selectedTabIndex],
-      ];
-      // Update state
-      setMenuData((prevMenuData) => ({
-        ...prevMenuData,
-        [selectedMenuId]: {
-          ...selectedMenu,
-          subdetails: {
-            ...selectedMenu.subdetails,
-            [selectedSubMenuId]: {
-              ...selectedSubmenuCopy,
-              [tabnamesArray[selectedTabIndex]]: selectedSubmenuCopy[tabnamesArray[selectedTabIndex + 1]],
-              [tabnamesArray[selectedTabIndex + 1]]: selectedSubmenuCopy[tabnamesArray[selectedTabIndex]],
+      setMenuData((prevMenuData) => {
+        const selectedMenuCopy = { ...selectedMenu };
+        const selectedSubmenuCopy = {
+          ...selectedMenu.subdetails[selectedSubMenuId],
+        };
+        const tabnamesArray = Object.keys(selectedSubmenuCopy);
+        // Swap positions
+        [tabnamesArray[selectedTabIndex], tabnamesArray[selectedTabIndex + 1]] =
+          [
+            tabnamesArray[selectedTabIndex + 1],
+            tabnamesArray[selectedTabIndex],
+          ];
+        // Update state
+        return {
+          ...prevMenuData,
+          [selectedMenuId]: {
+            ...selectedMenuCopy,
+            subdetails: {
+              ...selectedMenuCopy.subdetails,
+              [selectedSubMenuId]: {
+                ...selectedSubmenuCopy,
+                [tabnamesArray[selectedTabIndex]]:
+                  selectedSubmenuCopy[tabnamesArray[selectedTabIndex + 1]],
+                [tabnamesArray[selectedTabIndex + 1]]:
+                  selectedSubmenuCopy[tabnamesArray[selectedTabIndex]],
+              },
             },
           },
-        },
-      }));
+        };
+      });
       setSelectedTabIndex(selectedTabIndex + 1);
     }
   };
   // Function to handle moving the tabname to another subname
   const handleMove = () => {
-    if (selectedTabNameId === null || selectedMoveSubmenu === null) {
-        alert("Please select a tabname and target subname first");
-        return;
+    console.log("selected sub menu ", selectedMoveSubmenu);
+    console.log("subdetails - ", subdetails);
+    console.log("menu", menuData);
+    console.log("pastMenu", pastSubDetails);
+
+    if (subdetails === null || selectedMoveSubmenu === null) {
+      alert("Please select a tabname and target subname first");
+      return;
     }
+
     setMenuData((prevMenuData) => {
-        const updatedMenuData = { ...prevMenuData };
-        const selectedMenu = updatedMenuData[selectedMenuId];
-        const selectedSubmenu = selectedMenu.subdetails[selectedSubMenuId];
-        const tabname = Object.keys(selectedSubmenu)[selectedTabNameId];
-        if (!selectedSubmenu[tabname]) {
-            alert("Please select a valid tabname");
-            return prevMenuData;
-        }
-        // Move the tabname to the target subname
-        const updatedTab = selectedSubmenu[tabname];
-        delete selectedSubmenu[tabname]; // Remove from current subname
-        // Check if the target subname already exists, if not create a new one
-        if (!updatedMenuData[selectedMenuId].subdetails[selectedMoveSubmenu]) {
-            updatedMenuData[selectedMenuId].subdetails[selectedMoveSubmenu] = {};
-        }
-        updatedMenuData[selectedMenuId].subdetails[selectedMoveSubmenu][tabname] = updatedTab; // Add to target subname
-        return updatedMenuData;
+      const updatedMenuData = { ...prevMenuData };
+
+      // Check if the subdetails with the SI ID exist, if not create them
+      if (
+        !updatedMenuData[selectedMoveSubmenu.menuId].subdetails[
+          selectedMoveSubmenu.si
+        ]
+      ) {
+        updatedMenuData[selectedMoveSubmenu.menuId].subdetails[
+          selectedMoveSubmenu.si
+        ] = {};
+      }
+
+      // Update or add the subdetails of the selected subitem
+      updatedMenuData[selectedMoveSubmenu.menuId].subdetails[
+        selectedMoveSubmenu.si
+      ] = {
+        ...updatedMenuData[selectedMoveSubmenu.menuId].subdetails[
+          selectedMoveSubmenu.si
+        ],
+        ...subdetails,
+      };
+
+      // Delete past subdetails
+      if (pastSubDetails) {
+        delete updatedMenuData[pastSubDetails.menuId].subdetails[
+          pastSubDetails.si
+        ][pastSubDetails.panelId];
+      }
+
+      return updatedMenuData;
     });
+
     // Hide the move popup after moving
     setShowMovePopup(false);
     // Clear selected tabname and target subname
     setSelectedTabNameId(null);
     setSelectedMoveSubmenu(null);
-};
-useEffect(() => {
-  // Extract all subnames from the menu data
-  const subNames = Object.values(menuData).reduce((acc, menu) => {
-    return acc.concat(menu.subitems.map(subitem => subitem.subName));
-  }, []);
-  setAllSubNames(subNames);
-}, [menuData]);
-// Function to handle displaying the move popup
-const handleMoveClick = () => {
-  if (!selectedMenuId || !selectedSubMenuId) {
-    alert("Please select a menu and submenu first");
-    return;
-  }
-  setShowMovePopup(true);
-};
+  };
+
+  useEffect(() => {
+    // Extract all subitems from the menu data
+    const allSubItems = Object.values(menuData).reduce((acc, menu) => {
+      // Map each subitem with its menu ID and concatenate to the accumulator
+      const subItemsWithMenuId = menu.subitems.map((subItem) => ({
+        menuId: menu.id,
+        ...subItem,
+      }));
+      return acc.concat(subItemsWithMenuId);
+    }, []);
+
+    setAllSubItems(allSubItems);
+  }, [menuData]);
+
+  // Function to handle displaying the move popup
+  const handleMoveClick = () => {
+    if (!selectedMenuId || !selectedSubMenuId) {
+      alert("Please select a menu and submenu first");
+      return;
+    }
+    setShowMovePopup(true);
+  };
   return (
     <div>
       {/* Popup Wrapper */}
@@ -762,49 +844,103 @@ const handleMoveClick = () => {
             </div>
             <div className="text-left height-for-data">
               <h2>Items</h2>
-              <div><div>
-                {/* Display all added subdetails for the selected submenu */}
-                {selectedSubMenuId && (
-                  <div>
-                    {Object.keys(selectedMenu?.subdetails[selectedSubMenuId] || {}).map(
-                      (radioValue, index) => (
-                        <div
-                          key={radioValue}
-                          onClick={() => handleTabClick(index)}
-                          style={{
-                            backgroundColor: index === selectedTabIndex ? '#c0c0c0' : 'transparent',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          <h3>{selectedMenu?.subdetails[selectedSubMenuId][radioValue]?.tabname}</h3>
-                          {/* Display other details as needed */}
-                        </div>
-                      )
-                    )}
-                  </div>
-                )}
-              </div>
+              <div>
+                <div>
+                  {/* Display all added subdetails for the selected submenu */}
+                  {selectedSubMenuId && (
+                    <div>
+                      {Object.keys(
+                        selectedMenu?.subdetails[selectedSubMenuId] || {}
+                      ).map((radioValue, index) => {
+                        return (
+                          <div
+                            key={radioValue}
+                            onClick={() =>
+                              handleTabClick(
+                                index,
+                                selectedMenu?.subdetails[selectedSubMenuId][
+                                  radioValue
+                                ],
+                                radioValue,
+                                selectedMenu?.subitems[subIndex],
+                                selectedMenuId
+                              )
+                            }
+                            style={{
+                              backgroundColor:
+                                index === selectedTabIndex
+                                  ? "#c0c0c0"
+                                  : "transparent",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <h3>
+                              {
+                                selectedMenu?.subdetails[selectedSubMenuId][
+                                  radioValue
+                                ]?.tabname
+                              }
+                            </h3>
+                            {/* Display other details as needed */}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               </div>
               <div>
-              {showMovePopup && (
-                <div className="popup-move" style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "8px", boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)", position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: "1000" }}>
-                  <select
-                    value={selectedMoveSubmenu}
-                    onChange={(e) => setSelectedMoveSubmenu(e.target.value)}
-                    style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+                {showMovePopup && (
+                  <div
+                    className="popup-move"
+                    style={{
+                      backgroundColor: "#fff",
+                      padding: "20px",
+                      borderRadius: "8px",
+                      boxShadow: "0 0 10px rgba(0, 0, 0, 0.3)",
+                      position: "fixed",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      zIndex: "1000",
+                    }}
                   >
-                    <option value="" disabled>Select a Submenu</option>
-                    {/* Populate dropdown with all subnames */}
-                    {allSubNames.map((subName) => (
-                      <option key={subName} value={subName}>{subName}</option>
-                    ))}
-                  </select>
-                  <div style={{ textAlign: "right" }}>
-                    <button onClick={handleMove}>OK</button>
-                    <button onClick={() => setShowMovePopup(false)} >Cancel</button>
+                    <select
+                      value={
+                        selectedMoveSubmenu
+                          ? JSON.stringify(selectedMoveSubmenu)
+                          : ""
+                      }
+                      onChange={(e) =>
+                        setSelectedMoveSubmenu(JSON.parse(e.target.value))
+                      }
+                      style={{
+                        width: "100%",
+                        padding: "10px",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <option value="" disabled>
+                        Select a Submenu
+                      </option>
+                      {/* Populate dropdown with all subnames */}
+                      {allSubItems.map((subItem) => (
+                        <option
+                          key={subItem.id}
+                          value={JSON.stringify(subItem)}
+                        >
+                          {subItem.subName}
+                        </option>
+                      ))}
+                    </select>
+                    <div style={{ textAlign: "right" }}>
+                      <button onClick={handleMove}>OK</button>
+                      <button onClick={() => setShowMovePopup(false)}>
+                        Cancel
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
               </div>
             </div>
           </div>
@@ -852,7 +988,7 @@ ml-2"
               <div className="flex">
                 <div className="ml-1">
                   {/* Render "Add option" button outside the submenu loop
-              */}
+                   */}
                   {selectedMenuId &&
                     menuData[selectedMenuId].subitems.length > 0 && (
                       <button
@@ -872,31 +1008,37 @@ ml-2"
                     <div>
                       {renderInputFields(selectedRadio)}
                       {/* Conditionally render the "Add Subdetails" button
-                  */}
+                       */}
                       {menuData[selectedMenuId].subitems.find(
                         (submenu) => submenu.id === selectedSubMenuId
                       )?.subName && (
-                          <button onClick={handleAddSubdetails} className="ml-1">
-                            Add Subdetails
-                          </button>
-                        )}
+                        <button onClick={handleAddSubdetails} className="ml-1">
+                          Add Subdetails
+                        </button>
+                      )}
                       {/* Display added subdetails */}
                     </div>
                   )}
                 </div>
-                <div className="mi-1"><button onClick={handleDeleteTab}>Delete</button></div>
+                <div className="mi-1">
+                  <button onClick={handleDeleteTab}>Delete</button>
+                </div>
               </div>
               <div className="p-l m-1 flex gap-1">
                 {" "}
-                <div><button onClick={handleMoveUp}>Move Up</button></div>
-                <div><button onClick={handleMoveDown}>Move Down</button></div>
-<button onClick={handleMoveClick}>Move</button>
+                <div>
+                  <button onClick={handleMoveUp}>Move Up</button>
+                </div>
+                <div>
+                  <button onClick={handleMoveDown}>Move Down</button>
+                </div>
+                <button onClick={handleMoveClick}>Move</button>
               </div>
             </div>
           </div>
           <div className="flex justify-end">
             <button className="close-button" onClick={handlesave}>
-              Save{" "}
+              Save
             </button>
             <button className="close-button" onClick={onClose}>
               Close
