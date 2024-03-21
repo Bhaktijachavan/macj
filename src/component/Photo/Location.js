@@ -44,7 +44,6 @@ const Location = ({ imageUrl }) => {
     }
   }, [imageIndex, selectedMenuId]);
   const handleFileSelect = (file) => {
-    console.log("File selected:", file);
     setUploadedFile(file);
   };
 

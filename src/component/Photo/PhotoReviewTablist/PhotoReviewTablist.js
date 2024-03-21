@@ -7,6 +7,7 @@ import "./PhotoReviewTablist.css";
 
 function PhotoReviewTablist() {
   const fileInputRef = useRef(null);
+
   const [tabs, setTabs] = useState([
     { id: "tab1", name: "Tab 1", content: <PhotoReview images={[]} /> },
   ]);
@@ -28,38 +29,37 @@ function PhotoReviewTablist() {
     setActiveTab(newTabId);
   };
 
-const handleFileChange = (e) => {
-  if (e.target.files && e.target.files.length > 0) {
-    const files = Array.from(e.target.files); // Convert FileList to array
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const files = Array.from(e.target.files); // Convert FileList to array
 
-    // Extract URLs from files
-    const imageUrls = files.map((file) => URL.createObjectURL(file));
+      // Extract URLs from files
+      const imageUrls = files.map((file) => URL.createObjectURL(file));
 
-    // Calculate the number of tabs needed
-    const numTabsToAdd = Math.ceil(imageUrls.length / 4);
+      // Calculate the number of tabs needed
+      const numTabsToAdd = Math.ceil(imageUrls.length / 4);
 
-    // Create new tabs if needed and distribute images across them
-    let newTabs = [];
-    for (let i = 0; i < numTabsToAdd; i++) {
-      const newTabId = `tab${i + 1}`; // Ensure unique tab IDs
-      const newTabName = `Tab ${i + 1}`;
-      const start = i * 4;
-      const end = Math.min((i + 1) * 4, imageUrls.length);
-      const images = imageUrls.slice(start, end);
-      const newTabContent = <PhotoReview key={newTabId} images={images} />;
-      newTabs.push({
-        id: newTabId,
-        name: newTabName,
-        content: newTabContent,
-      });
+      // Create new tabs if needed and distribute images across them
+      let newTabs = [];
+      for (let i = 0; i < numTabsToAdd; i++) {
+        const newTabId = `tab${i + 1}`; // Ensure unique tab IDs
+        const newTabName = `Tab ${i + 1}`;
+        const start = i * 4;
+        const end = Math.min((i + 1) * 4, imageUrls.length);
+        const images = imageUrls.slice(start, end);
+        const newTabContent = <PhotoReview key={newTabId} images={images} />;
+        newTabs.push({
+          id: newTabId,
+          name: newTabName,
+          content: newTabContent,
+        });
+      }
+
+      // Set the new tabs and activate the first one
+      setTabs(newTabs);
+      setActiveTab(newTabs[0].id);
     }
-
-    // Set the new tabs and activate the first one
-    setTabs(newTabs);
-    setActiveTab(newTabs[0].id);
-  }
-};
-
+  };
 
   return (
     <>
@@ -70,6 +70,8 @@ const handleFileChange = (e) => {
           ref={fileInputRef}
           onChange={handleFileChange}
           multiple
+          webkitdirectory=""
+          directory=""
         />
 
         <div className="tab1-container">

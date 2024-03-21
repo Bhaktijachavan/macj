@@ -1,4 +1,4 @@
-import React, { useRef, useState , useEffect} from "react";
+import React, { useRef, useState, useEffect } from "react";
 import img1 from "./icons/gallery.png";
 import img2 from "./icons/document.png";
 // import img5 from "./icons/camera-48.png";
@@ -28,20 +28,6 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
     setIsPopupOpen(false);
   };
 
-  // Define custom tab names
-  const tabNames = [
-    "Crop Image",
-    "Adjust Brightness",
-    "Adjust Contrass",
-    "Rotate Clockwise",
-    "Draw Line",
-    "Draw Arrow",
-    "Draw Rectangle",
-    "Draw Oval",
-    "Add Text",
-    "Overlay Image",
-  ];
-
   const [captionValue, setCaptionValue] = useState("");
   const fileInputRef = useRef(null);
   const uploadedFileRef = useRef(url ? url : null);
@@ -59,13 +45,7 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
       openPopup(); // Open the popup when a non-img9 icon is clicked
     }
   };
-  useEffect(() => {
-    // Set uploaded image URL when URL prop changes
-    if (url) {
-      setUploadedImageUrl(url);
-      uploadedFileRef.current = url;
-    }
-  }, [url]);
+
   const handleDeletePreviewIcon = () => {
     // Delete the previewed icon
     setSelectedPreviewIcon(null);
@@ -90,6 +70,7 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
   const handleImg6Click = () => {
     // Delete the uploaded file
     uploadedFileRef.current = null;
+
     onFileSelect(null); // Notify parent component that no file is selected
     localStorage.removeItem("uploadedImage");
     // Clear the download URL state
@@ -97,8 +78,8 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
   };
 
   const handleImg8Click = () => {
-    // Check if an image is uploaded
-    if (uploadedFileRef.current) {
+    if (uploadedFileRef.current instanceof Blob) {
+      // If an uploaded file is available, read it as a data URL
       const reader = new FileReader();
       reader.onload = (event) => {
         // Get the base64 data of the uploaded image
@@ -106,11 +87,15 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
 
         // Save the image data to local storage
         localStorage.setItem("uploadedImage", imageData);
+        alert("Image Successfully Saved to Coverpage !");
       };
-      // Read the uploaded image file as a data URL
       reader.readAsDataURL(uploadedFileRef.current);
+    } else if (url) {
+      // If URL is available, save it directly to local storage
+      localStorage.setItem("uploadedImage", url);
+      alert("Image Successfully Uploaded to Coverpage !");
     } else {
-      console.log("No image uploaded to save.");
+      console.log("No image uploaded or URL provided to save.");
     }
   };
 
@@ -208,7 +193,9 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
                       caption={caption}
                       isOpen={isPopupOpen}
                       onRequestClose={closePopup}
-                      uploadedImageUrl={uploadedImageUrl}
+                      uploadedImageUrl={
+                        uploadedImageUrl ? uploadedImageUrl : url
+                      }
                       id={id}
                       SetImageIndex={SetImageIndex}
                     />
