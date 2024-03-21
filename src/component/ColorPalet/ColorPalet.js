@@ -329,6 +329,49 @@ const ColorPalette = ({ onClose }) => {
         pdf.addPage();
       }
     });
+
+    // Add a new page for the image
+    pdf.addPage();
+
+    // Add title for the image
+    pdf.setFontSize(16);
+    pdf.text("Title for the Image", 10, 20); // Adjust coordinates as needed
+
+    // Retrieve the image URL from local storage
+    // const imageURL = localStorage.getItem("coverphotoImage");
+
+    let imageURL; // Declare imageURL outside of the if block
+
+    const coverphotoImageData = JSON.parse(
+      localStorage.getItem("coverphotoImage")
+    );
+    if (coverphotoImageData) {
+      const firstKey = Object.keys(coverphotoImageData)[0]; // Assuming only one key
+      imageURL = coverphotoImageData[firstKey][0].url;
+      console.log("Image URL:", imageURL);
+      // Now you have the URL of the image in imageURL variable
+      // Proceed with using it as needed
+    } else {
+      console.error("No image data found in local storage.");
+    }
+
+    // Log the image URL to the console
+    console.log("Image URL:", imageURL);
+
+    // Create an image element
+    const img = new Image();
+
+    // Set onload event to ensure the image is loaded before adding it to the PDF
+    img.onload = function () {
+      // Add image to PDF document
+      pdf.addImage(this, "JPEG", 10, 30, 180, 150); // Adjust coordinates and dimensions as needed
+
+      // Save the PDF or display it
+      pdf.save("image_and_summary.pdf");
+    };
+
+    // Set the src attribute of the image element
+    img.src = imageURL;
   }
 
   function displayAdditionalData(
