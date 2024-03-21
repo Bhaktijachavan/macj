@@ -247,7 +247,7 @@ const ColorPalette = ({ onClose }) => {
           // Add summary table
           addSummaryTable(pdf, JSON.parse(menuData));
 
-          pdf.save("cover_page_layout.pdf");
+          // pdf.save("cover_page_layout.pdf");
         });
     } else {
       // Handle case where content or menuData is not found in localStorage
@@ -341,37 +341,43 @@ const ColorPalette = ({ onClose }) => {
     // const imageURL = localStorage.getItem("coverphotoImage");
 
     let imageURL; // Declare imageURL outside of the if block
+    let imageIndex = 0; // Keep track of the current image index
 
     const coverphotoImageData = JSON.parse(
       localStorage.getItem("coverphotoImage")
     );
+
     if (coverphotoImageData) {
-      const firstKey = Object.keys(coverphotoImageData)[0]; // Assuming only one key
-      imageURL = coverphotoImageData[firstKey][0].url;
-      console.log("Image URL:", imageURL);
-      // Now you have the URL of the image in imageURL variable
-      // Proceed with using it as needed
+      const imageKeys = Object.keys(coverphotoImageData); // Move imageKeys here
+
+      if (imageKeys.length > imageIndex) {
+        const img = new Image();
+        const currentImageKey = imageKeys[imageIndex];
+        const imageURL = coverphotoImageData[currentImageKey][0].url;
+
+        img.onload = function () {
+          pdf.addImage(this, "JPEG", 10, 30, 100, 100); // Add the first image
+          pdf.addImage(this, "JPEG", 10, 150, 100, 100); // Add the second image
+
+          imageIndex++; // Move to the next image index
+          if (imageIndex < imageKeys.length) {
+            // If there are more images, load the next one
+            const nextImageKey = imageKeys[imageIndex];
+            const nextImageURL = coverphotoImageData[nextImageKey][1].url;
+            img.src = nextImageURL;
+          } else {
+            // If all images are added, save the PDF
+            pdf.save("image_and_summary.pdf");
+          }
+        };
+
+        img.src = imageURL;
+      } else {
+        console.error("No more images to process.");
+      }
     } else {
       console.error("No image data found in local storage.");
     }
-
-    // Log the image URL to the console
-    console.log("Image URL:", imageURL);
-
-    // Create an image element
-    const img = new Image();
-
-    // Set onload event to ensure the image is loaded before adding it to the PDF
-    img.onload = function () {
-      // Add image to PDF document
-      pdf.addImage(this, "JPEG", 10, 30, 180, 150); // Adjust coordinates and dimensions as needed
-
-      // Save the PDF or display it
-      pdf.save("image_and_summary.pdf");
-    };
-
-    // Set the src attribute of the image element
-    img.src = imageURL;
   }
 
   function displayAdditionalData(
