@@ -141,7 +141,7 @@ const LayoutOptions = ({ onClose }) => {
                             {activeTab === "Layout" && (
                                 <div className="layoutoptions-layout">
                                     <div className="layoutoptions-itemoptions-para">
-                                        <h3>All these settings specific. Make sure to save your current template so that the changes will ne reflected the next time you open it.</h3>
+                                        <h3>All these settings are template specific. Make sure to save your current template so that the changes will be reflected the next time you open it.</h3>
                                     </div>
                                     <div className="layoutoptions-layout-text-chechbox">
                                         <label>
@@ -158,7 +158,8 @@ const LayoutOptions = ({ onClose }) => {
                                                 checked={checkboxValues.addContinuedendSectionFirstPage}
                                                 onChange={() => handleCheckboxChange('addContinuedendSectionFirstPage')}
                                             />
-                                            Add "Continued" to the end of the section name after the first page
+                                            Add "Continued" to the end of the section name after the first page<br/>
+                                            in the section(not applicable for Texas):
                                         </label><br /><br />
                                         <label>
                                             <input
@@ -166,7 +167,7 @@ const LayoutOptions = ({ onClose }) => {
                                                 checked={checkboxValues.romanNumerals}
                                                 onChange={() => handleCheckboxChange('romanNumerals')}
                                             />
-                                            Use roman numerals instead of intergers for labeling area(requried for texas)
+                                            Use roman numerals instead of intergers for labeling areas(requried for texas)
                                         </label><br /><br />
                                         <label>
                                             <input
@@ -174,7 +175,7 @@ const LayoutOptions = ({ onClose }) => {
                                                 checked={checkboxValues.insteadNumber}
                                                 onChange={() => handleCheckboxChange('insteadNumber')}
                                             />
-                                            Use letters instead of numbers when listing items within an areas(required for texas)
+                                            Use letters instead of numbers when listing items within an area(required for texas)
                                         </label><br /><br />
                                         <label>
                                             <input
@@ -230,7 +231,7 @@ const LayoutOptions = ({ onClose }) => {
                                                 checked={checkboxValues.pageNumber}
                                                 onChange={() => handleCheckboxChange('pageNumber')}
                                             />
-                                            Start page Number on the Cover Page
+                                            Start page Numbers on the Cover Page
                                         </label>
                                     </div>
                                     <div className="layoutoptions-layout-text2-input">
@@ -312,7 +313,7 @@ const LayoutOptions = ({ onClose }) => {
                             {activeTab === "Item Options" && (
                                 <div className="layoutoptions-itemoptions">
                                     <div className="layoutoptions-itemoptions-para">
-                                        <h3>All these settings specific. Make sure to save your current template so that the changes will ne reflected the next time you open it.</h3>
+                                        <h3>All these settings specific. Make sure to save your current template so that the changes will be reflected the next time you open it.</h3>
                                     </div>
                                     <div className="layoutoptions-itemoptions-text">
                                         <br />
@@ -331,7 +332,7 @@ const LayoutOptions = ({ onClose }) => {
                                                 checked={checkboxValues.indentItemDescription}
                                                 onChange={() => handleCheckboxChange('indentItemDescription')}
                                             />
-                                            Indent item description to line up with comments only show ratings at the top of each section (required in Texas)
+                                            Indent item description to line up with comments and only show ratings at the top of each section (required in Texas)
                                         </label>
                                         <br /><br />
                                         <label>
@@ -340,7 +341,7 @@ const LayoutOptions = ({ onClose }) => {
                                                 checked={checkboxValues.printItemNoComments}
                                                 onChange={() => handleCheckboxChange('printItemNoComments')}
                                             />
-                                            Print item even if there are no comments selected
+                                            Print items even if there are no comments selected
                                         </label>
                                         <br /><br />
                                         <label>
@@ -349,7 +350,7 @@ const LayoutOptions = ({ onClose }) => {
                                                 checked={checkboxValues.printItemNumLetters}
                                                 onChange={() => handleCheckboxChange('printItemNumLetters')}
                                             />
-                                            Print item number of letters
+                                            Print item numbers of letters
                                         </label>
                                         <br /><br />
                                         <label>
@@ -484,9 +485,9 @@ const LayoutOptions = ({ onClose }) => {
                             {activeTab === "Security" && (
                                 <div className="layoutoptions-security">
                                     <div className="layoutoptions-security-para">
-                                        <p>This section affects the security of the PDF report It is highly recommended that you leave encryption on to clients cannot
-                                            make changes to the PDF without hacking it. This process of hacking a PDF is arguably ilegal due to the DCMA and other laws and as such provides an extra layer
-                                            of security. Whether it's illegal for your clients would depend on the country you in add any loacl laws. This option is not changeable when using the Demo mode of the program. </p>
+                                        <p>This section affects the security of the PDF report It is highly recommended that you leave encryption on to secure your report so that clients cannot
+                                            make changes to the PDF without hacking it. This process of hacking a PDF is arguably illegal due to the DCMA and other laws and as such provides an extra layer
+                                            of security. Whether it's illegal for your clients would depend on the country you are in add any loacl laws. This option is not changeable when using the Demo mode of the program. </p>
                                     </div>
                                     <div className="layoutoptions-security-text">
                                         <h2>Leave PDF encryption on so that the PDF can not edited:

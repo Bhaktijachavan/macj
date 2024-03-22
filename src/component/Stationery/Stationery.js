@@ -14,7 +14,7 @@ const Stationery = () => {
                 <div className="Stationery-para">
                  {/* Paragraph explaining the use of Report Stationery */}
                     <p>Report Stationery uses PDF files to create  adigital stationery that your report will be printed over.
-                        this give the ultimate in report design customization. Use it to create a detailed cover page layout and to
+                        This give the ultimate in report design customization. Use it to create a detailed cover page layout and to
                         create watermarks, border and footers on the rest of the page of your report</p>
                     <br /><p>You can create a your stationery in word. Photoshop or any other program and then save or 'print' the document to a
                         PDF. if you don't have a PDF printer program loaded on your computer, download a free

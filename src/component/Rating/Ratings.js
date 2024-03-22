@@ -129,7 +129,7 @@ const Ratings = ({ onClose }) => {
                   <br />
                   <p>
                     Ratings should be limited to limited to 5-6 characters to
-                    fit in available space on the report
+                    fit in available space on the report.
                   </p>
                   <br />
                   <p>
@@ -137,11 +137,11 @@ const Ratings = ({ onClose }) => {
                     Name on the reports. If using the Ratings icons, an icon
                     must be specified for each Rating to be used in the report
                     Rating Icon images must be a valid image file (gif, png, or
-                    jpg) and a maximum of 64 pixels high or wide
+                    jpg) and a maximum of 64 pixels high or wide.
                   </p>
                   <br />
                   <p>
-                    Include Ratings in the Report
+                    Include Ratings in the Report:
                     <input
                       type="checkbox"
                       checked={checkbox1}
@@ -151,7 +151,7 @@ const Ratings = ({ onClose }) => {
                   <br />
                   <p>
                     Use Rating Icons Instead of Rating Name(all icons must be
-                    seleted frist)
+                    seleted frist):
                     <input
                       type="checkbox"
                       checked={checkbox2}
@@ -166,7 +166,7 @@ const Ratings = ({ onClose }) => {
                       <h2>Rating Name (Double click to edit)</h2>
                     </div>
                     <div className="icon-rating">
-                      <h2>Rating Icon (Click to select/changes)</h2>
+                      <h2>Rating Icon (Click to select/change)</h2>
                     </div>
                   </div>
                   <div className="name-icon-box-rating">
