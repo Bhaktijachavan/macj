@@ -199,6 +199,12 @@ const ColorPalette = ({ onClose }) => {
         <div style="padding: 0px; height: 73vw; width: 100%;">
           ${content}
         </div>
+        <div style="padding: 25px;">
+        <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
+        <p style="font-size: 20px; text-align: justify;">
+          ${generateLoremIpsum()}
+        </p>
+      </div>
       `;
 
       // Convert the modified HTML content to a PDF document
@@ -208,19 +214,19 @@ const ColorPalette = ({ onClose }) => {
         .get("pdf")
         .then((pdf) => {
           // Add second page for Report Introduction
-          pdf.addPage();
-          pdf.text("Report", 10, 10);
-          pdf.setFontSize(16);
+          // pdf.addPage();
+          // pdf.text("Report", 10, 10);
+          // pdf.setFontSize(16);
 
-          // Add fixed text or content
-          const largeText = generateLoremIpsum(); // Replace this with your large text
-          const options = {
-            maxWidth: 200, // Adjust the maximum width for wrapping
-          };
-          pdf.text(largeText, 10, 20, options);
+          // // Add fixed text or content
+          // const largeText = generateLoremIpsum(); // Replace this with your large text
+          // const options = {
+          //   maxWidth: 200, // Adjust the maximum width for wrapping
+          // };
+          // pdf.text(largeText, 10, 20, options);
 
-          const paddingRight = 20;
-          pdf.text("".padStart(paddingRight), 10, 20); // Empty text with padding
+          // const paddingRight = 20;
+          // pdf.text("".padStart(paddingRight), 10, 20); // Empty text with padding
 
           // Add third page for Table of Contents
           pdf.addPage();
@@ -350,31 +356,45 @@ const ColorPalette = ({ onClose }) => {
     if (coverphotoImageData) {
       const imageKeys = Object.keys(coverphotoImageData); // Move imageKeys here
 
-      if (imageKeys.length > imageIndex) {
-        const img = new Image();
-        const currentImageKey = imageKeys[imageIndex];
-        const imageURL = coverphotoImageData[currentImageKey][0].url;
+      function addImageToPDF(index, imgIndex) {
+        if (index < imageKeys.length) {
+          const img = new Image();
+          const currentImageKey = imageKeys[index];
+          const currentImageData = coverphotoImageData[currentImageKey];
 
-        img.onload = function () {
-          pdf.addImage(this, "JPEG", 10, 30, 100, 100); // Add the first image
-          pdf.addImage(this, "JPEG", 10, 150, 100, 100); // Add the second image
+          if (imgIndex < currentImageData.length) {
+            const imageURL = currentImageData[imgIndex].url;
+            const imageCaption = currentImageData[imgIndex].caption; // Get the caption of the image
+            console.log(`Image URL ${index}-${imgIndex}: ${imageURL}`);
 
-          imageIndex++; // Move to the next image index
-          if (imageIndex < imageKeys.length) {
-            // If there are more images, load the next one
-            const nextImageKey = imageKeys[imageIndex];
-            const nextImageURL = coverphotoImageData[nextImageKey][1].url;
-            img.src = nextImageURL;
-          } else {
-            // If all images are added, save the PDF
-            pdf.save("image_and_summary.pdf");
+            img.onload = function () {
+              // Calculate coordinates for image
+              const x = (imgIndex % 2) * 70 + 10; // Adjust spacing as needed
+              const y = Math.floor(imgIndex / 2) * 70 + 30; // Adjust spacing as needed
+
+              pdf.addImage(this, "JPEG", x, y, 60, 60); // Add the image to the PDF
+              pdf.text(imageCaption, x, y + 70); // Add the caption below the image
+
+              // If all images are added for the current key, move to the next key
+              if (imgIndex === currentImageData.length - 1) {
+                if (index < imageKeys.length - 1) {
+                  pdf.addPage(); // Add a new page for the next ID
+                }
+                addImageToPDF(index + 1, 0); // Recursively call this function to add the next image
+              } else {
+                addImageToPDF(index, imgIndex + 1); // Recursively call this function to add the next image
+              }
+            };
+
+            img.src = imageURL; // Set the image source to load the image
           }
-        };
-
-        img.src = imageURL;
-      } else {
-        console.error("No more images to process.");
+        } else {
+          // If all images are added, save the PDF
+          pdf.save("image_and_summary.pdf");
+        }
       }
+
+      addImageToPDF(0, 0); // Start the recursive function
     } else {
       console.error("No image data found in local storage.");
     }
