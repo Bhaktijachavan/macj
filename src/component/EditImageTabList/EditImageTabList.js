@@ -66,7 +66,7 @@ const EditImageTabList = ({
   const handleDownloadUrlChange = (url, setIdIndex) => {
     try {
       if (!id) {
-        return alert("Please provide a valid image ID");
+        return alert("Please Select Valid Image Location");
       }
 
       let imageData = localStorage.getItem("coverphotoImage");

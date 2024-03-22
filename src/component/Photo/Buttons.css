@@ -1,8 +1,12 @@
 .Buttons-super-container-for-all-Buttons-Photo {
-  display: flex;
+  /* display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 5px;
+  margin-top: 5px; */
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
 }
 
 .Buttons-unorderlist-container {

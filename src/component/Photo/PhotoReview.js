@@ -14,7 +14,7 @@ const PhotoReview = ({ images }) => {
 
   return (
     <>
-      <p className="PhotoReview-Main-Para">
+      {/* <p className="PhotoReview-Main-Para">
         The photo added to the top-left box will appear on the cover of the
         report <br />
         the drop-down boxes are automatically preloaded with the sectors from
@@ -25,7 +25,7 @@ const PhotoReview = ({ images }) => {
         The caption will be placed under each photo unless you check the 'Use
         Location As Caption' button check the 'Summary' box to include the photo
         in the Report Summary in addition to the report body.
-      </p>
+      </p> */}
       <div className="PhotoReview-rectangular-container">
         {imagesToRender.map((imageUrl, index) => (
           <Location key={index} imageUrl={imageUrl} />
