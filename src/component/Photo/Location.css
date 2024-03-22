@@ -54,3 +54,7 @@
   align-items: center;
   gap: 6em;
 }
+.class-for-header-color {
+  background-color: rgb(242, 236, 236);
+  border: solid 1px rgb(191, 189, 189);
+}

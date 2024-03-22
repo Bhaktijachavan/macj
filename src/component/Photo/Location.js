@@ -280,12 +280,12 @@ const Location = ({ imageUrl }) => {
 
       {/* Popup container */}
       {showPopup && (
-        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
-          <div className="bg-gray-300 border border-gray-400 p-6 relative">
-            <div className=" flex items-center content-between justify-between  bg-gray-100 border border-gray-400 ">
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-[999]">
+          <div className="bg-gray-300 border border-gray-400  relative w-[99%] p-0">
+            <div className=" flex items-center content-between justify-between  class-for-header-color px-1   ">
               <p>Panel</p>
               <p
-                className="BatchAddPhots-close-image  text-gray-600 hover:text-gray-800"
+                className="BatchAddPhots-close-image   hover:text-white"
                 onClick={handleClosePopup}
               >
                 X
