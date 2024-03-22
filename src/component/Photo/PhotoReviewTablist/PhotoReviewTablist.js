@@ -77,20 +77,6 @@ function PhotoReviewTablist() {
     <>
       <Header />
       <div className="Tablist-to-open-new-EditImageTabList">
-        <div className="flex place-content-center gap-3 mt-3">
-          <button
-            className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[5px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[10em]"
-            onClick={handleBulkImportClick}
-          >
-            Bulk Import
-          </button>
-          <button
-            className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[5px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[10em]"
-            onClick={handleClearBulkImport}
-          >
-            Clear Photos
-          </button>
-        </div>
         <input
           type="file"
           ref={fileInputRef}
@@ -119,6 +105,35 @@ function PhotoReviewTablist() {
           >
             New Tab
           </button>
+        </div>
+        <div className="flex items-start content-start mx-[10px] ">
+          <div className=" grid gap-[5px] mt-1">
+            <button
+              className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[5px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[8em]"
+              onClick={handleBulkImportClick}
+            >
+              Bulk Import
+            </button>
+            <button
+              className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[5px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[8em]"
+              onClick={handleClearBulkImport}
+            >
+              Clear Photos
+            </button>
+          </div>
+          <p className="PhotoReview-Main-Para">
+            The photo added to the top-left box will appear on the cover of the
+            report <br />
+            The drop-down boxes are automatically preloaded with the sectors
+            from The photo added to the top left box will appear on the cover of
+            the the current template. The photo will print in the location
+            specified using both drop-down boxes, unless you check "Print At
+            End" for a photo.
+            <br />
+            The caption will be placed under each photo unless you check the
+            'Use Location As Caption' button check the 'Summary' box to include
+            the photo in the Report Summary in addition to the report body.
+          </p>
         </div>
 
         {tabs.map((tab) => (

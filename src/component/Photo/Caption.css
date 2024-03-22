@@ -35,6 +35,7 @@
   transform: translate(-50%, -50%);
   background-color: #d3d3d3;
   border: solid 1px rgb(191, 189, 189);
+  z-index: 999;
 }
 .caption-popupbox-input-filed {
   width: 960px;

@@ -196,16 +196,16 @@ const ColorPalette = ({ onClose }) => {
     if (content && menuData) {
       // Modify the content to include border, page heading, and adjust page height
       const modifiedContent = `
-        <div style="padding: 0px; height: 73vw; width: 100%;">
-          ${content}
-        </div>
-        <div style="padding: 25px;">
-        <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
-        <p style="font-size: 20px; text-align: justify;">
-          ${generateLoremIpsum()}
-        </p>
-      </div>
-      `;
+            <div style="padding: 0px; height: 73vw; width: 100%;">
+                ${content}
+            </div>
+            <div style="padding: 25px;">
+                <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
+                <p style="font-size: 20px; text-align: justify;">
+                    ${generateLoremIpsum()}
+                </p>
+            </div>
+        `;
 
       // Convert the modified HTML content to a PDF document
       html2pdf()
@@ -234,7 +234,13 @@ const ColorPalette = ({ onClose }) => {
           // Add table for Table of Contents
           addTableOfContents(pdf, JSON.parse(menuData));
 
-          // Add fourth page for Summary
+          // Add fourth page for Images
+          pdf.addPage();
+          pdf.text("Images", 10, 10);
+          // Arrange images in a grid layout
+          arrangeImagesInGrid(pdf);
+
+          // Add fifth page for Summary
           pdf.addPage();
           pdf.text("Summary", 10, 10);
 
@@ -260,7 +266,39 @@ const ColorPalette = ({ onClose }) => {
       console.log("No content or menu data found in localStorage");
     }
   };
+  // Function to arrange images in a grid layout
+  function arrangeImagesInGrid(pdf) {
+    const coverphotoImageData = JSON.parse(
+      localStorage.getItem("coverphotoImage")
+    );
+    if (coverphotoImageData) {
+      const imageKeys = Object.keys(coverphotoImageData);
+      let x = 10;
+      let y = 30;
+      let imageIndex = 0;
+      const maxImagesPerRow = 2;
+      const imageWidth = 80;
+      const imageHeight = 60;
+      const gap = 25;
 
+      imageKeys.forEach((imageKey) => {
+        coverphotoImageData[imageKey].forEach((imageData) => {
+          if (imageIndex > 0 && imageIndex % maxImagesPerRow === 0) {
+            x = 10;
+            y += imageHeight + gap;
+          }
+          const imageURL = imageData.url;
+          const imageCaption = imageData.caption;
+          pdf.addImage(imageURL, "JPEG", x, y, imageWidth, imageHeight);
+          pdf.text(imageCaption, x, y + imageHeight + 5);
+          x += imageWidth + gap;
+          imageIndex++;
+        });
+      });
+    } else {
+      console.error("No image data found in local storage.");
+    }
+  }
   // Function to add Table of Contents
   function addTableOfContents(pdf, parsedMenuData) {
     // Set styling properties

@@ -261,14 +261,14 @@ const Location = ({ imageUrl }) => {
                 </p>
               )}
             </div>
+            <Buttons
+              caption={caption}
+              url={!uploadedFile ? null : uploadedFile}
+              id={panelId}
+              SetImageIndex={SetImageIndex}
+              onFileSelect={handleFileSelect}
+            />
           </div>
-          <Buttons
-            caption={caption}
-            url={!uploadedFile ? null : uploadedFile}
-            id={panelId}
-            SetImageIndex={SetImageIndex}
-            onFileSelect={handleFileSelect}
-          />
         </div>
         <Caption
           id={panelId}
@@ -280,15 +280,18 @@ const Location = ({ imageUrl }) => {
 
       {/* Popup container */}
       {showPopup && (
-        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 relative">
-            <button
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-              onClick={handleClosePopup}
-            >
-              Close
-            </button>
-            {/* Render the selected panel component */}
+        <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-[999]">
+          <div className="bg-gray-300 border border-gray-400  relative w-[99%] p-0">
+            <div className=" flex items-center content-between justify-between  class-for-header-color px-1   ">
+              <p>Panel</p>
+              <p
+                className="BatchAddPhots-close-image   hover:text-white"
+                onClick={handleClosePopup}
+              >
+                X
+              </p>
+            </div>
+
             {panel}
           </div>
         </div>

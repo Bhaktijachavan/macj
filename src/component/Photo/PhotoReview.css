@@ -9,7 +9,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 5px;
   /* padding: 5px; */
-  margin: 0 10px 10px 10px;
+  margin: 0 3px 3px 3px;
 }
 
 .PhotoReview-rectangular-container-super {

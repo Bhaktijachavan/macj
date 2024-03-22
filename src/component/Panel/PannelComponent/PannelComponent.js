@@ -301,7 +301,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       <div>
         <div className="container-panel2">
           <div className="panel2">
-            <div className="Editcomments-and-checkbox-container flex pl-5">
+            <div className="Editcomments-and-checkbox-container flex ">
               <EditComments
                 value={value}
                 handleDelete={HandleDeleteText}
