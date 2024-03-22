@@ -858,15 +858,15 @@ border-black-900"
               </li>
             </Link>
             <hr />
-            <li className="list-for-header-section-main-nav">
+            {/* <li className="list-for-header-section-main-nav">
               <a href="#" className="header2-tag-a" onClick={handleCopy}>
                 <div className="flex justify-center">
                   <img src={img10} alt="" />
                 </div>
                 <div>Copy</div>
               </a>
-            </li>
-            <li
+            </li> */}
+            {/* <li
               className="list-for-header-section-main-nav  border-r
 border-black-900"
             >
@@ -886,7 +886,7 @@ border-black-900"
                 </div>
                 <div>Paste</div>
               </a>
-            </li>
+            </li> */}
             <hr />
             {/* <Link to="/generateReport"> */}
             <li className="list-for-header-section-main-nav">
