@@ -4,6 +4,7 @@ import PhotoReview from "../PhotoReview";
 import Header from "../../Header/Header";
 import Footer from "./../../Footer/Footer";
 import "./PhotoReviewTablist.css";
+import Buttons from "./../Buttons";
 
 function PhotoReviewTablist() {
   const fileInputRef = useRef(null);
@@ -28,7 +29,18 @@ function PhotoReviewTablist() {
     setTabs(newTabs);
     setActiveTab(newTabId);
   };
-
+  const handleBulkImportClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click(); // Trigger click event on file input
+    }
+  };
+  const handleClearBulkImport = () => {
+    setTabs([
+      { id: "tab1", name: "Tab 1", content: <PhotoReview images={[]} /> },
+    ]);
+    alert("Do you want to clear all photos");
+    setActiveTab("tab1"); // Set active tab to the default tab
+  };
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const files = Array.from(e.target.files); // Convert FileList to array
@@ -65,9 +77,24 @@ function PhotoReviewTablist() {
     <>
       <Header />
       <div className="Tablist-to-open-new-EditImageTabList">
+        <div className="flex place-content-center gap-3 mt-3">
+          <button
+            className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[5px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[10em]"
+            onClick={handleBulkImportClick}
+          >
+            Bulk Import
+          </button>
+          <button
+            className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[5px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[10em]"
+            onClick={handleClearBulkImport}
+          >
+            Clear Photos
+          </button>
+        </div>
         <input
           type="file"
           ref={fileInputRef}
+          style={{ display: "none" }}
           onChange={handleFileChange}
           multiple
           webkitdirectory=""
@@ -104,6 +131,7 @@ function PhotoReviewTablist() {
           </div>
         ))}
       </div>
+
       <Footer />
     </>
   );

@@ -11,6 +11,7 @@ import DrawArrowContent from "./DrawArrowContent/DrawArrowContent";
 import DrawRectangleContent from "./DrawRectangleContent/DrawRectangleContent";
 import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
 import OverLayImage from "./OverLayImage/OverLayImage";
+import AddICon from "./AddIcon/AddICon";
 
 const EditImageTabList = ({
   isOpen,
@@ -169,6 +170,7 @@ const EditImageTabList = ({
     "Draw Oval",
     "Add Text",
     "Overlay Image",
+    "Add Icon",
   ];
 
   const tabContentComponents = {
@@ -334,6 +336,21 @@ const EditImageTabList = ({
         drawnLines={drawnLines}
         drawnOvals={drawnOvals}
         drawnRectangles={drawnRectangles}
+      />
+    ),
+    11: (
+      <AddICon
+        imageUrl={uploadedImageUrl}
+        croppedImageUrl={croppedImageUrl}
+        textsWithPositions={textsWithPositions}
+        brightness={brightness}
+        contrast={contrast}
+        drawnArrows={drawnArrows}
+        rotationAngle={rotationAngle}
+        drawnLines={drawnLines}
+        drawnOvals={drawnOvals}
+        drawnRectangles={drawnRectangles}
+        arrowColor={arrowColor}
       />
     ),
   };
