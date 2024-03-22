@@ -265,14 +265,15 @@ const ColorPalette = ({ onClose }) => {
   function addTableOfContents(pdf, parsedMenuData) {
     // Set styling properties
     const fontSize = 12;
-    const fontColor = "black";
-    const backgroundColor = "black";
+    const fontColor = "white"; // Change text color to white
+    const backgroundColor = "black"; // Change background color to black
     const boxShadowColor = "gray"; // Change this to your preferred box shadow color
-
+    // const borderradius = "30px";
     // Set the font size, text color, and background color
     pdf.setFontSize(fontSize);
     pdf.setTextColor(fontColor);
     pdf.setFillColor(backgroundColor);
+    // pdf.setBorderRadius(borderradius);
 
     Object.values(parsedMenuData).forEach((item, index) => {
       // Add subitems
@@ -282,7 +283,8 @@ const ColorPalette = ({ onClose }) => {
         pdf.setLineWidth(0.2);
 
         // Add text with background color
-        pdf.text(`    ${subitem.subName}`, 20, 20 + index * 10 + subindex * 10);
+        pdf.rect(20, 20 + index * 10 + subindex * 10, 100, 8, "F"); // Add filled rectangle as background
+        pdf.text(`${subitem.subName}`, 25, 25 + index * 10 + subindex * 10); // Add text with formatting
       });
     });
 
@@ -291,6 +293,7 @@ const ColorPalette = ({ onClose }) => {
     pdf.setTextColor(0, 0, 0); // Reset text color to black
     pdf.setFillColor(255, 255, 255); // Reset background color to white
     pdf.setDrawColor(0); // Reset draw color (box shadow) to black
+    // pdf.setBorderRadius(0); // Reset border radius
   }
 
   function addSummaryTable(pdf, menuNames) {
