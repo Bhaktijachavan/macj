@@ -364,21 +364,33 @@ const ColorPalette = ({ onClose }) => {
 
           if (imgIndex < currentImageData.length) {
             const imageURL = currentImageData[imgIndex].url;
+            const imageCaption = currentImageData[imgIndex].caption; // Get the caption of the image
             console.log(`Image URL ${index}-${imgIndex}: ${imageURL}`);
 
             img.onload = function () {
-              pdf.addImage(this, "JPEG", 10, 30, 60, 60); // Add the image to the PDF
-              pdf.addPage(); // Add a new page for the next image
-              addImageToPDF(index, imgIndex + 1); // Recursively call this function to add the next image
+              // Calculate coordinates for image
+              const x = (imgIndex % 2) * 70 + 10; // Adjust spacing as needed
+              const y = Math.floor(imgIndex / 2) * 70 + 30; // Adjust spacing as needed
+
+              pdf.addImage(this, "JPEG", x, y, 60, 60); // Add the image to the PDF
+              pdf.text(imageCaption, x, y + 70); // Add the caption below the image
+
+              // If all images are added for the current key, move to the next key
+              if (imgIndex === currentImageData.length - 1) {
+                if (index < imageKeys.length - 1) {
+                  pdf.addPage(); // Add a new page for the next ID
+                }
+                addImageToPDF(index + 1, 0); // Recursively call this function to add the next image
+              } else {
+                addImageToPDF(index, imgIndex + 1); // Recursively call this function to add the next image
+              }
             };
 
             img.src = imageURL; // Set the image source to load the image
-          } else if (index < imageKeys.length - 1) {
-            addImageToPDF(index + 1, 0); // Move to the next key
-          } else {
-            // If all images are added, save the PDF
-            pdf.save("image_and_summary.pdf");
           }
+        } else {
+          // If all images are added, save the PDF
+          pdf.save("image_and_summary.pdf");
         }
       }
 
