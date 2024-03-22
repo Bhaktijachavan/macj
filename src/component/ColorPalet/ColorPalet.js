@@ -372,10 +372,10 @@ const ColorPalette = ({ onClose }) => {
 
             img.onload = function () {
               // Calculate coordinates for image
-              const x = (imgIndex % 2) * 70 + 10; // Adjust spacing as needed
-              const y = Math.floor(imgIndex / 2) * 70 + 30; // Adjust spacing as needed
+              const x = (imgIndex % 2) * 100 + 20; // Adjust spacing as needed
+              const y = Math.floor(imgIndex / 2) * 80 + 50; // Adjust spacing as needed
 
-              pdf.addImage(this, "JPEG", x, y, 60, 60); // Add the image to the PDF
+              pdf.addImage(this, "JPEG", x, y, 80, 60); // Add the image to the PDF
               pdf.text(imageCaption, x, y + 70); // Add the caption below the image
 
               // If all images are added for the current key, move to the next key
