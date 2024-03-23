@@ -14,10 +14,15 @@ const AdjustContrastContent = ({
   drawnRectangles,
   croppedImageUrl,
   rotationAngle,
+  iconAdded,
+  onIConAdded,
 }) => {
   const contrastHistory = useRef([contrast]);
   const historyIndex = useRef(0);
   const [imageSrc, setImageSrc] = useState("");
+  useEffect(() => {
+    console.log("Icon received in  AdjustContrast", onIConAdded);
+  }, [onIConAdded]);
 
   useEffect(() => {
     const handleKeydown = (event) => {
@@ -81,6 +86,15 @@ const AdjustContrastContent = ({
             alt="Preview"
             className="preview-image-contrast"
           />
+          {onIConAdded && (
+            <img
+              src={onIConAdded}
+              alt="Uploaded"
+              style={{
+                position: "absolute",
+              }}
+            />
+          )}
           {textsWithPositions.map((text) => (
             <div
               key={text.id}

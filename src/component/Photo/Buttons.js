@@ -14,7 +14,14 @@ import EditImageTabList from "./../EditImageTabList/EditImageTabList";
 
 import PropTypes from "prop-types";
 
-const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
+const Buttons = ({
+  onFileSelect,
+  id,
+  SetImageIndex,
+  caption,
+  url,
+  onIconPreview,
+}) => {
   // tablistconst [isPopupOpen, setIsPopupOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -38,17 +45,25 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
   const [selectedPreviewIcon, setSelectedPreviewIcon] = useState(null);
   const isImageUploaded = !!uploadedFileRef.current;
   const [uploadedIconNames, setUploadedIconNames] = useState([]);
-  const handleIconClick = (icon) => {
+  const iconShowRef = useRef(null);
+
+  const handleIconClick = (iconShowRef) => {
     // Check which icon is clicked
-    if (icon !== img9) {
-      setSelectedPreviewIcon(icon);
+
+    if (iconShowRef !== img9) {
+      setSelectedPreviewIcon(iconShowRef);
+      console.log("ghjker", iconShowRef);
+
       openPopup(); // Open the popup when a non-img9 icon is clicked
+      onIconPreview(iconShowRef);
+      console.log("ghjk", iconShowRef);
     }
   };
 
   const handleDeletePreviewIcon = () => {
     // Delete the previewed icon
     setSelectedPreviewIcon(null);
+    onIconPreview(null);
   };
 
   const [uploadedIcon, setUploadedIcon] = useState([]);
@@ -141,6 +156,11 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
     });
   };
 
+  // const handleImage10Click = () => {
+  //   // Call the onIconPreview callback with the selected icon
+  //   onIconPreview(iconShowRef);
+  // };
+
   // TO search and filter icons in Search Tab
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -198,6 +218,7 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
                       }
                       id={id}
                       SetImageIndex={SetImageIndex}
+                      selectedPreviewIcon={selectedPreviewIcon}
                     />
                   </div>
                 )}
@@ -235,7 +256,7 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
           {/* <label>Caption</label> */}
         </div>
 
-        <div className="Buttons-main-container-for-icons-buttons">
+        <div className="Buttons-main-container-for-icons-buttons ">
           <ul className="Buttons-unoorderlist-for-icons-buttons">
             {/* ... other list items */}
             <li>
@@ -260,6 +281,7 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
                 className={`Buttons-orderlist-for-icons-buttons ${
                   isImageUploaded ? "active" : ""
                 }`}
+                // onClick={handleImage10Click}
               >
                 {selectedPreviewIcon ? (
                   <img src={selectedPreviewIcon} alt="" />
@@ -328,25 +350,6 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
                 />
               </div>
 
-              {/* <div>
-                {uploadedIcon.length > 0 ? (
-                  <div className="Add-icons-user-uploaded-icons">
-                    {uploadedIcon.map((icon, index) => (
-                      <img
-                        className="Add-icons-user-uploaded-icons-img-to-be-uploaded"
-                        key={index}
-                        src={icon}
-                        alt={`Uploaded Icon ${index}`}
-                        onClick={() => handleIconClick(icon)}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <span className="Add-icons-No-Icons-found">
-                    No Icons found
-                  </span>img
-                )}
-              </div> */}
               <div>
                 {filteredIcons.length > 0 ? (
                   <div className="Add-icons-user-uploaded-icons">
@@ -354,9 +357,11 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
                       <img
                         className="Add-icons-user-uploaded-icons-img-to-be-uploaded"
                         key={index}
+                        ref={iconShowRef}
                         src={icon}
                         alt={`Uploaded Icon ${index}`}
                         onClick={() => handleIconClick(icon)}
+                        id="icon"
                       />
                     ))}
                   </div>
@@ -433,14 +438,6 @@ const Buttons = ({ onFileSelect, id, SetImageIndex, caption, url }) => {
                   </div>
                 )}
               </div>
-              {/* <div className="kjcbdavcdkvykhcbd">
-                <input
-                  className="input-file-choose-file-to-add-icons"
-                  type="file"
-                  onChange={handleFileChangeInAddTab}
-                  multiple
-                />
-              </div> */}
 
               <div className="Add-Icons-cancel-btn-zz">
                 <button

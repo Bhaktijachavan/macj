@@ -8,6 +8,7 @@ import { PanalSelect } from "../Function/function";
 
 const Location = ({ imageUrl }) => {
   const [uploadedFile, setUploadedFile] = useState(!imageUrl ? null : imageUrl);
+  const [selectedIcon, setSelectedIcon] = useState(null);
   const [menuData, setMenuData] = useState(null);
   const [selectedMenuId, setSelectedMenuId] = useState(null);
   const [selectedSubmenuId, setSelectedSubmenuId] = useState(null);
@@ -45,6 +46,10 @@ const Location = ({ imageUrl }) => {
   }, [imageIndex, selectedMenuId]);
   const handleFileSelect = (file) => {
     setUploadedFile(file);
+  };
+  const handleIconPreview = (icon) => {
+    setSelectedIcon(icon);
+    // console.log("gfhjkjk", selectedIcon);
   };
 
   useEffect(() => {
@@ -113,6 +118,7 @@ const Location = ({ imageUrl }) => {
   const handleClosePopup = () => {
     setShowPopup(false);
   };
+
   return (
     <>
       <div className="PhotoReview-rectangular-container-super">
@@ -260,6 +266,15 @@ const Location = ({ imageUrl }) => {
                   The Selected Image will Appear Here !
                 </p>
               )}
+              {selectedIcon && (
+                <img
+                  src={selectedIcon}
+                  alt="Selected Icon"
+                  style={{
+                    position: "absolute",
+                  }}
+                />
+              )}
             </div>
             <Buttons
               caption={caption}
@@ -267,8 +282,10 @@ const Location = ({ imageUrl }) => {
               id={panelId}
               SetImageIndex={SetImageIndex}
               onFileSelect={handleFileSelect}
+              onIconPreview={handleIconPreview}
             />
           </div>
+          {/* Display selected icon on top of the image */}
         </div>
         <Caption
           id={panelId}

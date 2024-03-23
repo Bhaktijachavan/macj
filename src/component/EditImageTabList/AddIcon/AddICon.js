@@ -1,9 +1,10 @@
 import React from "react";
 import { useState, useEffect } from "react";
 
-const AddIcon = ({ imageUrl, croppedImageUrl }) => {
-  const [uploadedPhoto, setUploadedPhoto] = useState(null);
+const AddIcon = ({ imageUrl, croppedImageUrl, onIconChange, addedIcon }) => {
+  const [previewImage, setPreviewImage] = useState(addedIcon);
   const [ImageSrc, setImageSrc] = useState("");
+  const [combinedImageUrl, setCombinedImageUrl] = useState(null);
 
   useEffect(() => {
     if (croppedImageUrl) {
@@ -13,22 +14,33 @@ const AddIcon = ({ imageUrl, croppedImageUrl }) => {
     }
   }, [croppedImageUrl, imageUrl]);
 
-  const handleBrowseClick = () => {
-    const fileInput = document.getElementById("fileInput");
-    if (fileInput) {
-      fileInput.click();
-    }
-  };
+  useEffect(() => {
+    onIconChange(previewImage);
+  }, [previewImage]);
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0]; // Get the selected file
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUploadedPhoto(reader.result); // Set the selected file as the image source
+        setPreviewImage(reader.result); // Set the data URL of the selected file as preview image
       };
       reader.readAsDataURL(file); // Read the file as a data URL
     }
+  };
+
+  const handleDeleteIcon = () => {
+    setPreviewImage("");
+  };
+  const handleSaveChanges = () => {
+    // Combine both image URLs
+    const combinedUrl = previewImage
+      ? `${ImageSrc}, ${previewImage}`
+      : ImageSrc;
+    setCombinedImageUrl(combinedUrl);
+
+    // Log the combined URL
+    console.log("Combined Image URL:", combinedUrl);
   };
 
   return (
@@ -39,36 +51,38 @@ const AddIcon = ({ imageUrl, croppedImageUrl }) => {
           alt="Original Image"
           className="absolute top-0 left-0 w-full h-full"
         />
-        {uploadedPhoto && (
+        {previewImage && (
           <img
-            src={uploadedPhoto}
-            alt="Uploaded"
-            className="absolute top-0 left-0 w-full h-full object-cover"
+            src={previewImage}
+            alt=""
+            style={{
+              position: "absolute",
+            }}
           />
         )}
       </div>
       <div className="flex place-content-center">
-        <button
-          className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[5px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[5em]"
-          onClick={handleBrowseClick}
-        >
-          Add Icon
-        </button>
         <input
           type="file"
           id="fileInput"
-          onChange={handleFileUpload}
-          style={{ display: "none" }}
+          onChange={handleFileSelect}
           multiple
+          className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[0px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[6.5em] mt-10"
         />
       </div>
 
       <div className="flex place-content-center gap-3 mt-3">
-        <button className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[5px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[5em]">
-          Undo
+        <button
+          className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[5px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[7em] "
+          onClick={handleDeleteIcon}
+        >
+          Delete Icon
         </button>
-        <button className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[5px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[5em]">
-          Redo
+        <button
+          className="bg-gray-100 text-black border-2 border-gray-400 rounded px-[5px] hover:bg-[#d7e9f7] hover:border-[#005a9e] w-[7em] "
+          onClick={handleSaveChanges}
+        >
+          Save changes
         </button>
       </div>
     </>

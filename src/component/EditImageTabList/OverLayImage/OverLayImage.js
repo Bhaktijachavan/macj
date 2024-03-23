@@ -22,6 +22,9 @@ const OverLayImage = forwardRef(
       croppedImageUrl,
       rotationAngle,
       onDownloadUrlChange,
+      onOverlayChange,
+      overLayImage,
+      addedIcon,
     },
     ref
   ) => {
@@ -36,6 +39,9 @@ const OverLayImage = forwardRef(
     const [combinedImageUrl, setCombinedImageUrl] = useState(null);
 
     // Function to load overLayImage from localStorage
+    useEffect(() => {
+      onOverlayChange(uploadedPhoto);
+    }, [uploadedPhoto]);
 
     useEffect(() => {
       const handleKeydown = (event) => {
@@ -52,7 +58,9 @@ const OverLayImage = forwardRef(
         window.removeEventListener("keydown", handleKeydown);
       };
     }, []); // Empty dependency array to run only once
-
+    useEffect(() => {
+      console.log("Icon received in  overlayimage", addedIcon);
+    }, [addedIcon]);
     useEffect(() => {
       if (croppedImageUrl) {
         setImageSrc(croppedImageUrl);
@@ -140,7 +148,9 @@ const OverLayImage = forwardRef(
           const overlayImg = new Image();
           overlayImg.src = uploadedPhoto;
           overlayImg.onload = () => {
-            offScreenContext.drawImage(overlayImg, position.x, position.y);
+            const overlayX = position.x; // Use position.x from state
+            const overlayY = position.y; // Use position.y from state
+            offScreenContext.drawImage(overlayImg, overlayX, overlayY);
 
             drawOverlayElements(offScreenContext, scaleFactor);
             const combinedImageUrl = offScreenCanvas.toDataURL("image/jpeg");
@@ -328,6 +338,15 @@ const OverLayImage = forwardRef(
               alt="Original Image"
               className="Overlay-Image-image-uploded"
             />
+            {addedIcon && (
+              <img
+                src={addedIcon}
+                alt=""
+                style={{
+                  position: "absolute",
+                }}
+              />
+            )}
             {textsWithPositions.map((text) => (
               <div
                 key={text.id}
@@ -457,6 +476,7 @@ const OverLayImage = forwardRef(
                   src={uploadedPhoto}
                   alt="Uploaded"
                   className="Overlay-Image-overlay"
+                  multiple
                   style={{
                     transform: `rotate(${rotationAngles}deg)`,
                     position: "absolute",
@@ -488,7 +508,7 @@ const OverLayImage = forwardRef(
                     Select
                   </button>
                   <button
-                    className="Rotate-Button-to-rotate-Overlay-image"
+                    className="Rotate-Button-to-rotate-Overlay-image hidden"
                     onClick={handleRotateClockwise}
                   >
                     Rotate
@@ -536,6 +556,7 @@ const OverLayImage = forwardRef(
           accept="image/*"
           style={{ display: "none" }}
           onChange={handleFileUpload}
+          multiple
         />
       </>
     );
