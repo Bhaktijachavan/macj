@@ -28,8 +28,8 @@ const AboutUsMacj = ({ onClose }) => {
               <p>@ Sketch icon - Icon made by Freepik from www.flaticon.com</p>
               <p>@ Sketch icon - Icon made by Freepik from www.flaticon.com</p>
             </div>
-            <div className="cover-page-Stationery-remove">
-            <button className="adding-Stationery-btn">Ok</button>
+            <div className="cover-page-Stationery-remove flex justify-center">
+            <button className="adding-Stationery-btn " onClick={onClose} >Ok</button>
         </div>
           </div>
         </div>
