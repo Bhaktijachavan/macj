@@ -99,7 +99,7 @@ const InternetLogin = () => {
             </div>
           </div>
           <div className="button-container-internetlogin">
-            <button onClick={handleLogin}>Login</button>
+            <button onClick={handleLogin} className="button-internetlogin">Login</button>
             <button className="cancel-btn-internetlogin" onClick={handleClose}>
               Cancel
             </button>
