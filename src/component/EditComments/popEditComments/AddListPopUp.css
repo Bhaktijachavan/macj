@@ -31,11 +31,15 @@
 }
 
 .close-button-addlistpopup {
-  background-color: transparent;
-  border: none;
-  padding: 0 10px;
+  width: 2em;
+  height: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .close-button-addlistpopup:hover {
-  background-color: #e60000;
+  background-color: red;
+  cursor: pointer;
+  color: white;
 }
