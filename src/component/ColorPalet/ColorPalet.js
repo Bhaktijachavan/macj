@@ -561,12 +561,14 @@ hover:text-white"
           <div className=" p-6">
             <div className="text-center">
               <p>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                <p>
-                  Dolorum aperiam officia nam minima, reiciendis ad perspiciatis
-                  vitae quod illum molestiae dignissimos corrupti,
-                </p>
-                voluptate maxime dolore sed. Dicta, iure recusandae. Atque.
+                Check the Print check box for each section you would like to
+                appear on your inspection report You can click on a Section Name
+                in the 1st column, then use the Move Up and Move Down button to
+                change the order the section will appear in your report Click on
+                the palette icon in the Section Font column to change the
+                section font, size and color. If using the Section Icons in your
+                report, the Section Icon images must be a valid image file (gif,
+                png,or.jpg) and a maximum of 200 pixels high or wide.
               </p>
             </div>
 
