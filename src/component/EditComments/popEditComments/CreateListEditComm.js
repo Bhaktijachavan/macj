@@ -247,7 +247,7 @@ const CreateListEditComm = ({ onClose }) => {
               >
                 Ok
               </button>
-              <button className="btn-editcomm mr-2 w-24 text-sm">Cancel</button>
+              <button className="btn-editcomm mr-2 w-24 text-sm" onClick={onClose}>Cancel</button>
             </div>
           </div>
         </div>
