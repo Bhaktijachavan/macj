@@ -7,6 +7,9 @@ import React, {
 } from "react";
 import "./OverLayImage.css";
 import Draggable from "react-draggable";
+import DynamicMenuComponent from "./../../EditTemp/EditTemp";
+import Icon1 from "../OverLayImage/edit_template.png";
+import Icon2 from "../OverLayImage/cutpasteicon.png";
 
 const OverLayImage = forwardRef(
   (
@@ -37,7 +40,7 @@ const OverLayImage = forwardRef(
     const [isOkClicked, setIsOkClicked] = useState(false);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [combinedImageUrl, setCombinedImageUrl] = useState(null);
-
+    const [selectedIcons, setSelectedIcons] = useState([]);
     // Function to load overLayImage from localStorage
     useEffect(() => {
       onOverlayChange(uploadedPhoto);
@@ -58,9 +61,7 @@ const OverLayImage = forwardRef(
         window.removeEventListener("keydown", handleKeydown);
       };
     }, []); // Empty dependency array to run only once
-    useEffect(() => {
-      console.log("Icon received in  overlayimage", addedIcon);
-    }, [addedIcon]);
+
     useEffect(() => {
       if (croppedImageUrl) {
         setImageSrc(croppedImageUrl);
@@ -84,6 +85,18 @@ const OverLayImage = forwardRef(
 
     const handleSelectButtonClick = () => {
       fileInputRef.current.click();
+    };
+
+    const handleUploadToImage = (icon) => {
+      if (selectedIcons.includes(icon)) {
+        // If the icon is already selected, deselect it
+        setSelectedIcons(
+          selectedIcons.filter((selectedIcon) => selectedIcon !== icon)
+        );
+      } else {
+        // Otherwise, select the icon
+        setSelectedIcons([...selectedIcons, icon]);
+      }
     };
 
     const handleFileUpload = (event) => {
@@ -151,6 +164,16 @@ const OverLayImage = forwardRef(
             const overlayX = position.x; // Use position.x from state
             const overlayY = position.y; // Use position.y from state
             offScreenContext.drawImage(overlayImg, overlayX, overlayY);
+
+            if (selectedIcons) {
+              const Icon = new Image();
+              Icon.src = selectedIcons;
+              Icon.onload = () => {
+                const IconX = 0; // Use position.x from state
+                const IconY = 0; // Use position.y from state
+                offScreenContext.drawImage(Icon, IconX, IconY);
+              };
+            }
 
             drawOverlayElements(offScreenContext, scaleFactor);
             const combinedImageUrl = offScreenCanvas.toDataURL("image/jpeg");
@@ -338,15 +361,20 @@ const OverLayImage = forwardRef(
               alt="Original Image"
               className="Overlay-Image-image-uploded"
             />
-            {addedIcon && (
+            {selectedIcons.map((icon, index) => (
               <img
-                src={addedIcon}
+                key={index}
+                src={icon}
                 alt=""
                 style={{
+                  zIndex: 999,
                   position: "absolute",
-                }}
+                  top: 0,
+                  left: 0,
+                  padding: "10px",
+                }} // Ensure the icon appears above the image
               />
-            )}
+            ))}
             {textsWithPositions.map((text) => (
               <div
                 key={text.id}
@@ -541,13 +569,48 @@ const OverLayImage = forwardRef(
             </div>
           )}
         </div>
-        <div className="Buttons-undo-redo-conatainer">
-          <button className="Buttons-undo-redo-yytytyt" onClick={handleUndo}>
-            Undo
-          </button>
-          <button className="Buttons-undo-redo-yytytyt" onClick={handleRedo}>
-            Redo
-          </button>
+        <div className="grid place-content-center gap-2">
+          <fieldset className=" border border-black items-center content-center justify-center flex">
+            <legend className="ml-4 text-[18px]">Add Icons</legend>
+            <div className="flex items-center m-1  w-[full] h-[full] gap-x-5">
+              <img
+                src={Icon1}
+                alt="Icon1"
+                title="click to Add"
+                className="border border-slate-400 hover:border-hidden h-[3em]"
+                onClick={() => handleUploadToImage(Icon1)}
+              />
+              <img
+                src={Icon2}
+                alt="Icon2"
+                title="click to Add"
+                className="border border-slate-400 hover:border-hidden h-[3em]"
+                onClick={() => handleUploadToImage(Icon2)}
+              />
+              <img
+                src={Icon1}
+                alt="Icon3"
+                title="click to Add"
+                className="border border-slate-400 hover:border-hidden h-[3em]"
+                onClick={() => handleUploadToImage(Icon1)}
+              />
+              <img
+                src={Icon2}
+                alt="Icon4"
+                title="click to Add"
+                className="border border-slate-400 hover:border-hidden h-[3em]"
+                onClick={() => handleUploadToImage(Icon2)}
+              />
+            </div>
+          </fieldset>
+          <div className="ml-[3em]">
+            <button className="Buttons-undo-redo-yytytyt" onClick={handleUndo}>
+              Undo
+            </button>
+            <button className="Buttons-undo-redo-yytytyt" onClick={handleRedo}>
+              Redo
+            </button>
+          </div>
         </div>
 
         <input

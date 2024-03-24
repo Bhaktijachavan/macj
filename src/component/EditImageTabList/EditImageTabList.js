@@ -20,7 +20,6 @@ const EditImageTabList = ({
   id,
   SetImageIndex,
   caption,
-  selectedPreviewIcon,
 }) => {
   const overlayImageRef = useRef(null);
   const [activeTab, setActiveTab] = useState(1);
@@ -42,11 +41,6 @@ const EditImageTabList = ({
 
   const [arrowColor, setArrowColor] = useState("Black");
   const [downloadUrl, setDownloadUrl] = useState(null);
-  const [addedIcon, setAddedIcon] = useState([]);
-
-  const handleAddedIcon = (icon) => {
-    setAddedIcon(icon);
-  };
 
   const handleColorChange = (color) => {
     setArrowColor(color);
@@ -61,7 +55,6 @@ const EditImageTabList = ({
     if (overlayImageRef.current) {
       overlayImageRef.current.handleDownload();
     }
-    console.log("these is the icon conformations ", selectedPreviewIcon);
   };
 
   const handleDiscardChanges = () => {
@@ -178,7 +171,6 @@ const EditImageTabList = ({
     "Draw Oval",
     "Add Text",
     "Overlay Image",
-    "Add Icon",
   ];
 
   const tabContentComponents = {
@@ -226,8 +218,6 @@ const EditImageTabList = ({
         drawnOvals={drawnOvals}
         drawnRectangles={drawnRectangles}
         overLayImage={overLayImage}
-        iconAdded={selectedPreviewIcon}
-        onIConAdded={addedIcon}
         onOverlayChange={handleOverLayImage}
         onContrastChange={handleContrastChange}
       />
@@ -346,25 +336,6 @@ const EditImageTabList = ({
         drawnLines={drawnLines}
         drawnOvals={drawnOvals}
         drawnRectangles={drawnRectangles}
-        addedIcon={addedIcon}
-      />
-    ),
-    11: (
-      <AddICon
-        imageUrl={uploadedImageUrl}
-        croppedImageUrl={croppedImageUrl}
-        textsWithPositions={textsWithPositions}
-        brightness={brightness}
-        contrast={contrast}
-        drawnArrows={drawnArrows}
-        rotationAngle={rotationAngle}
-        drawnLines={drawnLines}
-        drawnOvals={drawnOvals}
-        drawnRectangles={drawnRectangles}
-        arrowColor={arrowColor}
-        iconAdded={selectedPreviewIcon}
-        addedIcon={addedIcon}
-        onIconChange={handleAddedIcon}
       />
     ),
   };
