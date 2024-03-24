@@ -16,6 +16,7 @@ import PropTypes from "prop-types";
 
 const Buttons = ({
   onFileSelect,
+  onSelectedImage,
   id,
   SetImageIndex,
   caption,
@@ -88,8 +89,11 @@ const Buttons = ({
 
     onFileSelect(null); // Notify parent component that no file is selected
     localStorage.removeItem("uploadedImage");
+    localStorage.removeItem("coverphotoImage");
+
     // Clear the download URL state
     onFileSelect(null);
+    onSelectedImage(null);
   };
 
   const handleImg8Click = () => {

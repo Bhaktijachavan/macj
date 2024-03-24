@@ -283,6 +283,7 @@ const Location = ({ imageUrl }) => {
               SetImageIndex={SetImageIndex}
               onFileSelect={handleFileSelect}
               onIconPreview={handleIconPreview}
+              onSelectedImage={setSelectedImage}
             />
           </div>
           {/* Display selected icon on top of the image */}
