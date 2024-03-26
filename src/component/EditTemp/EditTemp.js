@@ -628,6 +628,47 @@ const DynamicMenuComponent = ({ onClose }) => {
   const [selectedTabIndex, setSelectedTabIndex] = useState(null);
   const [pastSubDetails, setPastSubDetails] = useState(null);
 
+  const PanelData = (value) => {
+    const newValue = parseInt(value.Radiopanal);
+
+    switch (newValue) {
+      case 1:
+        return {
+          Damage1Data: value.Damage1Data,
+        };
+      case 2:
+        return {
+          Damage1Data: value.Damage1Data,
+          Damage2Data: value.Damage2Data,
+        };
+      case 3:
+        return {
+          Selection1Data: value.Selection1Data,
+        };
+      case 4:
+        return {
+          Selection1Data: value.Selection1Data,
+          Selection2Data: value.Selection2Data,
+        };
+      case 5:
+        return {
+          Damage1Data: value.Damage1Data,
+          Selection1Data: value.Selection1Data,
+        };
+      case 6:
+        return {
+          Damage1Data: value.Damage1Data,
+          Selection1Data: value.Selection1Data,
+          Selection2Data: value.Selection2Data,
+        };
+      default:
+        return {};
+    }
+  };
+
+  const [subCopy, setSubCopy] = useState("");
+  const [DataToStore, setDataToStore] = useState({});
+
   const handleTabClick = (index, value, radiovalue, sub, menuId) => {
     // Toggle selection: if the clicked tab is already selected, deselect it; otherwise, select it.
     setSelectedTabIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -645,18 +686,20 @@ const DynamicMenuComponent = ({ onClose }) => {
     ) {
       return;
     }
-
     const newValue = {
       [radiovalue]: {
         ...value,
       },
     };
+
+    setDataToStore((prevDataToStore) => getDataFromLocalStorage(value));
+
     const Subitems = {
       menuId: menuId,
       panelId: radiovalue,
       ...sub,
     };
-
+    setSubCopy(value);
     setSubDetails(newValue);
     setPastSubDetails(Subitems);
   };
@@ -808,6 +851,131 @@ const DynamicMenuComponent = ({ onClose }) => {
     setSelectedMoveSubmenu(null);
   };
 
+  const getDataFromLocalStorage = (value) => {
+    // Retrieve data from localStorage
+    let tempPanelData = localStorage.getItem("TempPanelData");
+
+    // Initialize variables
+    let Damage1Data = "";
+    let Damage2Data = "";
+    let Selection1Data = "";
+    let Selection2Data = "";
+
+    // Parse data if it exists
+    if (tempPanelData) {
+      tempPanelData = JSON.parse(tempPanelData);
+
+      // Extract data based on keys
+      const panelData = PanelData(value);
+      Damage1Data = tempPanelData.hasOwnProperty(panelData.Damage1Data)
+        ? tempPanelData[panelData.Damage1Data]
+        : "";
+      Damage2Data = tempPanelData.hasOwnProperty(panelData.Damage2Data)
+        ? tempPanelData[panelData.Damage2Data]
+        : "";
+      Selection1Data = tempPanelData.hasOwnProperty(panelData.Selection1Data)
+        ? tempPanelData[panelData.Selection1Data]
+        : "";
+      Selection2Data = tempPanelData.hasOwnProperty(panelData.Selection2Data)
+        ? tempPanelData[panelData.Selection2Data]
+        : "";
+    }
+
+    // Log the retrieved data
+    console.log("Damage1Data:", Damage1Data);
+    console.log("Damage2Data:", Damage2Data);
+    console.log("Selection1Data:", Selection1Data);
+    console.log("Selection2Data:", Selection2Data);
+
+    // Return the extracted data
+    return { Damage1Data, Damage2Data, Selection1Data, Selection2Data };
+  };
+
+  const handleCopy = () => {
+    console.log("selected sub menu ", selectedMoveSubmenu);
+    console.log("subdetails - ", subCopy);
+    console.log("menu", menuData);
+    console.log("pastMenu", pastSubDetails);
+    console.log("storedata", DataToStore);
+
+    const newSubdetails = {
+      [uniqueId]: {
+        Damage1Data: uniqueId + "_d1",
+        Damage2Data: uniqueId + "_d2",
+        Selection1Data: uniqueId + "_s1",
+        Selection2Data: uniqueId + "_s2",
+        Radiopanal: subCopy.Radiopanal,
+        damage1: subCopy.damage1,
+        damage2: subCopy.damage2,
+        selection1: subCopy.selection1,
+        selection2: subCopy.selection2,
+        tabname: subCopy.tabname,
+      },
+    };
+
+    // Update menuData state to include the new submenu details
+    setMenuData((prevMenuData) => {
+      const updatedMenuData = { ...prevMenuData };
+
+      // Check if the subdetails with the SI ID exist, if not create them
+      if (
+        !updatedMenuData[selectedMoveSubmenu.menuId].subdetails[
+          selectedMoveSubmenu.si
+        ]
+      ) {
+        updatedMenuData[selectedMoveSubmenu.menuId].subdetails[
+          selectedMoveSubmenu.si
+        ] = {};
+      }
+
+      // Add the new subdetails to the selected subitem
+      updatedMenuData[selectedMoveSubmenu.menuId].subdetails[
+        selectedMoveSubmenu.si
+      ] = {
+        ...updatedMenuData[selectedMoveSubmenu.menuId].subdetails[
+          selectedMoveSubmenu.si
+        ],
+        ...newSubdetails,
+      };
+
+      console.log(
+        "submenudata",
+        updatedMenuData[selectedMoveSubmenu.menuId].subdetails[
+          selectedMoveSubmenu.si
+        ][uniqueId]
+      );
+      const setStorage =
+        updatedMenuData[selectedMoveSubmenu.menuId].subdetails[
+          selectedMoveSubmenu.si
+        ][uniqueId];
+
+      let tempPanelData = localStorage.getItem("TempPanelData");
+      if (!tempPanelData) {
+        // If not, create an empty object
+        tempPanelData = {};
+      } else {
+        // If it exists, parse the JSON string to an object
+        tempPanelData = JSON.parse(tempPanelData);
+      }
+
+      tempPanelData[setStorage.Damage1Data] = DataToStore.Damage1Data;
+      tempPanelData[setStorage.Damage2Data] = DataToStore.Damage2Data;
+      tempPanelData[setStorage.Selection1Data] = DataToStore.Selection1Data;
+      tempPanelData[setStorage.Selection2Data] = DataToStore.Selection2Data;
+
+      localStorage.setItem("TempPanelData", JSON.stringify(tempPanelData));
+
+      return updatedMenuData;
+    });
+
+    setShowMovePopup(false);
+    // Clear selected tabname and target subname
+    setSelectedTabNameId(null);
+    setSelectedMoveSubmenu(null);
+
+    console.log("newsubmenu ", newSubdetails);
+  };
+
   useEffect(() => {
     // Extract all subitems from the menu data
     const allSubItems = Object.values(menuData).reduce((acc, menu) => {
@@ -830,6 +998,14 @@ const DynamicMenuComponent = ({ onClose }) => {
     }
     setShowMovePopup(true);
   };
+  const handleAction = (action) => {
+    if (action === "copy") {
+      handleCopy();
+    } else if (action === "move") {
+      handleMove();
+    }
+  };
+
   return (
     <div>
       {/* Popup Wrapper */}
@@ -934,7 +1110,8 @@ const DynamicMenuComponent = ({ onClose }) => {
                       ))}
                     </select>
                     <div style={{ textAlign: "right" }}>
-                      <button onClick={handleMove}>OK</button>
+                      <button onClick={() => handleAction("copy")}>Copy</button>
+                      <button onClick={() => handleAction("move")}>Move</button>
                       <button onClick={() => setShowMovePopup(false)}>
                         Cancel
                       </button>
@@ -1032,7 +1209,7 @@ ml-2"
                 <div>
                   <button onClick={handleMoveDown}>Move Down</button>
                 </div>
-                <button onClick={handleMoveClick}>Move</button>
+                <button onClick={handleMoveClick}>Copy / Move </button>
               </div>
             </div>
           </div>
