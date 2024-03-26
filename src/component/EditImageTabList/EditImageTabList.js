@@ -414,18 +414,23 @@ const EditImageTabList = ({
             </div>
             <div className="footer-for-Eidt-image-tabelist-btns">
               <div className="footer-for-Eidt-image-tabelist-btns-container">
-                <button
-                  className="footer-for-Eidt-image-tabelist-btns-save-and-discard"
-                  onClick={handleSaveChanges}
-                >
-                  Save Changes
-                </button>
-                <button
-                  className="footer-for-Eidt-image-tabelist-btns-save-and-discard"
-                  onClick={handleDiscardChanges}
-                >
-                  Discard Changes
-                </button>
+                {/* Conditionally render Save and Discard buttons only for Overlay Image tab */}
+                {activeTab === 10 && (
+                  <>
+                    <button
+                      className="footer-for-Eidt-image-tabelist-btns-save-and-discard"
+                      onClick={handleSaveChanges}
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      className="footer-for-Eidt-image-tabelist-btns-save-and-discard"
+                      onClick={handleDiscardChanges}
+                    >
+                      Discard Changes
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
