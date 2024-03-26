@@ -583,14 +583,14 @@ mt-2"
                 <li className=" hover:bg-gray-200">Add Review Photos</li>
               </Link>
               {/* <Link to="/batchaddphotos"> */}
-              <li
+              {/* <li
                 className=" hover:bg-gray-200"
                 onClick={setBatchAddPhotosPopup}
               >
                 Batch Add Photos
-              </li>
+              </li> */}
               {/* </Link> */}
-              <li className=" hover:bg-gray-200">Clear All Photos</li>
+              {/* <li className=" hover:bg-gray-200">Clear All Photos</li> */}
             </ul>
           )}
         </div>

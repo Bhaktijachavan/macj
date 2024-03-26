@@ -8,8 +8,12 @@ import React, {
 import "./OverLayImage.css";
 import Draggable from "react-draggable";
 import DynamicMenuComponent from "./../../EditTemp/EditTemp";
-import Icon1 from "../OverLayImage/edit_template.png";
-import Icon2 from "../OverLayImage/cutpasteicon.png";
+import Icon1 from "../OverLayImage/Acceptable 2.png";
+import Icon2 from "../OverLayImage/Acceptable.png";
+import Icon3 from "../OverLayImage/Monitor.png";
+import Icon4 from "../OverLayImage/Not Accessible 1.png";
+import Icon5 from "../OverLayImage/Repair Replace.png";
+import Icon6 from "../OverLayImage/Safety 1.png";
 
 const OverLayImage = forwardRef(
   (
@@ -655,29 +659,35 @@ const OverLayImage = forwardRef(
                 onClick={() => handleUploadToImage(Icon2)}
               />
               <img
-                src={Icon1}
+                src={Icon3}
                 alt="Icon3"
                 title="click to Add"
                 className="border border-slate-400 hover:border-hidden h-[3em]"
-                onClick={() => handleUploadToImage(Icon1)}
+                onClick={() => handleUploadToImage(Icon3)}
               />
               <img
-                src={Icon2}
+                src={Icon4}
                 alt="Icon4"
                 title="click to Add"
                 className="border border-slate-400 hover:border-hidden h-[3em]"
-                onClick={() => handleUploadToImage(Icon2)}
+                onClick={() => handleUploadToImage(Icon4)}
+              />
+              <img
+                src={Icon5}
+                alt="Icon4"
+                title="click to Add"
+                className="border border-slate-400 hover:border-hidden h-[3em]"
+                onClick={() => handleUploadToImage(Icon5)}
+              />
+              <img
+                src={Icon6}
+                alt="Icon4"
+                title="click to Add"
+                className="border border-slate-400 hover:border-hidden h-[3em]"
+                onClick={() => handleUploadToImage(Icon6)}
               />
             </div>
           </fieldset>
-          {/* <div className="ml-[3em]">
-            <button className="Buttons-undo-redo-yytytyt" onClick={handleUndo}>
-              Undo
-            </button>
-            <button className="Buttons-undo-redo-yytytyt" onClick={handleRedo}>
-              Redo
-            </button>
-          </div> */}
         </div>
 
         <input
