@@ -56,6 +56,16 @@ const EditImageTabList = ({
       overlayImageRef.current.handleDownload();
     }
   };
+  // const handleSaveChanges = () => {
+  //   console.log("Changes:", {
+  //     textsWithPositions,
+
+  //     drawnArrows,
+  //     drawnLines,
+  //     drawnOvals,
+  //     drawnRectangles,
+  //   });
+  // };
 
   const handleDiscardChanges = () => {
     // Remove the image from local storage

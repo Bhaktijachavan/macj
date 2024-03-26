@@ -20,6 +20,7 @@ const Location = ({ imageUrl }) => {
   const [imageIndex, SetImageIndex] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [caption, setCaption] = useState("");
+  const [imageURL, setImageURL] = useState(null);
 
   useEffect(() => {
     if (imageUrl != null) {
@@ -77,6 +78,19 @@ const Location = ({ imageUrl }) => {
       setSubmenuDetails(null);
     }
   }, [selectedSubmenuId, menuData, selectedMenuId]);
+  useEffect(() => {
+    if ((selectedIcon && selectedImage) || (selectedIcon && uploadedFile)) {
+      const imageUrl = selectedImage
+        ? selectedImage.url
+        : typeof uploadedFile === "string"
+        ? uploadedFile
+        : URL.createObjectURL(uploadedFile);
+      setImageURL(imageUrl);
+      console.log("Generated URL:", imageUrl); // Console log the URL
+    } else {
+      setImageURL(null);
+    }
+  }, [selectedIcon, selectedImage, uploadedFile]);
 
   const handleMenuChange = (e) => {
     const selectedId = e.target.value;

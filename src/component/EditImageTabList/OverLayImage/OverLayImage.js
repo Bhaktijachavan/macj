@@ -165,30 +165,97 @@ const OverLayImage = forwardRef(
             const overlayY = position.y; // Use position.y from state
             offScreenContext.drawImage(overlayImg, overlayX, overlayY);
 
-            if (selectedIcons) {
-              const Icon = new Image();
-              Icon.src = selectedIcons;
-              Icon.onload = () => {
-                const IconX = 0; // Use position.x from state
-                const IconY = 0; // Use position.y from state
-                offScreenContext.drawImage(Icon, IconX, IconY);
-              };
-            }
-
-            drawOverlayElements(offScreenContext, scaleFactor);
-            const combinedImageUrl = offScreenCanvas.toDataURL("image/jpeg");
-            console.log("Combined Image URL:", combinedImageUrl);
-            if (onDownloadUrlChange) {
-              onDownloadUrlChange(combinedImageUrl);
+            // Draw selected icons
+            if (selectedIcons.length > 0) {
+              drawSelectedIcons(offScreenContext).then(() => {
+                drawOverlayElements(offScreenContext, scaleFactor);
+                const combinedImageUrl =
+                  offScreenCanvas.toDataURL("image/jpeg");
+                console.log("Combined Image URL:", combinedImageUrl);
+                if (onDownloadUrlChange) {
+                  onDownloadUrlChange(combinedImageUrl);
+                }
+              });
+            } else {
+              drawOverlayElements(offScreenContext, scaleFactor);
+              const combinedImageUrl = offScreenCanvas.toDataURL("image/jpeg");
+              console.log("Combined Image URL:", combinedImageUrl);
+              if (onDownloadUrlChange) {
+                onDownloadUrlChange(combinedImageUrl);
+              }
             }
           };
         } else {
-          drawOverlayElements(offScreenContext, scaleFactor);
-          const imageUrl = offScreenCanvas.toDataURL("image/jpeg");
-          console.log("Original Image URL:", imageUrl);
-          if (onDownloadUrlChange) {
-            onDownloadUrlChange(imageUrl);
+          // Draw selected icons
+          if (selectedIcons.length > 0) {
+            drawSelectedIcons(offScreenContext).then(() => {
+              drawOverlayElements(offScreenContext, scaleFactor);
+              const imageUrl = offScreenCanvas.toDataURL("image/jpeg");
+              console.log("Original Image URL:", imageUrl);
+              if (onDownloadUrlChange) {
+                onDownloadUrlChange(imageUrl);
+              }
+            });
+          } else {
+            drawOverlayElements(offScreenContext, scaleFactor);
+            const imageUrl = offScreenCanvas.toDataURL("image/jpeg");
+            console.log("Original Image URL:", imageUrl);
+            if (onDownloadUrlChange) {
+              onDownloadUrlChange(imageUrl);
+            }
           }
+        }
+
+        function drawSelectedIcons(context) {
+          return new Promise((resolve, reject) => {
+            let loadedIconsCount = 0;
+            const totalIcons = selectedIcons.length;
+
+            selectedIcons.forEach((icon, index) => {
+              const iconImage = new Image();
+              iconImage.src = icon;
+              iconImage.onload = () => {
+                // Adjust position as needed
+                const iconX = 10 + index * 50; // Example positioning
+                const iconY = 10;
+                context.drawImage(iconImage, iconX, iconY);
+
+                loadedIconsCount++;
+                if (loadedIconsCount === totalIcons) {
+                  resolve();
+                }
+              };
+              iconImage.onerror = (error) => {
+                reject(error);
+              };
+            });
+          });
+        }
+
+        function drawSelectedIcons(context) {
+          return new Promise((resolve, reject) => {
+            let loadedIconsCount = 0;
+            const totalIcons = selectedIcons.length;
+
+            selectedIcons.forEach((icon, index) => {
+              const iconImage = new Image();
+              iconImage.src = icon;
+              iconImage.onload = () => {
+                // Adjust position as needed
+                const iconX = 10 + index * 50; // Example positioning
+                const iconY = 10;
+                context.drawImage(iconImage, iconX, iconY);
+
+                loadedIconsCount++;
+                if (loadedIconsCount === totalIcons) {
+                  resolve();
+                }
+              };
+              iconImage.onerror = (error) => {
+                reject(error);
+              };
+            });
+          });
         }
       };
     };
@@ -569,10 +636,10 @@ const OverLayImage = forwardRef(
             </div>
           )}
         </div>
-        <div className="grid place-content-center gap-2">
+        <div className="grid place-content-center gap-2 ml-[3em]">
           <fieldset className=" border border-black items-center content-center justify-center flex">
             <legend className="ml-4 text-[18px]">Add Icons</legend>
-            <div className="flex items-center m-1  w-[full] h-[full] gap-x-5">
+            <div className="flex items-center m-1  w-[full] h-[full] gap-x-5 ">
               <img
                 src={Icon1}
                 alt="Icon1"
@@ -603,14 +670,14 @@ const OverLayImage = forwardRef(
               />
             </div>
           </fieldset>
-          <div className="ml-[3em]">
+          {/* <div className="ml-[3em]">
             <button className="Buttons-undo-redo-yytytyt" onClick={handleUndo}>
               Undo
             </button>
             <button className="Buttons-undo-redo-yytytyt" onClick={handleRedo}>
               Redo
             </button>
-          </div>
+          </div> */}
         </div>
 
         <input

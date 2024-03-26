@@ -260,7 +260,7 @@ const Buttons = ({
           {/* <label>Caption</label> */}
         </div>
 
-        <div className="Buttons-main-container-for-icons-buttons ">
+        <div className="Buttons-main-container-for-icons-buttons hidden ">
           <ul className="Buttons-unoorderlist-for-icons-buttons">
             {/* ... other list items */}
             <li>
