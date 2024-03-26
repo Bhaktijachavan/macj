@@ -19,34 +19,6 @@ import html2pdf from "html2pdf.js";
 import html2canvas from "html2canvas";
 import "./CoverPageDesigner.css";
 
-// const exportState = () => {
-//   // Get the output container element
-//   const outputContainer = document.querySelector(
-//     ".content-that-is-draggable-and-adjustable-within-div"
-//   );
-
-//   // Use html2canvas to convert the HTML content to a canvas
-//   html2canvas(outputContainer).then((canvas) => {
-//     // Create a new jsPDF instance
-//     const pdf = new jsPDF("p", "mm", "a4");
-
-//     // Calculate the height of the content on the canvas
-//     const contentHeight = (canvas.height * 210) / canvas.width;
-
-//     // Add the canvas to the PDF document
-//     pdf.addImage(
-//       canvas.toDataURL("image/png"),
-//       "PNG",
-//       0,
-//       0,
-//       210,
-//       contentHeight
-//     );
-
-//     // Save the PDF file
-//     pdf.save("cover_page_layout.pdf");
-//   });
-// };
 function CoverPageDesigner({ onClose }) {
   const fileInputRef = useRef(null);
   const [selectedObjects, setSelectedObjects] = useState([]);
@@ -84,18 +56,6 @@ function CoverPageDesigner({ onClose }) {
     }
   }, []);
 
-  // Export state function
-  // const exportState = () => {
-  //   const exportedState = {
-  //     outputContent,
-  //     selectedObjects,
-  //     editableTexts,
-  //     addedImages,
-  //   };
-  //   const jsonString = JSON.stringify(exportedState);
-  //   console.log(jsonString);
-  // };
-  // Export state function
   const exportState = () => {
     // Get the HTML content of your output container
     const outputContainer = document.querySelector(
@@ -371,7 +331,25 @@ function CoverPageDesigner({ onClose }) {
     setSelectedObjects([]);
     setSelectedCheckboxContents([]);
   };
+  const handleDiscardChanges = () => {
+    // Reset all the states that hold the changes made by the user
+    setEditableTexts([]); // Reset editable text elements
+    setAddedImages([]); // Reset added images
+    setSelectedObjects([]); // Reset selected objects
+    setSelectedCheckboxContents([]); // Reset selected checkbox contents
 
+    // Reset any other states that hold changes if needed
+
+    // Optionally, you can also reset the checkbox states to their initial values
+    setCheckedCheckboxes([
+      "Inspection Details",
+      "Cover Photo",
+      "Company Information",
+      "Agent Information",
+      "Company Logo",
+      "Page Borders",
+    ]);
+  };
   return (
     <>
       <div className="cover-page-container-popup-contains-all-the-info-abt-cover-page">
@@ -434,16 +412,6 @@ function CoverPageDesigner({ onClose }) {
                         />
                         Company Information
                       </label>
-                      {/* <label className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={isCompanyLogoChecked}
-                          onChange={(e) =>
-                            handleCheckboxChange(e, "Company Logo")
-                          }
-                        />
-                        Company Logo
-                      </label> */}
                       <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
@@ -517,11 +485,6 @@ function CoverPageDesigner({ onClose }) {
                           onChange={(e) =>
                             handleCheckboxChange(e, "Agent Photo")
                           }
-                          // checked={checkedCheckboxes.includes("Agent Photo")}
-                          // onChange={(e) =>
-                          //   handleCheckboxChange(e, "Agent Photo")
-                          // }
-                          // disabled={isAgentPhotoUploaded} // Disable the checkbox if an image is already uploaded
                         />
                         Agent Photo
                       </label>
@@ -681,7 +644,7 @@ function CoverPageDesigner({ onClose }) {
                     </button>{" "}
                     <button
                       className="button-for-footer-for-changes-in-cover-page"
-                      onClick={() => setAddedImages([])}
+                      onClick={() => handleDiscardChanges()}
                     >
                       Discard <br /> Changes
                     </button>
@@ -761,34 +724,6 @@ function CoverPageDesigner({ onClose }) {
               </div>
             </div>
           </div>
-          {/* <div className="contains-bottom-section-with-buttons-design-cover-page">
-            <div className="buttons-with-apply-export-import-discard-changes-apply">
-              <button
-                onClick={exportStateSave}
-                className="button-for-footer-for-changes-in-cover-page"
-              >
-                Apply Changes <br /> to Template Template
-              </button>{" "}
-              <button
-                onClick={exportState}
-                className="button-for-footer-for-changes-in-cover-page"
-              >
-                Export Layout to a <br /> File for Future Use
-              </button>
-              <button
-                onClick={() => fileInputRef.current.click()}
-                className="button-for-footer-for-changes-in-cover-page"
-              >
-                Import Layout <br /> from File
-              </button>{" "}
-              <button
-                className="button-for-footer-for-changes-in-cover-page"
-                onClick={() => setAddedImages([])}
-              >
-                Discard <br /> Changes
-              </button>
-            </div>
-          </div> */}
         </div>
       </div>
     </>
