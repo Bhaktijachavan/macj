@@ -326,7 +326,7 @@ function CompanyInfo({ id }) {
             {renderInputField("Inspection Fee", "inspectionFee")}
             {renderInputField("Weather", "weather")}
             {renderInputField("Other Info", "otherInfo")}{" "}
-            {renderInputField("Inspection Address", "inspectionAddress")}
+            {renderInputField("Date Of Inspection", "dateOfInspection")}
             {renderInputField("Address Line-2", "addressLine2")}
           </section>
           <section className="other-client-info-for-cover-page-genearate-report">
@@ -335,7 +335,7 @@ function CompanyInfo({ id }) {
             {renderInputField("City", "city")}
             {renderInputField("State", "state")}
             {renderInputField("Zipcode", "zipCode")}
-            {renderInputField("Date Of Inspection", "dateOfInspection")}
+            {renderInputField("Inspection Address", "inspectionAddress")}
           </section>
         </div>
       </section>
