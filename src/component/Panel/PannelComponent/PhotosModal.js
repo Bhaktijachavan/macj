@@ -30,6 +30,7 @@ const PhotosModal = ({ onClose, imageId }) => {
           // Update imagesArray state after removal
           setImagesArray(parsedImageData[imageId]);
           // Reset selectedImageIndex state after removal
+          alert("Are you sure you want to remove these Image ?");
           setSelectedImageIndex(null);
         }
       }
