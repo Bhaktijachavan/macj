@@ -22,6 +22,7 @@ const Buttons = ({
   caption,
   url,
   onIconPreview,
+  onDeleteBulk,
 }) => {
   // tablistconst [isPopupOpen, setIsPopupOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
@@ -88,12 +89,13 @@ const Buttons = ({
     uploadedFileRef.current = null;
 
     onFileSelect(null); // Notify parent component that no file is selected
-    localStorage.removeItem("uploadedImage");
-    localStorage.removeItem("coverphotoImage");
+    // localStorage.removeItem("uploadedImage");
+    // localStorage.removeItem("coverphotoImage");
 
     // Clear the download URL state
     onFileSelect(null);
     onSelectedImage(null);
+    onDeleteBulk(null);
   };
 
   const handleImg8Click = () => {

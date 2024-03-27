@@ -24,9 +24,15 @@ const Location = ({ imageUrl }) => {
 
   useEffect(() => {
     if (imageUrl != null) {
+      console.log(imageUrl);
       return setUploadedFile(imageUrl);
     }
-  }, [uploadedFile]);
+  }, []);
+
+  const handleImageSet = () => {
+    // uploadedFile(null);
+    setUploadedFile(null);
+  };
 
   useEffect(() => {
     console.log("image index", imageIndex);
@@ -78,19 +84,19 @@ const Location = ({ imageUrl }) => {
       setSubmenuDetails(null);
     }
   }, [selectedSubmenuId, menuData, selectedMenuId]);
-  useEffect(() => {
-    if ((selectedIcon && selectedImage) || (selectedIcon && uploadedFile)) {
-      const imageUrl = selectedImage
-        ? selectedImage.url
-        : typeof uploadedFile === "string"
-        ? uploadedFile
-        : URL.createObjectURL(uploadedFile);
-      setImageURL(imageUrl);
-      console.log("Generated URL:", imageUrl); // Console log the URL
-    } else {
-      setImageURL(null);
-    }
-  }, [selectedIcon, selectedImage, uploadedFile]);
+  // useEffect(() => {
+  //   if ((selectedIcon && selectedImage) || (selectedIcon && uploadedFile)) {
+  //     const imageUrl = selectedImage
+  //       ? selectedImage.url
+  //       : typeof uploadedFile === "string"
+  //       ? uploadedFile
+  //       : URL.createObjectURL(uploadedFile);
+  //     setImageURL(imageUrl);
+  //     console.log("Generated URL:", imageUrl); // Console log the URL
+  //   } else {
+  //     setImageURL(null);
+  //   }
+  // }, [selectedIcon, selectedImage, uploadedFile]);
 
   const handleMenuChange = (e) => {
     const selectedId = e.target.value;
@@ -298,8 +304,12 @@ const Location = ({ imageUrl }) => {
               onFileSelect={handleFileSelect}
               onIconPreview={handleIconPreview}
               onSelectedImage={setSelectedImage}
+              onDeleteBulk={setUploadedFile}
             />
           </div>
+          <button onClick={handleImageSet} title="Navigate to Panel">
+            Delete
+          </button>
           {/* Display selected icon on top of the image */}
         </div>
         <Caption

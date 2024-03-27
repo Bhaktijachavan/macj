@@ -75,7 +75,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #d3d3d3;
+  /* background-color: #d3d3d3; */
   /* padding-left: 18px; */
   /* padding-right: 25px; */
   /* padding-top: 10px; */
@@ -83,7 +83,7 @@
   /* width: 1000px; */
   /* height: 81%; */
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
   z-index: 1;
 }
 .Add-Icons-popup-main-container {

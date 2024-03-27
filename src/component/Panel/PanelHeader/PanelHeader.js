@@ -8,6 +8,7 @@ import { useEditTempContext } from "../../../Context";
 
 const PanelHeader = () => {
   const location = useLocation();
+  const [activePanel, setActivePanel] = useState(null);
   const state = location.state;
   console.log("headerdata", state);
 
@@ -17,6 +18,7 @@ const PanelHeader = () => {
   const handleButtonClick = (panelNumber, panelData) => {
     const panelComponent = PanalSelect(panelNumber, panelData);
     setSelectedPanel(panelComponent);
+    setActivePanel(panelNumber);
   };
 
   return (
@@ -26,7 +28,10 @@ const PanelHeader = () => {
         <div className="panelheader flex border-b  border-black">
           <div>
             <div>
-              <ul style={{ display: "flex", listStyle: "none", padding: 0 }}>
+              <ul
+                style={{ display: "flex", listStyle: "none", padding: 0 }}
+                className="gap-2"
+              >
                 {state &&
                   Object.keys(state).map((key) => {
                     const panelData = state[key];
@@ -34,13 +39,19 @@ const PanelHeader = () => {
                     const panelNumber = parseInt(panelData?.Radiopanal);
                     console.log("panelNumber", panelNumber);
                     return (
-                      <li key={key} style={{ marginRight: "10px" }}>
+                      <li key={key}>
                         <button
                           onClick={() =>
                             handleButtonClick(panelNumber, panelData)
                           }
+                          className={
+                            "border-r-2 border-black  " +
+                            (panelNumber === activePanel
+                              ? " bg-gray-300 text-black"
+                              : "")
+                          }
                         >
-                          {panelData.tabname} |
+                          {panelData.tabname}
                         </button>
                       </li>
                     );

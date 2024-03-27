@@ -331,6 +331,14 @@ function CoverPageDesigner({ onClose }) {
     setSelectedObjects([]);
     setSelectedCheckboxContents([]);
   };
+  const handleRemovePhoto = () => {
+    const coverphoto = localStorage.removeItem("uploadedImage");
+    if (coverphoto === null) {
+      alert("Do you Really want to remove Cover photo ?");
+    } else {
+      alert("No Cover photo to remove");
+    }
+  };
   const handleDiscardChanges = () => {
     // Reset all the states that hold the changes made by the user
     setEditableTexts([]); // Reset editable text elements
@@ -624,6 +632,12 @@ function CoverPageDesigner({ onClose }) {
                 </legend>
                 <div className="contains-bottom-section-with-buttons-design-cover-page">
                   <div className="buttons-with-apply-export-import-discard-changes-apply">
+                    <button
+                      className="button-for-footer-for-changes-in-cover-page"
+                      onClick={handleRemovePhoto}
+                    >
+                      Remove Cover Photo
+                    </button>
                     <button
                       onClick={exportStateSave}
                       className="button-for-footer-for-changes-in-cover-page"
