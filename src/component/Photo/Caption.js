@@ -10,7 +10,7 @@ const Caption = ({ setCap, caption, id, index }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
-    setCap(captionValue);
+    setCaptionValue(captionValue);
   }, [captionValue]);
 
   const handlePopupOpen = () => {

@@ -239,21 +239,36 @@ const ColorPalette = ({ onClose }) => {
           pdf.text("Summary", 10, 10);
 
           // Fetch the savedSummaryData from localStorage
-          const savedSummaryData = localStorage.getItem("savedSummaryData");
+          const savedSummaryData = localStorage.getItem("menuData");
           console.log("savedSummaryData", savedSummaryData);
-          // Parse the JSON data
-          const parsedSummaryData = JSON.parse(savedSummaryData);
 
-          // Get the textareaValue from the parsed data
-          const textareaValue = parsedSummaryData?.textareaValue || "";
+          if (savedSummaryData) {
+            try {
+              // Parse the JSON data
+              const parsedMenuData = JSON.parse(savedSummaryData);
 
-          // Add summary to the PDF
-          pdf.text("Summary", 10, 10);
-          pdf.text(textareaValue, 10, 30); // Add summary data
-          // Add summary table
-          addSummaryTable(pdf, JSON.parse(menuData));
+              // Access the SummaryData property
+              const summaryData = parsedMenuData["1"]?.SummaryData;
+              console.log("SummaryData:", summaryData);
+              // Access the textareaValue from SummaryData
+              const textareaValue = summaryData
+                ? Object.values(summaryData)[0]?.textareaValue || ""
+                : "";
+              console.log("textarea:", textareaValue);
 
-          // pdf.save("cover_page_layout.pdf");
+              // Add summary to the PDF
+              pdf.text("Summary", 10, 10);
+              pdf.text(textareaValue, 10, 30); // Add summary data
+
+              // Add summary table
+              addSummaryTable(pdf, parsedMenuData);
+
+              // pdf.save("cover_page_layout.pdf");
+            } catch (error) {
+              console.error("Error parsing JSON:", error);
+            }
+            // pdf.save("cover_page_layout.pdf");
+          }
         });
     } else {
       // Handle case where content or menuData is not found in localStorage
@@ -302,7 +317,7 @@ const ColorPalette = ({ onClose }) => {
       SelectionData: JSON.parse(localStorage.getItem("SelectionData")),
       TempPanelData: JSON.parse(localStorage.getItem("TempPanelData")),
       ratingsData: JSON.parse(localStorage.getItem("ratingsData")),
-      savedSummaryData: JSON.parse(localStorage.getItem("savedSummaryData")),
+      // savedSummaryData: JSON.parse(localStorage.getItem("menuData")),
     };
 
     Object.values(menuNames).forEach((item, index) => {

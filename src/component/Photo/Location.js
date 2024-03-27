@@ -24,7 +24,7 @@ const Location = ({ imageUrl }) => {
 
   useEffect(() => {
     if (imageUrl != null) {
-      // console.log(imageUrl);
+      console.log(imageUrl);
       return setUploadedFile(imageUrl);
     }
   }, []);
@@ -35,15 +35,15 @@ const Location = ({ imageUrl }) => {
   };
 
   useEffect(() => {
-    // console.log("image index", imageIndex);
+    console.log("image index", imageIndex);
     // Retrieve image data from local storage based on the imageIndex
     const imageData = localStorage.getItem("coverphotoImage");
     if (imageData) {
       const parsedImageData = JSON.parse(imageData);
       const imagesArray = parsedImageData[panelId] || [];
-      // console.log("imagesArray", imagesArray);
+      console.log("imagesArray", imagesArray);
       const selectedImage = imagesArray[imageIndex];
-      // console.log("selectedImage", selectedImage);
+      console.log("selectedImage", selectedImage);
       if (selectedImage) {
         // Set the selected image to state
         setSelectedImage(selectedImage);
@@ -307,9 +307,9 @@ const Location = ({ imageUrl }) => {
               onDeleteBulk={setUploadedFile}
             />
           </div>
-          <button onClick={handleImageSet} title="Navigate to Panel">
+          {/* <button onClick={handleImageSet} title="Navigate to Panel">
             Delete
-          </button>
+          </button> */}
           {/* Display selected icon on top of the image */}
         </div>
         <Caption
