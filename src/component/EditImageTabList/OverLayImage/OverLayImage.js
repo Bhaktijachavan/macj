@@ -175,7 +175,7 @@ const OverLayImage = forwardRef(
                 drawOverlayElements(offScreenContext, scaleFactor);
                 const combinedImageUrl =
                   offScreenCanvas.toDataURL("image/jpeg");
-                console.log("Combined Image URL:", combinedImageUrl);
+                // console.log("Combined Image URL:", combinedImageUrl);
                 if (onDownloadUrlChange) {
                   onDownloadUrlChange(combinedImageUrl);
                 }
@@ -183,7 +183,7 @@ const OverLayImage = forwardRef(
             } else {
               drawOverlayElements(offScreenContext, scaleFactor);
               const combinedImageUrl = offScreenCanvas.toDataURL("image/jpeg");
-              console.log("Combined Image URL:", combinedImageUrl);
+              // console.log("Combined Image URL:", combinedImageUrl);
               if (onDownloadUrlChange) {
                 onDownloadUrlChange(combinedImageUrl);
               }
@@ -195,7 +195,7 @@ const OverLayImage = forwardRef(
             drawSelectedIcons(offScreenContext).then(() => {
               drawOverlayElements(offScreenContext, scaleFactor);
               const imageUrl = offScreenCanvas.toDataURL("image/jpeg");
-              console.log("Original Image URL:", imageUrl);
+              // console.log("Original Image URL:", imageUrl);
               if (onDownloadUrlChange) {
                 onDownloadUrlChange(imageUrl);
               }
@@ -203,7 +203,7 @@ const OverLayImage = forwardRef(
           } else {
             drawOverlayElements(offScreenContext, scaleFactor);
             const imageUrl = offScreenCanvas.toDataURL("image/jpeg");
-            console.log("Original Image URL:", imageUrl);
+            // console.log("Original Image URL:", imageUrl);
             if (onDownloadUrlChange) {
               onDownloadUrlChange(imageUrl);
             }

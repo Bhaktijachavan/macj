@@ -11,7 +11,7 @@ import DrawArrowContent from "./DrawArrowContent/DrawArrowContent";
 import DrawRectangleContent from "./DrawRectangleContent/DrawRectangleContent";
 import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
 import OverLayImage from "./OverLayImage/OverLayImage";
-import AddICon from "./AddIcon/AddICon";
+
 
 const EditImageTabList = ({
   isOpen,
@@ -46,7 +46,7 @@ const EditImageTabList = ({
     setArrowColor(color);
   };
 
-  console.log("edit image id ", id);
+  // console.log("edit image id ", id);
 
   const handleSaveChanges = () => {
     // Call the handleDownload function in OverLayImage component
@@ -109,7 +109,7 @@ const EditImageTabList = ({
       localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
       alert("Image data saved successfully.");
     } catch (error) {
-      console.error("Error saving image data:", error);
+      // console.error("Error saving image data:", error);
     }
   };
 

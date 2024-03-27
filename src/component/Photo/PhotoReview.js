@@ -9,7 +9,7 @@ const PhotoReview = ({ images }) => {
   );
 
   useEffect(() => {
-    console.log("images ", images);
+    // console.log("images ", images);
   });
 
   return (

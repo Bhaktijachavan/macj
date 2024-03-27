@@ -129,8 +129,8 @@ const DrawRectangleContent = ({
       });
 
       // Get URL of the canvas content
-      const canvasUrl = rectangleCanvas.toDataURL("image/jpeg");
-      console.log("Canvas URL:", canvasUrl);
+      // const canvasUrl = rectangleCanvas.toDataURL("image/jpeg");
+      // console.log("Canvas URL:", canvasUrl);
     };
   }, [imageSrc, rectangles, lineWidth, brightness, contrast]);
 
