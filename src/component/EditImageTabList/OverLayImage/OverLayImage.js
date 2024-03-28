@@ -39,6 +39,7 @@ const OverLayImage = forwardRef(
     const [overLay, setOverLay] = useState();
     const [uploadedPhoto, setUploadedPhoto] = useState(null);
     const fileInputRef = useRef(null);
+    const IconInputRef = useRef(null);
     const [rotationAngles, setRotationAngle] = useState(0);
     const [imageSrc, setImageSrc] = useState("");
     const [isOkClicked, setIsOkClicked] = useState(false);
@@ -112,6 +113,26 @@ const OverLayImage = forwardRef(
         };
         reader.readAsDataURL(file);
       }
+    };
+
+    const handleIconUpload = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const uploadedIcon = e.target.result;
+          setSelectedIcons([...selectedIcons, uploadedIcon]);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    const handleUploadButtonClick = () => {
+      IconInputRef.current.click();
+    };
+
+    const handleRemoveIconButtonClick = () => {
+      setSelectedIcons([]);
     };
 
     const handleRotateClockwise = () => {
@@ -420,6 +441,14 @@ const OverLayImage = forwardRef(
     return (
       <>
         <div className="Overlay-Image-container-to-overlay-image-super-container">
+          <input
+            type="file"
+            accept="image/*"
+            ref={IconInputRef}
+            style={{ display: "none" }}
+            onChange={handleIconUpload}
+          />
+
           <div
             className="Overlay-Image-container-to-overlay-image-container"
             style={{
@@ -686,6 +715,29 @@ const OverLayImage = forwardRef(
                 className="border border-slate-400 hover:border-hidden h-[3em]"
                 onClick={() => handleUploadToImage(Icon6)}
               />
+              <div className="flex items-center justify-center border border-black h-[3em] p-[12px] gap-8">
+                {selectedIcons.length === 0 ? (
+                  <button
+                    onClick={handleUploadButtonClick}
+                    className="text-white bg-blue-500 border border-blue-500 hover:bg-blue-700 hover:border-blue-700 focus:ring-2 focus:ring-blue-500 active:bg-blue-700 active:border-blue-700 active:shadow-inner disabled:opacity-50 disabled:cursor-not-allowed  px-2 py-2 rounded-md"
+                  >
+                    Upload Icon
+                  </button>
+                ) : (
+                  <img
+                    src={selectedIcons}
+                    alt="Upload Icon"
+                    title="click to Add"
+                    className="border border-slate-400 hover:border-hidden h-[3em]"
+                  />
+                )}
+                <button
+                  onClick={handleRemoveIconButtonClick}
+                  className="text-white bg-blue-500 border border-blue-500 hover:bg-blue-700 hover:border-blue-700 focus:ring-2 focus:ring-blue-500 active:bg-blue-700 active:border-blue-700 active:shadow-inner disabled:opacity-50 disabled:cursor-not-allowed  px-2 py-2 rounded-md"
+                >
+                  Delete Icon
+                </button>
+              </div>
             </div>
           </fieldset>
         </div>
