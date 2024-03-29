@@ -1,10 +1,10 @@
 .content-for-the-company-info {
-  font-size: 14px;
-  letter-spacing: 0.1px;
+  font-size: 15px;
+  /* letter-spacing: -0.7px; */
   /* margin-top: 1em; */
   width: 100%;
   text-align: center;
-  /* padding-bottom: 12em; */
+  padding-left: 6em;
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -65,9 +65,42 @@
   height: 2em;
   width: 6em;
 }
+.only-for-addressLine2-input > input {
+  height: 2em;
+  width: 15em;
+}
+.only-for-otherInfo-input > input {
+  height: 2em;
+  width: 15em;
+}
+.only-for-inspectionAddress-input > input {
+  height: 2em;
+  width: 15em;
+}
+.only-for-otherInfo-input {
+  display: flex;
+  /* justify-content: center; */
+  gap: 1em;
+  align-items: center;
+}
+.only-for-addressLine2-input {
+  display: flex;
+  /* justify-content: center; */
+  gap: 1em;
+  align-items: center;
+}
+.only-for-inspectionAddress-input {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
+  align-items: center;
+}
 .other-client-info-flex-direction {
   display: flex;
   justify-content: center;
+}
+.otherInfo-input-for-cover-page {
+  width: 15em;
 }
 .first-name-and-last-name-inputs {
   justify-content: right;

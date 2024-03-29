@@ -290,14 +290,13 @@ function CompanyInfo({ id }) {
       <section className="content-for-the-company-info">
         <section className="fname-and-lname-content-for-the-company-info">
           <div className="first-name-and-last-name-inputs">
-            {" "}
             <label htmlFor="">First Name:</label>
             <input
               type="text"
               value={editableText.firstName}
               onChange={(e) => handleInputChange("firstName", e.target.value)}
               className="name-input-for-first-name-cover-page"
-            />{" "}
+            />
             <label htmlFor="">Last Name:</label>
             <input
               type="text"
@@ -307,10 +306,9 @@ function CompanyInfo({ id }) {
             />
           </div>
           <section className="only-for-email-input">
-            {" "}
             <label htmlFor="">Email:</label>
             <input
-              type="text"
+              type="email"
               value={editableText.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
               className="email-input-for-cover-page"
@@ -320,22 +318,53 @@ function CompanyInfo({ id }) {
         <div className="other-client-info-flex-direction">
           <section className="email-and-mob-number-section-for-company-info">
             {/* {renderInputField("Email", "email")} */}
+            {renderInputField("Phone", "phone")}
             {renderInputField("Time Of Inspection", "timeOfInspection")}
             {renderInputField("Age Of Home", "ageOfHome")}
             {renderInputField("Size", "size")}
             {renderInputField("Inspection Fee", "inspectionFee")}
             {renderInputField("Weather", "weather")}
-            {renderInputField("Other Info", "otherInfo")}{" "}
             {renderInputField("Date Of Inspection", "dateOfInspection")}
-            {renderInputField("Address Line-2", "addressLine2")}
           </section>
           <section className="other-client-info-for-cover-page-genearate-report">
-            {renderInputField("Phone", "phone")}{" "}
             {renderInputField("Fax", "fax")}
             {renderInputField("City", "city")}
             {renderInputField("State", "state")}
             {renderInputField("Zipcode", "zipCode")}
-            {renderInputField("Inspection Address", "inspectionAddress")}
+            {/* {renderInputField("Inspection Address", "inspectionAddress")} */}
+            {/* {renderInputField("Address Line-2", "addressLine2")} */}
+            {/* {renderInputField("Other Info", "otherInfo")} */}
+            <section className="only-for-addressLine2-input">
+              <label htmlFor="">Address Line 2:</label>
+              <input
+                type="text"
+                value={editableText.addressLine2}
+                onChange={(e) =>
+                  handleInputChange("addressLine2", e.target.value)
+                }
+                className="addressLine2-input-for-cover-page"
+              />
+            </section>
+            <section className="only-for-otherInfo-input">
+              <label htmlFor="">Other Info:</label>
+              <input
+                type="text"
+                value={editableText.otherInfo}
+                onChange={(e) => handleInputChange("otherInfo", e.target.value)}
+                className="otherInfo-input-for-cover-page"
+              />
+            </section>
+            <section className="only-for-inspectionAddress-input">
+              <label htmlFor="">Inspection Address:</label>
+              <input
+                type="text"
+                value={editableText.inspectionAddress}
+                onChange={(e) =>
+                  handleInputChange("inspectionAddress", e.target.value)
+                }
+                className="inspectionAddress-input-for-cover-page"
+              />
+            </section>
           </section>
         </div>
       </section>
