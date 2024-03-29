@@ -22,7 +22,7 @@ const EditImageTabList = ({
   subnames,
 }) => {
   const overlayImageRef = useRef(null);
-  const [activeTab, setActiveTab] = useState(1);
+  const [activeTab, setActiveTab] = useState(10);
   // const [textFromEditor, setTextFromEditor] = useState(null);
   const [overLayImage, setOverLayImage] = useState([]);
 
@@ -183,7 +183,7 @@ const EditImageTabList = ({
     "Draw Rectangle",
     "Draw Oval",
     "Add Text",
-    "Overlay Image",
+    "Overlay Image  ",
   ];
 
   const tabContentComponents = {
