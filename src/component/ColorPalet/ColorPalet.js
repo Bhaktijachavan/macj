@@ -194,39 +194,29 @@ const ColorPalette = ({ onClose }) => {
     const menuData = localStorage.getItem("menuData");
 
     if (content && menuData) {
+      
       // Modify the content to include border, page heading, and adjust page height
       const modifiedContent = `
-        <div style="padding: 0px; height: 73vw; width: 100%;">
-          ${content}
-        </div>
-        <div style="padding: 25px;">
-        <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
-        <p style="font-size: 20px; text-align: justify;">
-          ${generateLoremIpsum()}
-        </p>
-      </div>
-      `;
+            <div style="padding: 0px; height: 73vw; width: 100%;">
+              ${content}
+            </div>
+            <div style="padding: 25px;">
+            <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
+            <p style="font-size: 20px; text-align: justify;">
+              ${generateLoremIpsum()}
+            </p>
+          </div>
+          `;
+
 
       // Convert the modified HTML content to a PDF document
       html2pdf()
         .from(modifiedContent)
         .toPdf()
         .get("pdf")
+        
         .then((pdf) => {
-          // Add second page for Report Introduction
-          // pdf.addPage();
-          // pdf.text("Report", 10, 10);
-          // pdf.setFontSize(16);
 
-          // // Add fixed text or content
-          // const largeText = generateLoremIpsum(); // Replace this with your large text
-          // const options = {
-          //   maxWidth: 200, // Adjust the maximum width for wrapping
-          // };
-          // pdf.text(largeText, 10, 20, options);
-
-          // const paddingRight = 20;
-          // pdf.text("".padStart(paddingRight), 10, 20); // Empty text with padding
 
           // Add third page for Table of Contents
           pdf.addPage();
@@ -234,82 +224,208 @@ const ColorPalette = ({ onClose }) => {
           // Add table for Table of Contents
           addTableOfContents(pdf, JSON.parse(menuData));
 
-          // Add fourth page for Summary
+
           pdf.addPage();
-          pdf.text("Summary", 10, 10);
+          pdf.text("SubName", 10, 10);
 
-          // Fetch the savedSummaryData from localStorage
-          const savedSummaryData = localStorage.getItem("menuData");
-          console.log("savedSummaryData", savedSummaryData);
+ 
+          const damageDataString = localStorage.getItem("DamageData");
+    if (damageDataString) {
+      try {
+        const damageData = JSON.parse(damageDataString);
 
-          if (savedSummaryData) {
-            try {
-              // Parse the JSON data
-              const parsedMenuData = JSON.parse(savedSummaryData);
-
-              // Access the SummaryData property
-              const summaryData = parsedMenuData["1"]?.SummaryData;
-              console.log("SummaryData:", summaryData);
-              // Access the textareaValue from SummaryData
-              const textareaValue = summaryData
-                ? Object.values(summaryData)[0]?.textareaValue || ""
-                : "";
-              console.log("textarea:", textareaValue);
-
-              // Add summary to the PDF
-              pdf.text("Summary", 10, 10);
-              pdf.text(textareaValue, 10, 30); // Add summary data
-
-              // Add summary table
-              addSummaryTable(pdf, parsedMenuData);
-
-              // pdf.save("cover_page_layout.pdf");
-            } catch (error) {
-              console.error("Error parsing JSON:", error);
+        // Function to display damage data (improved for clarity)
+        function displayDamageData(damageObject, startY) {
+          pdf.text(10, startY + 10, `Rating: ${damageObject.rating?.ratingName1 || ""}`);
+          let materialsText = "Materials:\n";
+          let redText = damageObject.Damage1red || "";
+          pdf.setTextColor(255, 0, 0); // Set text color to red
+          pdf.text(40, startY + 20,  `Materials:  ${redText}`);
+          pdf.setTextColor(0); // Reset text color to black
+        
+          // Handle multiple red text entries (improved)
+          if (redText.includes("\n")) {
+            const redLines = redText.split("\n");
+            for (let i = 1; i < redLines.length; i++) {
+              materialsText += `  ${redLines[i]}\n`;
             }
-            // pdf.save("cover_page_layout.pdf");
           }
-        });
+        
+          pdf.text(40, startY + 30, materialsText);
+        
+          const blackText = damageObject.Damage1black || "";
+          pdf.text(40, startY + materialsText.length + 10, `Observation:  ${blackText}`);
+        
+          pdf.text(10, startY, `Description: ${damageObject.description || ""}`);
+        
+          // Adjust startY for content height (improved)
+          return startY + materialsText.length + blackText.length + 40;
+        }
+        
+
+        // Adjust starting position for damage data
+        let currentY = 20;
+
+        // Iterate through each damage object in DamageData
+        for (const key in damageData) {
+          const damageObject = damageData[key];
+          currentY = displayDamageData(damageObject, currentY);
+
+          // Add separator line between damage sections (optional)
+          pdf.text(10, currentY + 10, "----------"); // Add separator
+          currentY += 20; // Add spacing after separator
+        }
+      } catch (error) {
+        console.error("Error parsing DamageData:", error);
+      }
     } else {
-      // Handle case where content or menuData is not found in localStorage
-      console.log("No content or menu data found in localStorage");
+      console.warn("DamageData not found in local storage.");
+    }
+
+    pdf.addPage();
+
+          // addSummaryTable(pdf, JSON.parse(menuData));
+          let imageURL; // Declare imageURL outside of the if block
+          let imageIndex = 0; // Keep track of the current image index
+
+          const coverphotoImageData = JSON.parse(
+            localStorage.getItem("coverphotoImage")
+          );
+
+          if (coverphotoImageData) {
+            const imageKeys = Object.keys(coverphotoImageData); // Move imageKeys here
+
+            function addImageToPDF(index, imgIndex) {
+              if (index < imageKeys.length) {
+                const img = new Image();
+                const currentImageKey = imageKeys[index];
+                const currentImageData = coverphotoImageData[currentImageKey];
+
+                if (imgIndex < currentImageData.length) {
+                  imageURL = currentImageData[imgIndex].url;
+                  const imageCaption = currentImageData[imgIndex].caption; // Get the caption of the image
+                  console.log(
+                    `Image URL <span class="math-inline">\{index\}\-</span>{imgIndex}:`
+                  );
+
+                  img.onload = function () {
+                    // Calculate coordinates for image
+                    const x = (imgIndex % 2) * 100 + 20; // Adjust spacing as needed
+                    const y = Math.floor(imgIndex / 2) * 80 + 50; // Adjust spacing as needed
+
+                    pdf.addImage(this, "JPEG", x, y, 80, 60); // Add the image to the PDF
+                    pdf.text(imageCaption, x, y + 70); // Add the caption below the image
+
+                    // Display additional data for the current image
+                    // const LocalStorageSummaryData =
+                    //   getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
+                    // displayAdditionalData(pdf, LocalStorageSummaryData, y + 80); // Display data below image
+
+                    // If all images are added for the current key, move to the next key
+                    if (imgIndex === currentImageData.length - 1) {
+                      if (index < imageKeys.length - 1) {
+                        pdf.addPage(); // Add a new page for the next ID
+                      }
+                      addImageToPDF(index + 1, 0); // Recursively call for the next image set
+                    } else {
+                      addImageToPDF(index, imgIndex + 1); // Recursively call for the next image
+                    }
+                  };
+
+                  img.src = imageURL; // Set the image source to load the image
+                } else {
+                  // If all images are added for the current key, display additional data and move to next key
+                  const LocalStorageSummaryData =
+                    getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
+                  displayAdditionalData(pdf, LocalStorageSummaryData, y + 20); // Display data below last image
+
+                  if (index < imageKeys.length - 1) {
+                    pdf.addPage(); // Add a new page for the next ID
+                  }
+                  addImageToPDF(index + 1, 0); // Recursively call for the next image set
+                }
+              } else {
+                // All images and data added, save the PDF
+                pdf.save("image_and_summary.pdf");
+              }
+            }
+
+            // pdf.addPage();
+
+            // Add title for the image
+            pdf.setFontSize(16);
+            pdf.text("Title for the Image", 10, 20);
+            addImageToPDF(0, 0); // Start the recursive function
+          } else {
+            console.error("No image data found in local storage.");
+          }
+
+
+
+
+         
+          
+        });
     }
   };
 
   // Function to add Table of Contents
+ 
   function addTableOfContents(pdf, parsedMenuData) {
-    // Set styling properties
+    // Set styling properties (adjust as desired)
     const fontSize = 12;
-    const fontColor = "white"; // Change text color to white
-    const backgroundColor = "black"; // Change background color to black
-    const boxShadowColor = "gray"; // Change this to your preferred box shadow color
-    // const borderradius = "30px";
-    // Set the font size, text color, and background color
+    const fontColor = "black"; // Text color
+    const boxShadowColor = "gray"; // Box shadow color
+    const borderColor = "blue"; // Border color
+    const borderWidth = 1; // Border width
+  
+    // Set font size and text color
     pdf.setFontSize(fontSize);
     pdf.setTextColor(fontColor);
-    pdf.setFillColor(backgroundColor);
-    // pdf.setBorderRadius(borderradius);
-
+  
+    // Get page width and height
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+  
+    // Create a rectangle representing the table of contents area
+    const tocRect = {
+      x: 0.5, // Adjust horizontal padding
+      y: 0.5, // Adjust vertical padding
+      width: pageWidth-1, // Adjust width based on padding
+      height: pageHeight-5, // Adjust height based on padding
+    };
+  
+    // Draw the border for the table of contents
+    pdf.setDrawColor(borderColor);
+    pdf.setLineWidth(borderWidth);
+    pdf.rect(tocRect.x, tocRect.y, tocRect.width, tocRect.height, "D"); // Draw the border (D for stroke)
+  
+    // Loop through each item in parsedMenuData
     Object.values(parsedMenuData).forEach((item, index) => {
-      // Add subitems
+      // Check if the item has subitems (prevent errors)
+      if (!item.subitems) {
+        console.warn(
+          `Item ${index + 1} in parsedMenuData has no subitems to display in the table of contents.`
+        );
+        return; // Skip to the next item if no subitems
+      }
+  
+      // Loop through subitems and add them to the table of contents
       item.subitems.forEach((subitem, subindex) => {
         // Set the box shadow
         pdf.setDrawColor(boxShadowColor);
         pdf.setLineWidth(0.2);
-
-        // Add text with background color
-        pdf.rect(20, 20 + index * 10 + subindex * 10, 100, 8, "F"); // Add filled rectangle as background
-        pdf.text(`${subitem.subName}`, 25, 25 + index * 10 + subindex * 10); // Add text with formatting
+  
+        // Add text without background color (adjust y position based on border)
+        pdf.text(
+          `${subitem.subName}`,
+          tocRect.x + 20, // Adjust horizontal padding within border
+          tocRect.y + 30 + index * 10 + subindex * 10 // Adjust y position
+        );
       });
     });
-
-    // Reset styling properties (optional, if you want to use different styles for other parts of the document)
-    pdf.setFontSize(14); // Reset font size to 14
-    pdf.setTextColor(0, 0, 0); // Reset text color to black
-    pdf.setFillColor(255, 255, 255); // Reset background color to white
-    pdf.setDrawColor(0); // Reset draw color (box shadow) to black
-    // pdf.setBorderRadius(0); // Reset border radius
   }
+  
 
   function addSummaryTable(pdf, menuNames) {
     const LocalStorageSummaryData = {
@@ -346,77 +462,18 @@ const ColorPalette = ({ onClose }) => {
         index,
         menuNames,
         LocalStorageSummaryData,
-        startY
+        // startY
       );
 
       if (index < Object.values(menuNames).length - 1) {
-        pdf.addPage();
+        // pdf.addPage();
       }
     });
 
     // Add a new page for the image
-    pdf.addPage();
-
-    // Add title for the image
-    pdf.setFontSize(16);
-    pdf.text("Title for the Image", 10, 20); // Adjust coordinates as needed
-
-    // Retrieve the image URL from local storage
-    // const imageURL = localStorage.getItem("coverphotoImage");
-
-    let imageURL; // Declare imageURL outside of the if block
-    let imageIndex = 0; // Keep track of the current image index
-
-    const coverphotoImageData = JSON.parse(
-      localStorage.getItem("coverphotoImage")
-    );
-
-    if (coverphotoImageData) {
-      const imageKeys = Object.keys(coverphotoImageData); // Move imageKeys here
-
-      function addImageToPDF(index, imgIndex) {
-        if (index < imageKeys.length) {
-          const img = new Image();
-          const currentImageKey = imageKeys[index];
-          const currentImageData = coverphotoImageData[currentImageKey];
-
-          if (imgIndex < currentImageData.length) {
-            const imageURL = currentImageData[imgIndex].url;
-            const imageCaption = currentImageData[imgIndex].caption; // Get the caption of the image
-            console.log(`Image URL ${index}-${imgIndex}: ${imageURL}`);
-
-            img.onload = function () {
-              // Calculate coordinates for image
-              const x = (imgIndex % 2) * 100 + 20; // Adjust spacing as needed
-              const y = Math.floor(imgIndex / 2) * 80 + 50; // Adjust spacing as needed
-
-              pdf.addImage(this, "JPEG", x, y, 80, 60); // Add the image to the PDF
-              pdf.text(imageCaption, x, y + 70); // Add the caption below the image
-
-              // If all images are added for the current key, move to the next key
-              if (imgIndex === currentImageData.length - 1) {
-                if (index < imageKeys.length - 1) {
-                  pdf.addPage(); // Add a new page for the next ID
-                }
-                addImageToPDF(index + 1, 0); // Recursively call this function to add the next image
-              } else {
-                addImageToPDF(index, imgIndex + 1); // Recursively call this function to add the next image
-              }
-            };
-
-            img.src = imageURL; // Set the image source to load the image
-          }
-        } else {
-          // If all images are added, save the PDF
-          pdf.save("image_and_summary.pdf");
-        }
-      }
-
-      addImageToPDF(0, 0); // Start the recursive function
-    } else {
-      console.error("No image data found in local storage.");
-    }
+   
   }
+
 
   function displayAdditionalData(
     pdf,
