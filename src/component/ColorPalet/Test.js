@@ -29,12 +29,87 @@ const Test = () => {
         .toPdf()
         .get("pdf")
         .then((pdf) => {
-
           // Add third page for Table of Contents
           pdf.addPage();
           pdf.text("Table of Contents", 10, 10);
           // Add table for Table of Contents
           addTableOfContents(pdf, JSON.parse(menuData));
+
+
+
+
+
+
+
+
+
+
+          
+          // page for tabname
+          pdf.addPage();
+          pdf.text("TabName", 10, 10);
+
+          const menuDataa = JSON.parse(localStorage.getItem("menuData"));
+
+          // Loop through each menu item in menuDataa
+          for (const key in menuDataa) {
+            const menuItem = menuDataa[key];
+            const subdetails = menuItem.subdetails;
+          
+            // Check if subdetails exist for the current menu item
+            if (subdetails) {
+              console.log("Menu Item:", menuItem.name);
+          
+              // Loop through each subdetail entry
+              let isFirstSubdetail = true; // Flag to track first subdetail
+              for (const subdetailKey in subdetails) {
+                const subdetailValue = subdetails[subdetailKey];
+                console.log("subdetailKey", subdetailValue)
+          
+                console.log("subdetailKey1", { tabname: subdetailValue.tabname, damage1: subdetailValue.damage1 });
+                console.log("subdetailKey2", { tabname: subdetailValue.tabname });
+
+
+
+                // Print separator before each subdetail except the first one
+                if (!isFirstSubdetail) {
+                  console.log("-------");
+                }
+                isFirstSubdetail = false;
+          
+                console.log("Subdetail ID:", subdetailValue);
+                console.log("Subdetail tabname:", subdetailValue.damage1);
+          
+                // You can further loop through subdetailValue properties here to print more details
+                // if needed (e.g., damage1, damage2, etc.)
+              }
+            } else {
+              console.log("No subdetails found for", menuItem.name);
+            }
+          }
+          
+
+
+          // Get raw damageData string from localStorage
+          // Get raw damageData string from localStorage
+          // const damageDataStrings = localStorage.getItem("DamageData");
+
+          // // Parse the JSON string
+          // const damageData = JSON.parse(damageDataStrings);
+          
+          // // Extract all IDs with suffix removal (not used for menuData retrieval)
+          // const damageDataIds = Object.keys(damageData).map(id => id.replace(/(_d1|_d2|_s1|_s2)$/, ""));
+          
+          // console.log("All Damage Data IDs (without suffixes):", damageDataIds);
+          
+          // // **Log the retrieved menuData**
+          // console.log("menuData:", JSON.parse(localStorage.getItem("menuData"))); // Or a variable storing parsed menuData
+          
+
+
+         
+
+
 
 
           let imageURL; // Declare imageURL outside of the if block
@@ -112,10 +187,6 @@ const Test = () => {
             console.error("No image data found in local storage.");
           }
 
-
-
-
-          
           const damageDataString = localStorage.getItem("DamageData");
 
           // Check if data exists
@@ -130,8 +201,6 @@ const Test = () => {
           } else {
             console.warn("DamageData not found in local storage.");
           }
-          
-          
         });
     }
   };
@@ -186,7 +255,9 @@ const Test = () => {
         pdf.setLineWidth(0.2);
 
         // Add text without background color
-        pdf.text(`${subitem.subName}`, 25, 25 + index * 10 + subindex * 10); // Add text with formatting
+        pdf.text(`${subitem.subName}`, 25, 25 + index * 10 + subindex * 10);
+
+        // Add text with formatting
       });
     });
   }
