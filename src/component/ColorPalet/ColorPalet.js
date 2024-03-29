@@ -189,6 +189,7 @@ const ColorPalette = ({ onClose }) => {
   const exportCoverPageToPDF = () => {
     // Retrieve the content from localStorage saved by CoverPageDesigner
     const content = localStorage.getItem("outputContent");
+    const StationeryPdf = localStorage.getItem("uploadedPdf");
 
     // Fetch menu data from localStorage
     const menuData = localStorage.getItem("menuData");
@@ -206,6 +207,14 @@ const ColorPalette = ({ onClose }) => {
             </p>
           </div>
           `;
+
+      if (StationeryPdf) {
+        modifiedContent += `
+          <div style="page-break-before: always;">
+            <img src="${StationeryPdf}" style="width: 100%; height: 100%;" />
+          </div>
+        `;
+      }
 
       // Convert the modified HTML content to a PDF document
       html2pdf()
@@ -292,40 +301,40 @@ const ColorPalette = ({ onClose }) => {
           // addSummaryTable(pdf, JSON.parse(menuData));
           let imageURL; // Declare imageURL outside of the if block
           let imageIndex = 0; // Keep track of the current image index
-          
+
           const coverphotoImageData = JSON.parse(
             localStorage.getItem("coverphotoImage")
           );
-          
+
           if (coverphotoImageData) {
             const imageKeys = Object.keys(coverphotoImageData); // Move imageKeys here
-          
+
             function addImageToPDF(index, imgIndex) {
               if (index < imageKeys.length) {
                 const img = new Image();
                 const currentImageKey = imageKeys[index];
                 const currentImageData = coverphotoImageData[currentImageKey];
-          
+
                 if (imgIndex < currentImageData.length) {
                   imageURL = currentImageData[imgIndex].url;
                   const imageCaption = currentImageData[imgIndex].caption; // Get the caption of the image
                   console.log(
                     `Image URL <span class="math-inline">\{index\}\-</span>{imgIndex}:`
                   );
-          
+
                   img.onload = function () {
                     // Calculate coordinates for image
                     const x = (imgIndex % 2) * 100 + 20; // Adjust spacing as needed
                     const y = Math.floor(imgIndex / 2) * 80 + 50; // Adjust spacing as needed
-          
+
                     pdf.addImage(this, "JPEG", x, y, 80, 60); // Add the image to the PDF
                     pdf.text(imageCaption, x, y + 70); // Add the caption below the image
-          
+
                     // Display additional data for the current image
                     // const LocalStorageSummaryData =
                     //   getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
                     // displayAdditionalData(pdf, LocalStorageSummaryData, y + 80); // Display data below image
-          
+
                     // If all images are added for the current key, move to the next key
                     if (imgIndex === currentImageData.length - 1) {
                       if (index < imageKeys.length - 1) {
@@ -336,14 +345,14 @@ const ColorPalette = ({ onClose }) => {
                       addImageToPDF(index, imgIndex + 1); // Recursively call for the next image
                     }
                   };
-          
+
                   img.src = imageURL; // Set the image source to load the image
                 } else {
                   // If all images are added for the current key, display additional data and move to next key
                   const LocalStorageSummaryData =
                     getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
                   displayAdditionalData(pdf, LocalStorageSummaryData, y + 20); // Display data below last image
-          
+
                   if (index < imageKeys.length - 1) {
                     pdf.addPage(); // Add a new page for the next ID
                   }
@@ -353,15 +362,15 @@ const ColorPalette = ({ onClose }) => {
                 // All images and data added, save the PDF
                 pdf.addPage(); // Add one more page before generating summary tables
                 pdf.text("Summary", 10, 10);
-          addSummaryTable(pdf, JSON.parse(menuData));
+                addSummaryTable(pdf, JSON.parse(menuData));
 
                 // addSummaryTable(pdf, menuNames); // Generate summary tables on the new page
                 pdf.save("image_and_summary.pdf");
               }
             }
-          
+
             // pdf.addPage();
-          
+
             // Add title for the image
             pdf.setFontSize(16);
             pdf.text("Title for the Image", 10, 20);
@@ -369,9 +378,6 @@ const ColorPalette = ({ onClose }) => {
           } else {
             console.error("No image data found in local storage.");
           }
-                    
-
-          
         });
     }
   };
