@@ -306,6 +306,9 @@ const ColorPalette = ({ onClose }) => {
             localStorage.getItem("coverphotoImage")
           );
 
+
+          
+
           if (coverphotoImageData) {
             const imageKeys = Object.keys(coverphotoImageData); // Move imageKeys here
 
