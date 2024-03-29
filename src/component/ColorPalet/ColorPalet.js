@@ -194,7 +194,6 @@ const ColorPalette = ({ onClose }) => {
     const menuData = localStorage.getItem("menuData");
 
     if (content && menuData) {
-      
       // Modify the content to include border, page heading, and adjust page height
       const modifiedContent = `
             <div style="padding: 0px; height: 73vw; width: 100%;">
@@ -208,119 +207,125 @@ const ColorPalette = ({ onClose }) => {
           </div>
           `;
 
-
       // Convert the modified HTML content to a PDF document
       html2pdf()
         .from(modifiedContent)
         .toPdf()
         .get("pdf")
-        
+
         .then((pdf) => {
-
-
           // Add third page for Table of Contents
           pdf.addPage();
           pdf.text("Table of Contents", 10, 10);
           // Add table for Table of Contents
           addTableOfContents(pdf, JSON.parse(menuData));
 
-
           pdf.addPage();
           pdf.text("SubName", 10, 10);
 
- 
           const damageDataString = localStorage.getItem("DamageData");
-    if (damageDataString) {
-      try {
-        const damageData = JSON.parse(damageDataString);
+          if (damageDataString) {
+            try {
+              const damageData = JSON.parse(damageDataString);
 
-        // Function to display damage data (improved for clarity)
-        function displayDamageData(damageObject, startY) {
-          pdf.text(10, startY + 10, `Rating: ${damageObject.rating?.ratingName1 || ""}`);
-          let materialsText = "Materials:\n";
-          let redText = damageObject.Damage1red || "";
-          pdf.setTextColor(255, 0, 0); // Set text color to red
-          pdf.text(40, startY + 20,  `Materials:  ${redText}`);
-          pdf.setTextColor(0); // Reset text color to black
-        
-          // Handle multiple red text entries (improved)
-          if (redText.includes("\n")) {
-            const redLines = redText.split("\n");
-            for (let i = 1; i < redLines.length; i++) {
-              materialsText += `  ${redLines[i]}\n`;
+              // Function to display damage data (improved for clarity)
+              function displayDamageData(damageObject, startY) {
+                pdf.text(
+                  10,
+                  startY + 10,
+                  `Rating: ${damageObject.rating?.ratingName1 || ""}`
+                );
+                let materialsText = "Materials:\n";
+                let redText = damageObject.Damage1red || "";
+                pdf.setTextColor(255, 0, 0); // Set text color to red
+                pdf.text(40, startY + 20, `Materials:  ${redText}`);
+                pdf.setTextColor(0); // Reset text color to black
+
+                // Handle multiple red text entries (improved)
+                if (redText.includes("\n")) {
+                  const redLines = redText.split("\n");
+                  for (let i = 1; i < redLines.length; i++) {
+                    materialsText += `  ${redLines[i]}\n`;
+                  }
+                }
+
+                pdf.text(40, startY + 30, materialsText);
+
+                const blackText = damageObject.Damage1black || "";
+                pdf.text(
+                  40,
+                  startY + materialsText.length + 10,
+                  `Observation:  ${blackText}`
+                );
+
+                pdf.text(
+                  10,
+                  startY,
+                  `Description: ${damageObject.description || ""}`
+                );
+
+                // Adjust startY for content height (improved)
+                return startY + materialsText.length + blackText.length + 40;
+              }
+
+              // Adjust starting position for damage data
+              let currentY = 20;
+
+              // Iterate through each damage object in DamageData
+              for (const key in damageData) {
+                const damageObject = damageData[key];
+                currentY = displayDamageData(damageObject, currentY);
+
+                // Add separator line between damage sections (optional)
+                pdf.text(10, currentY + 10, "----------"); // Add separator
+                currentY += 20; // Add spacing after separator
+              }
+            } catch (error) {
+              console.error("Error parsing DamageData:", error);
             }
+          } else {
+            console.warn("DamageData not found in local storage.");
           }
-        
-          pdf.text(40, startY + 30, materialsText);
-        
-          const blackText = damageObject.Damage1black || "";
-          pdf.text(40, startY + materialsText.length + 10, `Observation:  ${blackText}`);
-        
-          pdf.text(10, startY, `Description: ${damageObject.description || ""}`);
-        
-          // Adjust startY for content height (improved)
-          return startY + materialsText.length + blackText.length + 40;
-        }
-        
 
-        // Adjust starting position for damage data
-        let currentY = 20;
-
-        // Iterate through each damage object in DamageData
-        for (const key in damageData) {
-          const damageObject = damageData[key];
-          currentY = displayDamageData(damageObject, currentY);
-
-          // Add separator line between damage sections (optional)
-          pdf.text(10, currentY + 10, "----------"); // Add separator
-          currentY += 20; // Add spacing after separator
-        }
-      } catch (error) {
-        console.error("Error parsing DamageData:", error);
-      }
-    } else {
-      console.warn("DamageData not found in local storage.");
-    }
-
-    pdf.addPage();
+          pdf.addPage();
 
           // addSummaryTable(pdf, JSON.parse(menuData));
           let imageURL; // Declare imageURL outside of the if block
           let imageIndex = 0; // Keep track of the current image index
-
+          
           const coverphotoImageData = JSON.parse(
             localStorage.getItem("coverphotoImage")
           );
-
+          
           if (coverphotoImageData) {
             const imageKeys = Object.keys(coverphotoImageData); // Move imageKeys here
-
+          
             function addImageToPDF(index, imgIndex) {
               if (index < imageKeys.length) {
                 const img = new Image();
                 const currentImageKey = imageKeys[index];
                 const currentImageData = coverphotoImageData[currentImageKey];
-
+          
                 if (imgIndex < currentImageData.length) {
                   imageURL = currentImageData[imgIndex].url;
                   const imageCaption = currentImageData[imgIndex].caption; // Get the caption of the image
                   console.log(
                     `Image URL <span class="math-inline">\{index\}\-</span>{imgIndex}:`
                   );
-
+          
                   img.onload = function () {
                     // Calculate coordinates for image
                     const x = (imgIndex % 2) * 100 + 20; // Adjust spacing as needed
                     const y = Math.floor(imgIndex / 2) * 80 + 50; // Adjust spacing as needed
-
+          
                     pdf.addImage(this, "JPEG", x, y, 80, 60); // Add the image to the PDF
                     pdf.text(imageCaption, x, y + 70); // Add the caption below the image
-
+          
                     // Display additional data for the current image
                     // const LocalStorageSummaryData =
                     //   getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
                     // displayAdditionalData(pdf, LocalStorageSummaryData, y + 80); // Display data below image
-
+          
                     // If all images are added for the current key, move to the next key
                     if (imgIndex === currentImageData.length - 1) {
                       if (index < imageKeys.length - 1) {
@@ -331,14 +336,14 @@ const ColorPalette = ({ onClose }) => {
                       addImageToPDF(index, imgIndex + 1); // Recursively call for the next image
                     }
                   };
-
+          
                   img.src = imageURL; // Set the image source to load the image
                 } else {
                   // If all images are added for the current key, display additional data and move to next key
                   const LocalStorageSummaryData =
                     getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
                   displayAdditionalData(pdf, LocalStorageSummaryData, y + 20); // Display data below last image
-
+          
                   if (index < imageKeys.length - 1) {
                     pdf.addPage(); // Add a new page for the next ID
                   }
@@ -346,12 +351,17 @@ const ColorPalette = ({ onClose }) => {
                 }
               } else {
                 // All images and data added, save the PDF
+                pdf.addPage(); // Add one more page before generating summary tables
+                pdf.text("Summary", 10, 10);
+          addSummaryTable(pdf, JSON.parse(menuData));
+
+                // addSummaryTable(pdf, menuNames); // Generate summary tables on the new page
                 pdf.save("image_and_summary.pdf");
               }
             }
-
+          
             // pdf.addPage();
-
+          
             // Add title for the image
             pdf.setFontSize(16);
             pdf.text("Title for the Image", 10, 20);
@@ -359,18 +369,15 @@ const ColorPalette = ({ onClose }) => {
           } else {
             console.error("No image data found in local storage.");
           }
+                    
 
-
-
-
-         
           
         });
     }
   };
 
   // Function to add Table of Contents
- 
+
   function addTableOfContents(pdf, parsedMenuData) {
     // Set styling properties (adjust as desired)
     const fontSize = 12;
@@ -378,44 +385,46 @@ const ColorPalette = ({ onClose }) => {
     const boxShadowColor = "gray"; // Box shadow color
     const borderColor = "blue"; // Border color
     const borderWidth = 1; // Border width
-  
+
     // Set font size and text color
     pdf.setFontSize(fontSize);
     pdf.setTextColor(fontColor);
-  
+
     // Get page width and height
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-  
+
     // Create a rectangle representing the table of contents area
     const tocRect = {
       x: 0.5, // Adjust horizontal padding
       y: 0.5, // Adjust vertical padding
-      width: pageWidth-1, // Adjust width based on padding
-      height: pageHeight-5, // Adjust height based on padding
+      width: pageWidth - 1, // Adjust width based on padding
+      height: pageHeight - 5, // Adjust height based on padding
     };
-  
+
     // Draw the border for the table of contents
     pdf.setDrawColor(borderColor);
     pdf.setLineWidth(borderWidth);
     pdf.rect(tocRect.x, tocRect.y, tocRect.width, tocRect.height, "D"); // Draw the border (D for stroke)
-  
+
     // Loop through each item in parsedMenuData
     Object.values(parsedMenuData).forEach((item, index) => {
       // Check if the item has subitems (prevent errors)
       if (!item.subitems) {
         console.warn(
-          `Item ${index + 1} in parsedMenuData has no subitems to display in the table of contents.`
+          `Item ${
+            index + 1
+          } in parsedMenuData has no subitems to display in the table of contents.`
         );
         return; // Skip to the next item if no subitems
       }
-  
+
       // Loop through subitems and add them to the table of contents
       item.subitems.forEach((subitem, subindex) => {
         // Set the box shadow
         pdf.setDrawColor(boxShadowColor);
         pdf.setLineWidth(0.2);
-  
+
         // Add text without background color (adjust y position based on border)
         pdf.text(
           `${subitem.subName}`,
@@ -425,7 +434,6 @@ const ColorPalette = ({ onClose }) => {
       });
     });
   }
-  
 
   function addSummaryTable(pdf, menuNames) {
     const LocalStorageSummaryData = {
@@ -448,6 +456,9 @@ const ColorPalette = ({ onClose }) => {
         data.push([index + 1, item.tabName || "", redText]);
       });
 
+      // Add a new page before generating the table
+      pdf.addPage();
+
       pdf.autoTable({
         startY: 60,
         head: headers,
@@ -462,18 +473,15 @@ const ColorPalette = ({ onClose }) => {
         index,
         menuNames,
         LocalStorageSummaryData,
-        // startY
+        startY
       );
 
       if (index < Object.values(menuNames).length - 1) {
+        // Add a new page after displaying additional data (optional)
         // pdf.addPage();
       }
     });
-
-    // Add a new page for the image
-   
   }
-
 
   function displayAdditionalData(
     pdf,
