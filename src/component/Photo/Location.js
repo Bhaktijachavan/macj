@@ -21,6 +21,11 @@ const Location = ({ imageUrl }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [caption, setCaption] = useState("");
   const [imageURL, setImageURL] = useState(null);
+  const [subnames, setSubnames] = useState([]);
+
+  // useEffect(() => {
+  //   console.log("subname", subnames);
+  // }, [subnames]);
 
   useEffect(() => {
     if (imageUrl != null) {
@@ -38,6 +43,7 @@ const Location = ({ imageUrl }) => {
     console.log("image index", imageIndex);
     // Retrieve image data from local storage based on the imageIndex
     const imageData = localStorage.getItem("coverphotoImage");
+    console.log("coverphotoImage", imageData);
     if (imageData) {
       const parsedImageData = JSON.parse(imageData);
       const imagesArray = parsedImageData[panelId] || [];
@@ -62,8 +68,15 @@ const Location = ({ imageUrl }) => {
   useEffect(() => {
     const fetchData = () => {
       const storedMenuData = localStorage.getItem("menuData");
+      // console.log("menudata from local", storedMenuData);
       if (storedMenuData) {
         setMenuData(JSON.parse(storedMenuData));
+        const parsedMenuData = JSON.parse(storedMenuData);
+        const extractedSubnames = Object.values(parsedMenuData).flatMap(
+          (item) => item.subitems.map((subitem) => subitem.subName)
+        );
+        // console.log("extractedSubnames", extractedSubnames);
+        setSubnames(extractedSubnames);
       }
     };
 
@@ -305,6 +318,7 @@ const Location = ({ imageUrl }) => {
               onIconPreview={handleIconPreview}
               onSelectedImage={setSelectedImage}
               onDeleteBulk={setUploadedFile}
+              subnames={subnames}
             />
           </div>
           {/* <button onClick={handleImageSet} title="Navigate to Panel">

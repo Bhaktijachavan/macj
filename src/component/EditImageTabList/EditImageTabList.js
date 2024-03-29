@@ -12,7 +12,6 @@ import DrawRectangleContent from "./DrawRectangleContent/DrawRectangleContent";
 import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
 import OverLayImage from "./OverLayImage/OverLayImage";
 
-
 const EditImageTabList = ({
   isOpen,
   onRequestClose,
@@ -20,6 +19,7 @@ const EditImageTabList = ({
   id,
   SetImageIndex,
   caption,
+  subnames,
 }) => {
   const overlayImageRef = useRef(null);
   const [activeTab, setActiveTab] = useState(1);
@@ -45,8 +45,10 @@ const EditImageTabList = ({
   const handleColorChange = (color) => {
     setArrowColor(color);
   };
-
-  // console.log("edit image id ", id);
+  // useEffect(() => {
+  console.log("subname in editinmage", subnames);
+  // }, [subnames]);
+  console.log("edit image id ", id);
 
   const handleSaveChanges = () => {
     // Call the handleDownload function in OverLayImage component
@@ -98,6 +100,7 @@ const EditImageTabList = ({
 
       imageData[id].push({
         id: index,
+        subnames: subnames,
         caption: caption,
         url: url,
       });
