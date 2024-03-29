@@ -314,20 +314,22 @@ const ColorPalette = ({ onClose }) => {
                 const img = new Image();
                 const currentImageKey = imageKeys[index];
                 const currentImageData = coverphotoImageData[currentImageKey];
-
+          
                 if (imgIndex < currentImageData.length) {
                   imageURL = currentImageData[imgIndex].url;
-                  const imageCaption = currentImageData[imgIndex].caption; // Get the caption of the image
-                  console.log(
-                    `Image URL <span class="math-inline">\{index\}\-</span>{imgIndex}:`
-                  );
-
+                  const imageCaption = currentImageData[imgIndex].caption;
+                  const subnames = currentImageData[imgIndex].subnames; // Access subnames here
+          
+                  // Add subnames to the top of the page before images (only for first image)
+                  if (imgIndex === 0) {
+                    pdf.text(subnames.join(", "), 10, 40); // Adjust spacing as needed
+                  }
+          
                   img.onload = function () {
-                    // Calculate coordinates for image
-                    const x = (imgIndex % 2) * 100 + 20; // Adjust spacing as needed
-                    const y = Math.floor(imgIndex / 2) * 80 + 50; // Adjust spacing as needed
-
-                    pdf.addImage(this, "JPEG", x, y, 80, 60); // Add the image to the PDF
+                    const x = (imgIndex % 2) * 100 + 20;
+                    const y = Math.floor(imgIndex / 2) * 80 + 50;
+          
+                    pdf.addImage(this, "JPEG", x, y, 80, 60);
                     pdf.text(imageCaption, x, y + 70); // Add the caption below the image
 
                     // Display additional data for the current image
