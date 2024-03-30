@@ -21,8 +21,14 @@ const Stationery = () => {
       reader.readAsDataURL(file);
     }
     alert("File Uploaded Successfully");
+
     localStorage.setItem("uploadedPdf", uploadedPdf);
   };
+
+  useEffect(() => {
+    console.log("uploadedPdf", uploadedPdf);
+    localStorage.setItem("uploadedPdf", uploadedPdf);
+  }, [uploadedPdf]);
 
   const handleDelted = () => {
     setUploadedPdf(null);
