@@ -22,6 +22,7 @@ const Location = ({ imageUrl }) => {
   const [caption, setCaption] = useState("");
   const [imageURL, setImageURL] = useState(null);
   const [subnames, setSubnames] = useState([]);
+  const [NewTabs, setNewTabs] = useState();
 
   // useEffect(() => {
   //   console.log("subname", subnames);
@@ -135,11 +136,16 @@ const Location = ({ imageUrl }) => {
 
   const handleTabChange = (e) => {
     const panelId = e.target.value;
+    // console.log("Selected value:", panelId);
     setPanelId(panelId);
 
     setTabData(submenuDetails[panelId]);
+    const selectedId = panelId;
+    const selectedTabname = submenuDetails[selectedId]?.tabname || ""; // Get the tabname based on the selected id
+    // console.log("Selected id:", selectedId);
+    // console.log("Selected tabname:", selectedTabname);
+    setNewTabs(selectedTabname);
   };
-
   const handlePanel = () => {
     if (!panelId || !TabData) {
       return alert("please select panel ");
@@ -318,7 +324,7 @@ const Location = ({ imageUrl }) => {
               onIconPreview={handleIconPreview}
               onSelectedImage={setSelectedImage}
               onDeleteBulk={setUploadedFile}
-              subnames={subnames}
+              subnames={NewTabs}
             />
           </div>
           {/* <button onClick={handleImageSet} title="Navigate to Panel">
