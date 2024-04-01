@@ -189,7 +189,6 @@ const ColorPalette = ({ onClose }) => {
   const exportCoverPageToPDF = () => {
     // Retrieve the content from localStorage saved by CoverPageDesigner
     const content = localStorage.getItem("outputContent");
-    const StationeryPdf = localStorage.getItem("uploadedPdf");
 
     // Fetch menu data from localStorage
     const menuData = localStorage.getItem("menuData");
@@ -207,14 +206,6 @@ const ColorPalette = ({ onClose }) => {
             </p>
           </div>
           `;
-
-      if (StationeryPdf) {
-        modifiedContent += `
-          <div style="page-break-before: always;">
-            <img src="${StationeryPdf}" style="width: 100%; height: 100%;" />
-          </div>
-        `;
-      }
 
       // Convert the modified HTML content to a PDF document
       html2pdf()
@@ -240,42 +231,62 @@ const ColorPalette = ({ onClose }) => {
               // Function to display damage data (improved for clarity)
               // Function to display damage data (improved for clarity)
               function displayDamageData(damageObject, startY) {
-                const ratingText = `Rating: ${damageObject.rating?.ratingName1 || ""}`;
-                const descriptionText = `Description: ${damageObject.description || ""}`;
-                const materialsText = `Materials:\n${damageObject.Damage1red || ""}`;
-                const observationText = `Observation: ${damageObject.Damage1black || ""}`;
-              
+                const ratingText = `Rating: ${
+                  damageObject.rating?.ratingName1 || ""
+                }`;
+                const descriptionText = `Description: ${
+                  damageObject.description || ""
+                }`;
+                const materialsText = `Materials:\n${
+                  damageObject.Damage1red || ""
+                }`;
+                const observationText = `Observation: ${
+                  damageObject.Damage1black || ""
+                }`;
+
                 // Set initial Y position
                 let currentY = startY;
-              
+
                 // Display rating
                 pdf.text(10, currentY, ratingText);
                 currentY += 5; // Add spacing after rating
-              
+
                 // Display materials
                 pdf.setTextColor(255, 0, 0); // Set text color to red
                 pdf.text(60, currentY, materialsText);
                 pdf.setTextColor(0); // Reset text color to black
-                currentY += pdf.splitTextToSize(materialsText, pdf.internal.pageSize.getWidth() - 20).length * 5 + 2;
-              
+                currentY +=
+                  pdf.splitTextToSize(
+                    materialsText,
+                    pdf.internal.pageSize.getWidth() - 20
+                  ).length *
+                    5 +
+                  2;
+
                 // Display observation
                 pdf.text(60, currentY, observationText);
-                const observationHeight = pdf.splitTextToSize(observationText, pdf.internal.pageSize.getWidth() - 20).length * 5;
+                const observationHeight =
+                  pdf.splitTextToSize(
+                    observationText,
+                    pdf.internal.pageSize.getWidth() - 20
+                  ).length * 5;
                 currentY += observationHeight + 2; // Calculate height of multi-line text
-              
+
                 // Display description
                 pdf.text(60, currentY, descriptionText);
-                const descriptionHeight = pdf.splitTextToSize(descriptionText, pdf.internal.pageSize.getWidth() - 20).length * 5;
+                const descriptionHeight =
+                  pdf.splitTextToSize(
+                    descriptionText,
+                    pdf.internal.pageSize.getWidth() - 20
+                  ).length * 5;
                 currentY += descriptionHeight + 2; // Calculate height of multi-line text
-              
+
                 // Add small gap before separator
                 currentY += 1;
-              
+
                 // Return the updated Y position
                 return currentY;
               }
-              
-              
 
               // Adjust starting position for damage data
               let currentY = 20;
