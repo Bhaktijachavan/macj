@@ -1,54 +1,80 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
+import { Document, Page, pdfjs } from "react-pdf";
 import Header from "./../Header/Header";
 import Footer from "./../Footer/Footer";
 import "./Stationery.css";
-import { imageCompression } from "browser-image-compression";
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const Stationery = () => {
-  const [uploadedPdf, setUploadedPdf] = useState(null);
+  const [numPages, setNumPages] = useState(null);
+  const [text, setText] = useState("");
+  const [images, setImages] = useState([]);
   const fileInputRef = useRef(null);
 
-  const handleUploadButtonClick = () => {
-    fileInputRef.current.click();
-  };
-  const handlePdfUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUploadedPdf(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-    alert("File Uploaded Successfully");
-
-    localStorage.setItem("uploadedPdf", uploadedPdf);
+  const onFileChange = (event) => {
+    const uploadedFile = event.target.files[0];
+    extractContent(uploadedFile);
   };
 
-  useEffect(() => {
-    console.log("uploadedPdf", uploadedPdf);
-    localStorage.setItem("uploadedPdf", uploadedPdf);
-  }, [uploadedPdf]);
+  const extractContent = async (file) => {
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const typedArray = new Uint8Array(reader.result);
+      const pdf = await pdfjs.getDocument({ data: typedArray }).promise;
+      let fullText = "";
+      let extractedImages = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        textContent.items.forEach((item) => {
+          fullText += item.str + "\n"; // Add newline for better formatting
+        });
+        const viewport = page.getViewport({ scale: 1.0 });
+        const canvas = document.createElement("canvas");
+        const canvasContext = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({
+          canvasContext,
+          viewport,
+        }).promise;
+        const imageData = canvas.toDataURL("image/png");
+        extractedImages.push(imageData);
+      }
+      setText(fullText);
+      setImages(extractedImages);
+      setNumPages(pdf.numPages);
 
+      // Store extracted text and images to local storage
+      localStorage.setItem("extractedText", fullText);
+      localStorage.setItem("extractedImages", JSON.stringify(extractedImages));
+      alert("Pdf Uploded Successfully");
+    };
+    reader.readAsArrayBuffer(file);
+  };
   const handleDelted = () => {
-    setUploadedPdf(null);
-    localStorage.removeItem("uploadedPdf");
+    setText(null);
+    setImages(null);
+    setNumPages(null);
+    localStorage.removeItem("extractedText");
+    localStorage.removeItem("extractedImages");
     alert("File Deleted Successfully");
   };
+
   return (
     <>
       <div>
         <Header />
       </div>
-      {/* Container for the Stationery page content */}
-      <div className="Stationery-page-cont">
+      <div>
         <input
           type="file"
           accept=".pdf"
           ref={fileInputRef}
           style={{ display: "none" }}
-          onChange={handlePdfUpload}
+          onChange={onFileChange}
         />
+
         <div className="Stationery-para">
           {/* Paragraph explaining the use of Report Stationery */}
           <p>
@@ -75,53 +101,24 @@ const Stationery = () => {
             locate the future) but thia is not required
           </p>
         </div>
-        <div className="adding-Stationery">
-          {/* Section for Cover Page Stationery */}
-          <div className="cover-page-Stationery">
-            <h2>Cover Page Stationery</h2>
-            <div className="cover-page-Stationery-upload">
-              <div className="cover-page-Stationery-browse">
-                <button className="adding-Stationery-btn">Browse</button>
-              </div>
-              <div className="cover-page-Stationery-inputtext">
-                <div className="cover-page-Stationery-inputtext border border-black bg-white w-[20em] h-[1.7em]"></div>
-              </div>
-              <div className="cover-page-Stationery-remove">
-                <button className="adding-Stationery-btn">Remove</button>
-              </div>
+        <div className="cover-page-Stationery">
+          <h2>All Other Page Stationery</h2>
+          <div className="cover-page-Stationery-upload">
+            <div className="cover-page-Stationery-browse">
+              <button
+                className="adding-Stationery-btn"
+                onClick={() => fileInputRef.current.click()}
+              >
+                Browse
+              </button>
             </div>
-          </div>
-          <div className="cover-page-Stationery">
-            {/* Section for All Other Page Stationery */}
-            <h2>All Other Page Stationery</h2>
-            <div className="cover-page-Stationery-upload">
-              <div className="cover-page-Stationery-browse">
-                <button
-                  className="adding-Stationery-btn"
-                  onClick={handleUploadButtonClick}
-                >
-                  Browse
-                </button>
-              </div>
-              <div className="cover-page-Stationery-inputtext border border-black bg-white w-[20em] h-[1.7em] flex items-center content-center justify-center">
-                {uploadedPdf ? (
-                  <>
-                    <p>Successfully Uploded</p>
-                  </>
-                ) : (
-                  <>
-                    <p>Select Pdf</p>
-                  </>
-                )}
-              </div>
-              <div className="cover-page-Stationery-remove">
-                <button
-                  className="adding-Stationery-btn"
-                  onClick={handleDelted}
-                >
-                  Remove
-                </button>
-              </div>
+            <div className="cover-page-Stationery-inputtext border border-black bg-white w-[20em] h-[1.7em] flex items-center content-center justify-center">
+              <h1>Select Pdf to Upload</h1>
+            </div>
+            <div className="cover-page-Stationery-remove">
+              <button className="adding-Stationery-btn" onClick={handleDelted}>
+                Remove
+              </button>
             </div>
           </div>
         </div>
@@ -132,4 +129,5 @@ const Stationery = () => {
     </>
   );
 };
+
 export default Stationery;

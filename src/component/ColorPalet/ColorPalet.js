@@ -190,6 +190,9 @@ const ColorPalette = ({ onClose }) => {
     // Retrieve the content from localStorage saved by CoverPageDesigner
     const content = localStorage.getItem("outputContent");
 
+    // const extractedText = localStorage.getItem("extractedText");
+    const extractedImages =
+      JSON.parse(localStorage.getItem("extractedImages")) || []; // Provide a fallback value if extractedImages is null
     // Fetch menu data from localStorage
     const menuData = localStorage.getItem("menuData");
 
@@ -199,11 +202,22 @@ const ColorPalette = ({ onClose }) => {
             <div style="padding: 0px; height: 73vw; width: 100%;">
               ${content}
             </div>
+            <div>
+        ${extractedImages
+          .map(
+            (imageData) => `
+              <img src="${imageData}" style="width: 100%; height: auto;">
+            `
+          )
+          .join("")}
+      </div>
             <div style="padding: 25px;">
             <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
             <p style="font-size: 20px; text-align: justify;">
               ${generateLoremIpsum()}
             </p>
+           
+      
           </div>
           `;
 
@@ -342,7 +356,6 @@ const ColorPalette = ({ onClose }) => {
 
                     pdf.addImage(this, "JPEG", x, y, 80, 60);
                     pdf.text(imageCaption, x, y + 70); // Add the caption below the image
-
                     // Display additional data for the current image
                     // const LocalStorageSummaryData =
                     //   getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
@@ -365,6 +378,7 @@ const ColorPalette = ({ onClose }) => {
                   const LocalStorageSummaryData =
                     getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
                   displayAdditionalData(pdf, LocalStorageSummaryData, y + 20); // Display data below last image
+                  // Display data below last image
 
                   if (index < imageKeys.length - 1) {
                     pdf.addPage(); // Add a new page for the next ID
@@ -377,7 +391,43 @@ const ColorPalette = ({ onClose }) => {
                 pdf.text("Report Summary", 70, 10);
                 addSummaryTable(pdf, JSON.parse(menuData));
 
-                // addSummaryTable(pdf, menuNames); // Generate summary tables on the new page
+                // pdf.addPage();
+
+                // const extractedText = localStorage.getItem("extractedText");
+                // const extractedImages = JSON.parse(
+                //   localStorage.getItem("extractedImages")
+                // );
+
+                // Add extracted text to PDF
+                // if (extractedText) {
+                //   // pdf.addPage();
+                //   pdf.text("Extracted Text", 10, 10);
+                //   pdf.text(extractedText, 10, 20);
+                // }
+
+                // // Add extracted images to PDF
+                // if (extractedImages) {
+                //   let currentPage =
+                //     pdf.internal.getCurrentPageInfo().pageNumber;
+                //   let remainingImages = extractedImages.slice();
+                //   while (remainingImages.length > 0) {
+                //     // pdf.addPage();
+                //     pdf.text("Disclaimer", 10, 10);
+                //     const pageWidth = pdf.internal.pageSize.getWidth();
+                //     const pageHeight = pdf.internal.pageSize.getHeight();
+                //     const imageWidth = pageWidth;
+                //     const imageHeight = pageHeight;
+                //     pdf.addImage(
+                //       remainingImages.shift(),
+                //       "JPEG",
+                //       0,
+                //       0,
+                //       imageWidth,
+                //       imageHeight
+                //     );
+                //   }
+                // }
+
                 pdf.save("Report.pdf");
               }
             }
@@ -394,6 +444,8 @@ const ColorPalette = ({ onClose }) => {
         });
     }
   };
+
+  function mergePdfData() {}
 
   // Function to add Table of Contents
 
