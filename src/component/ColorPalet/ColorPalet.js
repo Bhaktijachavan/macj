@@ -306,9 +306,6 @@ const ColorPalette = ({ onClose }) => {
             localStorage.getItem("coverphotoImage")
           );
 
-
-          
-
           if (coverphotoImageData) {
             const imageKeys = Object.keys(coverphotoImageData); // Move imageKeys here
 
@@ -317,21 +314,21 @@ const ColorPalette = ({ onClose }) => {
                 const img = new Image();
                 const currentImageKey = imageKeys[index];
                 const currentImageData = coverphotoImageData[currentImageKey];
-          
+
                 if (imgIndex < currentImageData.length) {
                   imageURL = currentImageData[imgIndex].url;
                   const imageCaption = currentImageData[imgIndex].caption;
                   const subnames = currentImageData[imgIndex].subnames; // Access subnames here
-          
+
                   // Add subnames to the top of the page before images (only for first image)
                   if (imgIndex === 0) {
                     pdf.text(subnames.join(", "), 10, 40); // Adjust spacing as needed
                   }
-          
+
                   img.onload = function () {
                     const x = (imgIndex % 2) * 100 + 20;
                     const y = Math.floor(imgIndex / 2) * 80 + 50;
-          
+
                     pdf.addImage(this, "JPEG", x, y, 80, 60);
                     pdf.text(imageCaption, x, y + 70); // Add the caption below the image
 
@@ -366,11 +363,11 @@ const ColorPalette = ({ onClose }) => {
               } else {
                 // All images and data added, save the PDF
                 pdf.addPage(); // Add one more page before generating summary tables
-                pdf.text("Summary", 10, 10);
+                pdf.text("Report Summary", 70, 10);
                 addSummaryTable(pdf, JSON.parse(menuData));
 
                 // addSummaryTable(pdf, menuNames); // Generate summary tables on the new page
-                pdf.save("image_and_summary.pdf");
+                pdf.save("Report.pdf");
               }
             }
 
@@ -447,51 +444,126 @@ const ColorPalette = ({ onClose }) => {
   }
 
   function addSummaryTable(pdf, menuNames) {
-    const LocalStorageSummaryData = {
-      DamageData: JSON.parse(localStorage.getItem("DamageData")),
-      SelectionData: JSON.parse(localStorage.getItem("SelectionData")),
-      TempPanelData: JSON.parse(localStorage.getItem("TempPanelData")),
-      ratingsData: JSON.parse(localStorage.getItem("ratingsData")),
-      // savedSummaryData: JSON.parse(localStorage.getItem("menuData")),
-    };
+    // const LocalStorageSummaryData = {
+    //   DamageData: JSON.parse(localStorage.getItem("DamageData")),
+    //   SelectionData: JSON.parse(localStorage.getItem("SelectionData")),
+    //   TempPanelData: JSON.parse(localStorage.getItem("TempPanelData")),
+    //   ratingsData: JSON.parse(localStorage.getItem("ratingsData")),
+    //   // savedSummaryData: JSON.parse(localStorage.getItem("menuData")),
+    // };
 
-    Object.values(menuNames).forEach((item, index) => {
-      const subName = item.subitems[0].subName;
-      const headers = [["Page No", "TabName", "Red Text"]];
-      const data = [];
+    // Object.values(menuNames).forEach((item, index) => {
+    //   const subName = item.subitems[0].subName;
+    //   const headers = [["Page No", "TabName", "Red Text"]];
+    //   const data = [];
 
-      item.subitems.forEach((subitem, subitemIndex) => {
-        const damageDataKey = `item_${index + 1}_subitem_${subitemIndex + 1}`;
-        const redText =
-          LocalStorageSummaryData.DamageData[damageDataKey]?.Damage1red || "";
-        data.push([index + 1, item.tabName || "", redText]);
-      });
+    //   item.subitems.forEach((subitem, subitemIndex) => {
+    //     const damageDataKey = `item_${index + 1}_subitem_${subitemIndex + 1}`;
+    //     const redText =
+    //       LocalStorageSummaryData.DamageData[damageDataKey]?.Damage1red || "";
+    //     data.push([index + 1, item.tabName || "", redText]);
+    //   });
 
-      // Add a new page before generating the table
-      pdf.addPage();
+    //   // Add a new page before generating the table
+    //   pdf.addPage();
 
-      pdf.autoTable({
-        startY: 60,
-        head: headers,
-        body: data,
-      });
+    //   pdf.autoTable({
+    //     startY: 60,
+    //     head: headers,
+    //     body: data,
+    //   });
 
-      // Display additional data after the table
-      const startY = pdf.autoTable.previous.finalY + 10;
-      displayAdditionalData(
-        pdf,
-        item,
-        index,
-        menuNames,
-        LocalStorageSummaryData,
-        startY
-      );
+    //   // Display additional data after the table
+    //   const startY = pdf.autoTable.previous.finalY + 10;
+    //   displayAdditionalData(
+    //     pdf,
+    //     item,
+    //     index,
+    //     menuNames,
+    //     LocalStorageSummaryData,
+    //     startY
+    //   );
 
-      if (index < Object.values(menuNames).length - 1) {
-        // Add a new page after displaying additional data (optional)
-        // pdf.addPage();
+    //   if (index < Object.values(menuNames).length - 1) {
+    //     // Add a new page after displaying additional data (optional)
+    //     // pdf.addPage();
+    //   }
+    // });
+
+    const damageDataStrings = localStorage.getItem("DamageData");
+    const damageData = JSON.parse(damageDataStrings || "{}");
+    const menuDataa = JSON.parse(localStorage.getItem("menuData") || "{}");
+
+    let currentYPosition = 40; // Initial vertical position for text placement
+    let tabCounter = 1; // Initialize counter for tab value numbering
+    
+   // Initialize table data with headers
+const tableData = [["Sr. No", "TabName", "Damage Data"]];
+
+// Iterate over menuDataa to populate the table
+for (const key in menuDataa) {
+  const menuItem = menuDataa[key];
+  const subdetails = menuItem.subdetails;
+
+  if (subdetails) {
+    for (const subdetailKey in subdetails) {
+      const subdetailValue = subdetails[subdetailKey];
+
+      for (const abc in subdetailValue) {
+        const tabvalue = subdetailValue[abc].tabname;
+        console.log("vedant", tabvalue);
+
+        // Check if damageValue exists and has the Damage1red property
+        const damageValue = damageData[subdetailValue[abc].Damage1Data];
+        if (damageValue && damageValue.Damage1red) {
+          // Add row data to tableData
+          tableData.push([tabCounter, tabvalue, damageValue.Damage1red]);
+
+          // Increment tabCounter
+          tabCounter++;
+
+          console.log("DamageValue", damageValue);
+          console.log("subdetailValue", subdetailValue);
+        }
       }
-    });
+    }
+  }
+}
+
+// Set table styling
+const tableOptions = {
+  startY: currentYPosition,
+  theme: "grid", // Apply grid theme for table
+  headStyles: {
+    fillColor: [135, 206, 250], // Background color for header row
+  },
+  columnStyles: {
+    0: { cellWidth: 20 }, // Adjust column width for Sr. No
+    1: { cellWidth: 50 }, // Adjust column width for TabName
+    2: { cellWidth: 80 }, // Adjust column width for Damage Data
+  },
+};
+
+const tableRows = tableData.map((rowData, rowIndex) => {
+  return rowData.map((cellData, colIndex) => {
+    // Set text color to red for cells in the "Damage Data" column
+    if (colIndex === 2 && rowIndex > 0) {
+      return { content: cellData, styles: { textColor: [255, 0, 0] } };
+    }
+    return cellData;
+  });
+});
+
+// Generate table using autoTable method
+pdf.autoTable({
+  head: [tableRows[0]], // Extract header row from tableRows
+  body: tableRows.slice(1), // Extract data rows from tableRows
+  ...tableOptions
+});
+
+
+    
+    
   }
 
   function displayAdditionalData(

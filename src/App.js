@@ -31,6 +31,7 @@ import PhotoReviewTablist from "./component/Photo/PhotoReviewTablist/PhotoReview
 import Ratings from "./component/Rating/Ratings";
 import Stationery from "./component/Stationery/Stationery";
 import LayoutOptions from "./component/LayoutOptions/LayoutOptions";
+import Test from './component/ColorPalet/Test';
 
 function App() {
   console.log("app started");

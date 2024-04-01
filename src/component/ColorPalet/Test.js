@@ -2,208 +2,132 @@ import React from "react";
 import html2pdf from "html2pdf.js";
 
 const Test = () => {
-  const exportCoverPageToPDF = () => {
-    // Retrieve the content from localStorage saved by CoverPageDesigner
-    const content = localStorage.getItem("outputContent");
 
-    // Fetch menu data from localStorage
-    const menuData = localStorage.getItem("menuData");
 
-    if (content && menuData) {
-      // Modify the content to include border, page heading, and adjust page height
-      const modifiedContent = `
+
+  const exportCoverPageToPDF = async () => {
+    try {
+        // Retrieve the content from localStorage saved by CoverPageDesigner
+        const content = localStorage.getItem("outputContent");
+        const menuData = localStorage.getItem("menuData");
+
+        if (!content || !menuData) {
+            console.error("Missing required data in localStorage.");
+            return;
+        }
+
+        // Modify the content to include border, page heading, and adjust page height
+        const modifiedContent = `
             <div style="padding: 0px; height: 73vw; width: 100%;">
-              ${content}
+                ${content}
             </div>
             <div style="padding: 25px;">
-            <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
-            <p style="font-size: 20px; text-align: justify;">
-              ${generateLoremIpsum()}
-            </p>
-          </div>
-          `;
+                <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
+                <p style="font-size: 20px; text-align: justify;">
+                    ${generateLoremIpsum()}
+                </p>
+            </div>
+        `;
 
-      // Convert the modified HTML content to a PDF document
-      html2pdf()
-        .from(modifiedContent)
-        .toPdf()
-        .get("pdf")
-        .then((pdf) => {
-          // Add third page for Table of Contents
-          pdf.addPage();
-          pdf.text("Table of Contents", 10, 10);
-          // Add table for Table of Contents
-          addTableOfContents(pdf, JSON.parse(menuData));
+        const pdf = await html2pdf().from(modifiedContent).toPdf().get("pdf");
 
+        // Add third page for Table of Contents
+        pdf.addPage();
+        pdf.text("Table of Contents", 10, 10);
+        // Add table for Table of Contents
+        addTableOfContents(pdf, JSON.parse(menuData));
 
+        // Page for tab name
+        pdf.addPage();
+        pdf.text("TabName", 10, 10);
 
+        const damageDataStrings = localStorage.getItem("DamageData");
+        const damageData = JSON.parse(damageDataStrings || "{}");
+        const menuDataa = JSON.parse(localStorage.getItem("menuData") || "{}");
 
-
-
-
-
-
-
-          
-          // page for tabname
-          pdf.addPage();
-          pdf.text("TabName", 10, 10);
-
-          const menuDataa = JSON.parse(localStorage.getItem("menuData"));
-
-          // Loop through each menu item in menuDataa
-          for (const key in menuDataa) {
+        for (const key in menuDataa) {
             const menuItem = menuDataa[key];
             const subdetails = menuItem.subdetails;
-          
-            // Check if subdetails exist for the current menu item
+
             if (subdetails) {
-              console.log("Menu Item:", menuItem.name);
-          
-              // Loop through each subdetail entry
-              let isFirstSubdetail = true; // Flag to track first subdetail
-              for (const subdetailKey in subdetails) {
-                const subdetailValue = subdetails[subdetailKey];
-                console.log("subdetailKey", subdetailValue)
-          
-                console.log("subdetailKey1", { tabname: subdetailValue.tabname, damage1: subdetailValue.damage1 });
-                console.log("subdetailKey2", { tabname: subdetailValue.tabname });
-
-
-
-                // Print separator before each subdetail except the first one
-                if (!isFirstSubdetail) {
-                  console.log("-------");
+                for (const subdetailKey in subdetails) {
+                  const subdetailValue = subdetails[subdetailKey];
+                  for (const abc in subdetailValue){
+                    const tabvalue = [subdetailValue[abc].tabname]
+                    console.log("vedant", tabvalue);
+                        const damageValue = damageData[subdetailValue[abc].Damage1Data];
+                        if (damageValue && damageValue.Damage1red) {
+                            pdf.addPage();
+                            pdf.setFontSize(18);
+                            pdf.setTextColor(255, 0, 0); // Red color
+                            pdf.text("Damage1red Data", 10, 20);
+                            pdf.setTextColor(0, 0, 0); // Reset text color to black
+                            pdf.setFontSize(12);
+                            pdf.text(tabvalue, 10, 40);
+                            pdf.text(damageValue.Damage1red, 10, 60);
+                            console.log("DamageValue" , damageValue)
+                            console.log("subdetailValue" , subdetailValue) ;
+                        }
+                    }
                 }
-                isFirstSubdetail = false;
-          
-                console.log("Subdetail ID:", subdetailValue);
-                console.log("Subdetail tabname:", subdetailValue.damage1);
-          
-                // You can further loop through subdetailValue properties here to print more details
-                // if needed (e.g., damage1, damage2, etc.)
-              }
-            } else {
-              console.log("No subdetails found for", menuItem.name);
             }
-          }
-          
+        }
 
 
-          // Get raw damageData string from localStorage
-          // Get raw damageData string from localStorage
-          // const damageDataStrings = localStorage.getItem("DamageData");
-
-          // // Parse the JSON string
-          // const damageData = JSON.parse(damageDataStrings);
-          
-          // // Extract all IDs with suffix removal (not used for menuData retrieval)
-          // const damageDataIds = Object.keys(damageData).map(id => id.replace(/(_d1|_d2|_s1|_s2)$/, ""));
-          
-          // console.log("All Damage Data IDs (without suffixes):", damageDataIds);
-          
-          // // **Log the retrieved menuData**
-          // console.log("menuData:", JSON.parse(localStorage.getItem("menuData"))); // Or a variable storing parsed menuData
-          
-
-
-         
-
-
-
-
-          let imageURL; // Declare imageURL outside of the if block
-          let imageIndex = 0; // Keep track of the current image index
-
-          const coverphotoImageData = JSON.parse(
-            localStorage.getItem("coverphotoImage")
-          );
-
-          if (coverphotoImageData) {
-            const imageKeys = Object.keys(coverphotoImageData); // Move imageKeys here
+        // Add images
+        const coverphotoImageData = JSON.parse(localStorage.getItem("coverphotoImage") || "{}");
+        if (coverphotoImageData) {
+            const imageKeys = Object.keys(coverphotoImageData);
 
             function addImageToPDF(index, imgIndex) {
-              if (index < imageKeys.length) {
-                const img = new Image();
-                const currentImageKey = imageKeys[index];
-                const currentImageData = coverphotoImageData[currentImageKey];
+                if (index < imageKeys.length) {
+                    const img = new Image();
+                    const currentImageKey = imageKeys[index];
+                    const currentImageData = coverphotoImageData[currentImageKey];
 
-                if (imgIndex < currentImageData.length) {
-                  imageURL = currentImageData[imgIndex].url;
-                  const imageCaption = currentImageData[imgIndex].caption; // Get the caption of the image
-                  console.log(
-                    `Image URL <span class="math-inline">\{index\}\-</span>{imgIndex}:`
-                  );
+                    if (imgIndex < currentImageData.length) {
+                        img.onload = function () {
+                            const x = (imgIndex % 2) * 100 + 20;
+                            const y = Math.floor(imgIndex / 2) * 80 + 50;
 
-                  img.onload = function () {
-                    // Calculate coordinates for image
-                    const x = (imgIndex % 2) * 100 + 20; // Adjust spacing as needed
-                    const y = Math.floor(imgIndex / 2) * 80 + 50; // Adjust spacing as needed
+                            pdf.addImage(this, "JPEG", x, y, 80, 60);
+                            pdf.text(currentImageData[imgIndex].caption, x, y + 70);
 
-                    pdf.addImage(this, "JPEG", x, y, 80, 60); // Add the image to the PDF
-                    pdf.text(imageCaption, x, y + 70); // Add the caption below the image
+                            if (imgIndex === currentImageData.length - 1) {
+                                if (index < imageKeys.length - 1) {
+                                    pdf.addPage();
+                                }
+                                addImageToPDF(index + 1, 0);
+                            } else {
+                                addImageToPDF(index, imgIndex + 1);
+                            }
+                        };
 
-                    // Display additional data for the current image
-                    // const LocalStorageSummaryData =
-                    //   getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
-                    // displayAdditionalData(pdf, LocalStorageSummaryData, y + 80); // Display data below image
-
-                    // If all images are added for the current key, move to the next key
-                    if (imgIndex === currentImageData.length - 1) {
-                      if (index < imageKeys.length - 1) {
-                        pdf.addPage(); // Add a new page for the next ID
-                      }
-                      addImageToPDF(index + 1, 0); // Recursively call for the next image set
+                        img.src = currentImageData[imgIndex].url;
                     } else {
-                      addImageToPDF(index, imgIndex + 1); // Recursively call for the next image
+                        if (index < imageKeys.length - 1) {
+                            pdf.addPage();
+                        }
+                        addImageToPDF(index + 1, 0);
                     }
-                  };
-
-                  img.src = imageURL; // Set the image source to load the image
                 } else {
-                  // If all images are added for the current key, display additional data and move to next key
-                  const LocalStorageSummaryData =
-                    getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
-                  displayAdditionalData(pdf, LocalStorageSummaryData, y + 20); // Display data below last image
-
-                  if (index < imageKeys.length - 1) {
-                    pdf.addPage(); // Add a new page for the next ID
-                  }
-                  addImageToPDF(index + 1, 0); // Recursively call for the next image set
+                    pdf.save("image_and_summary.pdf");
                 }
-              } else {
-                // All images and data added, save the PDF
-                pdf.save("image_and_summary.pdf");
-              }
             }
 
             pdf.addPage();
-
-            // Add title for the image
             pdf.setFontSize(16);
             pdf.text("Title for the Image", 10, 20);
-            addImageToPDF(0, 0); // Start the recursive function
-          } else {
+            addImageToPDF(0, 0);
+        } else {
             console.error("No image data found in local storage.");
-          }
-
-          const damageDataString = localStorage.getItem("DamageData");
-
-          // Check if data exists
-          if (damageDataString) {
-            try {
-              const damageData = JSON.parse(damageDataString);
-              console.log("Damage Data:", damageData);
-              // You can now access the damage data object and its properties
-            } catch (error) {
-              console.error("Error parsing DamageData:", error);
-            }
-          } else {
-            console.warn("DamageData not found in local storage.");
-          }
-        });
+        }
+    } catch (error) {
+        console.error("Error exporting PDF:", error);
     }
-  };
+};
+
+  
 
   function generateLoremIpsum() {
     const loremIpsum = `
