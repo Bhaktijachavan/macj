@@ -230,7 +230,7 @@ const ColorPalette = ({ onClose }) => {
           addTableOfContents(pdf, JSON.parse(menuData));
 
           pdf.addPage();
-          pdf.text("SubName", 10, 10);
+          pdf.text("Damage Panel Data", 10, 10);
 
           const damageDataString = localStorage.getItem("DamageData");
           if (damageDataString) {
@@ -238,44 +238,44 @@ const ColorPalette = ({ onClose }) => {
               const damageData = JSON.parse(damageDataString);
 
               // Function to display damage data (improved for clarity)
+              // Function to display damage data (improved for clarity)
               function displayDamageData(damageObject, startY) {
-                pdf.text(
-                  10,
-                  startY + 10,
-                  `Rating: ${damageObject.rating?.ratingName1 || ""}`
-                );
-                let materialsText = "Materials:\n";
-                let redText = damageObject.Damage1red || "";
+                const ratingText = `Rating: ${damageObject.rating?.ratingName1 || ""}`;
+                const descriptionText = `Description: ${damageObject.description || ""}`;
+                const materialsText = `Materials:\n${damageObject.Damage1red || ""}`;
+                const observationText = `Observation: ${damageObject.Damage1black || ""}`;
+              
+                // Set initial Y position
+                let currentY = startY;
+              
+                // Display rating
+                pdf.text(10, currentY, ratingText);
+                currentY += 5; // Add spacing after rating
+              
+                // Display materials
                 pdf.setTextColor(255, 0, 0); // Set text color to red
-                pdf.text(40, startY + 20, `Materials:  ${redText}`);
+                pdf.text(60, currentY, materialsText);
                 pdf.setTextColor(0); // Reset text color to black
-
-                // Handle multiple red text entries (improved)
-                if (redText.includes("\n")) {
-                  const redLines = redText.split("\n");
-                  for (let i = 1; i < redLines.length; i++) {
-                    materialsText += `  ${redLines[i]}\n`;
-                  }
-                }
-
-                pdf.text(40, startY + 30, materialsText);
-
-                const blackText = damageObject.Damage1black || "";
-                pdf.text(
-                  40,
-                  startY + materialsText.length + 10,
-                  `Observation:  ${blackText}`
-                );
-
-                pdf.text(
-                  10,
-                  startY,
-                  `Description: ${damageObject.description || ""}`
-                );
-
-                // Adjust startY for content height (improved)
-                return startY + materialsText.length + blackText.length + 40;
+                currentY += pdf.splitTextToSize(materialsText, pdf.internal.pageSize.getWidth() - 20).length * 5 + 2;
+              
+                // Display observation
+                pdf.text(60, currentY, observationText);
+                const observationHeight = pdf.splitTextToSize(observationText, pdf.internal.pageSize.getWidth() - 20).length * 5;
+                currentY += observationHeight + 2; // Calculate height of multi-line text
+              
+                // Display description
+                pdf.text(60, currentY, descriptionText);
+                const descriptionHeight = pdf.splitTextToSize(descriptionText, pdf.internal.pageSize.getWidth() - 20).length * 5;
+                currentY += descriptionHeight + 2; // Calculate height of multi-line text
+              
+                // Add small gap before separator
+                currentY += 1;
+              
+                // Return the updated Y position
+                return currentY;
               }
+              
+              
 
               // Adjust starting position for damage data
               let currentY = 20;
@@ -286,7 +286,7 @@ const ColorPalette = ({ onClose }) => {
                 currentY = displayDamageData(damageObject, currentY);
 
                 // Add separator line between damage sections (optional)
-                pdf.text(10, currentY + 10, "----------"); // Add separator
+                pdf.text(10, currentY, "----------"); // Add separator
                 currentY += 20; // Add spacing after separator
               }
             } catch (error) {
@@ -496,74 +496,70 @@ const ColorPalette = ({ onClose }) => {
 
     let currentYPosition = 40; // Initial vertical position for text placement
     let tabCounter = 1; // Initialize counter for tab value numbering
-    
-   // Initialize table data with headers
-const tableData = [["Sr. No", "TabName", "Damage Data"]];
 
-// Iterate over menuDataa to populate the table
-for (const key in menuDataa) {
-  const menuItem = menuDataa[key];
-  const subdetails = menuItem.subdetails;
+    // Initialize table data with headers
+    const tableData = [["Sr. No", "TabName", "Damage Data"]];
 
-  if (subdetails) {
-    for (const subdetailKey in subdetails) {
-      const subdetailValue = subdetails[subdetailKey];
+    // Iterate over menuDataa to populate the table
+    for (const key in menuDataa) {
+      const menuItem = menuDataa[key];
+      const subdetails = menuItem.subdetails;
 
-      for (const abc in subdetailValue) {
-        const tabvalue = subdetailValue[abc].tabname;
-        console.log("vedant", tabvalue);
+      if (subdetails) {
+        for (const subdetailKey in subdetails) {
+          const subdetailValue = subdetails[subdetailKey];
 
-        // Check if damageValue exists and has the Damage1red property
-        const damageValue = damageData[subdetailValue[abc].Damage1Data];
-        if (damageValue && damageValue.Damage1red) {
-          // Add row data to tableData
-          tableData.push([tabCounter, tabvalue, damageValue.Damage1red]);
+          for (const abc in subdetailValue) {
+            const tabvalue = subdetailValue[abc].tabname;
+            console.log("vedant", tabvalue);
 
-          // Increment tabCounter
-          tabCounter++;
+            // Check if damageValue exists and has the Damage1red property
+            const damageValue = damageData[subdetailValue[abc].Damage1Data];
+            if (damageValue && damageValue.Damage1red) {
+              // Add row data to tableData
+              tableData.push([tabCounter, tabvalue, damageValue.Damage1red]);
 
-          console.log("DamageValue", damageValue);
-          console.log("subdetailValue", subdetailValue);
+              // Increment tabCounter
+              tabCounter++;
+
+              console.log("DamageValue", damageValue);
+              console.log("subdetailValue", subdetailValue);
+            }
+          }
         }
       }
     }
-  }
-}
 
-// Set table styling
-const tableOptions = {
-  startY: currentYPosition,
-  theme: "grid", // Apply grid theme for table
-  headStyles: {
-    fillColor: [135, 206, 250], // Background color for header row
-  },
-  columnStyles: {
-    0: { cellWidth: 20 }, // Adjust column width for Sr. No
-    1: { cellWidth: 50 }, // Adjust column width for TabName
-    2: { cellWidth: 80 }, // Adjust column width for Damage Data
-  },
-};
+    // Set table styling
+    const tableOptions = {
+      startY: currentYPosition,
+      theme: "grid", // Apply grid theme for table
+      headStyles: {
+        fillColor: [135, 206, 250], // Background color for header row
+      },
+      columnStyles: {
+        0: { cellWidth: 20 }, // Adjust column width for Sr. No
+        1: { cellWidth: 50 }, // Adjust column width for TabName
+        2: { cellWidth: 80 }, // Adjust column width for Damage Data
+      },
+    };
 
-const tableRows = tableData.map((rowData, rowIndex) => {
-  return rowData.map((cellData, colIndex) => {
-    // Set text color to red for cells in the "Damage Data" column
-    if (colIndex === 2 && rowIndex > 0) {
-      return { content: cellData, styles: { textColor: [255, 0, 0] } };
-    }
-    return cellData;
-  });
-});
+    const tableRows = tableData.map((rowData, rowIndex) => {
+      return rowData.map((cellData, colIndex) => {
+        // Set text color to red for cells in the "Damage Data" column
+        if (colIndex === 2 && rowIndex > 0) {
+          return { content: cellData, styles: { textColor: [255, 0, 0] } };
+        }
+        return cellData;
+      });
+    });
 
-// Generate table using autoTable method
-pdf.autoTable({
-  head: [tableRows[0]], // Extract header row from tableRows
-  body: tableRows.slice(1), // Extract data rows from tableRows
-  ...tableOptions
-});
-
-
-    
-    
+    // Generate table using autoTable method
+    pdf.autoTable({
+      head: [tableRows[0]], // Extract header row from tableRows
+      body: tableRows.slice(1), // Extract data rows from tableRows
+      ...tableOptions,
+    });
   }
 
   function displayAdditionalData(
