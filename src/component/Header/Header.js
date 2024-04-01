@@ -263,14 +263,17 @@ const Header = ({ onButtonClick }) => {
   const saveTpz = () => {
     const getTemp = localStorage.getItem("menuData");
     const getPanalData = localStorage.getItem("TempPanelData");
+    const ratingsData1 = localStorage.getItem("ratingsData");
     if (getTemp == null) {
       return alert("Please Open Template First");
     }
     const menuData = JSON.parse(getTemp);
     const TempPanelData = JSON.parse(getPanalData);
+    const ratingsData= JSON.parse(ratingsData1);
     const tempData = {
       menuData,
       TempPanelData,
+      ratingsData
     };
     const encryptedData = encryptData(tempData, encryptionKey);
     downloadFileTpz(encryptedData);
@@ -286,6 +289,11 @@ const Header = ({ onButtonClick }) => {
         "TempPanelData",
         JSON.stringify(decryptedData.TempPanelData)
       );
+
+      localStorage.setItem(
+        "ratingsData",
+        JSON.stringify(decryptedData.ratingsData)
+      )
       alert("successfully opened tpz file ");
     }
   };
