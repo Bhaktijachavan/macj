@@ -376,8 +376,9 @@ const ColorPalette = ({ onClose }) => {
                 } else {
                   // If all images are added for the current key, display additional data and move to next key
                   const LocalStorageSummaryData =
-                    getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
-                  displayAdditionalData(pdf, LocalStorageSummaryData, y + 20); // Display data below last image
+                    // getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
+                  displayAdditionalData();
+                   // Display data below last image
                   // Display data below last image
 
                   if (index < imageKeys.length - 1) {
