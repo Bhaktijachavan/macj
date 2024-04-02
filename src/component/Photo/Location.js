@@ -24,9 +24,9 @@ const Location = ({ imageUrl }) => {
   const [subnames, setSubnames] = useState([]);
   const [NewTabs, setNewTabs] = useState();
 
-  // useEffect(() => {
-  //   console.log("subname", subnames);
-  // }, [subnames]);
+  useEffect(() => {
+    console.log("subname", subnames);
+  }, [subnames]);
 
   useEffect(() => {
     if (imageUrl != null) {
@@ -77,7 +77,7 @@ const Location = ({ imageUrl }) => {
           (item) => item.subitems.map((subitem) => subitem.subName)
         );
         // console.log("extractedSubnames", extractedSubnames);
-        setSubnames(extractedSubnames);
+        // setSubnames(extractedSubnames);
       }
     };
 
@@ -98,19 +98,6 @@ const Location = ({ imageUrl }) => {
       setSubmenuDetails(null);
     }
   }, [selectedSubmenuId, menuData, selectedMenuId]);
-  // useEffect(() => {
-  //   if ((selectedIcon && selectedImage) || (selectedIcon && uploadedFile)) {
-  //     const imageUrl = selectedImage
-  //       ? selectedImage.url
-  //       : typeof uploadedFile === "string"
-  //       ? uploadedFile
-  //       : URL.createObjectURL(uploadedFile);
-  //     setImageURL(imageUrl);
-  //     console.log("Generated URL:", imageUrl); // Console log the URL
-  //   } else {
-  //     setImageURL(null);
-  //   }
-  // }, [selectedIcon, selectedImage, uploadedFile]);
 
   const handleMenuChange = (e) => {
     const selectedId = e.target.value;
@@ -123,6 +110,19 @@ const Location = ({ imageUrl }) => {
     setSelectedSubmenuId(selectedId);
     setPanelId(null); // Reset panelId when submenu changes
     // Update submenu details based on selected submenu ID
+    const submenuItems = menuData[selectedMenuId].subitems;
+
+    const selectedSubmenuItem = submenuItems.find(
+      (item) => item.id.toString() === selectedId
+    );
+
+    if (selectedSubmenuItem) {
+      const selectedSubName = selectedSubmenuItem.subName;
+      // console.log("Selected subName:", selectedSubName);
+      setSubnames(selectedSubName);
+    } else {
+      console.log("Submenu item not found for the selected id:", selectedId);
+    }
     if (
       menuData &&
       menuData[selectedMenuId] &&
