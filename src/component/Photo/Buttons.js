@@ -24,6 +24,7 @@ const Buttons = ({
   onIconPreview,
   onDeleteBulk,
   subnames,
+  NewTabs,
 }) => {
   // tablistconst [isPopupOpen, setIsPopupOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
@@ -227,6 +228,7 @@ const Buttons = ({
                       SetImageIndex={SetImageIndex}
                       selectedPreviewIcon={selectedPreviewIcon}
                       subnames={subnames}
+                      NewTabs={NewTabs}
                     />
                   </div>
                 )}
