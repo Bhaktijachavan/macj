@@ -239,167 +239,90 @@ const Test = ({ onClose }) => {
           // addSummaryTable(pdf, JSON.parse(menuData));
           let imageURL; // Declare imageURL outside of the if block
           let imageIndex = 0; // Keep track of the current image index
+          const coverphotoImageData = JSON.parse(localStorage.getItem("coverphotoImage"));
+const damageDataString = localStorage.getItem("DamageData");
 
-          const coverphotoImageData = JSON.parse(
-            localStorage.getItem("coverphotoImage")
-          );
+if (coverphotoImageData && damageDataString) {
+  try {
+    const damageData = JSON.parse(damageDataString);
+    const imageKeys = Object.keys(coverphotoImageData);
 
-          if (coverphotoImageData) {
-            const imageKeys = Object.keys(coverphotoImageData); // Move imageKeys here
+   // Create a new jsPDF instance
+const pdf = new jsPDF();
 
-            function addImageToPDF(index, imgIndex) {
-              if (index < imageKeys.length) {
-                const img = new Image();
-                const currentImageKey = imageKeys[index];
-                const currentImageData = coverphotoImageData[currentImageKey];
+// Function to display damage data
+function displayDamageData(damageObject, startY) {
+  // Set initial Y position
+  let currentY = startY;
 
-                if (imgIndex < currentImageData.length) {
-                  imageURL = currentImageData[imgIndex].url;
-                  const imageCaption = currentImageData[imgIndex].caption;
-                  const subnames = currentImageData[imgIndex].subnames; // Access subnames here
+  // Display description
+  const descriptionText = `Description: ${damageObject.description || ""}`;
+  pdf.text(10, startY+10, descriptionText);
+  currentY += 10; // Add spacing after description
 
-                  // Add subnames to the top of the page before images (only for first image)
-                  if (imgIndex === 0) {
-                    pdf.text(subnames.join(", "), 10, 40); // Adjust spacing as needed
-                  }
+  // Display rating
+  const ratingText = `Rating: ${damageObject.rating?.ratingName1 || ""}`;
+  pdf.text(10, currentY+10, ratingText);
+  currentY = Math.max(currentY, pdf.getTextDimensions(ratingText).h) + 10; // Adjust Y position based on the height of the text
+  
+  // Display materials in red text
+  const materialsText = `Materials: ${damageObject.Damage1red || ""}`;
+  pdf.setTextColor(255, 0, 0); // Set text color to red
+  pdf.text(80, currentY, materialsText);
+  pdf.setTextColor(0); // Reset text color to black
+  currentY += Math.max(5, pdf.getTextDimensions(materialsText).h) +1; // Add spacing after materials
 
-                  img.onload = function () {
-                    const x = (imgIndex % 2) * 100 + 20;
-                    const y = Math.floor(imgIndex / 2) * 80 + 50;
+  // Display observation
+  const observationText = `Observation: ${damageObject.Damage1black || ""}`;
+  pdf.text(80, currentY, observationText);
+  currentY += Math.max(10, pdf.getTextDimensions(observationText).h) + 1; // Add spacing after observation
 
-                    pdf.addImage(this, "JPEG", x, y, 80, 60);
-                    pdf.text(imageCaption, x, y + 70);
-                    // If all images are added for the current key, move to the next key
-                    if (imgIndex === currentImageData.length - 1) {
-                      if (index < imageKeys.length - 1) {
-                        pdf.addPage(); // Add a new page for the next ID
-                      }
-                      addImageToPDF(index + 1, 0); // Recursively call for the next image set
-                    } else {
-                      addImageToPDF(index, imgIndex + 1); // Recursively call for the next image
-                    }
-                  };
+  // Return the updated Y position
+  return currentY;
+}
 
-                  img.src = imageURL; // Set the image source to load the image
-                } else {
-                  // If all images are added for the current key, display additional data and move to next key
-                  const LocalStorageSummaryData =
-                    getSummaryDataFromLocalStorage(currentImageKey); // Replace with your logic to get data
-                  displayAdditionalData(pdf, LocalStorageSummaryData, y + 20); // Display data below last image
-                  // Display data below last image
 
-                  if (index < imageKeys.length - 1) {
-                    pdf.addPage(); // Add a new page for the next ID
-                  }
-                  addImageToPDF(index + 1, 0); // Recursively call for the next image set
-                }
-              } else {
-                // All images and data added, save the PDF
-                pdf.addPage(); // Add one more page before generating summary tables
-                pdf.text("Report Summary", 70, 10);
-                addSummaryTable(pdf, JSON.parse(menuData));
+// Iterate through each damage object in damageData
+Object.keys(damageData).forEach((key, index) => {
+    const damageObject = damageData[key];
+    const currentImageKey = imageKeys[index]; // Get corresponding image key
 
-                pdf.save("Report.pdf");
-              }
-            }
+    // Add a new page before adding content for each set of data
+    if (index > 0) {
+        pdf.addPage();
+    }
 
-            // pdf.addPage();
+    // Display damage data
+    let startY = 20; // Initial Y position for damage data
+    startY = displayDamageData(damageObject, startY);
 
-            // Add title for the image
-            pdf.setFontSize(16);
-            pdf.text("Title for the Image", 10, 20);
-            addImageToPDF(0, 0); // Start the recursive function
-          } else {
-            console.error("No image data found in local storage.");
-          }
+    // Display images and captions from currentImageKey
+    coverphotoImageData[currentImageKey].forEach((imageData, imgIndex) => {
+        // Embed image
+        pdf.addImage(imageData.url, 'JPEG', 10, startY, 60, 60);
 
-          pdf.addPage();
-          pdf.text("Damage Panel Data", 10, 10);
+        // Add caption
+        pdf.text(10, startY + 70, imageData.caption);
 
-          const damageDataString = localStorage.getItem("DamageData");
-          if (damageDataString) {
-            try {
-              const damageData = JSON.parse(damageDataString);
+        // Adjust Y position for the next image
+        startY += 120; // Increase Y position for the next image
+    });
+});
 
-              // Function to display damage data (improved for clarity)
-              // Function to display damage data (improved for clarity)
-              function displayDamageData(damageObject, startY) {
-                const ratingText = `Rating: ${
-                  damageObject.rating?.ratingName1 || ""
-                }`;
-                const descriptionText = `Description: ${
-                  damageObject.description || ""
-                }`;
-                const materialsText = `Materials:\n${
-                  damageObject.Damage1red || ""
-                }`;
-                const observationText = `Observation: ${
-                  damageObject.Damage1black || ""
-                }`;
+// Save the PDF
+pdf.save("Report.pdf");
 
-                // Set initial Y position
-                let currentY = startY;
+    console.log("PDF generated successfully.");
 
-                // Display rating
-                pdf.text(10, currentY, ratingText);
-                currentY += 5; // Add spacing after rating
+  } catch (error) {
+    console.error("Error parsing DamageData:", error);
+  }
+} else {
+  console.warn("DamageData or coverphotoImage not found in local storage.");
+}
+          
+          
 
-                // Display materials
-                pdf.setTextColor(255, 0, 0); // Set text color to red
-                pdf.text(60, currentY, materialsText);
-                pdf.setTextColor(0); // Reset text color to black
-                currentY +=
-                  pdf.splitTextToSize(
-                    materialsText,
-                    pdf.internal.pageSize.getWidth() - 20
-                  ).length *
-                    5 +
-                  2;
-
-                // Display observation
-                pdf.text(60, currentY, observationText);
-                const observationHeight =
-                  pdf.splitTextToSize(
-                    observationText,
-                    pdf.internal.pageSize.getWidth() - 20
-                  ).length * 5;
-                currentY += observationHeight + 2; // Calculate height of multi-line text
-
-                // Display description
-                pdf.text(60, currentY, descriptionText);
-                const descriptionHeight =
-                  pdf.splitTextToSize(
-                    descriptionText,
-                    pdf.internal.pageSize.getWidth() - 20
-                  ).length * 5;
-                currentY += descriptionHeight + 2; // Calculate height of multi-line text
-
-                // Add small gap before separator
-                // currentY += 1;
-                addImageToPDF();
-                pdf.addPage();
-                // Return the updated Y position
-                return 20;
-              }
-
-              // Adjust starting position for damage data
-              let currentY = 20;
-
-              // Iterate through each damage object in DamageData
-              for (const key in damageData) {
-                const damageObject = damageData[key];
-                currentY = displayDamageData(damageObject, currentY);
-
-                // Add separator line between damage sections (optional)
-                // Add separator
-                // currentY += 20; // Add spacing after separator
-              }
-            } catch (error) {
-              console.error("Error parsing DamageData:", error);
-            }
-          } else {
-            console.warn("DamageData not found in local storage.");
-          }
         });
     }
   };
