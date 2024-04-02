@@ -20,6 +20,7 @@ const EditImageTabList = ({
   SetImageIndex,
   caption,
   subnames,
+  NewTabs,
 }) => {
   const overlayImageRef = useRef(null);
   const [activeTab, setActiveTab] = useState(10);
@@ -101,6 +102,7 @@ const EditImageTabList = ({
       imageData[id].push({
         id: index,
         subnames: subnames,
+        NewTabs: NewTabs,
         caption: caption,
         url: url,
       });

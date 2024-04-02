@@ -325,6 +325,7 @@ const Location = ({ imageUrl }) => {
               onSelectedImage={setSelectedImage}
               onDeleteBulk={setUploadedFile}
               subnames={subnames}
+              NewTabs={NewTabs}
             />
           </div>
           {/* <button onClick={handleImageSet} title="Navigate to Panel">
