@@ -203,18 +203,21 @@ const ColorPalette = ({ onClose }) => {
               ${content}
             </div>
             <div>
-        ${extractedImages.map(
-          (imageData) => `
+        ${extractedImages
+          .map(
+            (imageData) => `
               <img src="${imageData}" style="width: 100%; height: auto;">
             `
-        )}
+          )
+          .join("")}
       </div>
       <div style="page-break-before: always;"></div>
-            <div style="padding: 25px;" >
-            <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
-            <p style="font-size: 20px; text-align: justify;">
+
+      <div style="padding: 25px;">
+          <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
+          <p style="font-size: 20px; text-align: justify;">
               ${generateLoremIpsum()}
-            </p>
+          </p>
            
       
           </div>
