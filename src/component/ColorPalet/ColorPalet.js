@@ -245,6 +245,7 @@ const ColorPalette = ({ onClose }) => {
             localStorage.getItem("coverphotoImage")
           );
           const damageDataString = localStorage.getItem("DamageData");
+          console.log("damageDataString", damageDataString);
 
           if (coverphotoImageData && damageDataString) {
             try {
@@ -271,11 +272,11 @@ const ColorPalette = ({ onClose }) => {
                 pdf.text(10, currentY, descriptionLines);
                 currentY += descriptionHeight + lineSpacing; // Add fixed spacing after description
 
-                // Display rating
-                const ratingText = `Rating: ${
-                  damageObject.rating?.ratingName1 || ""
-                }`;
-                const ratingLines = pdf.splitTextToSize(ratingText, 180); // Adjust width as needed
+                const ratingText = damageObject.rating;
+                console.log("ratings", ratingText);
+                const ratingValue = Object.values(ratingText);
+                console.log("ratingValue", ratingValue);
+                const ratingLines = pdf.splitTextToSize(ratingValue, 180); // Adjust width as needed
                 const ratingHeight = ratingLines.reduce(
                   (acc, line) => acc + pdf.getTextDimensions(line).h,
                   0
