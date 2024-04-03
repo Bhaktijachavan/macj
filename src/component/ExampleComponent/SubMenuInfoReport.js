@@ -264,7 +264,7 @@ const SubMenuInfoReport = () => {
     // Save updated menuData to localStorage
     localStorage.setItem("menuData", JSON.stringify(updatedMenuData));
 
-    console.log("Data saved to localStorage:", updatedMenuData);
+    alert("Data saved Successfully");
 
     // Handle optional download logic (commented out)
     // ... code to download JSON as a file ...

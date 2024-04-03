@@ -82,6 +82,7 @@ function CoverPageDesigner({ onClose }) {
 
     // Save the content to localStorage
     localStorage.setItem("outputContent", content);
+    alert("Successfully Saved");
 
     // Convert the HTML content to a PDF document
     html2pdf()

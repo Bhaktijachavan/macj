@@ -273,9 +273,9 @@ const ColorPalette = ({ onClose }) => {
                 currentY += descriptionHeight + lineSpacing; // Add fixed spacing after description
 
                 const ratingText = damageObject.rating;
-                console.log("ratings", ratingText);
-                const ratingValue = Object.values(ratingText);
-                console.log("ratingValue", ratingValue);
+                // console.log("ratings", ratingText);
+                const ratingValue = `Ratings : ${Object.values(ratingText)}`;
+                // console.log("ratingValue", ratingValue);
                 const ratingLines = pdf.splitTextToSize(ratingValue, 180); // Adjust width as needed
                 const ratingHeight = ratingLines.reduce(
                   (acc, line) => acc + pdf.getTextDimensions(line).h,

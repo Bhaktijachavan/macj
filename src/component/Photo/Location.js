@@ -72,10 +72,10 @@ const Location = ({ imageUrl }) => {
       // console.log("menudata from local", storedMenuData);
       if (storedMenuData) {
         setMenuData(JSON.parse(storedMenuData));
-        const parsedMenuData = JSON.parse(storedMenuData);
-        const extractedSubnames = Object.values(parsedMenuData).flatMap(
-          (item) => item.subitems.map((subitem) => subitem.subName)
-        );
+        // const parsedMenuData = JSON.parse(storedMenuData);
+        // const extractedSubnames = Object.values(parsedMenuData).flatMap(
+        //   (item) => item.subitems.map((subitem) => subitem.subName)
+        // );
         // console.log("extractedSubnames", extractedSubnames);
         // setSubnames(extractedSubnames);
       }

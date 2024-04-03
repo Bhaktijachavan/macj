@@ -58,6 +58,7 @@ const EditImageTabList = ({
     if (overlayImageRef.current) {
       overlayImageRef.current.handleDownload();
     }
+    handleClosePopup(true);
   };
   // const handleSaveChanges = () => {
   //   console.log("Changes:", {
