@@ -184,7 +184,7 @@ const ColorPalette = ({ onClose }) => {
     if (storedData) {
       setLocalStorageData(JSON.parse(storedData));
     }
-    console.log("localStorage", localStorageData);
+    // console.log("localStorage", localStorageData);
   }, []);
   const exportCoverPageToPDF = () => {
     // Retrieve the content from localStorage saved by CoverPageDesigner
@@ -203,15 +203,14 @@ const ColorPalette = ({ onClose }) => {
               ${content}
             </div>
             <div>
-        ${extractedImages
-          .map(
-            (imageData) => `
+        ${extractedImages.map(
+          (imageData) => `
               <img src="${imageData}" style="width: 100%; height: auto;">
             `
-          )
-          .join("")}
+        )}
       </div>
-            <div style="padding: 25px;">
+      <div style="page-break-before: always;"></div>
+            <div style="padding: 25px;" >
             <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
             <p style="font-size: 20px; text-align: justify;">
               ${generateLoremIpsum()}
@@ -328,8 +327,7 @@ const ColorPalette = ({ onClose }) => {
                 // Initial Y position for damage data
                 let startX = 10;
                 let startY = 35;
-                let imagesPerPage = 4; // Maximum number of images per page
-                let imagesAdded = 0;
+
                 startY = displayDamageData(damageObject, startY);
 
                 // Check if coverphotoImageData[currentImageKey] is defined before iterating over it
@@ -951,12 +949,6 @@ w-full px-4 bg-white border border-black"
                     >
                       Generate PDF & Close
                     </button>{" "}
-                    {/* <button
-                      className="border-2 border-black py-1 px-2"
-                      onClick={generateCombinedPDF}
-                    >
-                      Generate PDF & Close
-                    </button> */}
                   </div>
                 </div>
               </div>
