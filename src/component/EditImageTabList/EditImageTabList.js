@@ -21,6 +21,7 @@ const EditImageTabList = ({
   caption,
   subnames,
   NewTabs,
+  selectedText,
 }) => {
   const overlayImageRef = useRef(null);
   const [activeTab, setActiveTab] = useState(10);
@@ -47,7 +48,7 @@ const EditImageTabList = ({
     setArrowColor(color);
   };
   // useEffect(() => {
-  console.log("subname in editinmage", subnames);
+  console.log("selectedText in editinmage", selectedText);
   // }, [subnames]);
   console.log("edit image id ", id);
 
@@ -102,6 +103,7 @@ const EditImageTabList = ({
 
       imageData[id].push({
         id: index,
+        selectedText: selectedText,
         subnames: subnames,
         NewTabs: NewTabs,
         caption: caption,

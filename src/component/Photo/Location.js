@@ -23,10 +23,11 @@ const Location = ({ imageUrl }) => {
   const [imageURL, setImageURL] = useState(null);
   const [subnames, setSubnames] = useState([]);
   const [NewTabs, setNewTabs] = useState();
+  const [selectedText, setSelectedText] = useState();
 
   useEffect(() => {
-    console.log("subname", subnames);
-  }, [subnames]);
+    console.log("selectedText", selectedText);
+  }, [selectedText]);
 
   useEffect(() => {
     if (imageUrl != null) {
@@ -44,7 +45,7 @@ const Location = ({ imageUrl }) => {
     console.log("image index", imageIndex);
     // Retrieve image data from local storage based on the imageIndex
     const imageData = localStorage.getItem("coverphotoImage");
-    console.log("coverphotoImage", imageData);
+    // console.log("coverphotoImage", imageData);
     if (imageData) {
       const parsedImageData = JSON.parse(imageData);
       const imagesArray = parsedImageData[panelId] || [];
@@ -120,6 +121,15 @@ const Location = ({ imageUrl }) => {
       const selectedSubName = selectedSubmenuItem.subName;
       // console.log("Selected subName:", selectedSubName);
       setSubnames(selectedSubName);
+      const summaryData = menuData[selectedMenuId].SummaryData;
+      console.log("SummaryData:", summaryData);
+      for (const key in summaryData) {
+        if (summaryData.hasOwnProperty(key)) {
+          const textareaValue = summaryData[key].textareaValue;
+          // console.log(`Textarea value for ${key}:`, textareaValue);
+          setSelectedText(textareaValue);
+        }
+      }
     } else {
       console.log("Submenu item not found for the selected id:", selectedId);
     }
@@ -326,6 +336,7 @@ const Location = ({ imageUrl }) => {
               onDeleteBulk={setUploadedFile}
               subnames={subnames}
               NewTabs={NewTabs}
+              selectedText={selectedText}
             />
           </div>
           {/* <button onClick={handleImageSet} title="Navigate to Panel">
