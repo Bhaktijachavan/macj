@@ -237,7 +237,7 @@ const ColorPalette = ({ onClose }) => {
           addTableOfContents(pdf, JSON.parse(menuData));
 
           pdf.addPage();
-          pdf.text("Damage Panel Data", 10, 10);
+          // pdf.text("Damage Panel Data", 10, 10);
           // addSummaryTable(pdf, JSON.parse(menuData));
           let imageURL; // Declare imageURL outside of the if block
           let imageIndex = 0; // Keep track of the current image index
@@ -328,63 +328,87 @@ const ColorPalette = ({ onClose }) => {
                 }
 
                 // Display damage data
-                // Initial Y position for damage data
                 let startX = 10;
-                let startY = 35;
+let startY = 35;
+let imagesPerPage = 0;
+const maxImagesPerPage = 4;
+const imageWidth = 70;
+const imageHeight = 60;
+const verticalSpacing = 80; // Vertical spacing between images
 
-                startY = displayDamageData(damageObject, startY);
+// Calculate the height of the damage data section
+let damageDataHeight = displayDamageData(damageObject, startY);
 
-                // Check if coverphotoImageData[currentImageKey] is defined before iterating over it
-                if (coverphotoImageData[currentImageKey]) {
-                  coverphotoImageData[currentImageKey].forEach(
-                    (imageData, imgIndex) => {
-                      const textColor = "#000"; // Black text color
-                      const bgColor = "#DDD"; // Light gray background color
-                      const originalFontSize = pdf.internal.getFontSize(); // Get the original font size
+// Add padding below the damage data section
+startY += damageDataHeight + 20;
 
-                      // Set the desired font size for the specific text
-                      const fontSize = 20; // Adjust font size as needed
+let subName = ''; // Variable to store the current subname
+let tabName = ''; // Variable to store the current tabname
 
-                      // Get text width and height
-                      const textWidth =
-                        (pdf.getStringUnitWidth(imageData.subnames) *
-                          fontSize) /
-                        pdf.internal.scaleFactor;
-                      const textHeight = fontSize;
+if (coverphotoImageData[currentImageKey]) {
+  // Iterate over each image data
+  coverphotoImageData[currentImageKey].forEach((imageData, imgIndex) => {
+    // Check if subname or tabname has changed
+    if (subName !== imageData.subnames || tabName !== imageData.NewTabs) {
+      subName = imageData.subnames; // Update subname
+      tabName = imageData.NewTabs; // Update tabname
 
-                      // Draw background rectangle
-                      pdf.setFillColor(bgColor);
-                      pdf.rect(0, 5, textWidth + 200, textHeight, "F"); // Adjust padding as needed
+      // Draw subname and tabname text
+      const textColor = "#000"; // Black text color
+      const originalFontSize = pdf.internal.getFontSize(); // Get the original font size
 
-                      // Add text on top of the background with the desired font size
-                      pdf.setTextColor(textColor);
-                      pdf.setFontSize(fontSize);
-                      pdf.text(imageData.subnames, 100, 18);
-                      pdf.text(imageData.NewTabs, 5, 23);
-                      // Reset font size back to its original value
-                      pdf.setFontSize(originalFontSize);
+      // Set the desired font size for the specific text
+      const fontSize = 20; // Adjust font size as needed
 
-                      pdf.addImage(
-                        imageData.url,
-                        "JPEG",
-                        startX,
-                        startY,
-                        70,
-                        60
-                      );
+      // Add subname and tabname text on top of the page with the desired font size
+      pdf.setTextColor(textColor);
+      pdf.setFontSize(fontSize);
+      pdf.text(subName, 100, 10);
+      pdf.text(tabName, 5, 20);
+      // Reset font size back to its original value
+      pdf.setFontSize(originalFontSize);
 
-                      // Add caption
-                      pdf.text(startX + 15, startY + 65, imageData.caption);
+      startY = 100; // Reset startY for the images section
+      imagesPerPage = 0; // Reset images count for the new page
+    }
 
-                      // Adjust Y position for the next image
-                      startY += 120; // Increase Y position for the next image
-                    }
-                  );
-                } else {
-                  console.warn(
-                    `No image data found for key: ${currentImageKey}`
-                  );
-                }
+    // Add image to the PDF
+    pdf.addImage(
+      imageData.url,
+      "JPEG",
+      startX+10,
+      startY,
+      imageWidth,
+      imageHeight
+    );
+
+    // Add caption
+    pdf.text(startX + 15, startY + 65, imageData.caption);
+
+    // Move to the next position
+    startX += imageWidth + 10; // Add some padding between images
+
+    // Check if the images exceed the page width
+    if (startX + imageWidth > pdf.internal.pageSize.width - 10) {
+      startX = 10; // Reset X position to start a new row
+      startY += verticalSpacing; // Increase Y position for the next row and caption
+    }
+
+    imagesPerPage++; // Increment images count for the current page
+
+    // Check if the maximum images per page is reached
+    if (imagesPerPage >= maxImagesPerPage) {
+      pdf.addPage(); // Add a new page
+      startY = 35; // Reset startY for the images section
+      imagesPerPage = 0; // Reset images count for the new page
+    }
+  });
+} else {
+  console.warn(`No image data found for key: ${currentImageKey}`);
+}
+
+                
+
               });
 
               pdf.addPage();
@@ -416,15 +440,15 @@ const ColorPalette = ({ onClose }) => {
     const boxShadowColor = "gray"; // Box shadow color
     const borderColor = "blue"; // Border color
     const borderWidth = 1; // Border width
-
+  
     // Set font size and text color
     pdf.setFontSize(fontSize);
     pdf.setTextColor(fontColor);
-
+  
     // Get page width and height
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-
+  
     // Create a rectangle representing the table of contents area
     const tocRect = {
       x: 0.5, // Adjust horizontal padding
@@ -432,39 +456,45 @@ const ColorPalette = ({ onClose }) => {
       width: pageWidth - 1, // Adjust width based on padding
       height: pageHeight - 5, // Adjust height based on padding
     };
-
+  
     // Draw the border for the table of contents
     pdf.setDrawColor(borderColor);
     pdf.setLineWidth(borderWidth);
     pdf.rect(tocRect.x, tocRect.y, tocRect.width, tocRect.height, "D"); // Draw the border (D for stroke)
-
+  
     // Loop through each item in parsedMenuData
     Object.values(parsedMenuData).forEach((item, index) => {
       // Check if the item has subitems (prevent errors)
       if (!item.subitems) {
         console.warn(
-          `Item ${
-            index + 1
-          } in parsedMenuData has no subitems to display in the table of contents.`
+          `Item ${index + 1} in parsedMenuData has no subitems to display in the table of contents.`
         );
         return; // Skip to the next item if no subitems
       }
-
+  
+      // Variable to track the current vertical position within the subitems section
+      let currentYPosition = tocRect.y + 40 + index * 10; // Start after border + index gap
+  
       // Loop through subitems and add them to the table of contents
       item.subitems.forEach((subitem, subindex) => {
         // Set the box shadow
         pdf.setDrawColor(boxShadowColor);
         pdf.setLineWidth(0.2);
-
+  
         // Add text without background color (adjust y position based on border)
         pdf.text(
           `${subitem.subName}`,
           tocRect.x + 20, // Adjust horizontal padding within border
-          tocRect.y + 30 + index * 10 + subindex * 10 // Adjust y position
+          currentYPosition // Use currentYPosition for vertical placement
         );
+  
+        // Update currentYPosition for the next subitem
+        currentYPosition += 10; // Increase by line height (adjust as needed)
       });
     });
   }
+  
+
 
   function addSummaryTable(pdf, menuNames) {
     const damageDataStrings = localStorage.getItem("DamageData");
