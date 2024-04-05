@@ -237,13 +237,14 @@ const ColorPalette = ({ onClose }) => {
           addTableOfContents(pdf, JSON.parse(menuData));
 
           pdf.addPage();
-          // pdf.text("Damage Panel Data", 10, 10);
+          pdf.text("Damage Panel Data", 10, 10);
           // addSummaryTable(pdf, JSON.parse(menuData));
           let imageURL; // Declare imageURL outside of the if block
           let imageIndex = 0; // Keep track of the current image index
           const coverphotoImageData = JSON.parse(
             localStorage.getItem("coverphotoImage")
           );
+          console.log("coverphotoImageData", coverphotoImageData);
           const damageDataString = localStorage.getItem("DamageData");
           console.log("damageDataString", damageDataString);
 
@@ -328,6 +329,7 @@ const ColorPalette = ({ onClose }) => {
                 }
 
                 // Display damage data
+                // Initial Y position for damage data
                 let startX = 10;
                 let startY = 35;
                 let imagesPerPage = 0;
@@ -386,6 +388,8 @@ const ColorPalette = ({ onClose }) => {
                         imageHeight
                       );
 
+                      // Add caption
+                      pdf.text(startX + 15, startY + 65, imageData.caption);
                       // Add caption
                       pdf.text(startX + 15, startY + 65, imageData.caption);
 
@@ -448,13 +452,16 @@ const ColorPalette = ({ onClose }) => {
     const borderColor = "blue"; // Border color
     const borderWidth = 1; // Border width
 
+
     // Set font size and text color
     pdf.setFontSize(fontSize);
     pdf.setTextColor(fontColor);
 
+
     // Get page width and height
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
+
 
     // Create a rectangle representing the table of contents area
     const tocRect = {
@@ -464,16 +471,21 @@ const ColorPalette = ({ onClose }) => {
       height: pageHeight - 5, // Adjust height based on padding
     };
 
+
     // Draw the border for the table of contents
     pdf.setDrawColor(borderColor);
     pdf.setLineWidth(borderWidth);
     pdf.rect(tocRect.x, tocRect.y, tocRect.width, tocRect.height, "D"); // Draw the border (D for stroke)
+
 
     // Loop through each item in parsedMenuData
     Object.values(parsedMenuData).forEach((item, index) => {
       // Check if the item has subitems (prevent errors)
       if (!item.subitems) {
         console.warn(
+          `Item ${
+            index + 1
+          } in parsedMenuData has no subitems to display in the table of contents.`
           `Item ${
             index + 1
           } in parsedMenuData has no subitems to display in the table of contents.`
@@ -490,11 +502,12 @@ const ColorPalette = ({ onClose }) => {
         pdf.setDrawColor(boxShadowColor);
         pdf.setLineWidth(0.2);
 
+
         // Add text without background color (adjust y position based on border)
         pdf.text(
           `${subitem.subName}`,
           tocRect.x + 20, // Adjust horizontal padding within border
-          currentYPosition // Use currentYPosition for vertical placement
+          tocRect.y + 30 + index * 10 + subindex * 10 // Adjust y position
         );
 
         // Update currentYPosition for the next subitem
