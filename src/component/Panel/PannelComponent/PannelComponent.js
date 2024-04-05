@@ -53,11 +53,24 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const NewValue = value;
   const extractedValue = NewValue.replace(/_(d|s)\d$/, "");
   const handleCheckboxChange = (key, ratingValue) => {
-    setSelectedCheckboxes((prevState) => ({
-      ...prevState,
-      [key]: prevState[key] === ratingValue ? null : ratingValue,
-    }));
+    setSelectedCheckboxes((prevState) => {
+      // Destructure the previous state
+      const { [key]: currentValue, ...rest } = prevState;
+  
+      // Toggle the checkbox value
+      const newValue = currentValue === ratingValue ? null : ratingValue;
+  
+      // Filter out any null values
+      const updatedCheckboxes = newValue !== null ? { [key]: newValue } : {};
+  
+      // Return the updated state
+      return {
+        ...rest,
+        ...updatedCheckboxes
+      };
+    });
   };
+  
 
   useEffect(() => {
     console.log("selected cheakbox ", selectedCheckboxes);
