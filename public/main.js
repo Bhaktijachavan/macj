@@ -71,7 +71,7 @@ app.on("window-all-closed", () => {
 //     autoHideMenuBar: true,
 //   });
 
-//   // const appPath = app.isPackaged ? path.dirname(app.getPath("exe")) : __dirname;
+//   // const appath = app.isPackaged ? path.dirname(app.getPath("exe")) : __dirname;
 //   // const indexPath = path.join(appPath, "build", "index.html");
 
 //   // win.loadURL("file:///D:/virtuebyteprojects/WebApp/macj/public/build/index.html")
