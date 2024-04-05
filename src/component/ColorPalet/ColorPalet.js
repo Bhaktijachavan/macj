@@ -202,11 +202,11 @@ const ColorPalette = ({ onClose }) => {
             <div style="padding: 0px; height: 73vw; width: 100%;">
               ${content}
             </div>
-            <div>
+            <div >
         ${extractedImages
           .map(
             (imageData) => `
-              <img src="${imageData}" style="width: 100%; height: auto;">
+              <img src="${imageData}" style="padding: 25px; height: 73vw; width: 100%;" >
             `
           )
           .join("")}
