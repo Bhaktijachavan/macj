@@ -237,7 +237,7 @@ const ColorPalette = ({ onClose }) => {
           addTableOfContents(pdf, JSON.parse(menuData));
 
           pdf.addPage();
-          pdf.text("Damage Panel Data", 10, 10);
+          // pdf.text("Damage Panel Data", 10, 10);
           // addSummaryTable(pdf, JSON.parse(menuData));
           let imageURL; // Declare imageURL outside of the if block
           let imageIndex = 0; // Keep track of the current image index
@@ -271,8 +271,7 @@ const ColorPalette = ({ onClose }) => {
                   0
                 );
                 pdf.text(10, currentY, descriptionLines);
-                currentY += descriptionHeight + lineSpacing; // Add fixed spacing after description
-
+                currentY += descriptionHeight + lineSpacing;
                 const ratingText = damageObject.rating;
                 // console.log("ratings", ratingText);
                 const ratingValue = `Ratings : ${Object.values(ratingText)}`;
@@ -331,7 +330,7 @@ const ColorPalette = ({ onClose }) => {
                 // Display damage data
                 // Initial Y position for damage data
                 let startX = 10;
-                let startY = 35;
+                let startY = 45;
                 let imagesPerPage = 0;
                 const maxImagesPerPage = 4;
                 const imageWidth = 70;
@@ -361,18 +360,39 @@ const ColorPalette = ({ onClose }) => {
 
                         // Draw subname and tabname text
                         const textColor = "#000"; // Black text color
+                        const bgColor = "#DDD"; // Light gray background color
                         const originalFontSize = pdf.internal.getFontSize(); // Get the original font size
 
                         // Set the desired font size for the specific text
                         const fontSize = 20; // Adjust font size as needed
 
-                        // Add subname and tabname text on top of the page with the desired font size
+                        // Get text width and height
+                        const textWidth =
+                          (pdf.getStringUnitWidth(imageData.subnames) *
+                            fontSize) /
+                          pdf.internal.scaleFactor;
+                        const textHeight = fontSize;
+
+                        // Draw background rectangle
+                        pdf.setFillColor(bgColor);
+                        pdf.rect(0, 5, textWidth + 200, textHeight, "F"); // Adjust padding as needed
+
+                        // Add text on top of the background with the desired font size
                         pdf.setTextColor(textColor);
                         pdf.setFontSize(fontSize);
-                        pdf.text(subName, 100, 10);
-                        pdf.text(tabName, 5, 20);
+                        pdf.text(subName, 100, 18);
+                        pdf.text(tabName, 5, 23);
                         // Reset font size back to its original value
                         pdf.setFontSize(originalFontSize);
+
+                        const summaryName = "Summary: "; // Predefined summary name
+                        const selectedTextWithSummary =
+                          summaryName + imageData.selectedText;
+
+                        pdf.textWithLink(selectedTextWithSummary, 10, 31, {
+                          maxWidth: 200, // Adjust the maxWidth according to your page width
+                          align: "left",
+                        });
 
                         startY = 100; // Reset startY for the images section
                         imagesPerPage = 0; // Reset images count for the new page
@@ -452,16 +472,13 @@ const ColorPalette = ({ onClose }) => {
     const borderColor = "blue"; // Border color
     const borderWidth = 1; // Border width
 
-
     // Set font size and text color
     pdf.setFontSize(fontSize);
     pdf.setTextColor(fontColor);
 
-
     // Get page width and height
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
-
 
     // Create a rectangle representing the table of contents area
     const tocRect = {
@@ -471,12 +488,10 @@ const ColorPalette = ({ onClose }) => {
       height: pageHeight - 5, // Adjust height based on padding
     };
 
-
     // Draw the border for the table of contents
     pdf.setDrawColor(borderColor);
     pdf.setLineWidth(borderWidth);
     pdf.rect(tocRect.x, tocRect.y, tocRect.width, tocRect.height, "D"); // Draw the border (D for stroke)
-
 
     // Loop through each item in parsedMenuData
     Object.values(parsedMenuData).forEach((item, index) => {
@@ -485,8 +500,7 @@ const ColorPalette = ({ onClose }) => {
         console.warn(
           `Item ${
             index + 1
-          } in parsedMenuData has no subitems to display in the table of contents.`
-          `Item ${
+          } in parsedMenuData has no subitems to display in the table of contents.``Item ${
             index + 1
           } in parsedMenuData has no subitems to display in the table of contents.`
         );
@@ -501,7 +515,6 @@ const ColorPalette = ({ onClose }) => {
         // Set the box shadow
         pdf.setDrawColor(boxShadowColor);
         pdf.setLineWidth(0.2);
-
 
         // Add text without background color (adjust y position based on border)
         pdf.text(
