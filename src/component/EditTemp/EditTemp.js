@@ -302,11 +302,17 @@ const DynamicMenuComponent = ({ onClose }) => {
         return "";
     }
   };
+  function handleCloseCase() {
+    // Logic to close the specific case based on selectedRadio
+    // Placeholder for actual closing logic
+    setSelectedRadio(false);
+  }
+
   const renderInputFields = (selectedRadio) => {
     switch (selectedRadio) {
       case 1:
         return (
-          <div className="flex float-right case-input-div">
+          <div className="flex float-right case-input-div  border-r border-white border-b ">
             <div className="pl-5">
               <p className="text-center mb-2">
                 Creating A Page With 1 Damage Panel. The Damage Panel Name is
@@ -329,12 +335,18 @@ const DynamicMenuComponent = ({ onClose }) => {
                 onChange={(e) => handleInputChange("damage1", e.target.value)}
                 className="w-50 h-7 border border-black p-2 m-1 ml-2"
               />
+              <button
+                onClick={() => handleCloseCase(1)}
+                className=" float-right mt-[9em]"
+              >
+                Close
+              </button>
             </div>
           </div>
         );
       case 2:
         return (
-          <div className="flex float-right case-input-div">
+          <div className="flex float-right case-input-div  border-r border-white border-b">
             <div className="pl-5">
               <p className="text-center mb-2">
                 Creating the page with 2 Damage Panels Each Damage Panel
@@ -367,12 +379,18 @@ const DynamicMenuComponent = ({ onClose }) => {
                 onChange={(e) => handleInputChange("damage2", e.target.value)}
                 className="w-50 h-7 border border-black p-2 m-1 ml-2"
               />
+              <button
+                onClick={() => handleCloseCase(2)}
+                className=" float-right mt-9"
+              >
+                Close
+              </button>
             </div>
           </div>
         );
       case 3:
         return (
-          <div className="flex float-right case-input-div">
+          <div className="flex float-right case-input-div  border-r border-white border-b">
             <div className="pl-5">
               <p className="text-center mb-2">
                 Creating A Page With 1 Selection Panel.The Selection Panel Name
@@ -397,12 +415,18 @@ const DynamicMenuComponent = ({ onClose }) => {
                 }
                 className="w-50 h-7 border border-black p-2 m-1 ml-2"
               />
+              <button
+                onClick={() => handleCloseCase(3)}
+                className=" float-right mt-[9em]"
+              >
+                Close
+              </button>
             </div>
           </div>
         );
       case 4:
         return (
-          <div className="flex float-right case-input-div">
+          <div className="flex float-right case-input-div  border-r border-white border-b">
             <div className="pl-5">
               <p className="text-center mb-2">
                 Creating the page with 2 Selection Panels. The name of the first
@@ -438,12 +462,18 @@ const DynamicMenuComponent = ({ onClose }) => {
                 }
                 className="w-50 h-7 border border-black p-2 m-1 ml-2"
               />
+              <button
+                onClick={() => handleCloseCase(4)}
+                className=" float-right mt-12"
+              >
+                Close
+              </button>
             </div>
           </div>
         );
       case 5:
         return (
-          <div className="flex float-right case-input-div">
+          <div className="flex float-right case-input-div  border-r border-white border-b">
             <div className="pl-5">
               <p className="text-center mb-2">
                 Creating the page with 1 Damage Panel and 1 Selection Panel. The
@@ -478,12 +508,18 @@ const DynamicMenuComponent = ({ onClose }) => {
                 }
                 className="w-50 h-7 border border-black p-2 m-1 ml-2"
               />
+              <button
+                onClick={() => handleCloseCase(5)}
+                className=" float-right mt-12"
+              >
+                Close
+              </button>
             </div>
           </div>
         );
       case 6:
         return (
-          <div className="flex float-right case-input-div">
+          <div className="flex float-right case-input-div  border-r border-white border-b">
             <div className="pl-5">
               <p className="text-center mb-2">
                 Creating the page with 1 Damage Panel and 2 Selection Panel. The
@@ -529,6 +565,12 @@ const DynamicMenuComponent = ({ onClose }) => {
                 }
                 className="w-50 h-7 border border-black p-2 m-1 ml-2"
               />
+              <button
+                onClick={() => handleCloseCase(6)}
+                className=" float-right "
+              >
+                Close
+              </button>
             </div>
           </div>
         );
