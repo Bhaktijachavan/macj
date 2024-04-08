@@ -77,6 +77,7 @@ const DynamicMenuComponent = ({ onClose }) => {
       alert("Please enter a valid menu name");
       return;
     }
+
     setMenuData((prevMenuData) => {
       const newMenuId = Object.keys(prevMenuData).length + 1;
       return {
@@ -92,12 +93,7 @@ const DynamicMenuComponent = ({ onClose }) => {
     setMenuName(""); // Clear the input field
     setSelectedMenuId(null); // Clear the selected menu
   };
-  const handleClosePopup = () => {
-    // Add any additional cleanup logic here if needed
-    // For now, just clear selected menu and submenu
-    setSelectedMenuId(null);
-    setSelectedSubMenuId(null);
-  };
+
   const handleRemoveItem = () => {
     if (!selectedMenuId) {
       alert("Please select a menu first");
@@ -139,6 +135,12 @@ const DynamicMenuComponent = ({ onClose }) => {
       setSelectedMenuId(null);
       setSelectedSubMenuId(null);
     }
+  };
+
+  const handleClose = () => {
+    // Logic to handle closing of the option panel
+    setShowOptions(false);
+    // You might need to reset other state variables related to the option panel here
   };
   const handleAddSubmenu = () => {
     if (submenuName.trim() === "") {
@@ -237,6 +239,7 @@ const DynamicMenuComponent = ({ onClose }) => {
   };
   const handlesave = () => {
     localStorage.setItem("menuData", JSON.stringify(menuData));
+    alert("Data Saved SuccessFully");
   };
   const handleInputChange = (inputName, inputValue) => {
     setInputValues((prevInputValues) => ({
@@ -244,6 +247,7 @@ const DynamicMenuComponent = ({ onClose }) => {
       [inputName]: inputValue,
     }));
   };
+
   const handleAddOptionClick = () => {
     // Toggle the state variable to show/hide options
     setShowOptions(!showOptions);
@@ -583,7 +587,7 @@ const DynamicMenuComponent = ({ onClose }) => {
                   {submenu.subName}
                 </div>
               )}
-              {/* {submenu.subName} */}
+
               <div className="selectionpanelRB">
                 {isMenuSelected &&
                   selectedSubMenuId === submenu.id &&
@@ -599,7 +603,7 @@ const DynamicMenuComponent = ({ onClose }) => {
                         move the items into. A selection panel is one list used
                         for selecting types of materials, locations, etc:
                       </p>
-                      {/* Radio buttons for subdetails */}
+
                       <div className="">
                         {[1, 2, 3, 4, 5, 6].map((radioValue) => (
                           <label key={radioValue}>
@@ -615,7 +619,9 @@ const DynamicMenuComponent = ({ onClose }) => {
                           </label>
                         ))}
                       </div>
-                      {/* Input fields for selected radio */}
+                      <button className="mt-[9em]" onClick={handleClose}>
+                        Close
+                      </button>
                     </div>
                   )}
               </div>

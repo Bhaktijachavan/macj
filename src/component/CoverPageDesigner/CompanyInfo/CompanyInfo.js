@@ -66,18 +66,17 @@ function CompanyInfo({ id }) {
 
   return (
     <>
-      {/* <div
+      <div
         id={id}
         draggable="true"
         onDragStart={handleDragStart}
         className="draggable-text"
-      ></div> */}
+      ></div>
 
-      <div className="other-client-info-flex-direction  w-[49em]  flex flex-col gap-4 ml-24">
+      <div className="other-client-info-flex-direction    flex flex-col gap-4 ml-24">
         <div className="flex items-center content-center justify-center">
           <div className="flex flex-col gap-[10px]">
             <section className="flex">
-              {" "}
               <label htmlFor="">First Name:</label>
               <input
                 type="text"
@@ -121,16 +120,16 @@ function CompanyInfo({ id }) {
             {renderInputField("Zipcode", "zipCode")}
           </div>
         </div>
-        <section className="other-client-info-for-cover-page-genearate-report pl-[5rem] flex flex-col gap-[10px]">
+        <section className="other-client-info-for-cover-page-genearate-report  flex flex-col gap-[10px] w-auto">
           <section className="only-for-addressLine2-input">
             <label htmlFor="">Address Line 2:</label>
-            <input
+            <textarea
               type="text"
               value={editableText.addressLine2}
               onChange={(e) =>
                 handleInputChange("addressLine2", e.target.value)
               }
-              className="addressLine2-input-for-cover-page pl-[5px]"
+              className="addressLine2-input-for-cover-page w-[30em] p-1 overflow-hidden"
             />
           </section>
           <section className="only-for-inspectionAddress-input  flex items-center">
