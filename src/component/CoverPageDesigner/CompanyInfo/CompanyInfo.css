@@ -4,10 +4,10 @@
   /* margin-top: 1em; */
   width: 100%;
   text-align: center;
-  padding-left: 6em;
+  /* padding-left: 6em; */
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  /* gap: 1em; */
 }
 /* .draggable-text {
   display: flex;
@@ -46,8 +46,8 @@
   height: 2em;
 }
 .fname-and-lname-content-for-the-company-info {
-  display: flex;
-  gap: 1em;
+  /* display: flex; */
+  /* gap: 1em; */
   flex-direction: column;
   width: 34em;
 }
@@ -103,7 +103,7 @@
   width: 15em;
 }
 .first-name-and-last-name-inputs {
-  justify-content: right;
+  /* justify-content: right; */
   display: flex;
   gap: 0.3em;
   width: 34em;
@@ -111,7 +111,7 @@
 }
 .only-for-email-input {
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   gap: 1em;
   align-items: center;
 }

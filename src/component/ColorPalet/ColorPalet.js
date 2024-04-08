@@ -189,6 +189,7 @@ const ColorPalette = ({ onClose }) => {
   const exportCoverPageToPDF = () => {
     // Retrieve the content from localStorage saved by CoverPageDesigner
     const content = localStorage.getItem("outputContent");
+    // console.log("content", content);
 
     // const extractedText = localStorage.getItem("extractedText");
     const extractedImages =

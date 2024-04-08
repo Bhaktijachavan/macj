@@ -207,7 +207,7 @@ fieldset {
   background-color: skyblue;
 }
 .draggableeeee {
-  cursor: pointer;
+  /* cursor: pointer; */
   display: flex;
   justify-content: center;
 }
