@@ -13,7 +13,7 @@ import Footer from "./../Footer/Footer";
 import ColorPicker from "./ColorPicker";
 import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
 import "./ColorPalet.css";
-const Test = ({ onClose }) => {
+const ColorPalette = ({ onClose }) => {
   const [localStorageData, setLocalStorageData] = useState([]);
   const coverPageRef = useRef(null);
 
@@ -184,11 +184,12 @@ const Test = ({ onClose }) => {
     if (storedData) {
       setLocalStorageData(JSON.parse(storedData));
     }
-    console.log("localStorage", localStorageData);
+    // console.log("localStorage", localStorageData);
   }, []);
   const exportCoverPageToPDF = () => {
     // Retrieve the content from localStorage saved by CoverPageDesigner
     const content = localStorage.getItem("outputContent");
+    // console.log("content", content);
 
     // const extractedText = localStorage.getItem("extractedText");
     const extractedImages =
@@ -196,26 +197,28 @@ const Test = ({ onClose }) => {
     // Fetch menu data from localStorage
     const menuData = localStorage.getItem("menuData");
 
-    if (content && menuData) {
+    if (content) {
       // Modify the content to include border, page heading, and adjust page height
       const modifiedContent = `
             <div style="padding: 0px; height: 73vw; width: 100%;">
               ${content}
             </div>
-            <div>
+            <div >
         ${extractedImages
           .map(
             (imageData) => `
-              <img src="${imageData}" style="width: 100%; height: auto;">
+              <img src="${imageData}" style="padding: 25px; height: 73vw; width: 100%;" >
             `
           )
           .join("")}
       </div>
-            <div style="padding: 25px;">
-            <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
-            <p style="font-size: 20px; text-align: justify;">
+      <div style="page-break-before: always;"></div>
+
+      <div style="padding: 25px;">
+          <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
+          <p style="font-size: 20px; text-align: justify;">
               ${generateLoremIpsum()}
-            </p>
+          </p>
            
       
           </div>
@@ -229,100 +232,286 @@ const Test = ({ onClose }) => {
 
         .then((pdf) => {
           // Add third page for Table of Contents
-          pdf.addPage();
-          pdf.text("Table of Contents", 10, 10);
-          // Add table for Table of Contents
-          addTableOfContents(pdf, JSON.parse(menuData));
+          // pdf.addPage();
+          // pdf.text("Table of Contents", 10, 10);
+          // // Add table for Table of Contents
+          // addTableOfContents(pdf, JSON.parse(menuData));
 
           pdf.addPage();
-
+          // pdf.text("Damage Panel Data", 10, 10);
           // addSummaryTable(pdf, JSON.parse(menuData));
           let imageURL; // Declare imageURL outside of the if block
           let imageIndex = 0; // Keep track of the current image index
-          const coverphotoImageData = JSON.parse(localStorage.getItem("coverphotoImage"));
-const damageDataString = localStorage.getItem("DamageData");
+          const coverphotoImageData = JSON.parse(
+            localStorage.getItem("coverphotoImage")
+          );
+          console.log("coverphotoImageData", coverphotoImageData);
+          const damageDataString = localStorage.getItem("DamageData");
+          // console.log("damageDataString", damageDataString);
+          const SelectionData = localStorage.getItem("SelectionData");
 
-if (coverphotoImageData && damageDataString) {
-  try {
-    const damageData = JSON.parse(damageDataString);
-    const imageKeys = Object.keys(coverphotoImageData);
+          if (
+            (coverphotoImageData && damageDataString && SelectionData) ||
+            (coverphotoImageData && damageDataString) ||
+            SelectionData
+          ) {
+            try {
+              const damageData = JSON.parse(damageDataString);
+              const imageKeys = Object.keys(coverphotoImageData);
+              const Selection = JSON.parse(SelectionData);
 
-   // Create a new jsPDF instance
-const pdf = new jsPDF();
+              function displayDamageData(
+                damageObject,
 
-// Function to display damage data
-function displayDamageData(damageObject, startY) {
-  // Set initial Y position
-  let currentY = startY;
+                startY
+              ) {
+                // Set initial Y position
+                let currentY = startY;
+                const lineSpacing = 5; // Fixed spacing between each text block
+                // pdf.text(SelectionObject.selectionText, 10, 10);
 
-  // Display description
-  const descriptionText = `Description: ${damageObject.description || ""}`;
-  pdf.text(10, startY+10, descriptionText);
-  currentY += 10; // Add spacing after description
+                // Display description
+                const descriptionText = `Description: ${
+                  damageObject.description || ""
+                }`;
+                const descriptionLines = pdf.splitTextToSize(
+                  descriptionText,
+                  180
+                ); // Adjust width as needed
+                const descriptionHeight = descriptionLines.reduce(
+                  (acc, line) => acc + pdf.getTextDimensions(line).h,
+                  0
+                );
+                pdf.text(10, currentY, descriptionLines);
+                currentY += descriptionHeight + lineSpacing;
+                const ratingText = damageObject.rating;
+                // console.log("ratings", ratingText);
+                const ratingValue = `Ratings : ${Object.values(ratingText)}`;
+                // console.log("ratingValue", ratingValue);
+                const ratingLines = pdf.splitTextToSize(ratingValue, 180); // Adjust width as needed
+                const ratingHeight = ratingLines.reduce(
+                  (acc, line) => acc + pdf.getTextDimensions(line).h,
+                  0
+                );
+                pdf.text(10, currentY, ratingLines);
+                currentY += ratingHeight + lineSpacing; // Add fixed spacing after rating
 
-  // Display rating
-  const ratingText = `Rating: ${damageObject.rating?.ratingName1 || ""}`;
-  pdf.text(10, currentY+10, ratingText);
-  currentY = Math.max(currentY, pdf.getTextDimensions(ratingText).h) + 10; // Adjust Y position based on the height of the text
-  
-  // Display materials in red text
-  const materialsText = `Materials: ${damageObject.Damage1red || ""}`;
-  pdf.setTextColor(255, 0, 0); // Set text color to red
-  pdf.text(80, currentY, materialsText);
-  pdf.setTextColor(0); // Reset text color to black
-  currentY += Math.max(5, pdf.getTextDimensions(materialsText).h) +1; // Add spacing after materials
+                // Display materials in red text
+                const materialsText = `Materials: ${
+                  damageObject.Damage1red || ""
+                }`;
+                const materialsLines = pdf.splitTextToSize(materialsText, 180); // Adjust width as needed
+                const materialsHeight = materialsLines.reduce(
+                  (acc, line) => acc + pdf.getTextDimensions(line).h,
+                  0
+                );
+                pdf.setTextColor(255, 0, 0); // Set text color to red
+                pdf.text(10, currentY, materialsLines);
+                pdf.setTextColor(0); // Reset text color to black
+                currentY += materialsHeight + lineSpacing; // Add fixed spacing after materials
 
-  // Display observation
-  const observationText = `Observation: ${damageObject.Damage1black || ""}`;
-  pdf.text(80, currentY, observationText);
-  currentY += Math.max(10, pdf.getTextDimensions(observationText).h) + 1; // Add spacing after observation
+                // Display observation
+                const observationText = `Observation: ${
+                  damageObject.Damage1black || ""
+                }`;
+                const observationLines = pdf.splitTextToSize(
+                  observationText,
+                  180
+                ); // Adjust width as needed
+                const observationHeight = observationLines.reduce(
+                  (acc, line) => acc + pdf.getTextDimensions(line).h,
+                  0
+                );
+                pdf.text(10, currentY, observationLines);
+                currentY += observationHeight + lineSpacing; // Add fixed spacing after observation
 
-  // Return the updated Y position
-  return currentY;
-}
+                // Return the updated Y position
+                return currentY;
+              }
 
+              if (Selection) {
+                Object.keys(Selection).forEach((key, index) => {
+                  const SelectionObject = Selection[key];
 
-// Iterate through each damage object in damageData
-Object.keys(damageData).forEach((key, index) => {
-    const damageObject = damageData[key];
-    const currentImageKey = imageKeys[index]; // Get corresponding image key
+                  // const selectiontext = SelectionObject.selectionText;
 
-    // Add a new page before adding content for each set of data
-    if (index > 0) {
-        pdf.addPage();
-    }
+                  // Iterate through each damage object in damageData
+                  if ((damageData && Selection) || damageData || Selection) {
+                    Object.keys(damageData).forEach((key, index) => {
+                      const damageObject = damageData[key];
+                      const currentImageKey = imageKeys[index]; // Get corresponding image key
 
-    // Display damage data
-    let startY = 20; // Initial Y position for damage data
-    startY = displayDamageData(damageObject, startY);
+                      // Add a new page before adding content for each set of data
+                      if (index > 0) {
+                        pdf.addPage();
+                      }
 
-    // Display images and captions from currentImageKey
-    coverphotoImageData[currentImageKey].forEach((imageData, imgIndex) => {
-        // Embed image
-        pdf.addImage(imageData.url, 'JPEG', 10, startY, 60, 60);
+                      // Display damage data
+                      // Initial Y position for damage data
+                      let startX = 10;
+                      let startY = 45;
+                      let imagesPerPage = 0;
+                      const maxImagesPerPage = 4;
+                      const imageWidth = 70;
+                      const imageHeight = 60;
+                      const verticalSpacing = 80; // Vertical spacing between images
 
-        // Add caption
-        pdf.text(10, startY + 70, imageData.caption);
+                      // Calculate the height of the damage data section
+                      let damageDataHeight = displayDamageData(
+                        damageObject,
+                        startY
+                      );
 
-        // Adjust Y position for the next image
-        startY += 120; // Increase Y position for the next image
-    });
-});
+                      // Add padding below the damage data section
+                      startY += damageDataHeight + 20;
 
-// Save the PDF
-pdf.save("Report.pdf");
+                      let subName = ""; // Variable to store the current subname
+                      let tabName = ""; // Variable to store the current tabname
 
-    console.log("PDF generated successfully.");
+                      if (coverphotoImageData[currentImageKey]) {
+                        // Iterate over each image data
+                        coverphotoImageData[currentImageKey].forEach(
+                          (imageData, imgIndex) => {
+                            // Check if subname or tabname has changed
+                            if (
+                              subName !== imageData.subnames ||
+                              tabName !== imageData.NewTabs
+                            ) {
+                              subName = imageData.subnames; // Update subname
+                              tabName = imageData.NewTabs; // Update tabname
 
-  } catch (error) {
-    console.error("Error parsing DamageData:", error);
-  }
-} else {
-  console.warn("DamageData or coverphotoImage not found in local storage.");
-}
-          
-          
+                              // Draw subname and tabname text
+                              const textColor = "#000"; // Black text color
+                              const bgColor = "#DDD"; // Light gray background color
+                              const originalFontSize =
+                                pdf.internal.getFontSize(); // Get the original font size
 
+                              // Set the desired font size for the specific text
+                              const fontSize = 20; // Adjust font size as needed
+
+                              // Get text width and height
+                              const textWidth =
+                                (pdf.getStringUnitWidth(imageData.subnames) *
+                                  fontSize) /
+                                pdf.internal.scaleFactor;
+                              const textHeight = fontSize;
+
+                              // Draw background rectangle
+                              pdf.setFillColor(bgColor);
+                              pdf.rect(0, 5, textWidth + 200, textHeight, "F"); // Adjust padding as needed
+
+                              // Add text on top of the background with the desired font size
+                              pdf.setTextColor(textColor);
+                              pdf.setFontSize(fontSize);
+                              pdf.text(subName, 100, 18);
+                              pdf.text(tabName, 5, 23);
+                              // Reset font size back to its original value
+                              pdf.setFontSize(originalFontSize);
+
+                              const SelectionObjectName = "Summary: "; // Predefined summary name
+                              const SelectionObjectNameWithSummary =
+                                SelectionObjectName +
+                                SelectionObject.selectionText;
+
+                              pdf.textWithLink(
+                                SelectionObjectNameWithSummary,
+                                10,
+                                77,
+                                {
+                                  maxWidth: 200, // Adjust the maxWidth according to your page width
+                                  align: "left",
+                                }
+                              );
+
+                              const summaryName = "Summary: "; // Predefined summary name
+                              const selectedTextWithSummary =
+                                summaryName + imageData.selectedText;
+
+                              pdf.textWithLink(
+                                selectedTextWithSummary,
+                                10,
+                                31,
+                                {
+                                  maxWidth: 200, // Adjust the maxWidth according to your page width
+                                  align: "left",
+                                }
+                              );
+
+                              startY = 100; // Reset startY for the images section
+                              imagesPerPage = 0; // Reset images count for the new page
+                            }
+
+                            // Add image to the PDF
+                            pdf.addImage(
+                              imageData.url,
+                              "JPEG",
+                              startX + 10,
+                              startY,
+                              imageWidth,
+                              imageHeight
+                            );
+
+                            // Add caption
+                            pdf.text(
+                              startX + 15,
+                              startY + 65,
+                              imageData.caption
+                            );
+                            // Add caption
+                            pdf.text(
+                              startX + 15,
+                              startY + 65,
+                              imageData.caption
+                            );
+
+                            // Move to the next position
+                            startX += imageWidth + 10; // Add some padding between images
+
+                            // Check if the images exceed the page width
+                            if (
+                              startX + imageWidth >
+                              pdf.internal.pageSize.width - 10
+                            ) {
+                              startX = 10; // Reset X position to start a new row
+                              startY += verticalSpacing; // Increase Y position for the next row and caption
+                            }
+
+                            imagesPerPage++; // Increment images count for the current page
+
+                            // Check if the maximum images per page is reached
+                            if (imagesPerPage >= maxImagesPerPage) {
+                              pdf.addPage(); // Add a new page
+                              startY = 35; // Reset startY for the images section
+                              imagesPerPage = 0; // Reset images count for the new page
+                            }
+                          }
+                        );
+                      } else {
+                        console.warn(
+                          `No image data found for key: ${currentImageKey}`
+                        );
+                      }
+                      // });
+                    });
+                  }
+                });
+              }
+
+              pdf.addPage();
+              pdf.text("Report Summary", 70, 10);
+              addSummaryTable(pdf, JSON.parse(menuData));
+              pdf.save("Report.pdf");
+
+              console.log("PDF generated successfully.");
+            } catch (error) {
+              console.error("Error parsing DamageData:", error);
+            }
+          } else {
+            console.warn(
+              "DamageData or coverphotoImage not found in local storage."
+            );
+            pdf.save("Report.pdf");
+          }
         });
     }
   };
@@ -330,60 +519,51 @@ pdf.save("Report.pdf");
   // Function to add Table of Contents
 
   function addTableOfContents(pdf, parsedMenuData) {
-    // Set styling properties (adjust as desired)
-    const fontSize = 12;
-    const fontColor = "black"; // Text color
-    const boxShadowColor = "gray"; // Box shadow color
-    const borderColor = "blue"; // Border color
-    const borderWidth = 1; // Border width
+    // ... (styling properties and rectangle setup remain unchanged)
 
-    // Set font size and text color
-    pdf.setFontSize(fontSize);
-    pdf.setTextColor(fontColor);
-
-    // Get page width and height
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-
-    // Create a rectangle representing the table of contents area
-    const tocRect = {
-      x: 0.5, // Adjust horizontal padding
-      y: 0.5, // Adjust vertical padding
-      width: pageWidth - 1, // Adjust width based on padding
-      height: pageHeight - 5, // Adjust height based on padding
-    };
-
-    // Draw the border for the table of contents
-    pdf.setDrawColor(borderColor);
-    pdf.setLineWidth(borderWidth);
-    pdf.rect(tocRect.x, tocRect.y, tocRect.width, tocRect.height, "D"); // Draw the border (D for stroke)
-
-    // Loop through each item in parsedMenuData
     Object.values(parsedMenuData).forEach((item, index) => {
-      // Check if the item has subitems (prevent errors)
-      if (!item.subitems) {
-        console.warn(
-          `Item ${
-            index + 1
-          } in parsedMenuData has no subitems to display in the table of contents.`
-        );
-        return; // Skip to the next item if no subitems
-      }
+      // ... (checking for subitems remains unchanged)
 
-      // Loop through subitems and add them to the table of contents
+      let currentYPosition = tocRect.y + 40 + index * 10;
+
       item.subitems.forEach((subitem, subindex) => {
-        // Set the box shadow
-        pdf.setDrawColor(boxShadowColor);
-        pdf.setLineWidth(0.2);
+        // ... (box shadow setup remains unchanged)
 
-        // Add text without background color (adjust y position based on border)
-        pdf.text(
-          `${subitem.subName}`,
-          tocRect.x + 20, // Adjust horizontal padding within border
-          tocRect.y + 30 + index * 10 + subindex * 10 // Adjust y position
-        );
+        // Wrap text to multiple lines if necessary
+        const textLines = wrapText(subitem.subName, tocRect.width - 40); // Adjust for border and padding
+        textLines.forEach((line, lineNum) => {
+          pdf.text(
+            line,
+            tocRect.x + 20,
+            currentYPosition + lineNum * fontSize + lineNum * 4 // Adjust spacing between lines
+          );
+        });
+
+        // Update currentYPosition for the next subitem, considering multiple lines
+        currentYPosition +=
+          textLines.length * fontSize + textLines.length * 4 + 4; // Adjust for line height and spacing
       });
     });
+  }
+
+  // Function to wrap text to fit within a given width
+  function wrapText(text, width) {
+    const words = text.split(" ");
+    const lines = [];
+    let currentLine = "";
+
+    for (const word of words) {
+      if (pdf.getTextWidth(currentLine + word) > width) {
+        lines.push(currentLine);
+        currentLine = word;
+      } else {
+        currentLine += word + " ";
+      }
+    }
+
+    lines.push(currentLine); // Add the last line
+
+    return lines;
   }
 
   function addSummaryTable(pdf, menuNames) {
@@ -414,7 +594,7 @@ pdf.save("Report.pdf");
             const damageValue = damageData[subdetailValue[abc].Damage1Data];
             if (damageValue && damageValue.Damage1red) {
               // Add row data to tableData
-              // const LocalStorageSummaryData = {Data.push([tabCounter, tabvalue, damageValue.Damage1red]);
+              tableData.push([tabCounter, tabvalue, damageValue.Damage1red]);
 
               // Increment tabCounter
               tabCounter++;
@@ -596,11 +776,292 @@ pdf.save("Report.pdf");
 
   return (
     <>
-      <div>
-        <button onClick={exportCoverPageToPDF}>Save</button>
+      <div className="all-the-popup-content-of-color-pallet-infoo">
+        <div
+          className="rounded-lg"
+          style={{ width: "90%", backgroundColor: "#f3f2f1" }}
+        >
+          <div
+            className="flex justify-between items-center border-b
+border-slate-400 "
+          >
+            <span className="px-3">Print Settings</span>
+            <span
+              className="justify-center flex h-9 items-center close-btn-for-the-color-pallet-popup-red cursor-pointer px-3 hover:bg-red-500
+hover:text-white"
+              onClick={onClose}
+            >
+              X
+            </span>
+          </div>
+          <div className=" p-6">
+            <div className="text-center">
+              <p>
+                Check the Print check box for each section you would like to
+                appear on your inspection report You can click on a Section Name
+                in the 1st column, then use the Move Up and Move Down button to
+                change the order the section will appear in your report Click on
+                the palette icon in the Section Font column to change the
+                section font, size and color. If using the Section Icons in your
+                report, the Section Icon images must be a valid image file (gif,
+                png,or.jpg) and a maximum of 200 pixels high or wide.
+              </p>
+            </div>
+
+            <div className="flex">
+              <div>
+                <table
+                  className="w-full"
+                  style={{
+                    width: "100%",
+                    backgroundColor: "#ffff",
+                    border: "2px solid #3498db",
+                  }}
+                >
+                  <thead>
+                    <tr className="text-sm  font-thin">
+                      <th className="border font-semibold p-2">Section name</th>
+                      <th className="border font-semibold p-2">
+                        Section title font
+                      </th>
+                      <th className="border font-semibold p-2">Print</th>
+                      <th className="border font-semibold p-2 color-column">
+                        Border
+                      </th>
+                      <th className="border font-semibold p-2 color-column">
+                        Header Background
+                      </th>
+                      <th className="border font-semibold p-2">Header Font</th>
+                      <th className="border font-semibold p-2 color-column">
+                        Footer Background
+                      </th>
+                      <th className="border font-semibold p-2">Footer Font</th>
+                      <th className="border font-semibold p-2">Section Icon</th>
+                      <th className="border font-semibold p-2 color-column">
+                        TOC background
+                      </th>
+                      <th className="border font-semibold p-2">TOC Font</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.keys(dummyData).map((key, index) =>
+                      Object.keys(dummyData[key].subitems).map((subKey) => (
+                        <tr key={subKey}>
+                          <td>{dummyData[key].subitems[subKey].subName}</td>
+                          <td className="border p-2">
+                            {JSON.stringify(dummyData[key].selectedOption)}
+                          </td>
+                          <td className="border p-2">
+                            <input
+                              type="checkbox"
+                              checked={dummyData[key].print}
+                              onChange={() => {}}
+                            />
+                          </td>
+                          <td className="border p-2">
+                            <input
+                              type="color"
+                              id={`border_color_${index}`}
+                              name={`border_color_${index}`}
+                              value={rowColors[index].border}
+                              onChange={(e) =>
+                                handleColorChange(
+                                  dummyData[key].id,
+                                  "border",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                          <td className="border p-2">
+                            <input
+                              type="color"
+                              id={`header_bg_color_${index}`}
+                              name={`header_bg_color_${index}`}
+                              value={rowColors[index].headerBackground}
+                              onChange={(e) =>
+                                handleColorChange(
+                                  dummyData[key].id,
+                                  "headerBackground",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                          <td className="border p-2"></td>
+                          <td className="border p-2">
+                            <input
+                              type="color"
+                              id={`footer_bg_color_${index}`}
+                              name={`footer_bg_color_${index}`}
+                              value={rowColors[index].footerBackground}
+                              onChange={(e) =>
+                                handleColorChange(
+                                  dummyData[key].id,
+                                  "footerBackground",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </td>
+                          <td className="border p-2"></td>
+                          <td className="border p-2"></td>
+                          <td className="border p-2">
+                            <div>
+                              <input
+                                type="color"
+                                id={`section_icon_color_${index}`}
+                              />
+                            </div>
+                          </td>
+                          <td className="border p-2"></td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <div
+                className="text-center mx-2 text-sm"
+                style={{ width: "20%" }}
+              >
+                <div>
+                  <button
+                    className="flex items-center justify-center w-full
+px-4 bg-white  border border-black"
+                    onClick={handleMoveUp}
+                  >
+                    <img src={moveUpButtonImg} alt="Move Up" className="mr-2" />
+                    Move Up
+                  </button>
+                </div>
+                <div className="mb-6">
+                  <button
+                    className="flex items-center justify-center w-full
+px-4 bg-white  border border-black"
+                    onClick={handleMoveDown}
+                  >
+                    <img
+                      src={moveDownButtonImg}
+                      alt="Move Down"
+                      className="mr-2"
+                    />
+                    Move Down
+                  </button>
+                </div>
+                <div>
+                  <button
+                    className="flex items-center justify-center
+w-full px-4 bg-white border border-black"
+                  >
+                    <img
+                      src={inheritButtonImg}
+                      alt="Inherit from formatting"
+                      className="mr-2"
+                    />
+                    Inherit from formatting
+                  </button>
+                </div>
+                <div className="mb-6">
+                  <button
+                    className="flex items-center justify-center
+w-full px-4 bg-white border border-black"
+                  >
+                    <img alt="" className="mr-2" />
+                    Match Colors
+                  </button>
+                </div>
+                <div>
+                  <button
+                    className="flex items-center justify-center w-full
+px-4 bg-white border border-black"
+                    onClick={handleSelectAll}
+                  >
+                    {selectAll ? "Deselect All" : "Select All"}
+                  </button>
+                </div>
+                <div>
+                  <button
+                    className="flex items-center justify-center
+w-full px-4  "
+                  >
+                    <input type="checkbox" />
+                    Show print option before Generating Report
+                  </button>
+                </div>
+                <div className="mb-6">
+                  <button
+                    className="flex items-center justify-center
+w-full px-4 bg-white border border-black"
+                  >
+                    <img alt="" className="mr-2" />
+                    Select Section With Comments Ratings or Photos
+                  </button>
+                </div>
+                <div>
+                  <button
+                    className="flex items-center justify-center
+w-full px-4 bg-white border border-black"
+                  >
+                    <img
+                      src={selectIconsButtonImg}
+                      alt="Select Icons For All Sections"
+                      className="mr-2"
+                    />
+                    Select Icons For All Sections
+                  </button>
+                </div>
+                <div className="mb-6">
+                  <button
+                    className="flex items-center justify-center
+w-full px-4 bg-white border border-black"
+                  >
+                    <img alt="" className="mr-2" />
+                    Remove All Section For All Sections
+                  </button>
+                </div>
+                <div>
+                  <p className="mb-6">Select Alignment For All Section</p>
+                  <div className="flex justify-center ">
+                    <button className="mr-2">
+                      <img alt="left" />
+                    </button>
+                    <button className="mr-2">
+                      <img alt="center" />
+                    </button>
+                    <button>
+                      <img alt="right" />
+                    </button>
+                  </div>
+                  <div className="flex justify-center pt-4 pb-4">
+                    <div id="pdf-content">
+                      <div
+                        id="pdf-content-home"
+                        style={{
+                          position: "absolute",
+                          left: "-9999px",
+                          display: "none",
+                        }}
+                        ref={coverPageRef}
+                      >
+                        <CoverPageDesigner />
+                      </div>
+                    </div>
+                    <button
+                      className="border-2 border-black py-1 px-2 mr-4"
+                      onClick={exportCoverPageToPDF}
+                    >
+                      Generate PDF & Close
+                    </button>{" "}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
 };
 
-export default Test;
+export default ColorPalette;

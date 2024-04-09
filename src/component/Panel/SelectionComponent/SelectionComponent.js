@@ -85,7 +85,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
 
   const handlesave = () => {
     const concatenatedText = selectedTextRef.current.join("\n");
-    console.log(concatenatedText);
+    console.log("concatenatedText",concatenatedText);
     try {
       let tempPanelData = localStorage.getItem("SelectionData");
       if (!tempPanelData) {

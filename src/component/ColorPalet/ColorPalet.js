@@ -197,7 +197,7 @@ const ColorPalette = ({ onClose }) => {
     // Fetch menu data from localStorage
     const menuData = localStorage.getItem("menuData");
 
-    if (content && menuData) {
+    if (content) {
       // Modify the content to include border, page heading, and adjust page height
       const modifiedContent = `
             <div style="padding: 0px; height: 73vw; width: 100%;">
@@ -386,9 +386,10 @@ const ColorPalette = ({ onClose }) => {
                         // Reset font size back to its original value
                         pdf.setFontSize(originalFontSize);
 
-                        const summaryName = "Summary: "; // Predefined summary name
-                        const selectedTextWithSummary =
-                          summaryName + imageData.selectedText;
+                        // Predefined summary name
+                        const selectedTextWithSummary = `Summary: ${
+                          imageData.selectedText || ""
+                        }`;
 
                         pdf.textWithLink(selectedTextWithSummary, 10, 31, {
                           maxWidth: 200, // Adjust the maxWidth according to your page width
@@ -456,6 +457,7 @@ const ColorPalette = ({ onClose }) => {
             console.warn(
               "DamageData or coverphotoImage not found in local storage."
             );
+            pdf.save("Report.pdf");
           }
         });
     }
