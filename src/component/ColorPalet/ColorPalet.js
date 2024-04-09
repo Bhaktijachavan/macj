@@ -232,12 +232,12 @@ const ColorPalette = ({ onClose }) => {
 
         .then((pdf) => {
           // Add third page for Table of Contents
-          pdf.addPage();
-          pdf.text("Table of Contents", 10, 10);
-          // Add table for Table of Contents
-          addTableOfContents(pdf, JSON.parse(menuData));
 
-          pdf.addPage();
+          // pdf.addPage();
+          // pdf.text("Table of Contents", 10, 10);
+          // // Add table for Table of Contents
+          // addTableOfContents(pdf, JSON.parse(menuData));
+
           // pdf.text("Damage Panel Data", 10, 10);
           // addSummaryTable(pdf, JSON.parse(menuData));
           let imageURL; // Declare imageURL outside of the if block
@@ -251,6 +251,11 @@ const ColorPalette = ({ onClose }) => {
 
           if (coverphotoImageData && damageDataString) {
             try {
+              pdf.addPage();
+              pdf.text("Table of Contents", 10, 10);
+              // Add table for Table of Contents
+              addTableOfContents(pdf, JSON.parse(menuData));
+              pdf.addPage();
               const damageData = JSON.parse(damageDataString);
               const imageKeys = Object.keys(coverphotoImageData);
 

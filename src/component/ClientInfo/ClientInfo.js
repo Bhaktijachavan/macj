@@ -403,6 +403,7 @@ const ClientInfo = () => {
             name="otherInfo"
             value={formData.otherInfo}
             onChange={handleInputChange}
+          
           ></textarea>
         </div>
       </form>
