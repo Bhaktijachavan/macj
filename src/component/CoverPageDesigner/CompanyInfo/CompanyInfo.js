@@ -49,13 +49,16 @@ function CompanyInfo({ id }) {
     // Only render if the value is not empty
     if (value !== undefined && value !== null && value !== "") {
       return (
-        <section className="for-flexing-input-and-label-cover-page" key={key}>
+        <section
+          className="for-flexing-input-and-label-cover-page flex"
+          key={key}
+        >
           <label htmlFor="">{label}:</label>
-          <input
+          <textarea
             type="text"
             value={value}
             onChange={(e) => handleInputChange(key, e.target.value)}
-            className="pl-[5px]"
+            className="pl-[5px]  w-[187px] overflow-hidden h-7 resize-none"
           />
         </section>
       );
@@ -79,25 +82,25 @@ function CompanyInfo({ id }) {
             {editableText.firstName && (
               <section className="flex">
                 <label htmlFor="firstName">First Name:</label>
-                <input
+                <textarea
                   type="text"
                   id="firstName"
                   value={editableText.firstName}
                   onChange={(e) =>
                     handleInputChange("firstName", e.target.value)
                   }
-                  className="name-input-for-first-name-cover-page pl-[5px]"
+                  className="name-input-for-first-name-cover-page pl-[5px]  w-[201px] overflow-hidden h-7 resize-none"
                 />
               </section>
             )}
             {editableText.email && (
               <section className="flex">
                 <label htmlFor="">Email:</label>
-                <input
+                <textarea
                   type="email"
                   value={editableText.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className="email-input-for-cover-page pl-[5px]"
+                  className="email-input-for-cover-page pl-[5px] w-[239px] overflow-hidden h-7 resize-none"
                 />
               </section>
             )}
@@ -113,13 +116,13 @@ function CompanyInfo({ id }) {
               <section className="flex">
                 {" "}
                 <label htmlFor="">Last Name:</label>
-                <input
+                <textarea
                   type="text"
                   value={editableText.lastName}
                   onChange={(e) =>
                     handleInputChange("lastName", e.target.value)
                   }
-                  className="name-input-for-last-name-cover-page pl-[5px]"
+                  className="name-input-for-last-name-cover-page pl-[5px]  w-[201px] overflow-hidden h-7 resize-none"
                 />
               </section>
             )}
@@ -131,9 +134,9 @@ function CompanyInfo({ id }) {
             {renderInputField("Zipcode", "zipCode")}
           </div>
         </div>
-        <section className="other-client-info-for-cover-page-genearate-report  flex flex-col gap-[10px] w-auto">
+        <section className="other-client-info-for-cover-page-genearate-report  flex flex-col gap-[10px] ">
           {editableText.addressLine2 && (
-            <section className="only-for-addressLine2-input">
+            <section className="only-for-addressLine2-input flex ">
               <label htmlFor="">Address Line 2:</label>
               <textarea
                 type="text"
@@ -141,12 +144,12 @@ function CompanyInfo({ id }) {
                 onChange={(e) =>
                   handleInputChange("addressLine2", e.target.value)
                 }
-                className="addressLine2-input-for-cover-page w-[30em] p-1 "
+                className="addressLine2-input-for-cover-page w-[30em] pl-1 overflow-hidden resize-none"
               />
             </section>
           )}
           {editableText.inspectionAddress && (
-            <section className="only-for-inspectionAddress-input  flex items-center">
+            <section className="only-for-inspectionAddress-input   flex  ">
               <label htmlFor="">Inspection Address:</label>
               <textarea
                 type="text"
@@ -154,18 +157,18 @@ function CompanyInfo({ id }) {
                 onChange={(e) =>
                   handleInputChange("inspectionAddress", e.target.value)
                 }
-                className="inspectionAddress-input-for-cover-page w-[30em] p-1  "
+                className="inspectionAddress-input-for-cover-page w-[30em] pl-1 overflow-hidden resize-none"
               />
             </section>
           )}
           {editableText.otherInfo && (
-            <section className="only-for-otherInfo-input flex items-center ">
+            <section className="only-for-otherInfo-input flex overflow-hidden">
               <label htmlFor="">Other Info:</label>
               <textarea
                 type="text"
                 value={editableText.otherInfo}
                 onChange={(e) => handleInputChange("otherInfo", e.target.value)}
-                className="otherInfo-input-for-cover-page w-[30em] p-1 "
+                className="otherInfo-input-for-cover-page w-[30em] pl-1 overflow-hidden resize-none"
               />
             </section>
           )}
