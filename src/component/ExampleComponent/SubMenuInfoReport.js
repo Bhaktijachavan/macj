@@ -239,6 +239,7 @@ const SubMenuInfoReport = () => {
   const handleSave = () => {
     const selectedOptionId = generateUniqueId(); // Generate a unique ID
     const textareaValue = textAreaRef.current.value; // Access value from textarea ref
+    console.log("textareaValue", textareaValue);
 
     // Create new summary data object
     const newSummaryData = {
@@ -262,6 +263,7 @@ const SubMenuInfoReport = () => {
     setMenuData(updatedMenuData);
 
     // Save updated menuData to localStorage
+
     localStorage.setItem("menuData", JSON.stringify(updatedMenuData));
 
     alert("Data saved Successfully");

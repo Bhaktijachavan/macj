@@ -255,6 +255,7 @@ const ColorPalette = ({ onClose }) => {
               pdf.text("Table of Contents", 10, 10);
               // Add table for Table of Contents
               addTableOfContents(pdf, JSON.parse(menuData));
+
               pdf.addPage();
               const damageData = JSON.parse(damageDataString);
               const imageKeys = Object.keys(coverphotoImageData);
@@ -473,33 +474,11 @@ const ColorPalette = ({ onClose }) => {
   // Function to add Table of Contents
 
   function addTableOfContents(pdf, parsedMenuData) {
-    // Set styling properties (adjust as desired)
-    const fontSize = 12;
-    const fontColor = "black"; // Text color
-    const boxShadowColor = "gray"; // Box shadow color
-    const borderColor = "blue"; // Border color
-    const borderWidth = 1; // Border width
-
     // Set font size and text color
+    const fontSize = 12;
+    const fontColor = "black";
     pdf.setFontSize(fontSize);
     pdf.setTextColor(fontColor);
-
-    // Get page width and height
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-
-    // Create a rectangle representing the table of contents area
-    const tocRect = {
-      x: 0.5, // Adjust horizontal padding
-      y: 0.5, // Adjust vertical padding
-      width: pageWidth - 1, // Adjust width based on padding
-      height: pageHeight - 5, // Adjust height based on padding
-    };
-
-    // Draw the border for the table of contents
-    pdf.setDrawColor(borderColor);
-    pdf.setLineWidth(borderWidth);
-    pdf.rect(tocRect.x, tocRect.y, tocRect.width, tocRect.height, "D"); // Draw the border (D for stroke)
 
     // Loop through each item in parsedMenuData
     Object.values(parsedMenuData).forEach((item, index) => {
@@ -508,31 +487,25 @@ const ColorPalette = ({ onClose }) => {
         console.warn(
           `Item ${
             index + 1
-          } in parsedMenuData has no subitems to display in the table of contents.``Item ${
-            index + 1
           } in parsedMenuData has no subitems to display in the table of contents.`
         );
         return; // Skip to the next item if no subitems
       }
 
       // Variable to track the current vertical position within the subitems section
-      let currentYPosition = tocRect.y + 40 + index * 10; // Start after border + index gap
+      let currentYPosition = 40 + index * 10; // Start after index gap
 
       // Loop through subitems and add them to the table of contents
       item.subitems.forEach((subitem, subindex) => {
-        // Set the box shadow
-        pdf.setDrawColor(boxShadowColor);
-        pdf.setLineWidth(0.2);
-
-        // Add text without background color (adjust y position based on border)
+        // Add text
         pdf.text(
           `${subitem.subName}`,
-          tocRect.x + 20, // Adjust horizontal padding within border
-          tocRect.y + 30 + index * 10 + subindex * 10 // Adjust y position
+          20, // Adjust horizontal padding
+          currentYPosition // Adjust y position
         );
 
         // Update currentYPosition for the next subitem
-        currentYPosition += 10; // Increase by line height (adjust as needed)
+        currentYPosition += 20; // Increase by font size for each new line
       });
     });
   }
@@ -543,35 +516,44 @@ const ColorPalette = ({ onClose }) => {
     const menuDataa = JSON.parse(localStorage.getItem("menuData") || "{}");
 
     let currentYPosition = 40; // Initial vertical position for text placement
+    let currentXPosition = 5;
     let tabCounter = 1; // Initialize counter for tab value numbering
 
     // Initialize table data with headers
-    const tableData = [["Sr. No", "TabName", "Damage Data"]];
+    const tableData = [["Sr. No", "SubName", "TabName", "Damage Data"]];
 
     // Iterate over menuDataa to populate the table
     for (const key in menuDataa) {
       const menuItem = menuDataa[key];
+      const subnameid = menuItem.subitems;
+      const ids = subnameid.map((item) => item.id);
+
       const subdetails = menuItem.subdetails;
+      const subdetailKeys = Object.keys(subdetails);
 
       if (subdetails) {
-        for (const subdetailKey in subdetails) {
+        for (let i = 0; i < Math.min(ids.length, subdetailKeys.length); i++) {
+          const subdetailKey = subdetailKeys[i];
           const subdetailValue = subdetails[subdetailKey];
+          const id = ids[i];
 
           for (const abc in subdetailValue) {
             const tabvalue = subdetailValue[abc].tabname;
-            console.log("vedant", tabvalue);
 
-            // Check if damageValue exists and has the Damage1red property
             const damageValue = damageData[subdetailValue[abc].Damage1Data];
             if (damageValue && damageValue.Damage1red) {
+              const subNames = subnameid.find((item) => item.id === id).subName;
+
               // Add row data to tableData
-              tableData.push([tabCounter, tabvalue, damageValue.Damage1red]);
+              tableData.push([
+                tabCounter,
+                subNames,
+                tabvalue,
+                damageValue.Damage1red,
+              ]);
 
               // Increment tabCounter
               tabCounter++;
-
-              console.log("DamageValue", damageValue);
-              console.log("subdetailValue", subdetailValue);
             }
           }
         }
@@ -581,21 +563,23 @@ const ColorPalette = ({ onClose }) => {
     // Set table styling
     const tableOptions = {
       startY: currentYPosition,
+      startX: currentXPosition,
       theme: "grid", // Apply grid theme for table
       headStyles: {
         fillColor: [135, 206, 250], // Background color for header row
       },
       columnStyles: {
         0: { cellWidth: 20 }, // Adjust column width for Sr. No
-        1: { cellWidth: 50 }, // Adjust column width for TabName
-        2: { cellWidth: 80 }, // Adjust column width for Damage Data
+        1: { cellWidth: 50 }, // Adjust column width for SubName
+        2: { cellWidth: 50 }, // Adjust column width for TabName
+        3: { cellWidth: 40 }, // Adjust column width for Damage Data
       },
     };
 
     const tableRows = tableData.map((rowData, rowIndex) => {
       return rowData.map((cellData, colIndex) => {
         // Set text color to red for cells in the "Damage Data" column
-        if (colIndex === 2 && rowIndex > 0) {
+        if (colIndex === 3 && rowIndex > 0) {
           return { content: cellData, styles: { textColor: [255, 0, 0] } };
         }
         return cellData;
