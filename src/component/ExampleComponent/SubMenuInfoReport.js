@@ -52,9 +52,13 @@ const SubMenuInfoReport = () => {
   };
   // Event handler for button 2 click
   const handleButton2Click = () => {
-    console.log(`Button 2 clicked with selected option: ${selectedOption}`);
+    // Remove document from "tabledata" in localStorage
+    localStorage.removeItem("summarydataString");
+    alert("Document removed successfully");
+
     // Add your custom logic here
   };
+
   // text editor
   const [font, setFont] = useState("Arial");
   const [fontSize, setFontSize] = useState(16);
@@ -235,11 +239,17 @@ const SubMenuInfoReport = () => {
     const storedMenuData = JSON.parse(localStorage.getItem("menuData")) || {};
     setMenuData(storedMenuData);
   }, []);
-
   const handleSave = () => {
     const selectedOptionId = generateUniqueId(); // Generate a unique ID
     const textareaValue = textAreaRef.current.value; // Access value from textarea ref
     console.log("textareaValue", textareaValue);
+
+    // If no submenu is selected, store textareaValue directly as tabledata in localStorage
+    if (!selectedSubmenu) {
+      localStorage.setItem("summarydataString", textareaValue);
+      alert("Text saved successfully");
+      return;
+    }
 
     // Create new summary data object
     const newSummaryData = {
@@ -263,7 +273,6 @@ const SubMenuInfoReport = () => {
     setMenuData(updatedMenuData);
 
     // Save updated menuData to localStorage
-
     localStorage.setItem("menuData", JSON.stringify(updatedMenuData));
 
     alert("Data saved Successfully");

@@ -451,8 +451,31 @@ const ColorPalette = ({ onClose }) => {
               });
 
               pdf.addPage();
-              pdf.text("Report Summary", 70, 10);
-              addSummaryTable(pdf, JSON.parse(menuData));
+              pdf.text("Report Summary", 100, 10);
+              const tableData = localStorage.getItem("summarydataString") || "";
+              // pdf.text(tableData, 5, 18);
+              // Calculate the height of the text rendered by pdf.textWithLink()
+              const textHeight = pdf.getTextDimensions(tableData, {
+                maxWidth: 200, // Adjust the maxWidth according to your page width
+                align: "left",
+              }).h;
+
+              // Define the vertical gap between the two sections
+              const verticalGap = 10; // You can adjust this value as needed
+
+              // Position the addSummaryTable() below the textWithLink() with a dynamic gap
+              const addSummaryTableY = 18 + textHeight + verticalGap;
+
+              // Add the textWithLink() with dynamic gap
+              pdf.textWithLink(tableData, 5, 18, {
+                maxWidth: 200, // Adjust the maxWidth according to your page width
+                align: "left",
+              });
+
+              // Add the addSummaryTable() with dynamic gap
+              addSummaryTable(pdf, JSON.parse(menuData), addSummaryTableY);
+
+              // Save the PDF
               pdf.save("Report.pdf");
 
               console.log("PDF generated successfully.");
@@ -572,7 +595,7 @@ const ColorPalette = ({ onClose }) => {
         0: { cellWidth: 20 }, // Adjust column width for Sr. No
         1: { cellWidth: 50 }, // Adjust column width for SubName
         2: { cellWidth: 50 }, // Adjust column width for TabName
-        3: { cellWidth: 40 }, // Adjust column width for Damage Data
+        3: { cellWidth: 60 }, // Adjust column width for Damage Data
       },
     };
 
