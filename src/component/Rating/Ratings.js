@@ -83,6 +83,7 @@ const Ratings = ({ onClose }) => {
     // Convert the object to a JSON string and store it in localStorage
     localStorage.setItem('ratingsData', JSON.stringify(ratingsData));
     alert("the data has been saved " , JSON.stringify(ratingsData))
+    window.location.reload();
   };
 
   return (

@@ -29,6 +29,7 @@ const ClientInfo = () => {
     const data = JSON.parse(localStorage.getItem("clientInfoData"));
     if (data) {
       setFormData(data);
+ 
     }
   }, []);
   // Filter out empty fields
@@ -108,7 +109,8 @@ const ClientInfo = () => {
       otherInfo: "",
     };
 
-    localStorage.setItem("clientInfoData", JSON.stringify(newFormData));
+    localStorage.removeItem('clientInfoData')
+    window.location.reload();
     alert("Client Info Has been clear");
   };
   return (

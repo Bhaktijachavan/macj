@@ -237,6 +237,7 @@ const Header = ({ onButtonClick }) => {
         );
       }
       alert("successfully opened");
+      window.location.reload()
     }
   };
 
