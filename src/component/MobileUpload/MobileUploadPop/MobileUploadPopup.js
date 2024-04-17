@@ -94,26 +94,33 @@ const MobileUploadPopup = ({ onClose }) => {
               </tr>
             </thead>
             <tbody>
-              {inspectionData.map(data => (
-                <tr key={data._id}>
-                  <td>{data.InpectionName || ""}</td>
-                  <td>{data.clientName || ""}</td>
-                  <td>{data.address || ""}</td>
-                  <td>{data.InpectionDate}</td>
-                  <td>
-                    <button onClick={() => window.open(data.pdf, '_blank')}>
-                      <img src={img} alt="" style={{ width: 30, height: 30 }} />
-                    </button>
-                  </td>
-                  <td>
-                    <input
-                      type="checkbox"
-                      onChange={() => handleCheckboxChange(data._id)}
-                      checked={selectedInspectionIds.includes(data._id)}
-                    />
-                  </td>
-                </tr>
-              ))}
+            {inspectionData ? (
+  inspectionData.map(data => (
+    <tr key={data._id}>
+      <td>{data.InpectionName || ""}</td>
+      <td>{data.clientName || ""}</td>
+      <td>{data.address || ""}</td>
+      <td>{data.InpectionDate}</td>
+      <td>
+        <button onClick={() => window.open(data.pdf, '_blank')}>
+          <img src={img} alt="" style={{ width: 30, height: 30 }} />
+        </button>
+      </td>
+      <td>
+        <input
+          type="checkbox"
+          onChange={() => handleCheckboxChange(data._id)}
+          checked={selectedInspectionIds.includes(data._id)}
+        />
+      </td>
+    </tr>
+  ))
+) : (
+  <tr>
+    <td colSpan="6">No Inspections Found</td>
+  </tr>
+)}
+
             </tbody>
           </table>
         </div>
