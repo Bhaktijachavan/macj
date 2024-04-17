@@ -247,7 +247,9 @@ const ColorPalette = ({ onClose }) => {
           );
           console.log("coverphotoImageData", coverphotoImageData);
           const damageDataString = localStorage.getItem("DamageData");
-          console.log("damageDataString", damageDataString);
+          // console.log("damageDataString", damageDataString);
+          // const selectionDataString = localStorage.getItem("SelectionData");
+          // console.log("selectionDataString", selectionDataString);
 
           if (coverphotoImageData && damageDataString) {
             try {
@@ -255,6 +257,60 @@ const ColorPalette = ({ onClose }) => {
               pdf.text("Table of Contents", 10, 10);
               // Add table for Table of Contents
               addTableOfContents(pdf, JSON.parse(menuData));
+
+              // SelectionMenudata();
+              // Add table for Table of Contents
+              // const menuDataa = JSON.parse(
+              //   localStorage.getItem("menuData") || "{}"
+              // );
+              // const selectionDataString = localStorage.getItem("SelectionData");
+              // const Selection = JSON.parse(selectionDataString);
+
+              // Object.keys(Selection).forEach((key) => {
+              //   const Selectionkey = key.replace("_s1", ""); // Remove the '_s1' suffix from the key
+              //   const SelectionObject = Selection[key];
+              //   const SelectionData = SelectionObject.selectionText;
+              //   console.log("Selectionkey", Selectionkey);
+              //   console.log("SelectionData", SelectionData);
+
+              //   for (const key in menuDataa) {
+              //     const menuItem = menuDataa[key];
+              //     const subnameid = menuItem.subitems;
+              //     const subNames = subnameid.map((item) => item.subName);
+              //     console.log("SubNames:", subNames);
+
+              //     const ids = subnameid.map((item) => item.id);
+              //     const subdetails = menuItem.subdetails;
+              //     const subdetailKeys = Object.keys(subdetails);
+
+              //     console.log("subdetails", subdetails);
+              //     const keys = Object.values(subdetails).flatMap((obj) =>
+              //       Object.keys(obj)
+              //     );
+
+              //     if (subdetails) {
+              //       for (
+              //         let i = 0;
+              //         i < Math.min(ids.length, subdetailKeys.length);
+              //         i++
+              //       ) {
+              //         const subdetailKey = subdetailKeys[i];
+              //         const subdetailValue = subdetails[subdetailKey];
+              //         const id = ids[i];
+
+              //         for (const abc in subdetailValue) {
+              //           const tabvalue = subdetailValue[abc].tabname;
+              //           console.log("tabvalue", tabvalue);
+              //           if (keys.includes(Selectionkey)) {
+              //             // const dataOfSelection = SelectionData.selectionText;
+              //             console.log("dataOfSelection", SelectionData);
+              //             pdf.text(SelectionData, 5, 20);
+              //           }
+              //         }
+              //       }
+              //     }
+              //   }
+              // });
 
               pdf.addPage();
               const damageData = JSON.parse(damageDataString);
@@ -325,6 +381,7 @@ const ColorPalette = ({ onClose }) => {
               }
 
               // Iterate through each damage object in damageData
+
               Object.keys(damageData).forEach((key, index) => {
                 const damageObject = damageData[key];
                 const currentImageKey = imageKeys[index]; // Get corresponding image key
@@ -357,6 +414,7 @@ const ColorPalette = ({ onClose }) => {
                   // Iterate over each image data
                   coverphotoImageData[currentImageKey].forEach(
                     (imageData, imgIndex) => {
+                      let selectedSelectionData = new Set();
                       // Check if subname or tabname has changed
                       if (
                         subName !== imageData.subnames ||
@@ -391,6 +449,85 @@ const ColorPalette = ({ onClose }) => {
                         pdf.text(tabName, 5, 23);
                         // Reset font size back to its original value
                         pdf.setFontSize(originalFontSize);
+                        const menuDataa = JSON.parse(
+                          localStorage.getItem("menuData") || "{}"
+                        );
+                        const selectionDataString =
+                          localStorage.getItem("SelectionData");
+                        const Selection = JSON.parse(selectionDataString);
+
+                        Object.keys(Selection).forEach((key) => {
+                          const Selectionkey = key.replace("_s1", ""); // Remove the '_s1' suffix from the key
+                          const SelectionObject = Selection[key];
+                          const SelectionData = SelectionObject.selectionText;
+                          console.log("Selectionkey", Selectionkey);
+                          console.log("SelectionData", SelectionData);
+
+                          for (const key in menuDataa) {
+                            const menuItem = menuDataa[key];
+                            const subnameid = menuItem.subitems;
+                            const subNames = subnameid.map(
+                              (item) => item.subName
+                            );
+                            console.log("SubNames:", subNames);
+
+                            const ids = subnameid.map((item) => item.id);
+                            const subdetails = menuItem.subdetails;
+                            const subdetailKeys = Object.keys(subdetails);
+
+                            console.log("subdetails", subdetails);
+                            const keys = Object.values(subdetails).flatMap(
+                              (obj) => Object.keys(obj)
+                            );
+
+                            if (subdetails) {
+                              for (
+                                let i = 0;
+                                i < Math.min(ids.length, subdetailKeys.length);
+                                i++
+                              ) {
+                                const subdetailKey = subdetailKeys[i];
+                                const subdetailValue = subdetails[subdetailKey];
+                                const id = ids[i];
+
+                                for (const abc in subdetailValue) {
+                                  const tabvalue = subdetailValue[abc].tabname;
+                                  console.log("tabvalue", tabvalue);
+                                  if (
+                                    keys.includes(Selectionkey) &&
+                                    subNames.includes(subName)
+                                  ) {
+                                    selectedSelectionData.add(SelectionData);
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        });
+                        if (selectedSelectionData.size > 0) {
+                          let formattedSelectionData = [
+                            ...selectedSelectionData,
+                          ].join(","); // Join unique SelectionData items with commas
+                          // Split formattedSelectionData into multiple lines if it exceeds the page width
+                          const maxWidth = 200; // Adjust the maximum width according to your page width
+                          let x = 10; // Initial X position
+                          let y = 40; // Initial Y position
+                          const lineHeight = 10; // Line height
+                          const words = formattedSelectionData
+                            .split(" ")
+                            .map((word) => word.trim()); // Split formattedSelectionData into words and remove leading/trailing spaces
+                          for (let word of words) {
+                            const width =
+                              (pdf.getStringUnitWidth(word) * fontSize) /
+                              pdf.internal.scaleFactor;
+                            if (x + width > maxWidth) {
+                              x = 5; // Move to the next line
+                              y += lineHeight; // Increment Y position
+                            }
+                            pdf.text(word, x, y); // Add word to the PDF
+                            x += width + 2; // Increment X position with spacing
+                          }
+                        }
 
                         // Predefined summary name
                         const selectedTextWithSummary = `Summary: ${
@@ -547,12 +684,20 @@ const ColorPalette = ({ onClose }) => {
 
     // Iterate over menuDataa to populate the table
     for (const key in menuDataa) {
+      // console.log("key", key);
       const menuItem = menuDataa[key];
+      // console.log("menuItem", menuItem);
       const subnameid = menuItem.subitems;
+      // console.log("subnameid", subnameid);
       const ids = subnameid.map((item) => item.id);
-
+      // console.log("ids", ids);
       const subdetails = menuItem.subdetails;
+      // console.log("subdetails", subdetails);
+      // const keys = Object.values(subdetails).flatMap((obj) => Object.keys(obj));
+      // console.log("Keys:", keys);
+
       const subdetailKeys = Object.keys(subdetails);
+      console.log("subdetailKeys", subdetailKeys);
 
       if (subdetails) {
         for (let i = 0; i < Math.min(ids.length, subdetailKeys.length); i++) {
@@ -616,6 +761,52 @@ const ColorPalette = ({ onClose }) => {
       ...tableOptions,
     });
   }
+
+  // function SelectionMenudata() {
+  //   const menuDataa = JSON.parse(localStorage.getItem("menuData") || "{}");
+  //   const selectionDataString = localStorage.getItem("SelectionData");
+  //   const Selection = JSON.parse(selectionDataString);
+
+  //   Object.keys(Selection).forEach((key) => {
+  //     const Selectionkey = key.replace("_s1", ""); // Remove the '_s1' suffix from the key
+  //     const SelectionObject = Selection[key];
+  //     const SelectionData = SelectionObject.selectionText;
+  //     console.log("Selectionkey", Selectionkey);
+  //     console.log("SelectionData", SelectionData);
+
+  //     for (const key in menuDataa) {
+  //       const menuItem = menuDataa[key];
+  //       const subnameid = menuItem.subitems;
+  //       const subNames = subnameid.map((item) => item.subName);
+  //       console.log("SubNames:", subNames);
+
+  //       const ids = subnameid.map((item) => item.id);
+  //       const subdetails = menuItem.subdetails;
+  //       const subdetailKeys = Object.keys(subdetails);
+
+  //       console.log("subdetails", subdetails);
+  //       const keys = Object.values(subdetails).flatMap((obj) =>
+  //         Object.keys(obj)
+  //       );
+
+  //       if (subdetails) {
+  //         for (let i = 0; i < Math.min(ids.length, subdetailKeys.length); i++) {
+  //           const subdetailKey = subdetailKeys[i];
+  //           const subdetailValue = subdetails[subdetailKey];
+  //           const id = ids[i];
+
+  //           for (const abc in subdetailValue) {
+  //             const tabvalue = subdetailValue[abc].tabname;
+  //             console.log("tabvalue", tabvalue);
+  //             if (keys.includes(Selectionkey)) {
+  //               console.log("czg", SelectionData);
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+  //   });
+  // }
 
   function displayAdditionalData(
     pdf,
