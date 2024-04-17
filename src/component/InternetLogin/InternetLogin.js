@@ -122,6 +122,7 @@ const InternetLogin = () => {
             <button className="cancel-btn-internetlogin" style={{backgroundColor : "red"}} onClick={()=>{
               localStorage.removeItem("User");
               setUser(null);
+              window.location.reload();
             }}>
               Logout
             </button>

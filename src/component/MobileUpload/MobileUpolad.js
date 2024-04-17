@@ -6,9 +6,18 @@ import { Link } from "react-router-dom";
 import MobileUploadPopup from "./MobileUploadPop/MobileUploadPopup";
 import img from "../../Assets/icons/icons8-upload-64.png";
 import img1 from "../../Assets/icons/icons8-search-in-cloud-50.png";
+import axios from "axios";
+import ViewTemplate from "./MobileUploadPop/ViewTemplate";
 const MobileUpload = ({ onClose }) => {
+  //pop up state 
   const [mobileUploadPopup, setMobileUploadPopup] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const [ViewTemplatepopup, setViewTemplatepopup] = useState(false);
+
+  //upload template state 
+  const [templateName, setTemplateName] = useState("");
+  const [description, setDescription] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const openMobileUploadPopup = () => {
     setMobileUploadPopup(true);
@@ -24,6 +33,37 @@ const MobileUpload = ({ onClose }) => {
   const handleClosePopup = () => {
     setShowPopup(false); // Set showPopup state to false to close the popup
   };
+  const handleUpload = async () => {
+    const user = localStorage.getItem("User")
+    if(!user){
+     alert("Please Login First")
+     return;
+    }
+    try {
+      // Log all values when the upload button is clicked
+      console.log("Template Name:", templateName);
+      console.log("Description:", description);
+      console.log("File:", selectedFile);
+  
+      const formData = new FormData();
+      formData.append("TemplateName", templateName);
+      formData.append("description", description);
+      formData.append("pdf", selectedFile);
+  
+      const response = await axios.post("http://localhost:7000/api/template/upload", formData);
+  
+      console.log(response.data);
+  
+      if (response.status === 200) {
+        alert("Template uploaded successfully!");
+      }
+      setShowPopup(false);
+    } catch (error) {
+      console.error(error);
+      alert("Error uploading template!");
+    }
+  };
+  
 
   return (
     <>
@@ -60,46 +100,65 @@ const MobileUpload = ({ onClose }) => {
                 Upload Template
               </button>
               {showPopup && (
-                <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-[999]">
-                  <div className="bg-gray-300 border border-gray-400  relative w-[50%] p-0">
-                    <div className=" flex items-center content-between justify-between  class-for-header-color px-1   ">
-                      <p>Panel</p>
-                      <p
-                        className="BatchAddPhots-close-image   hover:text-white"
-                        onClick={handleClosePopup}
-                      >
-                        X
-                      </p>
-                    </div>
-                    <div className="grid items-center justify-center gap-12 p-9">
-                      <div>
-                        <label htmlFor="">description</label>
-                        <input type="text" className="ml-1" />
-                      </div>
-                      <div>
-                        <label htmlFor="">description</label>
-                        <input type="text" className="ml-1" />
-                      </div>
-                      <div>
-                        <label htmlFor="">description</label>
-                        <input type="text" className="ml-1" />
-                        <input type="file" />
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <button className="text-white bg-blue-500 border border-blue-500 hover:bg-blue-700 hover:border-blue-700 focus:ring-2 focus:ring-blue-500 active:bg-blue-700 active:border-blue-700 active:shadow-inner disabled:opacity-50 disabled:cursor-not-allowed  px-2 py-2 rounded-md">
-                        Upload
-                      </button>
-                    </div>
-                  </div>
+          <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-[999]">
+            <div className="bg-gray-300 border border-gray-400  relative w-[50%] p-0">
+              <div className=" flex items-center content-between justify-between  class-for-header-color px-1   ">
+                <p>Panel</p>
+                <p
+                  className="BatchAddPhots-close-image   hover:text-white"
+                  onClick={handleClosePopup}
+                >
+                  X
+                </p>
+              </div>
+              <div className="grid items-center justify-center gap-12 p-9">
+                <div>
+                  <label htmlFor="">Template Name </label>
+                  <input
+                    type="text"
+                    className="ml-1"
+                    value={templateName}
+                    onChange={(e) => setTemplateName(e.target.value)}
+                  />
                 </div>
-              )}
+                <div>
+                  <label htmlFor="">Description</label>
+                  <input
+                    type="text"
+                    className="ml-1"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="">Upload tpz file </label>
+                  <input
+                    type="file"
+                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-center">
+                <button
+                  className="text-white bg-blue-500 border border-blue-500 hover:bg-blue-700 hover:border-blue-700 focus:ring-2 focus:ring-blue-500 active:bg-blue-700 active:border-blue-700 active:shadow-inner disabled:opacity-50 disabled:cursor-not-allowed  px-2 py-2 rounded-md"
+                  onClick={handleUpload}
+                >
+                  Upload
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
               <br /> <br />
               <p>
                 Manage the list of the templates you have previously saved in
                 the Cloud.
               </p>
-              <button className="button-mobileupload">
+              <button className="button-mobileupload" 
+               onClick={()=>{
+                setViewTemplatepopup(true)
+               }}
+              >
                 <img className="img-mobileupload" src={img1} alt="" />
                 View Templates
               </button>
@@ -109,7 +168,7 @@ const MobileUpload = ({ onClose }) => {
           {/* Repeat the same structure for the second component */}
           <div className="template-mobileupload">
             <div className="title-mobileupload">
-              <h1>TEMPLATES</h1>
+              <h1>Inspection </h1>
               <p>
                 Manage the list of Inspections Currently in the Cloud.
                 <br />
@@ -127,8 +186,8 @@ const MobileUpload = ({ onClose }) => {
               onClick={openMobileUploadPopup}
             >
               <button className="button-mobileupload">
-                <img src={img} alt="" className="img-mobileupload" />
-                Upload Template
+              <img className="img-mobileupload" src={img1} alt="" />
+                View Inspections
               </button>
             </div>
           </div>
@@ -136,6 +195,13 @@ const MobileUpload = ({ onClose }) => {
           {mobileUploadPopup && (
             <MobileUploadPopup onClose={() => closeMobileUploadPopup(false)} />
           )}
+          {
+            ViewTemplatepopup && 
+            (
+              <ViewTemplate onClose={()=>{setViewTemplatepopup(false)}}/>
+            )
+          }
+        
         </div>
         <div className="container-footer-mobileupload">
           <button className="button-footer-mobileupload">

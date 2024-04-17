@@ -13,6 +13,11 @@ const MobileUploadPopup = ({ onClose }) => {
   }, []);
 
   const fetchInspectionData = async () => {
+    const user = localStorage.getItem("User")
+    if(!user){
+     alert("Please Login First")
+     return;
+    }
     try {
       const response = await axios.get('http://localhost:7000/api/inspection');
       if (response.status === 200) {
@@ -35,6 +40,11 @@ const MobileUploadPopup = ({ onClose }) => {
   };
 
   const handleDeleteFromCloud = async () => {
+    const user = localStorage.getItem("User")
+    if(!user){
+     alert("Please Login First")
+     return;
+    }
     try {
       // Send selectedInspectionIds array to the server for deletion
       const response = await axios.delete('http://localhost:7000/api/inspection', {
