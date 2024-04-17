@@ -1,11 +1,21 @@
 // FooterComponent.js
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 import "./Footer.css";
 import { Link } from "react-router-dom";
 import ApplicationSettingPopup from "./ApplicationSettingPopup/ApplicationSettingPopup";
 
 const Footer = () => {
   const [applicationSettingPopup, setApplicationSettingPopup] = useState(false);
+  const [user, setUser] = useState(null);
+
+
+  useEffect(() => {
+    const userdata = localStorage.getItem("User");
+    if (userdata) {
+      setUser(JSON.parse(userdata));
+    }
+
+  },[])
   const openApplicationSettingPopup = () => {
     setApplicationSettingPopup(true);
   };
@@ -27,21 +37,17 @@ const Footer = () => {
           {/* </Link> */}
         </div>
         <div className="right-section">
-          <form className="connection-form">
-            {/* Your form fields go here */}
-            <label>
-              <input
-                className="input-field-for-footer-section"
-                type="radio"
-                name="connection"
-                value="option1"
-              />
-              Not Connected
-            </label>
+        {user ? (
+  <>
+    <p className="connected-text">Connected</p>
+    <p className="connected-user-name">{user.name}</p>
+  </>
+) : (
+  <p className="connected-text">Not Connected</p>
+)}
 
-            {/* Add more radio buttons as needed */}
-          </form>
-        </div>{" "}
+       
+        </div>
         {applicationSettingPopup && (
           <div className="popup Cover-Page-Design-Popup-ccc">
             {/* Render your color palet component here */}

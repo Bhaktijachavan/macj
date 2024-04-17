@@ -1,28 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./InternetLogin.css";
 import axios from "axios";
 
 const InternetLogin = () => {
-  const [username, setUsername] = useState("");
+  const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
   const [isPopupOpen, setPopupOpen] = useState(true);
+  const [user, setUser] = useState(null);
+
+
+  useEffect(() => {
+    const userdata = localStorage.getItem("User");
+    if (userdata) {
+      setUser(JSON.parse(userdata));
+    }
+
+  },[])
 
   const handleLogin = async () => {
     console.log("Login button clicked!");
-    console.log("Username:", username);
+    console.log("email:", email);
     console.log("Password:", password);
 
     try {
       const res = await axios.post(
-        "https://macj-backend.onrender.com/api/user/login",
+        "http://localhost:7000/api/executive/login",
         {
-          username,
+          email,
           password,
         }
       );
 
       alert("Login successful!");
-      localStorage.setItem("user", JSON.stringify(res.data.data));
+      console.log("login data " , res.data.data)
+      localStorage.setItem("User", JSON.stringify(res.data.data));
+      window.location.reload();
       setPopupOpen(false);
     } catch (error) {
       if (error.response) {
@@ -62,7 +74,7 @@ const InternetLogin = () => {
         <div className="popup-border-internetlogin">
           <p className="p-internetlogin">
             Enter your Home Inspector Pro Cloud Service user name and password,
-            This is the same as your homeinspectorpro.com username and password.
+            This is the same as your homeinspectorpro.com email and password.
           </p>
           <br />
           <p className="p-internetlogin1">
@@ -72,16 +84,19 @@ const InternetLogin = () => {
             Home Inspector Pro Mobile program, and access additional cloud-based
             features.
           </p>
+           <br />
+           <h3> {user ? `hello ${user.name}` : "please login first "}</h3>
           <div className="two-inputs-for-login-page-credentials">
             <div className="input-row-internetlogin">
-              <label htmlFor="username">Username : </label>
+              <label htmlFor="email">email : </label>
               <input
                 className="input-internetlogin"
                 type="text"
-                id="username"
-                name="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                id="email"
+                disabled={user ? true : false}
+                name="email"
+                value={email}
+                onChange={(e) => setemail(e.target.value)}
                 required
               />
             </div>
@@ -90,6 +105,7 @@ const InternetLogin = () => {
               <input
                 className="input-internetlogin"
                 type="password"
+                disabled={user ? true : false}
                 id="password"
                 name="password"
                 value={password}
@@ -102,6 +118,12 @@ const InternetLogin = () => {
             <button onClick={handleLogin} className="button-internetlogin">Login</button>
             <button className="cancel-btn-internetlogin" onClick={handleClose}>
               Cancel
+            </button>
+            <button className="cancel-btn-internetlogin" style={{backgroundColor : "red"}} onClick={()=>{
+              localStorage.removeItem("User");
+              setUser(null);
+            }}>
+              Logout
             </button>
           </div>
         </div>
