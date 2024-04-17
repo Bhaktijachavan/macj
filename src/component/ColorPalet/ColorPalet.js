@@ -414,7 +414,7 @@ const ColorPalette = ({ onClose }) => {
                   // Iterate over each image data
                   coverphotoImageData[currentImageKey].forEach(
                     (imageData, imgIndex) => {
-                      let selectedSelectionData = new Set();
+                      let selectedSelectionData = [];
                       // Check if subname or tabname has changed
                       if (
                         subName !== imageData.subnames ||
@@ -497,36 +497,25 @@ const ColorPalette = ({ onClose }) => {
                                     keys.includes(Selectionkey) &&
                                     subNames.includes(subName)
                                   ) {
-                                    selectedSelectionData.add(SelectionData);
+                                    selectedSelectionData.push(SelectionData);
                                   }
                                 }
                               }
                             }
                           }
                         });
-                        if (selectedSelectionData.size > 0) {
-                          let formattedSelectionData = [
-                            ...selectedSelectionData,
-                          ].join(","); // Join unique SelectionData items with commas
-                          // Split formattedSelectionData into multiple lines if it exceeds the page width
-                          const maxWidth = 200; // Adjust the maximum width according to your page width
-                          let x = 10; // Initial X position
-                          let y = 40; // Initial Y position
-                          const lineHeight = 10; // Line height
-                          const words = formattedSelectionData
-                            .split(" ")
-                            .map((word) => word.trim()); // Split formattedSelectionData into words and remove leading/trailing spaces
-                          for (let word of words) {
-                            const width =
-                              (pdf.getStringUnitWidth(word) * fontSize) /
-                              pdf.internal.scaleFactor;
-                            if (x + width > maxWidth) {
-                              x = 5; // Move to the next line
-                              y += lineHeight; // Increment Y position
-                            }
-                            pdf.text(word, x, y); // Add word to the PDF
-                            x += width + 2; // Increment X position with spacing
-                          }
+                        if (selectedSelectionData.length > 0) {
+                          // Remove duplicates using a Set
+                          const uniqueSelectionData = [
+                            ...new Set(selectedSelectionData),
+                          ];
+                          const formattedSelectionData =
+                            uniqueSelectionData.join(", "); // Join unique SelectionData items with commas
+                          pdf.text(
+                            `Materials: ${formattedSelectionData}`,
+                            10,
+                            40
+                          ); // Add formattedSelectionData to the PDF
                         }
 
                         // Predefined summary name
