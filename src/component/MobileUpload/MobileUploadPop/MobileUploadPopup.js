@@ -1,13 +1,57 @@
-import React, { useState } from "react";
-import "./MobileUploadPopup.css"; // Corrected the import statement for CSS
+import React, { useEffect, useState } from "react";
+import "./MobileUploadPopup.css";
 import img from "../../../Assets/icons/icons8-download-from-the-cloud-48.png";
-import image from "../../../Assets/icons/icons8-delete-16.png";
-import image1 from "../../../Assets/icons/icons8-refresh-16.png";
-const MobileUploadPopup = ({ onClose}) => {
-  //state to track the active `
- 
+import image1 from "../../../Assets/icons/icons8-delete-16.png";
+import axios from 'axios';
 
+const MobileUploadPopup = ({ onClose }) => {
+  const [inspectionData, setInspectionData] = useState([]);
+  const [selectedInspectionIds, setSelectedInspectionIds] = useState([]);
 
+  useEffect(() => {
+    fetchInspectionData();
+  }, []);
+
+  const fetchInspectionData = async () => {
+    try {
+      const response = await axios.get('http://localhost:7000/api/inspection');
+      if (response.status === 200) {
+        setInspectionData(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching inspection data:", error);
+    }
+  };
+
+  const handleCheckboxChange = (id) => {
+    // Toggle selection status
+    setSelectedInspectionIds(prevIds => {
+      if (prevIds.includes(id)) {
+        return prevIds.filter(item => item !== id); // Remove ID if already selected
+      } else {
+        return [...prevIds, id]; // Add ID if not selected
+      }
+    });
+  };
+
+  const handleDeleteFromCloud = async () => {
+    try {
+      // Send selectedInspectionIds array to the server for deletion
+      const response = await axios.delete('http://localhost:7000/api/inspection', {
+        data: { inspectionIds: selectedInspectionIds } // Sending data in the request body
+      });
+      console.log("Response from server:", response.data);
+      
+      // Reset selectedInspectionIds array after successful deletion
+      setSelectedInspectionIds([]);
+      
+      // Refresh inspection data
+      fetchInspectionData();
+    } catch (error) {
+      console.error("Error deleting inspections:", error);
+    }
+    
+  };
 
   return (
     <div className="container-for-the-mobileuploadpopup">
@@ -30,14 +74,11 @@ const MobileUploadPopup = ({ onClose}) => {
           </p>
         </div>
         <div className="container-button-mobileuploadpopup">
-          <button className="delete-button-mobileuploadpopup">
-            <img src={image} alt="" style={{ width: 20, height: 20 }} /> Delete
-            form Cloud
+          <button className="delete-button-mobileuploadpopup" onClick={handleDeleteFromCloud}>
+            <img src={image1} alt="" style={{ width: 20, height: 20 }} /> Delete from Cloud
           </button>
-
-          <button className="refresh-button-mobileuploadpopup">
-            <img src={image1} alt="" style={{ width: 20, height: 20 }} />{" "}
-            Refresh List
+          <button className="refresh-button-mobileuploadpopup" onClick={() => fetchInspectionData()}>
+            <img src={image1} alt="" style={{ width: 20, height: 20 }} /> Refresh List
           </button>
         </div>
         <div>
@@ -47,37 +88,43 @@ const MobileUploadPopup = ({ onClose}) => {
                 <th>Inspection Name</th>
                 <th>Client Name</th>
                 <th>Inspection Address</th>
-                <th>Date Inspected </th>
+                <th>Date Inspected</th>
                 <th>Download</th>
                 <th>Delete</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Snehlata_2.1.24</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  {" "}
-                  <img src={img} alt="" style={{ width: 30, height: 30 }} />
-                </td>
-                <td>
-                  {" "}
-                  <input type="checkbox" />
-                </td>
-              </tr>
+              {inspectionData.map(data => (
+                <tr key={data._id}>
+                  <td>{data.InpectionName || ""}</td>
+                  <td>{data.clientName || ""}</td>
+                  <td>{data.address || ""}</td>
+                  <td>{data.InpectionDate}</td>
+                  <td>
+                    <button onClick={() => window.open(data.pdf, '_blank')}>
+                      <img src={img} alt="" style={{ width: 30, height: 30 }} />
+                    </button>
+                  </td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      onChange={() => handleCheckboxChange(data._id)}
+                      checked={selectedInspectionIds.includes(data._id)}
+                    />
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
-
         <div>
-            <button className="close-button-mobileuploadpopup" onClick={onClose}>
-                Close
-            </button>
+          <button className="close-button-mobileuploadpopup" onClick={onClose}>
+            Close
+          </button>
         </div>
       </div>
     </div>
   );
 };
+
 export default MobileUploadPopup;
