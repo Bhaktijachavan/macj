@@ -107,7 +107,7 @@ const MobileUploadPopup = ({ onClose }) => {
             {inspectionData ? (
   inspectionData.map(data => (
     <tr key={data._id}>
-      <td>{data.InpectionName || ""}</td>
+      <td>{data.InspectionName || ""}</td>
       <td>{data.clientName || ""}</td>
       <td>{data.address || ""}</td>
       <td>{data.InpectionDate}</td>

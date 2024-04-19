@@ -8,6 +8,7 @@ import img from "../../Assets/icons/icons8-upload-64.png";
 import img1 from "../../Assets/icons/icons8-search-in-cloud-50.png";
 import axios from "axios";
 import ViewTemplate from "./MobileUploadPop/ViewTemplate";
+import UploadInspectionPopup from "./MobileUploadPop/UpLoadInspection";
 const MobileUpload = ({ onClose }) => {
   //pop up state 
   const [mobileUploadPopup, setMobileUploadPopup] = useState(false);
@@ -18,6 +19,9 @@ const MobileUpload = ({ onClose }) => {
   const [templateName, setTemplateName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+
+  //inpectionupload pop up 
+  const [inspectionUploadPopup, setInspectionUploadPopup] = useState(false);
 
   const openMobileUploadPopup = () => {
     setMobileUploadPopup(true);
@@ -162,6 +166,8 @@ const MobileUpload = ({ onClose }) => {
                 <img className="img-mobileupload" src={img1} alt="" />
                 View Templates
               </button>
+
+              
             </div>
           </div>
 
@@ -190,6 +196,19 @@ const MobileUpload = ({ onClose }) => {
                 View Inspections
               </button>
             </div>
+
+
+
+            <div className="buttons-mobileupload" onClick={() => { setInspectionUploadPopup(true) }}>
+  <button className="button-mobileupload">
+    <img src={img} alt="" className="img-mobileupload" />
+    Upload Inspection
+  </button>
+</div>
+
+           
+
+            
           </div>
 
           {mobileUploadPopup && (
@@ -201,6 +220,9 @@ const MobileUpload = ({ onClose }) => {
               <ViewTemplate onClose={()=>{setViewTemplatepopup(false)}}/>
             )
           }
+          {inspectionUploadPopup && (
+            <UploadInspectionPopup onClose={() => setInspectionUploadPopup(false)} />
+          )}
         
         </div>
         <div className="container-footer-mobileupload">
