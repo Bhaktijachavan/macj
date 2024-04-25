@@ -10,6 +10,7 @@ const EditComments = ({
   moveUp,
   moveDown,
   setDiscriptionText,
+  setfetch,
   discriptionText,
 }) => {
   const [isAddModalVisible, setAddModalVisible] = useState(false);
@@ -66,6 +67,7 @@ const EditComments = ({
                 <AddComment
                   onClose={() => setAddModalVisible(false)}
                   value={value}
+                  setfetch={setfetch}
                 />
               )}
             </div>

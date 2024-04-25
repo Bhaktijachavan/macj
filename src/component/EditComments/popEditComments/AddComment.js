@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import img1 from "../../../Assets/icons/list.png";
 import img2 from "../../../Assets/icons/create_list.png";
 import img3 from "../../../Assets/icons/add_note.png";
@@ -10,7 +10,7 @@ import CreateListEditComm from "./CreateListEditComm";
 import InsertListPopup from "./InsertListPopup/InsertListPopup";
 import AddLinkPopup from "./AddLinkPopup/AddLinkPopup";
 
-const AddComment = ({ onClose, value }) => {
+const AddComment = ({ onClose, value , setfetch}) => {
   const [isCreateListVisible, setIsCreateListVisible] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
@@ -85,6 +85,8 @@ const AddComment = ({ onClose, value }) => {
     setIsCreateListVisible(true);
   };
 
+
+
   const SaveText = () => {
     console.log("Saving text:", text);
     try {
@@ -116,13 +118,29 @@ const AddComment = ({ onClose, value }) => {
 
       // Save the updated data back to local storage
       localStorage.setItem("TempPanelData", JSON.stringify(tempPanelData));
+      setfetch(true)
 
       console.log("Text saved successfully.");
       setText("");
+
+     resetfetch()
+
+    
+
+
+    
     } catch (error) {
       console.error("Error saving text:", error);
     }
   };
+
+
+  const resetfetch = () => {
+    setTimeout(() => {
+      setfetch(false)
+      
+    }, 2000);
+  }
   // Function to handle change in selected option
   // const handleOptionChange = (event) => {
   //   setSelectedOption(event.target.value);

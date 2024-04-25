@@ -4,7 +4,7 @@ import EditComments from "../../EditComments/EditComments";
 
 const SelectionComponent = ({ panelData, value, classname }) => {
   const [commentText, setCommentText] = useState("");
-
+  const [fetch , setfetch] = useState(false)
   const [selectedRow, setSelectedRow] = useState(null);
 
   const [discriptionText, setDiscriptionText] = useState("");
@@ -17,24 +17,22 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     );
   };
 
+
+
+  useEffect(()=>{
+    console.log("filtering is working in ")
+    filterEmptyStrings()
+  },[selectedTextRef])
+
   useEffect(() => {
-    const fetchData = () => {
-      const storedData = localStorage.getItem("TempPanelData");
-      filterEmptyStrings(); // Call the filtering function
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        const commentText = parsedData[value] || "";
-        setCommentText(commentText);
-      }
-    };
-
-    fetchData(); // Call the fetchData function immediately
-
-    const intervalId = setInterval(fetchData, 3000); // Set interval to fetch data every 3 seconds
-
-    // Clean up the interval on component unmount
-    return () => clearInterval(intervalId);
-  }, [value, selectedTextRef]); // Include selectedTextRef in the dependencies array to trigger the effect whenever it changes
+    const storedData = localStorage.getItem("TempPanelData");
+    // filterEmptyStrings(); 
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      const commentText = parsedData[value] || "";
+      setCommentText(commentText);
+    }
+  }, [fetch]); 
 
   useEffect(() => {
     filterEmptyStrings();
@@ -242,6 +240,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
               moveDown={handleMoveDownSelection}
               setDiscriptionText={setDiscriptionText}
               discriptionText={discriptionText}
+              setfetch={setfetch}
             />
             <button
               onClick={handlesave}

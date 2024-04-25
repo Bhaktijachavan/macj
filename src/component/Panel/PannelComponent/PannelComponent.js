@@ -16,6 +16,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [rating, setRating] = useState(null);
   const [discriptionText, setDiscriptionText] = useState("");
   const [showPhotosModal, setShowPhotosModal] = useState(false);
+  const [fetch , setfetch] = useState(false)
   const handleShowPhotosClick = () => {
     setShowPhotosModal(true);
   };
@@ -73,8 +74,8 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   
 
   useEffect(() => {
-    console.log("selected cheakbox ", selectedCheckboxes);
-  }, [selectedCheckboxes]);
+    console.log("selected cheakbox ", fetch);
+  }, [fetch]);
 
   const handlesave = () => {
     console.log("Saving data...");
@@ -109,17 +110,14 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   };
   useEffect(() => {
     // Fetch CommentText from localStorage initially
-    const interval = setInterval(() => {
-      const storedData = localStorage.getItem("TempPanelData");
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        const commentText = parsedData[value] || "";
-        setCommentText(commentText);
-      }
-    }, 3000);
-    // Clean up the interval on component unmount
-    return () => clearInterval(interval);
-  }, [value]);
+    const storedData = localStorage.getItem("TempPanelData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      const commentText = parsedData[value] || "";
+      setCommentText(commentText);
+    }
+   
+  }, [fetch]);
   const handleLineClick = (index, color) => {
     setSelectedLineIndex(index);
     setSelectedLineColor(color);
@@ -323,6 +321,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 moveDown={handleMoveDownDamage}
                 setDiscriptionText={setDiscriptionText}
                 discriptionText={discriptionText}
+                setfetch={setfetch}
               />
               <div
                 className="scroll-box-panel2 p-4 bg-gray-100"
