@@ -39,11 +39,11 @@ const Footer = () => {
         <div className="right-section">
         {user ? (
   <>
-    <p className="connected-text">Connected</p>
-    <p className="connected-user-name">{user.name}</p>
+    <p className="connected-text" style={{color : "green"}}>Connected</p>
+    <p className="connected-user-name"  style={{color : "green"}}>{user.name}</p>
   </>
 ) : (
-  <p className="connected-text">Not Connected</p>
+  <p className="connected-text"style={{color:"red"}}>Not Connected</p>
 )}
 
        

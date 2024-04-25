@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const UploadInspectionPopup = ({ onClose }) => {
@@ -11,6 +11,23 @@ const UploadInspectionPopup = ({ onClose }) => {
     InspectionDate: '',
     pdfFile: null,
   });
+
+
+  useEffect(()=>{
+    const clientData = localStorage.getItem("clientInfoData");
+    if(clientData){
+      const parsedData = JSON.parse(clientData);
+      console.log(parsedData);
+      setInspectionData({
+        ...inspectionData,
+        clientName: parsedData.firstName + parsedData.lastName,
+        phone: parsedData.phone,
+        email: parsedData.email,
+        address: parsedData.inspectionAddress,
+        InspectionDate: parsedData.dateOfInspection,
+      });
+    }
+  },[])
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
