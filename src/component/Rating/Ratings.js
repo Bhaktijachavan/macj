@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./Ratings.css"; // Corrected the import statement for CSS
 import img1 from "../../Assets/icons/folder.png";
+import Alert from "../Alert/Alert";
+
 const Ratings = ({ onClose }) => {
   //state to track the active `
   const [activeTab, setActiveTab] = useState("Ratings");
@@ -12,6 +14,12 @@ const Ratings = ({ onClose }) => {
   const [selectedValue, setSelectedValue] = useState("");
   const [selectedValueMark, setSelectedValueMark] = useState("");
   const [selectedValueOption, setSelectedValueOption] = useState("");
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+    color : "",
+  
+  });
   // Separate state variables for the input fields
   const [ratingName1, setRatingName1] = useState("Acceptable");
   const [ratingName2, setRatingName2] = useState("Monitor");
@@ -82,12 +90,22 @@ const Ratings = ({ onClose }) => {
 
     // Convert the object to a JSON string and store it in localStorage
     localStorage.setItem('ratingsData', JSON.stringify(ratingsData));
-    alert("the data has been saved " , JSON.stringify(ratingsData))
-    window.location.reload();
+    setShowAlert({
+      showAlert: true,
+      message: "Ratings saved successfully",
+      color : "green",
+    });
+
+   
+     setTimeout(() => {
+      window.location.reload();
+      
+     }, 3000);
   };
 
   return (
     <div className="container-for-the-ratings">
+        {showAlert.showAlert && <Alert color={showAlert.color}>{showAlert.message}</Alert>}
       <div className="width-set-for-the-ratings">
         <div className="close-button-and-ratings-header-for-popup-box">
           <p>Rating</p>
