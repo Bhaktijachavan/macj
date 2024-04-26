@@ -9,12 +9,18 @@ import redoimg from "../../Assets/icons/edit-undo.svg";
 import findimg from "../../Assets/icons/generate_report.png";
 import boldimg from "../../Assets/icons/boldimg.png";
 import italicimg from "../../Assets/icons/italic-font.png";
+import Alert from "../Alert/Alert";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 const SubMenuInfoReport = () => {
   const [isAddDocumentPopupOpen, setAddDocumentPopupOpen] = useState(false);
   const [documents, setDocuments] = useState([]);
   const [selectedOption, setSelectedOption] = useState("");
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+    color : undefined,
+  });
 
   // Event handler for opening the "Add New Document" popup
   const handleAddDocumentClick = () => {
@@ -54,7 +60,18 @@ const SubMenuInfoReport = () => {
   const handleButton2Click = () => {
     // Remove document from "tabledata" in localStorage
     localStorage.removeItem("summarydataString");
-    alert("Document removed successfully");
+    setShowAlert({
+      showAlert: true,
+      message: "Document removed successfully.",
+      color : "green",
+    
+    })
+    setTimeout(() => {
+      setShowAlert({
+        showAlert: false,
+        message: "",
+      }); // Hide the alert after 3 seconds
+    }, 4000);
 
     // Add your custom logic here
   };
@@ -247,7 +264,20 @@ const SubMenuInfoReport = () => {
     // If no submenu is selected, store textareaValue directly as tabledata in localStorage
     if (!selectedSubmenu) {
       localStorage.setItem("summarydataString", textareaValue);
-      alert("Text saved successfully");
+      setShowAlert({
+        showAlert: true,
+        message: "Text saved successfully",
+        color: "green",
+
+    
+        
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 4000);
       return;
     }
 
@@ -275,7 +305,18 @@ const SubMenuInfoReport = () => {
     // Save updated menuData to localStorage
     localStorage.setItem("menuData", JSON.stringify(updatedMenuData));
 
-    alert("Data saved Successfully");
+    setShowAlert({
+      showAlert: true,
+      message: "Data saved succesfully ",
+      color: "green",
+    
+    })
+    setTimeout(() => {
+      setShowAlert({
+        showAlert: false,
+        message: "",
+      }); // Hide the alert after 3 seconds
+    }, 4000);
 
     // Handle optional download logic (commented out)
     // ... code to download JSON as a file ...
@@ -290,6 +331,7 @@ const SubMenuInfoReport = () => {
     <>
       <Header />
       <div>
+      {showAlert.showAlert && <Alert color={showAlert.color} >{showAlert.message}</Alert>}
         <div className="main-container-for-the-info-of-generate-report-page">
           <div className="width-set-for-main-container-for-the-info-of-generate-report-page">
             <div className="section-for-page-that-contains-drop-downs-and-btns-and-checkboxes">
