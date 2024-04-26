@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "../../component/EditTemp/DynamicMenuComponent.css";
+import Alert from "../Alert/Alert"
 import Buttons from "./../Photo/Buttons";
 const SubdetailsDisplay = ({
   subdetails,
@@ -58,6 +59,13 @@ const DynamicMenuComponent = ({ onClose }) => {
     selection2: "",
     Radiopanal: "",
   });
+
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+    color : "",
+  
+  });
   const [selectedOption, setSelectedOption] = useState("");
   useEffect(() => {
     const storedMenuData = localStorage.getItem("menuData");
@@ -74,7 +82,16 @@ const DynamicMenuComponent = ({ onClose }) => {
   // Save menu data to local storage whenever it changes
   const handleAddMenu = () => {
     if (menuName.trim() === "") {
-      alert("Please enter a valid menu name");
+      setShowAlert({
+        showAlert: true,
+        message: "Please enter a valid menu name",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
       return;
     }
 
@@ -96,7 +113,16 @@ const DynamicMenuComponent = ({ onClose }) => {
 
   const handleRemoveItem = () => {
     if (!selectedMenuId) {
-      alert("Please select a menu first");
+      setShowAlert({
+        showAlert: true,
+        message: "Please select a menu first",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
       return;
     }
     if (selectedSubMenuId) {
@@ -104,7 +130,16 @@ const DynamicMenuComponent = ({ onClose }) => {
       setMenuData((prevMenuData) => {
         const selectedMenu = prevMenuData[selectedMenuId];
         if (!selectedMenu) {
-          alert("Please select a valid menu");
+          setShowAlert({
+            showAlert: true,
+            message: "Please select a valid menu",
+          })
+          setTimeout(() => {
+            setShowAlert({
+              showAlert: false,
+              message: "",
+            }); // Hide the alert after 3 seconds
+          }, 3000);
           return prevMenuData;
         }
         const updatedSubitems = selectedMenu.subitems.filter(
@@ -144,13 +179,35 @@ const DynamicMenuComponent = ({ onClose }) => {
   };
   const handleAddSubmenu = () => {
     if (submenuName.trim() === "") {
-      alert("Please enter a valid submenu name");
+       
+      setShowAlert({
+        showAlert: true,
+        message: "Please enter a valid submenu name",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
       return;
     }
     setMenuData((prevMenuData) => {
       if (!selectedMenuId) {
-        alert("Please select a menu first");
+       
+        setShowAlert({
+          showAlert: true,
+          message: "Please select a menu first",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
         return prevMenuData;
+      
+        
       }
       const selectedMenu = prevMenuData[selectedMenuId];
       const newSubmenuId = selectedMenu.subitems.length + 1;
@@ -187,20 +244,55 @@ const DynamicMenuComponent = ({ onClose }) => {
   };
   const handleAddSubdetails = () => {
     if (!selectedMenuId || !selectedSubMenuId) {
-      alert("Please select a menu and submenu first");
+      
+      setShowAlert({
+        showAlert: true,
+        message: "Please select a menu and submenu first",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
+     
+    
       return;
     }
     setMenuData((prevMenuData) => {
       const selectedMenu = prevMenuData[selectedMenuId];
       if (!selectedMenu) {
-        alert("Please select a valid menu");
+         
+        setShowAlert({
+          showAlert: true,
+          message: "Please select a valid menu",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
+    
         return prevMenuData;
       }
       const selectedSubmenu = selectedMenu.subitems.find(
         (submenu) => submenu.id === selectedSubMenuId
       );
       if (!selectedSubmenu) {
-        alert("Please select a valid submenu");
+       
+        setShowAlert({
+          showAlert: true,
+          message: "Please select a valid submenu",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
+
+     
         return prevMenuData;
       }
       return {
@@ -239,7 +331,18 @@ const DynamicMenuComponent = ({ onClose }) => {
   };
   const handlesave = () => {
     localStorage.setItem("menuData", JSON.stringify(menuData));
-    alert("Data Saved SuccessFully");
+    
+    setShowAlert({
+      showAlert: true,
+      message: "Menu saved successfully",
+    
+    })
+    setTimeout(() => {
+      setShowAlert({
+        showAlert: false,
+        message: "",
+      }); // Hide the alert after 3 seconds
+    }, 3000);
   };
   const handleInputChange = (inputName, inputValue) => {
     setInputValues((prevInputValues) => ({
@@ -788,7 +891,17 @@ const DynamicMenuComponent = ({ onClose }) => {
   };
   const handleDeleteTab = () => {
     if (!selectedMenuId || !selectedSubMenuId || selectedTabIndex === null) {
-      alert("Please select a menu, submenu, and tab first");
+      
+      setShowAlert({
+        showAlert: true,
+        message: "Please select a menu, submenu, and tab first",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
       return;
     }
     setMenuData((prevMenuData) => {
@@ -796,12 +909,33 @@ const DynamicMenuComponent = ({ onClose }) => {
       const selectedSubmenu =
         updatedMenuData[selectedMenuId].subdetails[selectedSubMenuId];
       if (!selectedSubmenu) {
-        alert("Please select a valid submenu");
+         
+        setShowAlert({
+          showAlert: true,
+          message: "No submenu found",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
+    
         return prevMenuData;
       }
       const tabnamesArray = Object.keys(selectedSubmenu);
       if (selectedTabIndex < 0 || selectedTabIndex >= tabnamesArray.length) {
-        alert("Please select a valid tab");
+        
+        setShowAlert({
+          showAlert: true,
+          message: "Invalid tab index",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
         return prevMenuData;
       }
       // Delete the selected tabname
@@ -854,7 +988,18 @@ const DynamicMenuComponent = ({ onClose }) => {
     console.log("pastMenu", pastSubDetails);
 
     if (subdetails === null || selectedMoveSubmenu === null) {
-      alert("Please select a tabname and target subname first");
+    
+      setShowAlert({
+        showAlert: true,
+        message: "Please select a tabname and target subname first",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
+  
       return;
     }
 
@@ -940,6 +1085,21 @@ const DynamicMenuComponent = ({ onClose }) => {
   };
 
   const handleCopy = () => {
+    if (!selectedMoveSubmenu || !subCopy || !menuData || !pastSubDetails || !DataToStore) {
+      setShowAlert({
+        showAlert: true,
+        message: "please select menu submenu or panel ",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
+      return;
+    }
+
+   
     console.log("selected sub menu ", selectedMoveSubmenu);
     console.log("subdetails - ", subCopy);
     console.log("menu", menuData);
@@ -1041,7 +1201,19 @@ const DynamicMenuComponent = ({ onClose }) => {
   // Function to handle displaying the move popup
   const handleMoveClick = () => {
     if (!selectedMenuId || !selectedSubMenuId) {
-      alert("Please select a menu and submenu first");
+      
+      setShowAlert({
+        showAlert: true,
+        message: "Please select a submenu and tabname first",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
+
+    
       return;
     }
     setShowMovePopup(true);
@@ -1058,6 +1230,7 @@ const DynamicMenuComponent = ({ onClose }) => {
     <div>
       {/* Popup Wrapper */}
       <div className="popup-wrapper text-left z-10">
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         {/* Popup Content */}
         <div className="popup-content">
           {/* Heading */}
