@@ -4,6 +4,7 @@ import OpenTemp from "../OpenTemp/OpenTemp";
 import EditTemp from "../EditTemp/EditTemp";
 import SaveTemp from "../SaveTemp/SaveTemp";
 import img1 from "../../Assets/icons/open_inspection.png";
+import Alert from "../Alert/Alert";
 import img2 from "../../Assets/icons/save_inspection.png";
 import img3 from "../../Assets/icons/open_template.png";
 import img4 from "../../Assets/icons/save_template.png";
@@ -63,6 +64,11 @@ const Header = ({ onButtonClick }) => {
   const toggleDropdown = (key) => {
     setActiveDropdown(activeDropdown === key ? null : key);
   };
+
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+  });
   const openOpenTemplatePopup = () => {
     setOpenTemplatePopup(true);
   };
@@ -236,8 +242,25 @@ const Header = ({ onButtonClick }) => {
           JSON.stringify(decryptedData.ratingsData)
         );
       }
-      alert("successfully opened");
-      window.location.reload()
+
+      
+      
+      
+      
+      
+      setShowAlert(()=>{
+       
+       return {
+          showAlert: true,
+          message: "Inspection opened successfully wait 3 seconds ",
+        }
+      });
+      
+      
+      setTimeout(() => {
+        window.location.reload()
+        
+      }, 3000);
     }
   };
 
@@ -1005,6 +1028,7 @@ border-black-900"
           </div>
         )}
       </div>
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
     </>
   );
 };
