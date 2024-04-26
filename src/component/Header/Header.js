@@ -247,14 +247,16 @@ const Header = ({ onButtonClick }) => {
       
       
       
-      
-      setShowAlert(()=>{
-       
-       return {
-          showAlert: true,
-          message: "Inspection opened successfully wait 3 seconds ",
-        }
-      });
+      setShowAlert({
+        showAlert: true,
+        message: "Inpection opens successfully wait for 3 sec .",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); 
+      }, 4000);
       
       
       setTimeout(() => {
@@ -289,7 +291,17 @@ const Header = ({ onButtonClick }) => {
     const getPanalData = localStorage.getItem("TempPanelData");
     const ratingsData1 = localStorage.getItem("ratingsData");
     if (getTemp == null) {
-      return alert("Please Open Template First");
+      setShowAlert({
+        showAlert: true,
+        message: "Incomplete data. Please fill in all required fields.",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 4000);
+      return ;
     }
     const menuData = JSON.parse(getTemp);
     const TempPanelData = JSON.parse(getPanalData);
@@ -318,7 +330,16 @@ const Header = ({ onButtonClick }) => {
         "ratingsData",
         JSON.stringify(decryptedData.ratingsData)
       )
-      alert("successfully opened tpz file ");
+      setShowAlert({
+        showAlert: true,
+        message: "successfully opened tpz file .",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 4000);
     }
   };
   const [activeMenu, setActiveMenu] = useState(null);
