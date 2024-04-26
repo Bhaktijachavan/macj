@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import "./ClientInfo.css";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
+import Alert from "../Alert/Alert";
 
 const ClientInfo = () => {
   const [formData, setFormData] = useState({
@@ -42,13 +43,30 @@ const ClientInfo = () => {
     },
     {}
   );
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+  });
   const hanndleSaveToLocalStorage = (event) => {
     event.preventDefault();
 
     const { firstName, lastName, email, phone } = formData;
 
     if (!firstName || !lastName || !email || !phone) {
-      alert("Incomplete data. Please fill in all required fields.");
+      // alert("Incomplete data. Please fill in all required fields.");
+      // window.alert("Please fill in all required fields.");
+      setShowAlert({
+        showAlert: true,
+        message: "Incomplete data. Please fill in all required fields.",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 4000);
+      
+
       return;
     }
 
@@ -57,6 +75,7 @@ const ClientInfo = () => {
     setpop(true);
   };
   const [pop, setpop] = useState(false);
+
 
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -87,32 +106,27 @@ const ClientInfo = () => {
       weather: "",
       otherInfo: "",
     });
+    localStorage.removeItem('clientInfoData');
+    // No need to reload the page here
 
-    const newFormData = {
-      lastName: "",
-      firstName: "",
-      phone: "",
-      fax: "",
-      email: "",
-      inspectionAddress: "",
-      addressLine2: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      agent: "macj-home-inspector",
-      dateOfInspection: "",
-      timeOfInspection: "",
-      ageOfHome: "",
-      size: "",
-      inspectionFee: "",
-      weather: "",
-      otherInfo: "",
-    };
-
-    localStorage.removeItem('clientInfoData')
-    window.location.reload();
-    alert("Client Info Has been clear");
+    // Return true to indicate form was cleared
+    return true;
   };
+  const handleClearForm = () => {
+    if (clearForm()) {
+      setShowAlert({
+        showAlert: true,
+        message: "Form data is cleared now",
+      }); // Show the alert
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 4000);
+    }
+  };
+  
   return (
     <div className="main-container-clientinfo ">
       {pop && (
@@ -139,6 +153,7 @@ const ClientInfo = () => {
         {/* <Header /> */}
         <Header />
       </div>
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
 
       <form className="formcont text-sm">
         <h1 className="text text-lg">Client Information</h1>
@@ -172,6 +187,7 @@ const ClientInfo = () => {
             onChange={handleInputChange}
           />
         </div>
+       
 
         <div className="form-group">
           <label htmlFor="inputphone" className="label">
@@ -418,7 +434,7 @@ const ClientInfo = () => {
         </button>
         <button
           className="for-saving-the-data-to-the-localstorage-btn-client-info"
-          onClick={clearForm}
+          onClick={handleClearForm}
         >
           Clear Form
         </button>
