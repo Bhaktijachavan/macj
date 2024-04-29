@@ -15,7 +15,7 @@ import CompanyInfo from "./CompanyInfo/CompanyInfo";
 import EditableText from "./EditableText/EditableText";
 import jsPDF from "jspdf";
 import html2pdf from "html2pdf.js";
-
+import Alert from "../Alert/Alert";
 import html2canvas from "html2canvas";
 import "./CoverPageDesigner.css";
 
@@ -36,6 +36,13 @@ function CoverPageDesigner({ onClose }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isCompanyLogoChecked, setIsCompanyLogoChecked] = useState(false);
   const [uploadedLogo, setUploadedLogo] = useState(null);
+    //alert state 
+    const [showAlert, setShowAlert] = useState({
+      showAlert: false,
+      message: "",
+      color : "",
+    
+    });
 
   const [checkedCheckboxes, setCheckedCheckboxes] = useState([
     "Inspection Details",
@@ -82,7 +89,16 @@ function CoverPageDesigner({ onClose }) {
 
     // Save the content to localStorage
     localStorage.setItem("outputContent", content);
-    alert("Successfully Saved");
+    setShowAlert({
+      showAlert: true,
+      message: "Data has been saved ",
+    })
+    setTimeout(() => {
+      setShowAlert({
+        showAlert: false,
+        message: "",
+      }); // Hide the alert after 3 seconds
+    }, 3000);
 
     // Convert the HTML content to a PDF document
     html2pdf()
@@ -335,9 +351,27 @@ function CoverPageDesigner({ onClose }) {
   const handleRemovePhoto = () => {
     const coverphoto = localStorage.removeItem("uploadedImage");
     if (coverphoto === null) {
-      alert("Do you Really want to remove Cover photo ?");
+      setShowAlert({
+        showAlert: true,
+        message: "do you really want to remove cover page ",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
     } else {
-      alert("No Cover photo to remove");
+      setShowAlert({
+        showAlert: true,
+        message: "no cover page removed ",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
     }
   };
   const handleDiscardChanges = () => {
@@ -362,6 +396,7 @@ function CoverPageDesigner({ onClose }) {
   return (
     <>
       <div className="cover-page-container-popup-contains-all-the-info-abt-cover-page">
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         <div className="width-set-for-cover-page-container-popup-contains-all-the-info-abt-cover-page">
           <div className="cover-page-header-closer-btn">
             <span className="cover-page-design-header-text">
