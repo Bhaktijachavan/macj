@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./SelectionComponent.css";
 import EditComments from "../../EditComments/EditComments";
+import Alert from "../../Alert/Alert"
 
 const SelectionComponent = ({ panelData, value, classname }) => {
   const [commentText, setCommentText] = useState("");
@@ -9,6 +10,14 @@ const SelectionComponent = ({ panelData, value, classname }) => {
 
   const [discriptionText, setDiscriptionText] = useState("");
   const selectedTextRef = useRef([]);
+
+  //alert state 
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+    color : "",
+  
+  });
 
   // Define a function to filter empty strings from selectedTextRef.current
   const filterEmptyStrings = () => {
@@ -104,7 +113,16 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       localStorage.setItem("SelectionData", JSON.stringify(tempPanelData));
 
       console.log("Data saved successfully.");
-      alert("Data saved successfully.");
+      setShowAlert({
+        showAlert: true,
+        message: "Data has been saved ",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
       // Clear the selected text after saving
       // selectedTextRef.current = [];
     } catch (error) {
@@ -231,6 +249,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       <div>
         <div className="panel-heading text-center m-2"></div>
         <div className="pl-2 m-2 flex">
+        {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
           <div className="Editcomments-and-checkbox-container pl-4">
             <EditComments
               value={value}

@@ -7,13 +7,16 @@ import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
 import imageCompression from "browser-image-compression";
 
-const Book = () => {
-  // const [lastName, setLastName] = useState("");
-  // const [firstName, setFirstName] = useState("");
-  //const [Company, setCompany] = useState("");
-  // const [workPhone, setworkPhone] = useState("");
+import Alert from "../Alert/Alert";
 
-  // const [formData, setFormData] = useState({ id: '', agentlastname: '', firstName: '', Company: '', workPhone: '' });
+const Book = () => {
+//alerts 
+const [showAlert, setShowAlert] = useState({
+  showAlert: false,
+  message: "",
+  color : "",
+
+});
   const [formData, setFormData] = useState({
     agentlastname: "",
     firstName: "",
@@ -87,11 +90,30 @@ const Book = () => {
       // Simulate an asynchronous upload (replace with your actual upload logic)
       setTimeout(() => {
         setIsUploading(false);
-        alert("File uploaded successfully!");
+        setShowAlert({
+          showAlert: true,
+          message: "file has been uploaded succesfully ",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
         setSelectedFile(null);
       }, 2000);
     } else {
-      alert("Please select a file before uploading.");
+      
+      setShowAlert({
+        showAlert: true,
+        message: "Please select a file to upload",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
     }
   };
 
@@ -257,6 +279,7 @@ const Book = () => {
         <div class="basis-1/1 ml-4">
           <div className="box1-book flex ">
             <form className="formcont-book ">
+            {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
               <h1 className="text-book text-lg">
                 Real Estate Agent Information
               </h1>

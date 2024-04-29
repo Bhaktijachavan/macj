@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import Header from "./../Header/Header";
 import Footer from "./../Footer/Footer";
+import Alert from "../Alert/Alert";
 import "./Stationery.css";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -10,6 +11,14 @@ const Stationery = () => {
   const [text, setText] = useState("");
   const [images, setImages] = useState([]);
   const fileInputRef = useRef(null);
+
+  //alert 
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+    color : "",
+  
+  });
 
   const onFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -48,7 +57,18 @@ const Stationery = () => {
       // Store extracted text and images to local storage
       localStorage.setItem("extractedText", fullText);
       localStorage.setItem("extractedImages", JSON.stringify(extractedImages));
-      alert("Pdf Uploded Successfully");
+      
+      // Show alert
+      setShowAlert({
+        showAlert: true,
+        message: "pdf uploaded successfully",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
     };
     reader.readAsArrayBuffer(file);
   };
@@ -58,7 +78,16 @@ const Stationery = () => {
     setNumPages(null);
     localStorage.removeItem("extractedText");
     localStorage.removeItem("extractedImages");
-    alert("File Deleted Successfully");
+    setShowAlert({
+      showAlert: true,
+      message: "file has been deleted successfully",
+    })
+    setTimeout(() => {
+      setShowAlert({
+        showAlert: false,
+        message: "",
+      }); // Hide the alert after 3 seconds
+    }, 3000);
   };
 
   return (
@@ -67,6 +96,7 @@ const Stationery = () => {
         <Header />
       </div>
       <div>
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         <input
           type="file"
           accept=".pdf"
