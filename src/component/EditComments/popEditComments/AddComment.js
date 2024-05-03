@@ -9,7 +9,7 @@ import img7 from "../../../Assets/icons/remove.png";
 import CreateListEditComm from "./CreateListEditComm";
 import InsertListPopup from "./InsertListPopup/InsertListPopup";
 import AddLinkPopup from "./AddLinkPopup/AddLinkPopup";
-
+import Alert from "../../Alert/Alert";
 const AddComment = ({ onClose, value , setfetch}) => {
   const [isCreateListVisible, setIsCreateListVisible] = useState(false);
   const [isBold, setIsBold] = useState(false);
@@ -21,6 +21,13 @@ const AddComment = ({ onClose, value , setfetch}) => {
   const [notesAndCaptions, setNotesAndCaptions] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedOption, setSelectedOption] = useState(""); // State to track the selected option
+    //alert state 
+    const [showAlert, setShowAlert] = useState({
+      showAlert: false,
+      message: "",
+      color : "",
+    
+    });
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -39,7 +46,7 @@ const AddComment = ({ onClose, value , setfetch}) => {
   };
   const handleDeletePhoto = () => {
     setSelectedImage(null);
-  
+    window.alert("Are you want to delete this photo?");
   };
   const handleEditNote = () => {
     setNotesAndCaptions([...notesAndCaptions, { type: "note", text }]);
@@ -160,6 +167,7 @@ const AddComment = ({ onClose, value , setfetch}) => {
   return (
     <div>
       <div className="Contant-editcomm">
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         <div className="template-card-editcomm">
           <div className="template-selector-editcomm">
             <span className="selecteditcomm">Select A Template</span>
