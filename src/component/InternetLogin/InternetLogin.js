@@ -41,6 +41,9 @@ const InternetLogin = () => {
         }
       );
 
+    
+      console.log("login data " , res.data.data)
+      localStorage.setItem("User", JSON.stringify(res.data.data));
       setShowAlert({
         showAlert: true,
         message: "Login Successfully",
@@ -51,10 +54,10 @@ const InternetLogin = () => {
           message: "",
         }); // Hide the alert after 3 seconds
       }, 3000);
-      console.log("login data " , res.data.data)
-      localStorage.setItem("User", JSON.stringify(res.data.data));
-      window.location.reload();
+      
+      
       setPopupOpen(false);
+      window.location.reload();
     } catch (error) {
       if (error.response) {
         const errorMessage = error.response.data.error;
@@ -158,6 +161,16 @@ const InternetLogin = () => {
             </button>
             <button className="cancel-btn-internetlogin" style={{backgroundColor : "red"}} onClick={()=>{
               localStorage.removeItem("User");
+              setShowAlert({
+                showAlert: true,
+                message: "Log out  Successfully",
+              })
+              setTimeout(() => {
+                setShowAlert({
+                  showAlert: false,
+                  message: "",
+                }); // Hide the alert after 3 seconds
+              }, 3000);
               setUser(null);
               window.location.reload();
             }}>
