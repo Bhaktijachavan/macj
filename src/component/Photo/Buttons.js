@@ -12,7 +12,9 @@ import img11 from "./icons/delete.png";
 import "./Buttons.css";
 import EditImageTabList from "./../EditImageTabList/EditImageTabList";
 
+
 import PropTypes from "prop-types";
+import Alert from "../Alert/Alert";
 
 const Buttons = ({
   onFileSelect,
@@ -30,6 +32,10 @@ const Buttons = ({
   // tablistconst [isPopupOpen, setIsPopupOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+  });
 
   const handleTabClick = (tabNumber) => {
     setActiveTab(tabNumber);
@@ -111,13 +117,34 @@ const Buttons = ({
 
         // Save the image data to local storage
         localStorage.setItem("uploadedImage", imageData);
-        alert("Image Successfully Saved to Coverpage !");
+
+        setShowAlert({
+          showAlert: true,
+          message: "Image Successfully Saved to Coverpage",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
+        
       };
       reader.readAsDataURL(uploadedFileRef.current);
     } else if (url) {
       // If URL is available, save it directly to local storage
       localStorage.setItem("uploadedImage", url);
-      alert("Image Successfully Uploaded to Coverpage !");
+      setShowAlert({
+        showAlert: true,
+        message: "Image Successfully Uploaded to Coverpage ! ",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
+      
     } else {
       console.log("No image uploaded or URL provided to save.");
     }
@@ -183,6 +210,7 @@ const Buttons = ({
   );
   return (
     <>
+
       <input
         type="file"
         accept="image/*,video/*"
@@ -191,6 +219,7 @@ const Buttons = ({
         onChange={handleFileChange}
       />
       <div className="Buttons-super-container-for-all-Buttons-Photo">
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         <div className="Buttons-main-contianer-for-unorder-list-container">
           <ul className="Buttons-unorderlist-container">
             <li>

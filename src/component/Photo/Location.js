@@ -5,6 +5,8 @@ import Buttons from "./Buttons";
 import Caption from "./Caption";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { PanalSelect } from "../Function/function";
+import Alert from "../Alert/Alert";
+
 
 const Location = ({ imageUrl }) => {
   const [uploadedFile, setUploadedFile] = useState(!imageUrl ? null : imageUrl);
@@ -24,6 +26,11 @@ const Location = ({ imageUrl }) => {
   const [subnames, setSubnames] = useState([]);
   const [NewTabs, setNewTabs] = useState();
   const [selectedText, setSelectedText] = useState();
+
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+  });
 
   useEffect(() => {
     console.log("selectedText", selectedText);
@@ -158,7 +165,17 @@ const Location = ({ imageUrl }) => {
   };
   const handlePanel = () => {
     if (!panelId || !TabData) {
-      return alert("please select panel ");
+      setShowAlert({
+        showAlert: true,
+        message: "Please select Panal",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
+      return ;
     }
 
     setPanel(PanalSelect(TabData.Radiopanal, TabData));
@@ -171,6 +188,7 @@ const Location = ({ imageUrl }) => {
   return (
     <>
       <div className="PhotoReview-rectangular-container-super">
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         <div className="PhotoReview-rectangular-container-main-container">
           <div className="PhotoReview-rectangle">
             <div className="PhotoReview-Location-container">

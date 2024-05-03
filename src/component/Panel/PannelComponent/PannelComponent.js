@@ -181,7 +181,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   };
   const HandleDeleteText = () => {
     console.log("HandleDeleteText function called");
-    if (window.confirm(`are you want to delete : ${selectedText}`)) {
+  
       if (selectedText) {
         // Remove the selected text from commentText
         const updatedCommentText = commentText.replace(selectedText, "");
@@ -200,7 +200,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
           );
         }
       }
-    }
+    
   };
   const handleAddText = (color) => {
     const newText = selectedText + "\n";

@@ -38,7 +38,7 @@ function PhotoReviewTablist() {
     setTabs([
       { id: "tab1", name: "Tab 1", content: <PhotoReview images={[]} /> },
     ]);
-    alert("Do you want to clear all photos");
+    // alert("Do you want to clear all photos");
     setActiveTab("tab1"); // Set active tab to the default tab
   };
   const handleFileChange = (e) => {

@@ -1,9 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
+import Alert from "../../Alert/Alert";
 
 const ViewTemplate = ({ onClose }) => {
   const [templateData, setTemplateData] = useState([]);
   const [selectedInspectionIds, setSelectedInspectionIds] = useState([]);
+
+    //alert 
+    const [showAlert, setShowAlert] = useState({
+      showAlert: false,
+      message: "",
+      color : "",
+    
+    });
 
   useEffect(() => {
     fetchTemplateData();
@@ -12,7 +21,16 @@ const ViewTemplate = ({ onClose }) => {
   const fetchTemplateData = async () => {
    const user = localStorage.getItem("User")
    if(!user){
-    alert("Please Login First")
+    setShowAlert({
+      showAlert: true,
+      message: "Please Login First ",
+    })
+    setTimeout(() => {
+      setShowAlert({
+        showAlert: false,
+        message: "",
+      }); // Hide the alert after 3 seconds
+    }, 3000);
     return;
    }
    try {
@@ -44,7 +62,17 @@ const ViewTemplate = ({ onClose }) => {
   const handleDeleteFromCloud = async () => {
     const user = localStorage.getItem("User")
     if(!user){
-     alert("Please Login First")
+      setShowAlert({
+        showAlert: true,
+        message: "Please Login First ",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
+    
      return;
     }
 
@@ -72,6 +100,7 @@ const ViewTemplate = ({ onClose }) => {
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
+        {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
       <div className="max-w-4xl px-4 py-8 bg-white shadow-lg rounded-lg">
         <div className="flex justify-between items-center mb-4">
           <p className="text-xl font-bold">View Templates</p>

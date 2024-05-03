@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from "react";
 import "./InternetLogin.css";
 import axios from "axios";
+import Alert from "../Alert/Alert";
+
 
 const InternetLogin = () => {
   const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
   const [isPopupOpen, setPopupOpen] = useState(true);
   const [user, setUser] = useState(null);
+
+    //alert 
+    const [showAlert, setShowAlert] = useState({
+      showAlert: false,
+      message: "",
+      color : "",
+    
+    });
 
 
   useEffect(() => {
@@ -31,7 +41,16 @@ const InternetLogin = () => {
         }
       );
 
-      alert("Login successful!");
+      setShowAlert({
+        showAlert: true,
+        message: "Login Successfully",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
       console.log("login data " , res.data.data)
       localStorage.setItem("User", JSON.stringify(res.data.data));
       window.location.reload();
@@ -41,13 +60,30 @@ const InternetLogin = () => {
         const errorMessage = error.response.data.error;
         console.error("Login Error:", errorMessage);
         // Show alert with error message
-        window.alert(errorMessage);
+        setShowAlert({
+          showAlert: true,
+          message: error,
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
+        
       } else {
         console.error("Login Error:", error.message);
         // Show alert for network or other errors
-        window.alert(
-          "Network or server error occurred. Please try again later."
-        );
+        setShowAlert({
+          showAlert: true,
+          message: "Network or server error occurred. Please try again later.",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
       }
     }
   };
@@ -64,6 +100,7 @@ const InternetLogin = () => {
 
   return (
     <div className="popup-container-internetlogin z-50">
+        {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
       <div className="popup-internetlogin">
         <div className="close-button-and-login-header-for-popup-box">
           <p>Macj Login</p>

@@ -11,6 +11,8 @@ import DrawArrowContent from "./DrawArrowContent/DrawArrowContent";
 import DrawRectangleContent from "./DrawRectangleContent/DrawRectangleContent";
 import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
 import OverLayImage from "./OverLayImage/OverLayImage";
+import Alert from "../Alert/Alert";
+
 
 const EditImageTabList = ({
   isOpen,
@@ -43,7 +45,13 @@ const EditImageTabList = ({
 
   const [arrowColor, setArrowColor] = useState("Black");
   const [downloadUrl, setDownloadUrl] = useState(null);
-
+  //alert 
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+    color : "",
+  
+  });
   const handleColorChange = (color) => {
     setArrowColor(color);
   };
@@ -82,7 +90,17 @@ const EditImageTabList = ({
   const handleDownloadUrlChange = (url, setIdIndex) => {
     try {
       if (!id) {
-        return alert("Please Select Valid Image Location");
+      setShowAlert({
+          showAlert: true,
+          message: "Please Select valid Image ",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
+        return  
       }
 
       let imageData = localStorage.getItem("coverphotoImage");
@@ -115,7 +133,16 @@ const EditImageTabList = ({
 
       // Save the updated image data to local storage
       localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
-      alert("Image data saved successfully.");
+      setShowAlert({
+        showAlert: true,
+        message: "Image data saved successfully.",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
     } catch (error) {
       // console.error("Error saving image data:", error);
     }
@@ -360,6 +387,7 @@ const EditImageTabList = ({
 
   return (
     <>
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
       <button></button>
       {isOpen && (
         <div className="flex-container-for-tablist-for-edit-img">

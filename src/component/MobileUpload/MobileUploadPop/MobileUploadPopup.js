@@ -3,10 +3,17 @@ import "./MobileUploadPopup.css";
 import img from "../../../Assets/icons/icons8-download-from-the-cloud-48.png";
 import image1 from "../../../Assets/icons/icons8-delete-16.png";
 import axios from 'axios';
+import Alert from "../../Alert/Alert";
+
 
 const MobileUploadPopup = ({ onClose }) => {
   const [inspectionData, setInspectionData] = useState([]);
   const [selectedInspectionIds, setSelectedInspectionIds] = useState([]);
+
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+  });
 
   useEffect(() => {
     fetchInspectionData();
@@ -15,7 +22,16 @@ const MobileUploadPopup = ({ onClose }) => {
   const fetchInspectionData = async () => {
     const user = localStorage.getItem("User")
     if(!user){
-     alert("Please Login First")
+      setShowAlert({
+        showAlert: true,
+        message: "Please Login First ",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
      return;
     }
     try {
@@ -42,7 +58,7 @@ const MobileUploadPopup = ({ onClose }) => {
   const handleDeleteFromCloud = async () => {
     const user = localStorage.getItem("User")
     if(!user){
-     alert("Please Login First")
+    
      return;
     }
     try {
@@ -65,6 +81,7 @@ const MobileUploadPopup = ({ onClose }) => {
 
   return (
     <div className="container-for-the-mobileuploadpopup">
+        {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
       <div className="width-set-for-the-mobileuploadpopup">
         <div className="close-button-and-mobileuploadpopup-header-for-popup-box">
           <p>Manage Inspections in Cloud</p>

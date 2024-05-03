@@ -139,7 +139,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     // Retrieve selected texts from selectedTextRef
     const selectedTexts = selectedTextRef.current;
 
-    if (window.confirm(`Are you sure you want to delete the selected texts?`)) {
+   
       if (selectedTexts && selectedTexts.length > 0) {
         let updatedCommentText = commentText;
         selectedTexts.forEach((selectedText) => {
@@ -182,7 +182,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
         // Empty the selectedTextRef array
         selectedTextRef.current = [];
       }
-    }
+    
   };
 
   const handleMoveUpSelection = () => {

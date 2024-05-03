@@ -3,11 +3,18 @@ import img7 from "./icons/notes.png";
 import close from "./icons/close_2997911.png";
 import "./Caption.css";
 import Buttons from "./Buttons";
+import Alert from "../Alert/Alert";
+
 
 const Caption = ({ setCap, caption, id, index }) => {
   const [captionValue, setCaptionValue] = useState(caption);
   const [popupCaptionValue, setPopupCaptionValue] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+  });
 
   useEffect(() => {
     setCaptionValue(captionValue);
@@ -26,19 +33,49 @@ const Caption = ({ setCap, caption, id, index }) => {
     try {
       let imageData = localStorage.getItem("coverphotoImage");
       if (!imageData) {
-        return alert("No image data found.");
+        setShowAlert({
+          showAlert: true,
+          message: "No Image Data Found ",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
+        return ;
       }
 
       imageData = JSON.parse(imageData);
 
       // Check if the id exists in the imageData
       if (!Array.isArray(imageData[id])) {
-        return alert("No images found for the provided ID.");
+        setShowAlert({
+          showAlert: true,
+          message: "No Image found for Provided Id ",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
+        return ;
       }
 
       // Check if the index is valid
       if (index < 0 || index >= imageData[id].length) {
-        return alert("Invalid index.");
+        setShowAlert({
+          showAlert: true,
+          message: "Invalid Index ",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
+        return;
       }
 
       // Update the caption at the specified index
@@ -47,8 +84,18 @@ const Caption = ({ setCap, caption, id, index }) => {
 
       // Save the updated image data to local storage
       localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
+      setShowAlert({
+        showAlert: true,
+        message: "Caption Updated Successfully",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
 
-      alert("Caption updated successfully.");
+     
     } catch (error) {
       console.error("Error updating caption:", error);
     }
@@ -69,6 +116,7 @@ const Caption = ({ setCap, caption, id, index }) => {
   return (
     <>
       <fieldset className="bordered-text-caption ">
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         {/* <legend className="tag-for-line-draw-through-text">Caption</legend> */}
 
         <div className="caption-main-input-field-container">

@@ -9,6 +9,8 @@ import img1 from "../../Assets/icons/icons8-search-in-cloud-50.png";
 import axios from "axios";
 import ViewTemplate from "./MobileUploadPop/ViewTemplate";
 import UploadInspectionPopup from "./MobileUploadPop/UpLoadInspection";
+import Alert from "../Alert/Alert";
+
 const MobileUpload = ({ onClose }) => {
   //pop up state 
   const [mobileUploadPopup, setMobileUploadPopup] = useState(false);
@@ -19,6 +21,14 @@ const MobileUpload = ({ onClose }) => {
   const [templateName, setTemplateName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+
+    //alert 
+    const [showAlert, setShowAlert] = useState({
+      showAlert: false,
+      message: "",
+      color : "",
+    
+    });
 
   //inpectionupload pop up 
   const [inspectionUploadPopup, setInspectionUploadPopup] = useState(false);
@@ -40,7 +50,16 @@ const MobileUpload = ({ onClose }) => {
   const handleUpload = async () => {
     const user = localStorage.getItem("User")
     if(!user){
-     alert("Please Login First")
+      setShowAlert({
+        showAlert: true,
+        message: "Please Login First ",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
      return;
     }
     try {
@@ -59,12 +78,32 @@ const MobileUpload = ({ onClose }) => {
       console.log(response.data);
   
       if (response.status === 200) {
-        alert("Template uploaded successfully!");
+        setShowAlert({
+          showAlert: true,
+          message: "Template uploaded Successfully! ",
+        })
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
+       
       }
       setShowPopup(false);
     } catch (error) {
       console.error(error);
-      alert("Error uploading template!");
+      setShowAlert({
+        showAlert: true,
+        message: "Error uploading template !",
+      })
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
+      
     }
   };
   
@@ -72,6 +111,7 @@ const MobileUpload = ({ onClose }) => {
   return (
     <>
       <Header />
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
       <div className="container-mobileupload">
         <div className="container-header-mobileupload">
           <p className="title-header-mobileupload">

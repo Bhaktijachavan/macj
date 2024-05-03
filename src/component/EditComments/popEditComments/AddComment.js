@@ -39,7 +39,7 @@ const AddComment = ({ onClose, value , setfetch}) => {
   };
   const handleDeletePhoto = () => {
     setSelectedImage(null);
-    window.alert("Are you want to delete this photo?");
+  
   };
   const handleEditNote = () => {
     setNotesAndCaptions([...notesAndCaptions, { type: "note", text }]);
