@@ -16,7 +16,6 @@ import EditableText from "./EditableText/EditableText";
 import jsPDF from "jspdf";
 import html2pdf from "html2pdf.js";
 
-
 import html2canvas from "html2canvas";
 import "./CoverPageDesigner.css";
 import Alert from "../Alert/Alert";
@@ -39,13 +38,12 @@ function CoverPageDesigner({ onClose }) {
   const [isCompanyLogoChecked, setIsCompanyLogoChecked] = useState(false);
   const [uploadedLogo, setUploadedLogo] = useState(null);
 
-    //alert 
-    const [showAlert, setShowAlert] = useState({
-      showAlert: false,
-      message: "",
-      color : "",
-    
-    });
+  //alert
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+    color: "",
+  });
 
   const [checkedCheckboxes, setCheckedCheckboxes] = useState([
     "Inspection Details",
@@ -95,7 +93,7 @@ function CoverPageDesigner({ onClose }) {
     setShowAlert({
       showAlert: true,
       message: "successfully saved ",
-    })
+    });
     setTimeout(() => {
       setShowAlert({
         showAlert: false,
@@ -357,7 +355,7 @@ function CoverPageDesigner({ onClose }) {
       setShowAlert({
         showAlert: true,
         message: "Do you really want to remove cover photo ",
-      })
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
@@ -368,7 +366,7 @@ function CoverPageDesigner({ onClose }) {
       setShowAlert({
         showAlert: true,
         message: "No Cover Photo is Removed ",
-      })
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
@@ -399,7 +397,7 @@ function CoverPageDesigner({ onClose }) {
   return (
     <>
       <div className="cover-page-container-popup-contains-all-the-info-abt-cover-page">
-      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
+        {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         <div className="width-set-for-cover-page-container-popup-contains-all-the-info-abt-cover-page">
           <div className="cover-page-header-closer-btn">
             <span className="cover-page-design-header-text">
@@ -547,7 +545,7 @@ function CoverPageDesigner({ onClose }) {
                       {/* <h3 className="text-lg font-semibold mb-2">Design Components</h3> */}
                       <div className="check-boxes-and-buttons-for-adding-text-box-and-image">
                         <div className="lables-check-boxes-for-page-border-cover-page-stationary">
-                          <label className="flex items-center gap-2">
+                          <label className="flex items-center gap-2 w-28">
                             <input
                               type="checkbox"
                               onChange={(e) =>
@@ -565,15 +563,15 @@ function CoverPageDesigner({ onClose }) {
                             />
                             Cover Page Stationary
                           </label>
-                          <p className="no-stationary-loaded-text-button">
+                          {/* <p className="no-stationary-loaded-text-button">
                             No Stationary Loaded
-                          </p>
+                          </p> */}
                         </div>
                       </div>
                       <div className="buttons-for-add-text-box-and-imagess">
                         <section className="section-for-btnss-of-text-add-imgs">
                           {/* Buttons for adding box, text, image, etc. */}
-                          <button className="btn">Add Box</button>
+                          {/* <button className="btn">Add Box</button> */}
                           <button className="btn" onClick={handleAddText}>
                             Add/Edit <br /> Text
                           </button>
@@ -595,78 +593,6 @@ function CoverPageDesigner({ onClose }) {
               </fieldset>
               <fieldset className="bordered-text">
                 <legend className="tag-for-line-draw-through-text">
-                  Controls
-                </legend>
-                <div className="contains-controls-for-the-design-cover-page">
-                  {/* Controls Section */}
-                  <fieldset className="bordered-text">
-                    <legend className="tag-for-line-draw-through-text">
-                      Controls
-                    </legend>
-                    <div className="contains-all-the-button-that-appear-in-control-section">
-                      {/* <h3 className="text-lg font-semibold mb-2">Controls</h3> */}
-                      {/* Controls for attribute */}
-                      <button className="btn-for-control-section-design-page">
-                        Show Actual <br /> Font Size
-                      </button>
-                      <button className="btn-for-control-section-design-page">
-                        Font Setting
-                      </button>
-                      <button className="btn-for-control-section-design-page">
-                        Color Setting
-                      </button>
-                      <button className="btn-for-control-section-design-page">
-                        Border Style
-                      </button>
-                      <button
-                        onClick={handleRemoveBoxTextImage}
-                        className="btn-for-control-section-design-page"
-                      >
-                        Remove <br /> Box/Text/Image
-                      </button>
-                      {/* ... Add more controls for size and position */}
-                    </div>
-                  </fieldset>
-
-                  <div className="contains-position-and-size-controls-with-this-div">
-                    <fieldset className="bordered-text">
-                      <legend className="tag-for-line-draw-through-text">
-                        Controls
-                      </legend>
-                      {/* <div className="contains-size-control-for-cover-page-design">
-                    Size Control
-                  </div> */}
-                      <div className="contains-size-control-for-cover-page-design">
-                        <label htmlFor="fontSize">Font Size:</label>
-                        <input
-                          type="range"
-                          id="fontSize"
-                          name="fontSize"
-                          min="10" // Minimum font size
-                          max="30" // Maximum font size
-                          value={fontSize}
-                          onChange={(e) =>
-                            setFontSize(parseInt(e.target.value))
-                          }
-                        />
-                        <span>{fontSize}px</span>
-                      </div>
-                    </fieldset>{" "}
-                    <fieldset className="bordered-text">
-                      <legend className="tag-for-line-draw-through-text">
-                        Controls
-                      </legend>
-                      <div className="contains-position-control-for-cover-page-design">
-                        <section>Movement Shortcut</section>
-                        <section>Object Alignment</section>
-                        <section>Object Alignment</section>
-                      </div>
-                    </fieldset>
-                  </div>
-                </div>
-              </fieldset>
-              <fieldset className="bordered-text">
-                <legend className="tag-for-line-draw-through-text">
                   Buttons
                 </legend>
                 <div className="contains-bottom-section-with-buttons-design-cover-page">
@@ -681,7 +607,7 @@ function CoverPageDesigner({ onClose }) {
                       onClick={exportStateSave}
                       className="button-for-footer-for-changes-in-cover-page"
                     >
-                      Apply Changes <br /> to Template Template
+                      Apply Changes <br /> to Template
                     </button>{" "}
                     <button
                       onClick={exportState}

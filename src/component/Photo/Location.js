@@ -7,7 +7,6 @@ import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { PanalSelect } from "../Function/function";
 import Alert from "../Alert/Alert";
 
-
 const Location = ({ imageUrl }) => {
   const [uploadedFile, setUploadedFile] = useState(!imageUrl ? null : imageUrl);
   const [selectedIcon, setSelectedIcon] = useState(null);
@@ -168,14 +167,14 @@ const Location = ({ imageUrl }) => {
       setShowAlert({
         showAlert: true,
         message: "Please select Panal",
-      })
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
           message: "",
         }); // Hide the alert after 3 seconds
       }, 3000);
-      return ;
+      return;
     }
 
     setPanel(PanalSelect(TabData.Radiopanal, TabData));
@@ -188,7 +187,7 @@ const Location = ({ imageUrl }) => {
   return (
     <>
       <div className="PhotoReview-rectangular-container-super">
-      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
+        {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         <div className="PhotoReview-rectangular-container-main-container">
           <div className="PhotoReview-rectangle">
             <div className="PhotoReview-Location-container">
@@ -268,7 +267,7 @@ const Location = ({ imageUrl }) => {
                 </button>
                 {/* </Link> */}
               </div>
-              <div className="PhotoReview-Location-Checkbox-Container">
+              {/* <div className="PhotoReview-Location-Checkbox-Container">
                 <section className="Section-for-label-and-checkbox">
                   <input type="checkbox" name="agree" />
                   <label
@@ -300,7 +299,7 @@ const Location = ({ imageUrl }) => {
                     Use Location As Caption
                   </label>
                 </section>
-              </div>
+              </div> */}
             </div>
 
             <div className="PhotoReview-Drag-Drop-Box">
