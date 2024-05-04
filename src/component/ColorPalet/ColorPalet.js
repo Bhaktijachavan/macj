@@ -215,7 +215,7 @@ const ColorPalette = ({ onClose }) => {
       <div style="page-break-before: always;"></div>
 
       <div style="padding: 25px;">
-          <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;">Report Introduction</p>
+          <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;  ">Report Introduction</p>
           <p style="font-size: 20px; text-align: justify;">
               ${generateLoremIpsum()}
           </p>
@@ -232,10 +232,28 @@ const ColorPalette = ({ onClose }) => {
 
         .then((pdf) => {
           // Add third page for Table of Contents
-
+          const addPageBorder = () => {
+            const pageCount = pdf.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+              pdf.setPage(i);
+              pdf.setDrawColor(0, 0, 255); // Blue color (RGB)
+              // Adjust the dimensions of the rectangle to increase the border width
+              const borderWidth = 2; // Adjust this value as needed
+              pdf.rect(
+                borderWidth,
+                borderWidth,
+                pdf.internal.pageSize.getWidth() - 2 * borderWidth,
+                pdf.internal.pageSize.getHeight() - 2 * borderWidth,
+                "S"
+              );
+            }
+          };
           // pdf.addPage();
+          addPageBorder();
+
           // pdf.text("Table of Contents", 10, 10);
           // // Add table for Table of Contents
+
           // addTableOfContents(pdf, JSON.parse(menuData));
 
           // pdf.text("Damage Panel Data", 10, 10);
@@ -254,65 +272,11 @@ const ColorPalette = ({ onClose }) => {
           if (coverphotoImageData && damageDataString) {
             try {
               pdf.addPage();
-              pdf.text("Table of Contents", 10, 10);
-              // Add table for Table of Contents
+              addPageBorder();
               addTableOfContents(pdf, JSON.parse(menuData));
 
-              // SelectionMenudata();
-              // Add table for Table of Contents
-              // const menuDataa = JSON.parse(
-              //   localStorage.getItem("menuData") || "{}"
-              // );
-              // const selectionDataString = localStorage.getItem("SelectionData");
-              // const Selection = JSON.parse(selectionDataString);
-
-              // Object.keys(Selection).forEach((key) => {
-              //   const Selectionkey = key.replace("_s1", ""); // Remove the '_s1' suffix from the key
-              //   const SelectionObject = Selection[key];
-              //   const SelectionData = SelectionObject.selectionText;
-              //   console.log("Selectionkey", Selectionkey);
-              //   console.log("SelectionData", SelectionData);
-
-              //   for (const key in menuDataa) {
-              //     const menuItem = menuDataa[key];
-              //     const subnameid = menuItem.subitems;
-              //     const subNames = subnameid.map((item) => item.subName);
-              //     console.log("SubNames:", subNames);
-
-              //     const ids = subnameid.map((item) => item.id);
-              //     const subdetails = menuItem.subdetails;
-              //     const subdetailKeys = Object.keys(subdetails);
-
-              //     console.log("subdetails", subdetails);
-              //     const keys = Object.values(subdetails).flatMap((obj) =>
-              //       Object.keys(obj)
-              //     );
-
-              //     if (subdetails) {
-              //       for (
-              //         let i = 0;
-              //         i < Math.min(ids.length, subdetailKeys.length);
-              //         i++
-              //       ) {
-              //         const subdetailKey = subdetailKeys[i];
-              //         const subdetailValue = subdetails[subdetailKey];
-              //         const id = ids[i];
-
-              //         for (const abc in subdetailValue) {
-              //           const tabvalue = subdetailValue[abc].tabname;
-              //           console.log("tabvalue", tabvalue);
-              //           if (keys.includes(Selectionkey)) {
-              //             // const dataOfSelection = SelectionData.selectionText;
-              //             console.log("dataOfSelection", SelectionData);
-              //             pdf.text(SelectionData, 5, 20);
-              //           }
-              //         }
-              //       }
-              //     }
-              //   }
-              // });
-
               pdf.addPage();
+              addPageBorder();
               const damageData = JSON.parse(damageDataString);
               const imageKeys = Object.keys(coverphotoImageData);
 
@@ -345,8 +309,8 @@ const ColorPalette = ({ onClose }) => {
                   0
                 );
                 pdf.text(10, currentY, ratingLines);
-                currentY += ratingHeight + lineSpacing; // Add fixed spacing after rating
-
+                currentY += ratingHeight + lineSpacing;
+                // Add fixed spacing after rating
                 // Display materials in red text
                 const materialsText = `Materials: ${
                   damageObject.Damage1red || ""
@@ -389,6 +353,7 @@ const ColorPalette = ({ onClose }) => {
                 // Add a new page before adding content for each set of data
                 if (index > 0) {
                   pdf.addPage();
+                  addPageBorder();
                 }
 
                 // Display damage data
@@ -425,7 +390,7 @@ const ColorPalette = ({ onClose }) => {
 
                         // Draw subname and tabname text
                         const textColor = "#000"; // Black text color
-                        const bgColor = "#DDD"; // Light gray background color
+                        const bgColor = "#B4B4B8"; // Light gray background color
                         const originalFontSize = pdf.internal.getFontSize(); // Get the original font size
 
                         // Set the desired font size for the specific text
@@ -440,15 +405,16 @@ const ColorPalette = ({ onClose }) => {
 
                         // Draw background rectangle
                         pdf.setFillColor(bgColor);
-                        pdf.rect(0, 5, textWidth + 200, textHeight, "F"); // Adjust padding as needed
+                        pdf.rect(2, 17, textWidth + 189, 8, "F"); // Adjust padding as needed
 
                         // Add text on top of the background with the desired font size
                         pdf.setTextColor(textColor);
                         pdf.setFontSize(fontSize);
-                        pdf.text(subName, 100, 18);
+                        pdf.text(subName, 100, 14);
                         pdf.text(tabName, 5, 23);
                         // Reset font size back to its original value
                         pdf.setFontSize(originalFontSize);
+
                         const menuDataa = JSON.parse(
                           localStorage.getItem("menuData") || "{}"
                         );
@@ -564,6 +530,8 @@ const ColorPalette = ({ onClose }) => {
                       // Check if the maximum images per page is reached
                       if (imagesPerPage >= maxImagesPerPage) {
                         pdf.addPage(); // Add a new page
+                        addPageBorder();
+
                         startY = 35; // Reset startY for the images section
                         imagesPerPage = 0; // Reset images count for the new page
                       }
@@ -577,7 +545,9 @@ const ColorPalette = ({ onClose }) => {
               });
 
               pdf.addPage();
-              pdf.text("Report Summary", 100, 10);
+              addPageBorder();
+
+              pdf.text("Report Summary", 90, 10);
               const tableData = localStorage.getItem("summarydataString") || "";
               // pdf.text(tableData, 5, 18);
               // Calculate the height of the text rendered by pdf.textWithLink()
@@ -624,7 +594,11 @@ const ColorPalette = ({ onClose }) => {
 
   function addTableOfContents(pdf, parsedMenuData) {
     // Set font size and text color
-    const fontSize = 12;
+    let currentYPosition = 10; // Initial vertical position for text placement
+    let currentXPosition = 5;
+    let tabCounter = 1;
+    const tableData = [["Table of Contents"]];
+    const fontSize = 16;
     const fontColor = "black";
     pdf.setFontSize(fontSize);
     pdf.setTextColor(fontColor);
@@ -647,15 +621,49 @@ const ColorPalette = ({ onClose }) => {
       // Loop through subitems and add them to the table of contents
       item.subitems.forEach((subitem, subindex) => {
         // Add text
-        pdf.text(
-          `${subitem.subName}`,
-          20, // Adjust horizontal padding
-          currentYPosition // Adjust y position
-        );
+        // pdf.text(
+        //   `${subitem.subName}`,
+        //   20, // Adjust horizontal padding
+        //   currentYPosition // Adjust y position
+        // );
 
         // Update currentYPosition for the next subitem
-        currentYPosition += 20; // Increase by font size for each new line
+        // currentYPosition += 20; // Increase by font size for each new line
+        tableData.push([subitem.subName]);
+
+        // Increment tabCounter
+        tabCounter++;
       });
+    });
+    const tableOptions = {
+      startY: currentYPosition,
+      startX: currentXPosition,
+      theme: "grid", // Apply grid theme for table
+      headStyles: {
+        fillColor: [0, 0, 0], // Background color for header row
+        fontSize: 20, // Increase font size for header
+        halign: "center", // Center align header text
+      },
+      columnStyles: {
+        0: { cellWidth: 180, halign: "center", fontSize: 20 }, // Adjust column width for Sr. No
+      },
+    };
+
+    const tableRows = tableData.map((rowData, rowIndex) => {
+      return rowData.map((cellData, colIndex) => {
+        // Set text color to red for cells in the "Damage Data" column
+        if (colIndex === 3 && rowIndex > 0) {
+          return { content: cellData, styles: { textColor: [255, 0, 0] } };
+        }
+        return cellData;
+      });
+    });
+
+    // Generate table using autoTable method
+    pdf.autoTable({
+      head: [tableRows[0]], // Extract header row from tableRows
+      body: tableRows.slice(1), // Extract data rows from tableRows
+      ...tableOptions,
     });
   }
 
