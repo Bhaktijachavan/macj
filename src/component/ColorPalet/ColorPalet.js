@@ -216,7 +216,7 @@ const ColorPalette = ({ onClose }) => {
 
       <div style="padding: 25px;">
           <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;  ">Report Introduction</p>
-          <p style="font-size: 20px; text-align: justify;">
+          <p style="font-size: 20px; text-align: justify; padding:0 20px 0 20px">
               ${generateLoremIpsum()}
           </p>
            
@@ -264,7 +264,7 @@ const ColorPalette = ({ onClose }) => {
             localStorage.getItem("coverphotoImage")
           );
           console.log("coverphotoImageData", coverphotoImageData);
-          const damageDataString = localStorage.getItem("DamageData");
+          const damageDataString = localStorage.getItem("DamageData") || "{}";
           // console.log("damageDataString", damageDataString);
           // const selectionDataString = localStorage.getItem("SelectionData");
           // console.log("selectionDataString", selectionDataString);
@@ -405,7 +405,7 @@ const ColorPalette = ({ onClose }) => {
 
                         // Draw background rectangle
                         pdf.setFillColor(bgColor);
-                        pdf.rect(2, 17, textWidth + 189, 8, "F"); // Adjust padding as needed
+                        pdf.rect(2, 17, textWidth + 185, 8, "F"); // Adjust padding as needed
 
                         // Add text on top of the background with the desired font size
                         pdf.setTextColor(textColor);
@@ -419,7 +419,7 @@ const ColorPalette = ({ onClose }) => {
                           localStorage.getItem("menuData") || "{}"
                         );
                         const selectionDataString =
-                          localStorage.getItem("SelectionData");
+                          localStorage.getItem("SelectionData") || "{}";
                         const Selection = JSON.parse(selectionDataString);
 
                         Object.keys(Selection).forEach((key) => {
