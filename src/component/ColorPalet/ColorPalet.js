@@ -274,6 +274,7 @@ const ColorPalette = ({ onClose }) => {
               pdf.addPage();
               addPageBorder();
               addTableOfContents(pdf, JSON.parse(menuData));
+              addPageBorder();
 
               pdf.addPage();
               addPageBorder();
@@ -494,7 +495,7 @@ const ColorPalette = ({ onClose }) => {
                           align: "left",
                         });
 
-                        startY = 100; // Reset startY for the images section
+                        // startY = 100; // Reset startY for the images section
                         imagesPerPage = 0; // Reset images count for the new page
                       }
 
@@ -502,16 +503,16 @@ const ColorPalette = ({ onClose }) => {
                       pdf.addImage(
                         imageData.url,
                         "JPEG",
-                        startX + 10,
-                        startY,
+                        startX + 15,
+                        startY - 60,
                         imageWidth,
                         imageHeight
                       );
 
                       // Add caption
-                      pdf.text(startX + 15, startY + 65, imageData.caption);
+                      pdf.text(startX + 17, startY + 5, imageData.caption);
                       // Add caption
-                      pdf.text(startX + 15, startY + 65, imageData.caption);
+                      // pdf.text(startX + 15, startY + 65, imageData.caption);
 
                       // Move to the next position
                       startX += imageWidth + 10; // Add some padding between images
@@ -532,7 +533,7 @@ const ColorPalette = ({ onClose }) => {
                         pdf.addPage(); // Add a new page
                         addPageBorder();
 
-                        startY = 35; // Reset startY for the images section
+                        startY = 100; // Reset startY for the images section
                         imagesPerPage = 0; // Reset images count for the new page
                       }
                     }
@@ -547,29 +548,30 @@ const ColorPalette = ({ onClose }) => {
               pdf.addPage();
               addPageBorder();
 
-              pdf.text("Report Summary", 90, 10);
-              const tableData = localStorage.getItem("summarydataString") || "";
-              // pdf.text(tableData, 5, 18);
-              // Calculate the height of the text rendered by pdf.textWithLink()
-              const textHeight = pdf.getTextDimensions(tableData, {
-                maxWidth: 200, // Adjust the maxWidth according to your page width
-                align: "left",
-              }).h;
+              pdf.text("Report Summary", 90, 15);
+              // const tableData = localStorage.getItem("summarydataString") || "";
+              // // pdf.text(tableData, 5, 18);
+              // // Calculate the height of the text rendered by pdf.textWithLink()
+              // const textHeight = pdf.getTextDimensions(tableData, {
+              //   maxWidth: 200, // Adjust the maxWidth according to your page width
+              //   align: "left",
+              // }).h;
 
-              // Define the vertical gap between the two sections
-              const verticalGap = 10; // You can adjust this value as needed
+              // // Define the vertical gap between the two sections
+              // const verticalGap = 10; // You can adjust this value as needed
 
-              // Position the addSummaryTable() below the textWithLink() with a dynamic gap
-              const addSummaryTableY = 18 + textHeight + verticalGap;
+              // // Position the addSummaryTable() below the textWithLink() with a dynamic gap
+              // const addSummaryTableY = 18 + textHeight + verticalGap;
 
-              // Add the textWithLink() with dynamic gap
-              pdf.textWithLink(tableData, 5, 18, {
-                maxWidth: 200, // Adjust the maxWidth according to your page width
-                align: "left",
-              });
+              // // Add the textWithLink() with dynamic gap
+              // pdf.textWithLink(tableData, 5, 18, {
+              //   maxWidth: 200, // Adjust the maxWidth according to your page width
+              //   align: "left",
+              // });
 
               // Add the addSummaryTable() with dynamic gap
-              addSummaryTable(pdf, JSON.parse(menuData), addSummaryTableY);
+              addSummaryTable(pdf, JSON.parse(menuData));
+              addPageBorder();
 
               // Save the PDF
               pdf.save("Report.pdf");
@@ -671,8 +673,27 @@ const ColorPalette = ({ onClose }) => {
     const damageDataStrings = localStorage.getItem("DamageData");
     const damageData = JSON.parse(damageDataStrings || "{}");
     const menuDataa = JSON.parse(localStorage.getItem("menuData") || "{}");
+    const tabledata = localStorage.getItem("summarydataString") || "";
+    // pdf.text(tableData, 5, 18);
+    // Calculate the height of the text rendered by pdf.textWithLink()
+    const textHeight = pdf.getTextDimensions(tabledata, {
+      maxWidth: 200, // Adjust the maxWidth according to your page width
+      align: "left",
+    }).h;
 
-    let currentYPosition = 40; // Initial vertical position for text placement
+    // Define the vertical gap between the two sections
+    const verticalGap = 5; // You can adjust this value as needed
+
+    // Position the addSummaryTable() below the textWithLink() with a dynamic gap
+    const addSummaryTableY = 18 + textHeight + verticalGap;
+
+    // Add the textWithLink() with dynamic gap
+    pdf.textWithLink(tabledata, 5, 18, {
+      maxWidth: 200, // Adjust the maxWidth according to your page width
+      align: "left",
+    });
+
+    let currentYPosition = addSummaryTableY; // Initial vertical position for text placement
     let currentXPosition = 5;
     let tabCounter = 1; // Initialize counter for tab value numbering
 
