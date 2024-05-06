@@ -406,7 +406,7 @@ const ColorPalette = ({ onClose }) => {
 
                         // Draw background rectangle
                         pdf.setFillColor(bgColor);
-                        pdf.rect(2, 17, textWidth + 185, 8, "F"); // Adjust padding as needed
+                        pdf.rect(2, 17, textWidth + 176, 8, "F"); // Adjust padding as needed
 
                         // Add text on top of the background with the desired font size
                         pdf.setTextColor(textColor);
@@ -427,8 +427,8 @@ const ColorPalette = ({ onClose }) => {
                           const Selectionkey = key.replace("_s1", ""); // Remove the '_s1' suffix from the key
                           const SelectionObject = Selection[key];
                           const SelectionData = SelectionObject.selectionText;
-                          console.log("Selectionkey", Selectionkey);
-                          console.log("SelectionData", SelectionData);
+                          // console.log("Selectionkey", Selectionkey);
+                          // console.log("SelectionData", SelectionData);
 
                           for (const key in menuDataa) {
                             const menuItem = menuDataa[key];
