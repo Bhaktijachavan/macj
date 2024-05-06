@@ -7,12 +7,7 @@ function AgentInformation({ text, id }) {
 
   return (
     <>
-      <div
-        id={id}
-        draggable="true"
-        onDragStart={handleDragStart}
-        className="draggable-text"
-      >
+      <div>
         <p contentEditable={true} suppressContentEditableWarning={true}>
           Inspector: Nitin Gujarathi
         </p>

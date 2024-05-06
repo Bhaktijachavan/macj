@@ -69,16 +69,16 @@ function CompanyInfo({ id }) {
 
   return (
     <>
-      <div
+      {/* <div
         id={id}
         draggable="true"
         onDragStart={handleDragStart}
         className="draggable-text"
-      ></div>
+      ></div> */}
 
-      <div className="other-client-info-flex-direction    flex flex-col gap-4 ml-24">
+      <div className="other-client-info-flex-direction flex flex-col gap-4 ml-24">
         <div className="flex items-center content-center justify-center">
-          <div className="flex flex-col gap-[10px]">
+          <div className="flex flex-col gap-[5px]">
             {editableText.firstName && (
               <section className="flex">
                 <label htmlFor="firstName">First Name:</label>
@@ -111,7 +111,7 @@ function CompanyInfo({ id }) {
             {renderInputField("Date Of Inspection", "dateOfInspection")}
             {renderInputField("Age Of Home", "ageOfHome")}
           </div>
-          <div className="flex flex-col gap-[10px]">
+          <div className="flex flex-col gap-[5px]">
             {editableText.lastName && (
               <section className="flex">
                 {" "}
@@ -122,7 +122,7 @@ function CompanyInfo({ id }) {
                   onChange={(e) =>
                     handleInputChange("lastName", e.target.value)
                   }
-                  className="name-input-for-last-name-cover-page pl-[5px]  w-[201px] overflow-hidden h-7 resize-none"
+                  className="name-input-for-last-name-cover-page pl-[5px] w-[201px] overflow-hidden h-7 resize-none"
                 />
               </section>
             )}

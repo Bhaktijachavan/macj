@@ -51,7 +51,7 @@ function CoverPageDesigner({ onClose }) {
     "Company Information",
     "Agent Information",
     "Company Logo",
-    "Page Borders",
+    // "Page Borders",
   ]); // State to track checked checkboxes
   useEffect(() => {
     // Add "Page Borders" content to selectedCheckboxContents initially
@@ -288,10 +288,10 @@ function CoverPageDesigner({ onClose }) {
         return <CompanyInfo />;
       case "Agent Information":
         return <AgentInformation />;
-      case "Cover Company":
-      case "Report Title":
-      case "Inspection Signature":
-        return <EditableText initialText={label} />;
+      // case "Cover Company":
+      // case "Report Title":
+      // case "Inspection Signature":
+      //   return <EditableText initialText={label} />;
       // case "Page Borders":
       //   return <div>Page Borders Content</div>;
       default:
@@ -662,43 +662,28 @@ function CoverPageDesigner({ onClose }) {
                 }`}
               >
                 {/* Render editable text elements */}
-                {editableTexts.map(({ id, text }) => (
-                  <div
-                    key={id}
-                    bounds="parent"
-                    className="draggableeeee-for-inspection"
-                  >
-                    <div>
-                      <EditableText initialText={text} />
-                    </div>
-                  </div>
-                ))}
+
                 {checkedCheckboxes.map((label, index) => (
-                  <div
-                    key={index}
-                    bounds="parent"
-                    className="draggableeeee cursor-pointer"
-                  >
+                  <div key={index} className="draggableeeee cursor-pointer">
                     <div>{renderCheckboxContent(label)}</div>
                   </div>
                 ))}
                 {addedImages.map(({ id, src, height, width }) => (
-                  <Draggable bounds="parent">
-                    <div key={id} className="draggableeeee">
-                      <div>
-                        <img
-                          src={src}
-                          alt={`Image ${id}`}
-                          height={height}
-                          width={width}
-                        />
-                        {/* Add a delete button to remove the image */}
-                        {/* <button onClick={() => handleDeleteImage(id)}>
+                  <div key={id} className="draggableeeee">
+                    <div>
+                      <img
+                        src={src}
+                        alt={`Image ${id}`}
+                        // height={height}
+                        // width={width}
+                        style={{ height: "8em", width: "13em" }}
+                      />
+                      {/* Add a delete button to remove the image */}
+                      {/* <button onClick={() => handleDeleteImage(id)}>
                     Delete Image
                   </button> */}
-                      </div>
                     </div>
-                  </Draggable>
+                  </div>
                 ))}
               </div>
             </div>

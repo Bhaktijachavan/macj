@@ -30,7 +30,6 @@ const ClientInfo = () => {
     const data = JSON.parse(localStorage.getItem("clientInfoData"));
     if (data) {
       setFormData(data);
- 
     }
   }, []);
   // Filter out empty fields
@@ -58,14 +57,13 @@ const ClientInfo = () => {
       setShowAlert({
         showAlert: true,
         message: "Incomplete data. Please fill in all required fields.",
-      })
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
           message: "",
         }); // Hide the alert after 3 seconds
       }, 4000);
-      
 
       return;
     }
@@ -75,7 +73,6 @@ const ClientInfo = () => {
     setpop(true);
   };
   const [pop, setpop] = useState(false);
-
 
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -106,7 +103,7 @@ const ClientInfo = () => {
       weather: "",
       otherInfo: "",
     });
-    localStorage.removeItem('clientInfoData');
+    localStorage.removeItem("clientInfoData");
     // No need to reload the page here
 
     // Return true to indicate form was cleared
@@ -126,7 +123,7 @@ const ClientInfo = () => {
       }, 4000);
     }
   };
-  
+
   return (
     <div className="main-container-clientinfo ">
       {pop && (
@@ -187,7 +184,6 @@ const ClientInfo = () => {
             onChange={handleInputChange}
           />
         </div>
-       
 
         <div className="form-group">
           <label htmlFor="inputphone" className="label">
@@ -421,7 +417,6 @@ const ClientInfo = () => {
             name="otherInfo"
             value={formData.otherInfo}
             onChange={handleInputChange}
-          
           ></textarea>
         </div>
       </form>
