@@ -508,11 +508,15 @@ const ColorPalette = ({ onClose }) => {
                         imageWidth,
                         imageHeight
                       );
+                      const maxCaptionWidth = imageWidth;
+                      const lines = pdf.splitTextToSize(
+                        imageData.caption,
+                        maxCaptionWidth
+                      );
+                      const captionHeight = lines.length - 5;
 
                       // Add caption
-                      pdf.text(startX + 17, startY + 5, imageData.caption);
-                      // Add caption
-                      // pdf.text(startX + 15, startY + 65, imageData.caption);
+                      pdf.text(startX + 17, startY + 5 - captionHeight, lines);
 
                       // Move to the next position
                       startX += imageWidth + 10; // Add some padding between images
@@ -548,7 +552,7 @@ const ColorPalette = ({ onClose }) => {
               pdf.addPage();
               addPageBorder();
 
-              pdf.text("Report Summary", 90, 15);
+              pdf.text("Report Summary", 90, 10);
               // const tableData = localStorage.getItem("summarydataString") || "";
               // // pdf.text(tableData, 5, 18);
               // // Calculate the height of the text rendered by pdf.textWithLink()
