@@ -7,7 +7,7 @@ function AgentInformation({ text, id }) {
 
   return (
     <>
-      <div>
+      <div className="text-[13.3px]">
         <p contentEditable={true} suppressContentEditableWarning={true}>
           Inspector: Nitin Gujarathi
         </p>
