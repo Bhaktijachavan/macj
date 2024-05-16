@@ -44,7 +44,10 @@ function CoverPageDesigner({ onClose }) {
     message: "",
     color: "",
   });
-
+  const handleAddImageManually = () => {
+    // Prompt the user to select an image file
+    fileInputRef.current.click();
+  };
   const [checkedCheckboxes, setCheckedCheckboxes] = useState([
     "Inspection Details",
     "Cover Photo",
@@ -394,6 +397,7 @@ function CoverPageDesigner({ onClose }) {
       "Page Borders",
     ]);
   };
+
   return (
     <>
       <div className="cover-page-container-popup-contains-all-the-info-abt-cover-page">
@@ -489,6 +493,7 @@ function CoverPageDesigner({ onClose }) {
                       </label>
                       <label className="flex items-center gap-2">
                         <input
+                          checked
                           type="checkbox"
                           onChange={(e) =>
                             handleCheckboxChange(e, "Agent Information")
@@ -498,6 +503,7 @@ function CoverPageDesigner({ onClose }) {
                       </label>
                       <label className="flex items-center gap-2">
                         <input
+                          checked
                           type="checkbox"
                           onChange={(e) =>
                             handleCheckboxChange(e, "Cover Company")
@@ -507,6 +513,7 @@ function CoverPageDesigner({ onClose }) {
                       </label>
                       <label className="flex items-center gap-2">
                         <input
+                          checked
                           type="checkbox"
                           onChange={(e) =>
                             handleCheckboxChange(e, "Report Title")
@@ -516,6 +523,7 @@ function CoverPageDesigner({ onClose }) {
                       </label>
                       <label className="flex items-center gap-2">
                         <input
+                          checked
                           type="checkbox"
                           onChange={(e) =>
                             handleCheckboxChange(e, "Inspection Signature")
@@ -525,6 +533,7 @@ function CoverPageDesigner({ onClose }) {
                       </label>
                       <label className="flex items-center gap-2">
                         <input
+                          checked
                           type="checkbox"
                           onClick={() => fileInputRef.current.click()}
                           onChange={(e) =>
@@ -537,7 +546,7 @@ function CoverPageDesigner({ onClose }) {
                     </div>
                   </fieldset>
                   {/* Design Components */}
-                  <fieldset className="bordered-text">
+                  <fieldset className="bordered-text Design-Components-sectiion-cover-page">
                     <legend className="tag-for-line-draw-through-text">
                       Design Components
                     </legend>
@@ -547,6 +556,7 @@ function CoverPageDesigner({ onClose }) {
                         <div className="lables-check-boxes-for-page-border-cover-page-stationary">
                           <label className="flex items-center gap-2 w-28">
                             <input
+                              checked
                               type="checkbox"
                               onChange={(e) =>
                                 handleCheckboxChange(e, "Page Borders")
@@ -568,25 +578,6 @@ function CoverPageDesigner({ onClose }) {
                           </p> */}
                         </div>
                       </div>
-                      <div className="buttons-for-add-text-box-and-imagess">
-                        <section className="section-for-btnss-of-text-add-imgs">
-                          {/* Buttons for adding box, text, image, etc. */}
-                          {/* <button className="btn">Add Box</button> */}
-                          <button className="btn" onClick={handleAddText}>
-                            Add/Edit <br /> Text
-                          </button>
-                          <button onClick={() => fileInputRef.current.click()}>
-                            Add Image
-                          </button>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            ref={fileInputRef}
-                            style={{ display: "none" }}
-                            onChange={handleImageUpload}
-                          />
-                        </section>
-                      </div>
                     </div>
                   </fieldset>
                 </div>
@@ -603,6 +594,25 @@ function CoverPageDesigner({ onClose }) {
                     >
                       Remove Cover Photo
                     </button>
+                    {/* <div className="buttons-for-add-text-box-and-imagess">
+                      <section className="section-for-btnss-of-text-add-imgs"> */}
+                    {/* Buttons for adding box, text, image, etc. */}
+                    {/* <button className="btn">Add Box</button> */}
+                    {/* <button className="btn" onClick={handleAddText}>
+                          Add/Edit <br /> Text
+                        </button> */}
+                    {/* <button onClick={handleAddImageManually}>
+                          Add Image
+                        </button>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          ref={fileInputRef}
+                          style={{ display: "none" }}
+                          onChange={handleImageUpload}
+                        />
+                      </section>
+                    </div> */}
                     <button
                       onClick={exportStateSave}
                       className="button-for-footer-for-changes-in-cover-page"
@@ -627,6 +637,49 @@ function CoverPageDesigner({ onClose }) {
                     >
                       Discard <br /> Changes
                     </button>
+                    {addedImages.map(({ id, height, width }) => (
+                      <div key={id} className="image-adjustment-container">
+                        <p>Resize the Image</p>
+                        <div className="flex gap-2 pb-1">
+                          <span>Height:</span>
+                          <input
+                            className="text-center"
+                            style={{ width: "3.1em" }}
+                            type="number"
+                            value={height}
+                            onChange={(e) => {
+                              const newHeight = parseInt(e.target.value);
+                              setAddedImages((prevImages) =>
+                                prevImages.map((image) =>
+                                  image.id === id
+                                    ? { ...image, height: newHeight }
+                                    : image
+                                )
+                              );
+                            }}
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <span>Width:</span>
+                          <input
+                            className="text-center"
+                            type="number"
+                            style={{ width: "3.4em" }}
+                            value={width}
+                            onChange={(e) => {
+                              const newWidth = parseInt(e.target.value);
+                              setAddedImages((prevImages) =>
+                                prevImages.map((image) =>
+                                  image.id === id
+                                    ? { ...image, width: newWidth }
+                                    : image
+                                )
+                              );
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </fieldset>
@@ -674,14 +727,8 @@ function CoverPageDesigner({ onClose }) {
                       <img
                         src={src}
                         alt={`Image ${id}`}
-                        // height={height}
-                        // width={width}
-                        style={{ height: "8em", width: "13em" }}
+                        style={{ height: `${height}px`, width: `${width}px` }}
                       />
-                      {/* Add a delete button to remove the image */}
-                      {/* <button onClick={() => handleDeleteImage(id)}>
-                    Delete Image
-                  </button> */}
                     </div>
                   </div>
                 ))}

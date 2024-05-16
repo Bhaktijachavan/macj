@@ -44,7 +44,7 @@
   border: 1px solid #00000038;
   background-color: white;
   font-size: 13px;
-  width: 8em;
+  /* width: 8em; */
   height: 4em;
 }
 .lables-check-boxes-for-page-border-cover-page-stationary {
@@ -108,7 +108,7 @@ fieldset {
   align-items: center;
   flex-shrink: 0;
   background-color: grey;
-  height: 23.9em;
+  height: 46.9em;
   background-color: #e5e7eb;
 }
 .button-for-footer-for-changes-in-cover-page {
@@ -179,12 +179,12 @@ fieldset {
 }
 .content-that-is-draggable-and-adjustable-within-div {
   width: 100%;
-  display: grid;
-  justify-content: center;
+  display: flex;
+  /* justify-content: center; */
   /* align-items: center; */
   height: 73vw;
   /* flex-wrap: wrap; */
-  gap: 1em;
+  gap: 1.5em;
   flex-direction: column;
 }
 .contains-added-image-with-the-delete-button-ouput-section {
@@ -217,4 +217,14 @@ fieldset {
   justify-content: center;
   gap: 1em;
   padding: 1em;
+}
+.Design-Components-sectiion-cover-page {
+  width: 19em;
+}
+.image-adjustment-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 }
