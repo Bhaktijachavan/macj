@@ -215,10 +215,26 @@ const ColorPalette = ({ onClose }) => {
       <div style="page-break-before: always;"></div>
 
       <div style="padding: 25px;">
-          <p style="text-align: center; font-size: 25px; font-weight: 10px; margin-bottom: 1em;  ">Report Introduction</p>
-          <p style="font-size: 20px; text-align: justify; padding:0 20px 0 20px">
+          <p style="text-align: center; font-size: 35px; font-weight: 25px; margin-top: 30px ">Inspection Details</p>
+          <p style="text-align: justify;  font-size: 20px; font-weight: 25px; padding-left:20px ; margin-bottom: 10px ;padding-bottom: 10px ; border-bottom: 2px solid black ">INTRODUCTION :</p>
+          <p style="font-size: 15px; text-align: justify; padding:0 20px 0 20px">
               ${generateLoremIpsum()}
           </p>
+          
+          <p style="  font-size: 15px;  padding-left:20px">
+          1.Attendance :  Client present for the initial part of inspection
+         
+         </p>
+           <p style="  font-size: 15px; padding-left:20px">
+          2.Home Type: Apartment in a twenty six storey building
+
+        
+         </p>
+           <p style="  font-size: 15px; padding-left:20px ">
+          3.Occupancy: Vacant - Unfurnished • Utilities on at the time of inspection
+         
+         </p>
+        
            
       
           </div>
@@ -231,6 +247,24 @@ const ColorPalette = ({ onClose }) => {
         .get("pdf")
 
         .then((pdf) => {
+          const addHeader = (text) => {
+            pdf.setFillColor(0, 0, 255); // Blue color (RGB)
+            pdf.rect(2, 2, pdf.internal.pageSize.getWidth() - 4, 15, "F"); // Draw blue rectangle as header
+            pdf.setTextColor(255, 255, 255); // White text color
+            pdf.setFontSize(13);
+            pdf.text(4, 10, text); // Add text to the header
+          };
+
+          // Add header to every page
+          const addPageHeader = () => {
+            const pageCount = pdf.internal.getNumberOfPages();
+            for (let i = 2; i <= pageCount; i++) {
+              pdf.setPage(i);
+              addHeader(
+                "MACJ - A Buyer's Choice Home Inspection         AD Project, Tower 1, 10th Floor, Unit 10-A, Kolkata"
+              );
+            }
+          };
           // Add third page for Table of Contents
           const addPageBorder = () => {
             const pageCount = pdf.internal.getNumberOfPages();
@@ -249,6 +283,7 @@ const ColorPalette = ({ onClose }) => {
             }
           };
           // pdf.addPage();
+          addPageHeader();
           addPageBorder();
 
           // pdf.text("Table of Contents", 10, 10);
@@ -272,6 +307,7 @@ const ColorPalette = ({ onClose }) => {
           if (coverphotoImageData && damageDataString) {
             try {
               pdf.addPage();
+              addPageHeader();
               addPageBorder();
               addTableOfContents(pdf, JSON.parse(menuData));
               addPageBorder();
@@ -355,6 +391,7 @@ const ColorPalette = ({ onClose }) => {
                 if (index > 0) {
                   pdf.addPage();
                   addPageBorder();
+                  addPageHeader();
                 }
 
                 // Display damage data
@@ -536,6 +573,7 @@ const ColorPalette = ({ onClose }) => {
                       if (imagesPerPage >= maxImagesPerPage) {
                         pdf.addPage(); // Add a new page
                         addPageBorder();
+                        addPageHeader();
 
                         startY = 100; // Reset startY for the images section
                         imagesPerPage = 0; // Reset images count for the new page
@@ -550,33 +588,20 @@ const ColorPalette = ({ onClose }) => {
               });
 
               pdf.addPage();
+
               addPageBorder();
+              addPageHeader();
 
               pdf.text("Report Summary", 90, 10);
-              // const tableData = localStorage.getItem("summarydataString") || "";
-              // // pdf.text(tableData, 5, 18);
-              // // Calculate the height of the text rendered by pdf.textWithLink()
-              // const textHeight = pdf.getTextDimensions(tableData, {
-              //   maxWidth: 200, // Adjust the maxWidth according to your page width
-              //   align: "left",
-              // }).h;
 
-              // // Define the vertical gap between the two sections
-              // const verticalGap = 10; // You can adjust this value as needed
-
-              // // Position the addSummaryTable() below the textWithLink() with a dynamic gap
-              // const addSummaryTableY = 18 + textHeight + verticalGap;
-
-              // // Add the textWithLink() with dynamic gap
-              // pdf.textWithLink(tableData, 5, 18, {
-              //   maxWidth: 200, // Adjust the maxWidth according to your page width
-              //   align: "left",
-              // });
-
-              // Add the addSummaryTable() with dynamic gap
               addSummaryTable(pdf, JSON.parse(menuData));
               addPageBorder();
-
+              const pageCount = pdf.internal.getNumberOfPages();
+              for (let i = 2; i <= pageCount; i++) {
+                pdf.setPage(i);
+                pdf.setTextColor(0, 0, 0);
+                pdf.text(`Page ${i - 1} of ${pageCount - 1}`, 175, 293);
+              }
               // Save the PDF
               pdf.save("Report.pdf");
 
@@ -600,7 +625,7 @@ const ColorPalette = ({ onClose }) => {
 
   function addTableOfContents(pdf, parsedMenuData) {
     // Set font size and text color
-    let currentYPosition = 10; // Initial vertical position for text placement
+    let currentYPosition = 20; // Initial vertical position for text placement
     let currentXPosition = 5;
     let tabCounter = 1;
     const tableData = [["Table of Contents"]];
@@ -877,17 +902,46 @@ const ColorPalette = ({ onClose }) => {
   // Function to generate Lorem Ipsum text
   function generateLoremIpsum() {
     const loremIpsum = `
-      We appreciate the opportunity to conduct this inspection for you! Please carefully read your entire Inspection Report. Call us after you have reviewed your report if you have any questions. Remember, when the inspection is completed and the report is delivered, we are still available for any questions you may have.
-      Properties being inspected do not "Pass" or "Fail.” - The following report is based on an inspection of the visible portion of the structure; inspection may be limited by vegetation and possessions. Depending upon the age of the property, some items like GFCI outlets may not be installed; this report will focus on safety and function, not current code. This report identifies specific non-code, non-cosmetic concerns that the inspector feels may need further investigation or repair.
-      For your safety and liability purposes, we recommend that licensed contractors evaluate and repair any critical concerns and defects. Note that this report is a snapshot in time. We recommend that you or your representative carry out a final walk-through inspection immediately before closing to check the condition of the property, using this report as a guide.
-      Video In Your Report –The inspector may have included videos of issues within the report. If you are opening the PDF version of the report, make sure you are viewing the PDF in the free Adobe Reader PDF program. If you’re viewing the report as a web page, the videos will play in any browser. Click on any video within the report to start playing.
-      Throughout the report, we utilize icons to make things easier to find and read. Use the legend below to understand each rating icon.
-      Acceptable – This item was inspected and is in acceptable condition for its age and use.
-      Repair/Replace - Items with this rating should be examined by a professional and be repaired or replaced.
-      Safety Issue - Items with this rating should be examined immediately and fixed. Even though the item is marked as a safety issue it could be a very inexpensive fix. Please make sure to read the narrative to completely understand the issue.
-      Monitor - Items with this rating should be monitored periodically to ensure that the issue hasn't become worse, warranting a repair or replacement.
-      Not Accessible - Items with this rating were not able to be fully inspected because access was blocked off or covered.
-      Our report contains a unique pop-up glossary feature. When you see words highlighted in yellow hover your mouse over the term. The definition or a tip about the item will appear!
+     
+We appreciate the opportunity to conduct this inspection for you. Please carefully read your entire
+Inspection Report. Call us after you have reviewed your report, so we can go over any questions you
+may have. Remember, when the inspection is completed and the report is delivered, we are still
+available to you for any questions you may have, throughout the entire closing process.
+<br/>
+<br/>
+Properties being inspected do not "Pass" or "Fail.” The following report is based on an inspection of
+the visible portion of the structure. This report will focus on safety and function, not building codes.
+This report identifies specific non-code, non-cosmetic concerns that the inspector feels may need
+further investigation or repair.
+<br/>
+<br/>
+For your safety and liability purposes, we recommend that licensed contractors evaluate and repair
+any critical concerns and defects. Note that this report is a snapshot in time. We recommend that
+you or your representative carry out a walkthrough inspection to check the condition of the property,
+using this report as a guide.
+<br/>
+<br/>
+Understanding the Report: Red Texts are comments of significant deficient components or
+conditions which need attention, repair or replacement. These comments are also duplicated in the
+report summary page(s). Black texts are general information and observations regarding the systems
+and components of the unit. These include comments of deficiencies which are considered less
+significant but should be addressed.
+<br/>
+<br/>
+Your report includes many photographs which will help to clarify where the inspector went, what was
+looked at, and the condition of a system or component at the time of inspection. Some of the pictures
+may be of deficiencies or problem areas, these are to help you better understand what is
+documented in this report and may allow you to see areas or items that you normally would not see.
+A pictured issue does not necessarily mean that the issue was limited to that area only, but may be
+representation of a condition that is in multiple places. Not all areas of deficiencies or conditions will
+be supported with photos. It is recommended that you read fully to understand the scope of the
+home inspection.
+<br/>
+<br/>
+
+ 
+
+
     `;
 
     return loremIpsum;
