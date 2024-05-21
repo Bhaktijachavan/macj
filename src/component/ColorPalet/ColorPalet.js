@@ -598,6 +598,7 @@ const ColorPalette = ({ onClose }) => {
 
               addSummaryTable(pdf, JSON.parse(menuData));
               addPageBorder();
+              addPageHeader();
               const pageCount = pdf.internal.getNumberOfPages();
               for (let i = 2; i <= pageCount; i++) {
                 pdf.setPage(i);
