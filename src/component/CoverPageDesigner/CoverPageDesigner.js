@@ -1,7 +1,6 @@
 import React, { useState, useRef, useReducer, useEffect } from "react";
 import OutputComponent from "./OutputComponent/OutputComponent";
 import DraggableText from "./CompanyInfo/CompanyInfo";
-import CheckboxContent1 from "./CheckboxContent1/CheckboxContent1";
 import CheckboxContent2 from "./CheckboxContent2/CheckboxContent2";
 import DefaultContent from "./DefaultContent/DefaultContent";
 import Draggable from "react-draggable"; // Import Draggable component
@@ -17,8 +16,10 @@ import jsPDF from "jspdf";
 import html2pdf from "html2pdf.js";
 
 import html2canvas from "html2canvas";
+
 import "./CoverPageDesigner.css";
 import Alert from "../Alert/Alert";
+import CoverPhotoPage from "./CoverPhotoPage/CoverPhotoPage";
 
 function CoverPageDesigner({ onClose }) {
   const fileInputRef = useRef(null);
@@ -37,7 +38,8 @@ function CoverPageDesigner({ onClose }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isCompanyLogoChecked, setIsCompanyLogoChecked] = useState(false);
   const [uploadedLogo, setUploadedLogo] = useState(null);
-
+  const [coverPhotoHeight, setCoverPhotoHeight] = useState(100);
+  const [coverPhotoWidth, setCoverPhotoWidth] = useState(150);
   //alert
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
@@ -284,7 +286,14 @@ function CoverPageDesigner({ onClose }) {
       case "Inspection Details":
         return <InspectionDetails />;
       case "Cover Photo":
-        return <CheckboxContent1 />;
+        return (
+          <CoverPhotoPage
+            height={coverPhotoHeight}
+            width={coverPhotoWidth}
+            onHeightChange={(height) => setCoverPhotoHeight(height)}
+            onWidthChange={(width) => setCoverPhotoWidth(width)}
+          />
+        );
       case "Company Logo":
         return <CheckboxContent2 />;
       case "Company Information":
@@ -357,7 +366,7 @@ function CoverPageDesigner({ onClose }) {
     if (coverphoto === null) {
       setShowAlert({
         showAlert: true,
-        message: "Do you really want to remove cover photo ",
+        message: "Do you really want to remove cover photo",
       });
       setTimeout(() => {
         setShowAlert({
