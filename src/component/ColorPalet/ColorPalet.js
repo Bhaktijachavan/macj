@@ -717,12 +717,13 @@ const ColorPalette = ({ onClose }) => {
     const verticalGap = 20; // You can adjust this value as needed
 
     // Position the addSummaryTable() below the textWithLink() with a dynamic gap
-    const addSummaryTableY = textHeight / 2;
-
+    const baseY = textHeight + verticalGap + 18;
+    const baseX = verticalGap + 18;
+    const addSummaryTableY = tabledata ? baseY : baseX;
     // Add the textWithLink() with dynamic gap
     pdf.setFontSize(12);
     pdf.textWithLink(tabledata, 14, 40, {
-      maxWidth: 210, // Adjust the maxWidth according to your page width
+      maxWidth: 185, // Adjust the maxWidth according to your page width
       align: "left",
     });
 
