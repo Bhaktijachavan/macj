@@ -1,7 +1,7 @@
 import React from "react";
-import "./CheckboxContent1.css";
+import "./CoverPhotoPage.css";
 
-const CheckboxContent1 = () => {
+const CoverPhotoPage = () => {
   const uploadedImage = localStorage.getItem("uploadedImage");
 
   return (
@@ -21,12 +21,12 @@ const CheckboxContent1 = () => {
   );
 };
 
-export default CheckboxContent1;
+export default CoverPhotoPage;
 
 // import React from "react";
-// import "./CheckboxContent1.css";
+// import "./CoverPhotoPage.css";
 
-// const CheckboxContent1 = () => {
+// const CoverPhotoPage = () => {
 //   const uploadedImage = localStorage.getItem("uploadedImage");
 //   const coverphotoImage = localStorage.getItem("coverphotoImage");
 
@@ -43,4 +43,4 @@ export default CheckboxContent1;
 //   );
 // };
 
-// export default CheckboxContent1;
+// export default CoverPhotoPage;
