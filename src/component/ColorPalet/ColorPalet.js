@@ -311,6 +311,7 @@ const ColorPalette = ({ onClose }) => {
               addPageBorder();
               addTableOfContents(pdf, JSON.parse(menuData));
               addPageBorder();
+              addPageHeader();
 
               pdf.addPage();
               addPageBorder();
@@ -591,16 +592,18 @@ const ColorPalette = ({ onClose }) => {
 
               addPageBorder();
               addPageHeader();
-
-              pdf.text("Report Summary", 90, 10);
+              pdf.setFontSize(20);
+              pdf.setTextColor(0, 0, 0);
+              pdf.text("Report Summary", 80, 30);
 
               addSummaryTable(pdf, JSON.parse(menuData));
               addPageBorder();
               const pageCount = pdf.internal.getNumberOfPages();
               for (let i = 2; i <= pageCount; i++) {
                 pdf.setPage(i);
+                pdf.setFontSize(15);
                 pdf.setTextColor(0, 0, 0);
-                pdf.text(`Page ${i - 1} of ${pageCount - 1}`, 175, 293);
+                pdf.text(`Page ${i - 1} of ${pageCount - 1}`, 178, 293);
               }
               // Save the PDF
               pdf.save("Report.pdf");
@@ -706,19 +709,20 @@ const ColorPalette = ({ onClose }) => {
     // pdf.text(tableData, 5, 18);
     // Calculate the height of the text rendered by pdf.textWithLink()
     const textHeight = pdf.getTextDimensions(tabledata, {
-      maxWidth: 200, // Adjust the maxWidth according to your page width
+      maxWidth: 210, // Adjust the maxWidth according to your page width
       align: "left",
     }).h;
 
     // Define the vertical gap between the two sections
-    const verticalGap = 5; // You can adjust this value as needed
+    const verticalGap = 20; // You can adjust this value as needed
 
     // Position the addSummaryTable() below the textWithLink() with a dynamic gap
-    const addSummaryTableY = 18 + textHeight + verticalGap;
+    const addSummaryTableY = textHeight / 2;
 
     // Add the textWithLink() with dynamic gap
-    pdf.textWithLink(tabledata, 5, 18, {
-      maxWidth: 200, // Adjust the maxWidth according to your page width
+    pdf.setFontSize(12);
+    pdf.textWithLink(tabledata, 14, 40, {
+      maxWidth: 210, // Adjust the maxWidth according to your page width
       align: "left",
     });
 
