@@ -13,10 +13,16 @@ import Footer from "./../Footer/Footer";
 import ColorPicker from "./ColorPicker";
 import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
 import "./ColorPalet.css";
+import Icon1 from "../EditImageTabList/OverLayImage/Acceptable 2.png";
+import Icon2 from "../EditImageTabList/OverLayImage/Acceptable.png";
+import Icon3 from "../EditImageTabList/OverLayImage/Monitor.png";
+import Icon4 from "../EditImageTabList/OverLayImage/Not Accessible 1.png";
+import Icon5 from "../EditImageTabList/OverLayImage/Repair Replace.png";
+import Icon6 from "../EditImageTabList/OverLayImage/Safety 1.png";
+
 const ColorPalette = ({ onClose }) => {
   const [localStorageData, setLocalStorageData] = useState([]);
   const coverPageRef = useRef(null);
-
   // State for row colors
   const [rowColors, setRowColors] = useState([
     {
@@ -215,25 +221,63 @@ const ColorPalette = ({ onClose }) => {
       <div style="page-break-before: always;"></div>
 
       <div style="padding: 25px;">
-          <p style="text-align: center; font-size: 35px; font-weight: 25px; margin-top: 30px ">Inspection Details</p>
-          <p style="text-align: justify;  font-size: 20px; font-weight: 25px; padding-left:20px ; margin-bottom: 10px ;padding-bottom: 10px ; border-bottom: 2px solid black ">INTRODUCTION :</p>
-          <p style="font-size: 15px; text-align: justify; padding:0 20px 0 20px">
+          <p style="text-align: center; font-size: 35px; font-weight: 30px; margin-top: 25px ">Report Introduction</p>
+       
+          <p style="font-size: 15px; text-align: justify; padding: 10px 20px 0 20px">
               ${generateLoremIpsum()}
           </p>
-          
+          <div style = "display:flex">
+          <img src="${Icon2}" style="width: 50px; height: 50px; margin-left:20px;" />
+
           <p style="  font-size: 15px;  padding-left:20px">
-          1.Attendance :  Client present for the initial part of inspection
+
+          1.Acceptable : Theis item was inspected and is in acceptable condition for it's age and use.
          
          </p>
+         </div>
+         <br/>
+
+         <div style = "display:flex">
+         <img src="${Icon5}" style="width: 50px; height: 50px; margin-left:20px;" />
            <p style="  font-size: 15px; padding-left:20px">
-          2.Home Type: Apartment in a twenty six storey building
+          2.Repair/Replace : Items with this rating should be examined by a professional and be repaired or replaced.
 
         
          </p>
+         </div>
+         <br/>
+
+         <div style = "display:flex">
+         <img src="${Icon6}" style="width: 50px; height: 50px; margin-left:20px;" />
            <p style="  font-size: 15px; padding-left:20px ">
-          3.Occupancy: Vacant - Unfurnished • Utilities on at the time of inspection
+          3.Safety Issue : Items with this rating should be examined immediately and fixed. Even though the items is marked as safety issue it could be a very inexpensive fix. please make sure to read the narrative to completely understand the issue.
          
          </p>
+         </div>
+         <br/>
+
+         <div style = "display:flex">
+         <img src="${Icon3}" style="width: 50px; height: 50px; margin-left:20px;" />
+           <p style="  font-size: 15px; padding-left:20px ">
+          4.Monitor : Items with this rating should be monitored periodically to ensure that the issue hasn't become the worse , warranting a repair or replacement.
+         
+         </p>
+         </div>
+         <br/>
+         <div style = "display:flex">
+         <img src="${Icon4}" style="width: 50px; height: 50px; margin-left:20px;" />
+           <p style="  font-size: 15px; padding-left:20px ">
+          5.Not Accessible : Items with this rating were not able to fully inspected because access was blocked off or covered.
+         
+         </p>
+         </div>
+         <br/>
+       
+           <p style="  font-size: 15px; padding-left:20px ">
+         Our report contains a unique pop-up glossary feature. When you see words highlighted in yellow hover your mouse over the term. The defination or tip about the item will appear!
+         
+         </p>
+       
         
            
       
@@ -249,10 +293,10 @@ const ColorPalette = ({ onClose }) => {
         .then((pdf) => {
           const addHeader = (text) => {
             pdf.setFillColor(0, 0, 255); // Blue color (RGB)
-            pdf.rect(2, 2, pdf.internal.pageSize.getWidth() - 4, 15, "F"); // Draw blue rectangle as header
+            pdf.rect(2, 2, pdf.internal.pageSize.getWidth() - 4, 10, "F"); // Draw blue rectangle as header
             pdf.setTextColor(255, 255, 255); // White text color
             pdf.setFontSize(13);
-            pdf.text(4, 10, text); // Add text to the header
+            pdf.text(4, 9, text); // Add text to the header
           };
 
           // Add header to every page
@@ -260,9 +304,7 @@ const ColorPalette = ({ onClose }) => {
             const pageCount = pdf.internal.getNumberOfPages();
             for (let i = 2; i <= pageCount; i++) {
               pdf.setPage(i);
-              addHeader(
-                "MACJ - A Buyer's Choice Home Inspection         AD Project, Tower 1, 10th Floor, Unit 10-A, Kolkata"
-              );
+              addHeader("N G Home Inspection Services");
             }
           };
           // Add third page for Table of Contents
@@ -300,7 +342,7 @@ const ColorPalette = ({ onClose }) => {
           );
           console.log("coverphotoImageData", coverphotoImageData);
           const damageDataString = localStorage.getItem("DamageData") || "{}";
-          // console.log("damageDataString", damageDataString);
+          console.log("damageDataString", damageDataString);
           // const selectionDataString = localStorage.getItem("SelectionData");
           // console.log("selectionDataString", selectionDataString);
 
@@ -909,16 +951,12 @@ const ColorPalette = ({ onClose }) => {
   function generateLoremIpsum() {
     const loremIpsum = `
      
-We appreciate the opportunity to conduct this inspection for you. Please carefully read your entire
-Inspection Report. Call us after you have reviewed your report, so we can go over any questions you
-may have. Remember, when the inspection is completed and the report is delivered, we are still
-available to you for any questions you may have, throughout the entire closing process.
+We appreciate the opportunity to conduct this inspection for you! Please carefully read your entire
+Inspection Report. Call us after you have reviewed your report if you have any question. Remember, when the inspection is completed and the report is delivered , we are still available for any questions you may have .
 <br/>
 <br/>
-Properties being inspected do not "Pass" or "Fail.” The following report is based on an inspection of
-the visible portion of the structure. This report will focus on safety and function, not building codes.
-This report identifies specific non-code, non-cosmetic concerns that the inspector feels may need
-further investigation or repair.
+Properties being inspected do not "Pass" or "Fail.” - The following report is based on an inspection of
+the visible portion of the structure; Inspection may be limited by vegetation and possessions. Depending  upon the age of property, some items like GFCI outlets may not be installed ;this report will focus on safety  and function ,not current code.This report identifies specific non-code , non-cosmetic concerns that the inspector feels may  need further investigation or repair .
 <br/>
 <br/>
 For your safety and liability purposes, we recommend that licensed contractors evaluate and repair
@@ -927,21 +965,10 @@ you or your representative carry out a walkthrough inspection to check the condi
 using this report as a guide.
 <br/>
 <br/>
-Understanding the Report: Red Texts are comments of significant deficient components or
-conditions which need attention, repair or replacement. These comments are also duplicated in the
-report summary page(s). Black texts are general information and observations regarding the systems
-and components of the unit. These include comments of deficiencies which are considered less
-significant but should be addressed.
+Video In Your Report - The inspector may include videos of issues within the report . If you are opening the PDF version of the report make sure you are viewing the PDF in the free Adobe Reader PDF programs . If you're viewing the report as a webpage the videos will play in any browser .Click on any video within the  report to start playing video.
 <br/>
 <br/>
-Your report includes many photographs which will help to clarify where the inspector went, what was
-looked at, and the condition of a system or component at the time of inspection. Some of the pictures
-may be of deficiencies or problem areas, these are to help you better understand what is
-documented in this report and may allow you to see areas or items that you normally would not see.
-A pictured issue does not necessarily mean that the issue was limited to that area only, but may be
-representation of a condition that is in multiple places. Not all areas of deficiencies or conditions will
-be supported with photos. It is recommended that you read fully to understand the scope of the
-home inspection.
+Throughout the report we utilize icons to make things easier to find and read. Use the legend below to understand each rating icon
 <br/>
 <br/>
 
