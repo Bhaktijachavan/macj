@@ -24,7 +24,7 @@
   /* width: 100%; */
   gap: 1em;
   /* border: 1px solid #80808066; */
-  height: 34%;
+  height: 50%;
   justify-content: space-between;
   background-color: #e5e7eb;
 }
@@ -100,6 +100,9 @@ fieldset {
   font-size: 13px;
   line-height: 26px;
   width: 16em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
 .contains-bottom-section-with-buttons-design-cover-page {
   display: flex;
@@ -184,7 +187,7 @@ fieldset {
   /* align-items: center; */
   height: 73vw;
   /* flex-wrap: wrap; */
-  gap: 1.5em;
+  gap: 2.5em;
   flex-direction: column;
 }
 .contains-added-image-with-the-delete-button-ouput-section {
@@ -227,4 +230,18 @@ fieldset {
   justify-content: center;
   align-items: center;
   gap: 5px;
+}
+
+.company-logo-image .react-resizable {
+  position: relative;
+}
+
+.company-logo-image .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  cursor: se-resize;
 }

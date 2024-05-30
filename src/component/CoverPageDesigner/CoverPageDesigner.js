@@ -16,7 +16,8 @@ import jsPDF from "jspdf";
 import html2pdf from "html2pdf.js";
 
 import html2canvas from "html2canvas";
-
+import { ResizableBox } from "react-resizable";
+import "react-resizable/css/styles.css";
 import "./CoverPageDesigner.css";
 import Alert from "../Alert/Alert";
 import CoverPhotoPage from "./CoverPhotoPage/CoverPhotoPage";
@@ -38,8 +39,24 @@ function CoverPageDesigner({ onClose }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isCompanyLogoChecked, setIsCompanyLogoChecked] = useState(false);
   const [uploadedLogo, setUploadedLogo] = useState(null);
-  const [coverPhotoHeight, setCoverPhotoHeight] = useState(100);
-  const [coverPhotoWidth, setCoverPhotoWidth] = useState(150);
+  const uploadedImage = localStorage.getItem("uploadedImage");
+  const [imageSize, setImageSize] = useState({ width: 300, height: 300 }); // Initial size
+
+  useEffect(() => {
+    // Optionally, you can retrieve saved image size from local storage or a backend service
+    const savedSize = localStorage.getItem("imageSize");
+    if (savedSize) {
+      setImageSize(JSON.parse(savedSize));
+    }
+  }, []);
+  const removeCompanyLogo = () => {
+    setCompanyLogo(null);
+  };
+  const handleResize = (event, { element, size }) => {
+    setImageSize(size);
+    // Optionally, save the resized image dimensions to local storage or a backend service
+    localStorage.setItem("imageSize", JSON.stringify(size));
+  };
   //alert
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
@@ -55,7 +72,7 @@ function CoverPageDesigner({ onClose }) {
     "Cover Photo",
     "Company Information",
     "Agent Information",
-    "Company Logo",
+    // "Company Logo",
     // "Page Borders",
   ]); // State to track checked checkboxes
   useEffect(() => {
@@ -286,16 +303,9 @@ function CoverPageDesigner({ onClose }) {
       case "Inspection Details":
         return <InspectionDetails />;
       case "Cover Photo":
-        return (
-          <CoverPhotoPage
-            height={coverPhotoHeight}
-            width={coverPhotoWidth}
-            onHeightChange={(height) => setCoverPhotoHeight(height)}
-            onWidthChange={(width) => setCoverPhotoWidth(width)}
-          />
-        );
-      case "Company Logo":
-        return <CheckboxContent2 />;
+        return <CoverPhotoPage />;
+      // case "Company Logo":
+      //   return <CheckboxContent2 />;
       case "Company Information":
         return <CompanyInfo />;
       case "Agent Information":
@@ -402,9 +412,61 @@ function CoverPageDesigner({ onClose }) {
       "Cover Photo",
       "Company Information",
       "Agent Information",
-      "Company Logo",
+      // "Company Logo",
       "Page Borders",
     ]);
+  };
+
+  const [companyLogo, setCompanyLogo] = useState(null);
+  const logoInputRef = useRef(null); // Reference for logo file input
+
+  const handleAddCompanyLogo = () => {
+    logoInputRef.current.click();
+  };
+
+  const handleCompanyLogoUpload = (event) => {
+    const file = event.target.files[0]; // Get the selected file
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file); // Convert the file to a data URL
+      reader.onloadend = () => {
+        const newImage = {
+          id: `logo_${new Date().getTime()}`,
+          src: reader.result, // Use the data URL as image source
+          height: "10em", // You can set default height and width here
+          width: "100%",
+        };
+        setCompanyLogo(newImage);
+      };
+    }
+  };
+  const renderCompanyLogo = () => {
+    if (companyLogo) {
+      return (
+        <ResizableBox
+          width={imageSize.width}
+          height={imageSize.height}
+          minConstraints={[100, 100]} // Minimum size
+          maxConstraints={[800, 800]} // Maximum size
+          onResize={handleResize}
+          resizeHandles={["se"]} // Only allow resizing from the bottom right corner
+        >
+          <img
+            src={companyLogo.src}
+            alt="Company Logo"
+            // style={{ height: companyLogo.height, width: companyLogo.width }}
+            style={{ width: "100%", height: "100%" }}
+            className="company-logo-image"
+          />
+        </ResizableBox>
+      );
+    } else {
+      return (
+        <p className="text-center m-auto w-[11em] h-[7em] border-2 border-black flex items-center justify-center">
+          Company Logo
+        </p>
+      );
+    }
   };
 
   return (
@@ -470,7 +532,7 @@ function CoverPageDesigner({ onClose }) {
                         />
                         Company Information
                       </label>
-                      <label className="flex items-center gap-2">
+                      {/* <label className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           checked={isCompanyLogoChecked}
@@ -486,7 +548,7 @@ function CoverPageDesigner({ onClose }) {
                         ref={fileInputRef}
                         style={{ display: "none" }}
                         onChange={handleImageUpload}
-                      />
+                      /> */}
                       {/* <CheckboxContent2 uploadedLogo={uploadedLogo} /> */}
                       <label className="flex items-center gap-2">
                         <input
@@ -598,6 +660,12 @@ function CoverPageDesigner({ onClose }) {
                 <div className="contains-bottom-section-with-buttons-design-cover-page">
                   <div className="buttons-with-apply-export-import-discard-changes-apply">
                     <button
+                      onClick={handleAddCompanyLogo}
+                      className="button-for-footer-for-changes-in-cover-page"
+                    >
+                      Add Company Logo
+                    </button>
+                    <button
                       className="button-for-footer-for-changes-in-cover-page"
                       onClick={handleRemovePhoto}
                     >
@@ -623,6 +691,19 @@ function CoverPageDesigner({ onClose }) {
                       </section>
                     </div> */}
                     <button
+                      onClick={removeCompanyLogo}
+                      className="button-for-footer-for-changes-in-cover-page"
+                    >
+                      Remove Company Logo
+                    </button>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={logoInputRef}
+                      style={{ display: "none" }}
+                      onChange={handleCompanyLogoUpload}
+                    />
+                    <button
                       onClick={exportStateSave}
                       className="button-for-footer-for-changes-in-cover-page"
                     >
@@ -646,9 +727,9 @@ function CoverPageDesigner({ onClose }) {
                     >
                       Discard <br /> Changes
                     </button>
-                    {addedImages.map(({ id, height, width }) => (
+                    {/* {addedImages.map(({ id, height, width }) => (
                       <div key={id} className="image-adjustment-container">
-                        <p>Resize the Image</p>
+                        <p className="font-bold">Resize the Logo(in pxl):</p>
                         <div className="flex gap-2 pb-1">
                           <span>Height:</span>
                           <input
@@ -688,7 +769,7 @@ function CoverPageDesigner({ onClose }) {
                           />
                         </div>
                       </div>
-                    ))}
+                    ))} */}
                   </div>
                 </div>
               </fieldset>
@@ -724,13 +805,12 @@ function CoverPageDesigner({ onClose }) {
                 }`}
               >
                 {/* Render editable text elements */}
-
                 {checkedCheckboxes.map((label, index) => (
                   <div key={index} className="draggableeeee cursor-pointer">
                     <div>{renderCheckboxContent(label)}</div>
                   </div>
                 ))}
-                {addedImages.map(({ id, src, height, width }) => (
+                {/* {addedImages.map(({ id, src, height, width }) => (
                   <div key={id} className="draggableeeee">
                     <div>
                       <img
@@ -740,7 +820,10 @@ function CoverPageDesigner({ onClose }) {
                       />
                     </div>
                   </div>
-                ))}
+                ))} */}
+                <div className="company-logo-section m-auto justify-center text-center items-center flex">
+                  {renderCompanyLogo()}
+                </div>
               </div>
             </div>
           </div>

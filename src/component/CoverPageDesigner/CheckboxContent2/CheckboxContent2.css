@@ -9,3 +9,17 @@
   margin: auto;
   /* margin-top: 55%; */
 }
+
+.content-for-the-company-logo-check-box .react-resizable {
+  position: relative;
+}
+
+.content-for-the-company-logo-check-box .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  cursor: se-resize;
+}

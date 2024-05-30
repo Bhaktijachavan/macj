@@ -1,11 +1,11 @@
 .content-for-the-cover-photo-check-box {
-  border: 3px solid black;
+  border: 1px solid black;
   justify-content: center;
   text-align: center;
   /* font-size: 20px; */
   font-weight: bold;
-  width: 24em;
-  height: 15em;
+  /* width: 24em;
+  height: 15em; */
   align-items: center;
   display: flex;
   margin: auto;
@@ -14,4 +14,18 @@
 .content-for-the-cover-photo-check-box-image-height-width {
   max-width: 24em;
   height: 15em;
+}
+
+.content-for-the-cover-photo-check-box .react-resizable {
+  position: relative;
+}
+
+.content-for-the-cover-photo-check-box .react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  cursor: se-resize;
 }
