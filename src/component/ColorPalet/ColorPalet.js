@@ -202,6 +202,7 @@ const ColorPalette = ({ onClose }) => {
       JSON.parse(localStorage.getItem("extractedImages")) || []; // Provide a fallback value if extractedImages is null
     // Fetch menu data from localStorage
     const menuData = localStorage.getItem("menuData");
+    // console.log("menuData", menuData);
 
     if (content) {
       // Modify the content to include border, page heading, and adjust page height
@@ -224,7 +225,7 @@ const ColorPalette = ({ onClose }) => {
           <p style="text-align: center; font-size: 35px; font-weight: 30px; margin-top: 25px ">Report Introduction</p>
        
           <p style="font-size: 15px; text-align: justify; padding: 10px 20px 0 20px">
-              ${generateLoremIpsum()}
+              ${reportIntroduction()}
           </p>
           <div style = "display:flex">
           <img src="${Icon2}" style="width: 50px; height: 50px; margin-left:20px;" />
@@ -328,328 +329,42 @@ const ColorPalette = ({ onClose }) => {
           addPageHeader();
           addPageBorder();
 
-          // pdf.text("Table of Contents", 10, 10);
-          // // Add table for Table of Contents
-
-          // addTableOfContents(pdf, JSON.parse(menuData));
-
-          // pdf.text("Damage Panel Data", 10, 10);
-          // addSummaryTable(pdf, JSON.parse(menuData));
-          let imageURL; // Declare imageURL outside of the if block
-          let imageIndex = 0; // Keep track of the current image index
-          const coverphotoImageData = JSON.parse(
-            localStorage.getItem("coverphotoImage")
-          );
-          console.log("coverphotoImageData", coverphotoImageData);
-          const damageDataString = localStorage.getItem("DamageData") || "{}";
-          console.log("damageDataString", damageDataString);
-          // const selectionDataString = localStorage.getItem("SelectionData");
-          // console.log("selectionDataString", selectionDataString);
-
-          if (coverphotoImageData && damageDataString) {
+          if (modifiedContent) {
             try {
+              //Adding table of contents
               pdf.addPage();
               addPageHeader();
               addPageBorder();
               addTableOfContents(pdf, JSON.parse(menuData));
               addPageBorder();
               addPageHeader();
-
+              // adding subname,tabname,images and all other data
               pdf.addPage();
+              addPageHeader();
               addPageBorder();
-              const damageData = JSON.parse(damageDataString);
-              const imageKeys = Object.keys(coverphotoImageData);
-
-              function displayDamageData(damageObject, startY) {
-                // Set initial Y position
-                let currentY = startY;
-                const lineSpacing = 5; // Fixed spacing between each text block
-
-                // Display description
-                const descriptionText = `Description: ${
-                  damageObject.description || ""
-                }`;
-                const descriptionLines = pdf.splitTextToSize(
-                  descriptionText,
-                  180
-                ); // Adjust width as needed
-                const descriptionHeight = descriptionLines.reduce(
-                  (acc, line) => acc + pdf.getTextDimensions(line).h,
-                  0
-                );
-                pdf.text(10, currentY, descriptionLines);
-                currentY += descriptionHeight + lineSpacing;
-                const ratingText = damageObject.rating;
-                // console.log("ratings", ratingText);
-                const ratingValue = `Ratings : ${Object.values(ratingText)}`;
-                // console.log("ratingValue", ratingValue);
-                const ratingLines = pdf.splitTextToSize(ratingValue, 180); // Adjust width as needed
-                const ratingHeight = ratingLines.reduce(
-                  (acc, line) => acc + pdf.getTextDimensions(line).h,
-                  0
-                );
-                pdf.text(10, currentY, ratingLines);
-                currentY += ratingHeight + lineSpacing;
-                // Add fixed spacing after rating
-                // Display materials in red text
-                const materialsText = `Materials: ${
-                  damageObject.Damage1red || ""
-                }`;
-                const materialsLines = pdf.splitTextToSize(materialsText, 180); // Adjust width as needed
-                const materialsHeight = materialsLines.reduce(
-                  (acc, line) => acc + pdf.getTextDimensions(line).h,
-                  0
-                );
-                pdf.setTextColor(255, 0, 0); // Set text color to red
-                pdf.text(10, currentY, materialsLines);
-                pdf.setTextColor(0); // Reset text color to black
-                currentY += materialsHeight + lineSpacing; // Add fixed spacing after materials
-
-                // Display observation
-                const observationText = `Observation: ${
-                  damageObject.Damage1black || ""
-                }`;
-                const observationLines = pdf.splitTextToSize(
-                  observationText,
-                  180
-                ); // Adjust width as needed
-                const observationHeight = observationLines.reduce(
-                  (acc, line) => acc + pdf.getTextDimensions(line).h,
-                  0
-                );
-                pdf.text(10, currentY, observationLines);
-                currentY += observationHeight + lineSpacing; // Add fixed spacing after observation
-
-                // Return the updated Y position
-                return currentY;
-              }
-
-              // Iterate through each damage object in damageData
-
-              Object.keys(damageData).forEach((key, index) => {
-                const damageObject = damageData[key];
-                const currentImageKey = imageKeys[index]; // Get corresponding image key
-
-                // Add a new page before adding content for each set of data
-                if (index > 0) {
-                  pdf.addPage();
-                  addPageBorder();
-                  addPageHeader();
-                }
-
-                // Display damage data
-                // Initial Y position for damage data
-                let startX = 10;
-                let startY = 45;
-                let imagesPerPage = 0;
-                const maxImagesPerPage = 4;
-                const imageWidth = 70;
-                const imageHeight = 60;
-                const verticalSpacing = 80; // Vertical spacing between images
-
-                // Calculate the height of the damage data section
-                let damageDataHeight = displayDamageData(damageObject, startY);
-
-                // Add padding below the damage data section
-                startY += damageDataHeight + 20;
-
-                let subName = ""; // Variable to store the current subname
-                let tabName = ""; // Variable to store the current tabname
-
-                if (coverphotoImageData[currentImageKey]) {
-                  // Iterate over each image data
-                  coverphotoImageData[currentImageKey].forEach(
-                    (imageData, imgIndex) => {
-                      let selectedSelectionData = [];
-                      // Check if subname or tabname has changed
-                      if (
-                        subName !== imageData.subnames ||
-                        tabName !== imageData.NewTabs
-                      ) {
-                        subName = imageData.subnames; // Update subname
-                        tabName = imageData.NewTabs; // Update tabname
-
-                        // Draw subname and tabname text
-                        const textColor = "#000"; // Black text color
-                        const bgColor = "#B4B4B8"; // Light gray background color
-                        const originalFontSize = pdf.internal.getFontSize(); // Get the original font size
-
-                        // Set the desired font size for the specific text
-                        const fontSize = 20; // Adjust font size as needed
-
-                        // Get text width and height
-                        const textWidth =
-                          (pdf.getStringUnitWidth(imageData.subnames) *
-                            fontSize) /
-                          pdf.internal.scaleFactor;
-                        const textHeight = fontSize;
-
-                        // Draw background rectangle
-                        pdf.setFillColor(bgColor);
-                        pdf.rect(2, 17, textWidth + 176, 8, "F"); // Adjust padding as needed
-
-                        // Add text on top of the background with the desired font size
-                        pdf.setTextColor(textColor);
-                        pdf.setFontSize(fontSize);
-                        pdf.text(subName, 100, 14);
-                        pdf.text(tabName, 5, 23);
-                        // Reset font size back to its original value
-                        pdf.setFontSize(originalFontSize);
-
-                        const menuDataa = JSON.parse(
-                          localStorage.getItem("menuData") || "{}"
-                        );
-                        const selectionDataString =
-                          localStorage.getItem("SelectionData") || "{}";
-                        const Selection = JSON.parse(selectionDataString);
-
-                        Object.keys(Selection).forEach((key) => {
-                          const Selectionkey = key.replace("_s1", ""); // Remove the '_s1' suffix from the key
-                          const SelectionObject = Selection[key];
-                          const SelectionData = SelectionObject.selectionText;
-                          // console.log("Selectionkey", Selectionkey);
-                          // console.log("SelectionData", SelectionData);
-
-                          for (const key in menuDataa) {
-                            const menuItem = menuDataa[key];
-                            const subnameid = menuItem.subitems;
-                            const subNames = subnameid.map(
-                              (item) => item.subName
-                            );
-                            console.log("SubNames:", subNames);
-
-                            const ids = subnameid.map((item) => item.id);
-                            const subdetails = menuItem.subdetails;
-                            const subdetailKeys = Object.keys(subdetails);
-
-                            console.log("subdetails", subdetails);
-                            const keys = Object.values(subdetails).flatMap(
-                              (obj) => Object.keys(obj)
-                            );
-
-                            if (subdetails) {
-                              for (
-                                let i = 0;
-                                i < Math.min(ids.length, subdetailKeys.length);
-                                i++
-                              ) {
-                                const subdetailKey = subdetailKeys[i];
-                                const subdetailValue = subdetails[subdetailKey];
-                                const id = ids[i];
-
-                                for (const abc in subdetailValue) {
-                                  const tabvalue = subdetailValue[abc].tabname;
-                                  console.log("tabvalue", tabvalue);
-                                  if (
-                                    keys.includes(Selectionkey) &&
-                                    subNames.includes(subName)
-                                  ) {
-                                    selectedSelectionData.push(SelectionData);
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        });
-                        if (selectedSelectionData.length > 0) {
-                          // Remove duplicates using a Set
-                          const uniqueSelectionData = [
-                            ...new Set(selectedSelectionData),
-                          ];
-                          const formattedSelectionData =
-                            uniqueSelectionData.join(", "); // Join unique SelectionData items with commas
-                          pdf.text(
-                            `Materials: ${formattedSelectionData}`,
-                            10,
-                            40
-                          ); // Add formattedSelectionData to the PDF
-                        }
-
-                        // Predefined summary name
-                        const selectedTextWithSummary = `Summary: ${
-                          imageData.selectedText || ""
-                        }`;
-
-                        pdf.textWithLink(selectedTextWithSummary, 10, 31, {
-                          maxWidth: 200, // Adjust the maxWidth according to your page width
-                          align: "left",
-                        });
-
-                        // startY = 100; // Reset startY for the images section
-                        imagesPerPage = 0; // Reset images count for the new page
-                      }
-
-                      // Add image to the PDF
-                      pdf.addImage(
-                        imageData.url,
-                        "JPEG",
-                        startX + 15,
-                        startY - 60,
-                        imageWidth,
-                        imageHeight
-                      );
-                      const maxCaptionWidth = imageWidth;
-                      const lines = pdf.splitTextToSize(
-                        imageData.caption,
-                        maxCaptionWidth
-                      );
-                      const captionHeight = lines.length - 5;
-
-                      // Add caption
-                      pdf.text(startX + 17, startY + 5 - captionHeight, lines);
-
-                      // Move to the next position
-                      startX += imageWidth + 10; // Add some padding between images
-
-                      // Check if the images exceed the page width
-                      if (
-                        startX + imageWidth >
-                        pdf.internal.pageSize.width - 10
-                      ) {
-                        startX = 10; // Reset X position to start a new row
-                        startY += verticalSpacing; // Increase Y position for the next row and caption
-                      }
-
-                      imagesPerPage++; // Increment images count for the current page
-
-                      // Check if the maximum images per page is reached
-                      if (imagesPerPage >= maxImagesPerPage) {
-                        pdf.addPage(); // Add a new page
-                        addPageBorder();
-                        addPageHeader();
-
-                        startY = 100; // Reset startY for the images section
-                        imagesPerPage = 0; // Reset images count for the new page
-                      }
-                    }
-                  );
-                } else {
-                  console.warn(
-                    `No image data found for key: ${currentImageKey}`
-                  );
-                }
-              });
-
+              mainData(pdf);
+              addPageHeader();
+              addPageBorder();
+              // adding summary table
               pdf.addPage();
-
               addPageBorder();
               addPageHeader();
               pdf.setFontSize(20);
               pdf.setTextColor(0, 0, 0);
               pdf.text("Report Summary", 80, 30);
-
               addSummaryTable(pdf, JSON.parse(menuData));
               addPageBorder();
               addPageHeader();
+              //adding page number
               const pageCount = pdf.internal.getNumberOfPages();
               for (let i = 2; i <= pageCount; i++) {
                 pdf.setPage(i);
-                pdf.setFontSize(15);
+                pdf.setFontSize(14);
                 pdf.setTextColor(0, 0, 0);
-                pdf.text(`Page ${i - 1} of ${pageCount - 1}`, 178, 293);
+                pdf.text(`Page ${i - 1} of ${pageCount - 1}`, 175, 293);
               }
               // Save the PDF
-              pdf.save("Report.pdf");
+              pdf.save("Home_Inspection.pdf");
 
               console.log("PDF generated successfully.");
             } catch (error) {
@@ -659,15 +374,44 @@ const ColorPalette = ({ onClose }) => {
             console.warn(
               "DamageData or coverphotoImage not found in local storage."
             );
-            pdf.save("Report.pdf");
+            // Save the PDF
+            pdf.save("Home_Inspection.pdf");
           }
         });
     }
   };
 
-  function mergePdfData() {}
+  function reportIntroduction() {
+    const loremIpsum = `
+     
+We appreciate the opportunity to conduct this inspection for you! Please carefully read your entire
+Inspection Report. Call us after you have reviewed your report if you have any question. Remember, when the inspection is completed and the report is delivered , we are still available for any questions you may have .
+<br/>
+<br/>
+Properties being inspected do not "Pass" or "Fail.” - The following report is based on an inspection of
+the visible portion of the structure; Inspection may be limited by vegetation and possessions. Depending  upon the age of property, some items like GFCI outlets may not be installed ;this report will focus on safety  and function ,not current code.This report identifies specific non-code , non-cosmetic concerns that the inspector feels may  need further investigation or repair .
+<br/>
+<br/>
+For your safety and liability purposes, we recommend that licensed contractors evaluate and repair
+any critical concerns and defects. Note that this report is a snapshot in time. We recommend that
+you or your representative carry out a walkthrough inspection to check the condition of the property,
+using this report as a guide.
+<br/>
+<br/>
+Video In Your Report - The inspector may include videos of issues within the report . If you are opening the PDF version of the report make sure you are viewing the PDF in the free Adobe Reader PDF programs . If you're viewing the report as a webpage the videos will play in any browser .Click on any video within the  report to start playing video.
+<br/>
+<br/>
+Throughout the report we utilize icons to make things easier to find and read. Use the legend below to understand each rating icon
+<br/>
+<br/>
 
-  // Function to add Table of Contents
+ 
+
+
+    `;
+
+    return loremIpsum;
+  }
 
   function addTableOfContents(pdf, parsedMenuData) {
     // Set font size and text color
@@ -697,15 +441,6 @@ const ColorPalette = ({ onClose }) => {
 
       // Loop through subitems and add them to the table of contents
       item.subitems.forEach((subitem, subindex) => {
-        // Add text
-        // pdf.text(
-        //   `${subitem.subName}`,
-        //   20, // Adjust horizontal padding
-        //   currentYPosition // Adjust y position
-        // );
-
-        // Update currentYPosition for the next subitem
-        // currentYPosition += 20; // Increase by font size for each new line
         tableData.push([subitem.subName]);
 
         // Increment tabCounter
@@ -744,13 +479,223 @@ const ColorPalette = ({ onClose }) => {
     });
   }
 
+  function mainData(pdf) {
+    const mainData = JSON.parse(localStorage.getItem("menuData") || "{}");
+    const selectionDataString = localStorage.getItem("SelectionData") || "{}";
+    const Selection = JSON.parse(selectionDataString);
+
+    let startY = 35;
+    let prevSubKey = null;
+
+    const pageHeight = pdf.internal.pageSize.height;
+    const marginBottom = 20; // Bottom margin to avoid text getting too close to the page edge
+    const lineHeight = 4.5; // Height of each line
+    const gapBetweenSections = 5; // Gap between sections
+
+    // Function to split and draw text
+    function drawTextBlock(textLines) {
+      const remainingSpace = pageHeight - startY - marginBottom;
+      const blockHeight = textLines.length * lineHeight;
+
+      if (blockHeight <= remainingSpace) {
+        pdf.text(textLines, 10, startY);
+        startY += blockHeight;
+      } else {
+        const linesThatFit = Math.floor(remainingSpace / lineHeight);
+        const currentPageLines = textLines.slice(0, linesThatFit);
+        const nextPageLines = textLines.slice(linesThatFit);
+
+        pdf.text(currentPageLines, 10, startY);
+        pdf.addPage();
+        startY = 50;
+        pdf.text(nextPageLines, 10, startY);
+        startY += nextPageLines.length * lineHeight;
+      }
+      startY += gapBetweenSections;
+    }
+
+    // Fetch image data from local storage
+    const coverphotoImageData = JSON.parse(
+      localStorage.getItem("coverphotoImage") || "{}"
+    );
+    console.log("coverphotoImageData", coverphotoImageData);
+    const imagekeys = Object.keys(coverphotoImageData);
+
+    for (const key in mainData) {
+      const menuItem = mainData[key];
+      const subdetails = menuItem.subdetails;
+
+      for (let key in subdetails) {
+        if (subdetails.hasOwnProperty(key)) {
+          let details = subdetails[key];
+          for (let subKey in details) {
+            if (details.hasOwnProperty(subKey)) {
+              let subdetails = details[subKey];
+              let tabName = subdetails.tabname;
+            }
+          }
+        }
+      }
+    }
+
+    const damageDataString = localStorage.getItem("DamageData") || "{}";
+    const damageData = JSON.parse(damageDataString);
+    Object.keys(damageData).forEach((key, index) => {
+      const damageObject = damageData[key];
+      const damageObjectkey = key.replace("_d1", "").replace("_d2", "");
+
+      for (const mainKey in mainData) {
+        const menuItem = mainData[mainKey];
+        const subdetails = menuItem.subdetails;
+
+        for (const detailKey in subdetails) {
+          if (subdetails.hasOwnProperty(detailKey)) {
+            let details = subdetails[detailKey];
+
+            for (let subKey in details) {
+              if (details.hasOwnProperty(subKey)) {
+                if (damageObjectkey === subKey) {
+                  let subdetailsItem = details[subKey];
+                  let detailSubkey = detailKey;
+                  const subnameid = menuItem.subitems;
+
+                  subnameid.forEach((item) => {
+                    let item_id = item.id;
+                    let item_subName = item.subName;
+
+                    if (detailSubkey == item_id) {
+                      let tabName = subdetailsItem.tabname;
+
+                      if (prevSubKey !== null && prevSubKey !== subKey) {
+                        pdf.addPage();
+                        startY = 50;
+                      }
+                      prevSubKey = subKey;
+
+                      pdf.setTextColor(0, 0, 0);
+                      pdf.setFontSize(20);
+
+                      // Add item_id to PDF
+                      pdf.text(item_subName, 10, startY - 10);
+                      pdf.setFillColor(180, 180, 184);
+                      pdf.rect(9, startY - 6, 194, 8, "F");
+                      pdf.setTextColor(0, 0, 0);
+                      pdf.setFontSize(14);
+
+                      pdf.text(tabName, 10, startY);
+                      startY += 10;
+
+                      // Check for selection data
+                      if (
+                        Selection[`${subKey}_s1`] ||
+                        Selection[`${subKey}_s2`]
+                      ) {
+                        let selectionText =
+                          Selection[`${subKey}_s1`]?.selectionText ||
+                          Selection[`${subKey}_s2`]?.selectionText;
+                        const materialsText = `MATERIALS: ${selectionText}`;
+                        const materialsLines = pdf.splitTextToSize(
+                          materialsText,
+                          194
+                        );
+                        drawTextBlock(materialsLines);
+                      }
+
+                      const ratText = `RATINGS: ${Object.values(
+                        damageObject.rating
+                      ).join(", ")}`;
+                      const descText = `DESCRIPTION: ${damageObject.description}`;
+                      const obsText = `OBSERVATIONS: ${damageObject.Damage1black}`;
+                      const improveText = `IMPROVE: ${damageObject.Damage1red}`;
+                      pdf.setTextColor(0, 0, 0);
+                      pdf.setFontSize(12);
+                      const descLines = pdf.splitTextToSize(descText, 194);
+                      const ratLines = pdf.splitTextToSize(ratText, 194);
+                      const obsLines = pdf.splitTextToSize(obsText, 194);
+                      const improveLines = pdf.splitTextToSize(
+                        improveText,
+                        194
+                      );
+
+                      // Draw DESCRIPTION text block
+                      drawTextBlock(descLines);
+
+                      // Draw RATINGS text block
+                      drawTextBlock(ratLines);
+
+                      // Draw OBSERVATIONS text block
+                      drawTextBlock(obsLines);
+
+                      // Draw IMPROVE text block
+                      pdf.setTextColor(255, 0, 0);
+                      drawTextBlock(improveLines);
+
+                      // Add images above "IMPROVE" text
+                      pdf.setTextColor(0, 0, 0);
+
+                      const imageWidth = 70;
+                      const imageHeight = 60;
+                      let imagesAdded = false;
+
+                      if (coverphotoImageData[subKey]) {
+                        coverphotoImageData[subKey].forEach((imageItem) => {
+                          const remainingSpace =
+                            pageHeight - startY - marginBottom;
+                          const requiredSpace =
+                            imageHeight + lineHeight + gapBetweenSections; // Image height + caption height + gap
+
+                          if (requiredSpace > remainingSpace) {
+                            pdf.addPage();
+                            startY = 50;
+                          }
+
+                          pdf.addImage(
+                            imageItem.url,
+                            "JPEG",
+                            70,
+                            startY,
+                            imageWidth,
+                            imageHeight
+                          );
+                          startY += imageHeight + 4;
+                          const caption = imageItem.caption;
+                          const captionDimensions = pdf.getTextDimensions(
+                            caption,
+                            {
+                              maxWidth: imageWidth,
+                            }
+                          );
+                          const captionHeight = captionDimensions.h;
+
+                          pdf.text(caption, 70, startY, {
+                            maxWidth: imageWidth,
+                          });
+                          startY += captionHeight + 2;
+                          imagesAdded = true;
+                        });
+                      }
+
+                      // Reset text color for the next section
+                      pdf.setTextColor(0, 0, 0);
+
+                      // Add a gap between different items
+                      startY += 20;
+                    }
+                  });
+                }
+              }
+            }
+          }
+        }
+      }
+    });
+  }
   function addSummaryTable(pdf, menuNames) {
     const damageDataStrings = localStorage.getItem("DamageData");
     const damageData = JSON.parse(damageDataStrings || "{}");
     const menuDataa = JSON.parse(localStorage.getItem("menuData") || "{}");
     const tabledata = localStorage.getItem("summarydataString") || "";
-    // pdf.text(tableData, 5, 18);
-    // Calculate the height of the text rendered by pdf.textWithLink()
+
     const textHeight = pdf.getTextDimensions(tabledata, {
       maxWidth: 210, // Adjust the maxWidth according to your page width
       align: "left",
@@ -857,179 +802,6 @@ const ColorPalette = ({ onClose }) => {
     });
   }
 
-  // function SelectionMenudata() {
-  //   const menuDataa = JSON.parse(localStorage.getItem("menuData") || "{}");
-  //   const selectionDataString = localStorage.getItem("SelectionData");
-  //   const Selection = JSON.parse(selectionDataString);
-
-  //   Object.keys(Selection).forEach((key) => {
-  //     const Selectionkey = key.replace("_s1", ""); // Remove the '_s1' suffix from the key
-  //     const SelectionObject = Selection[key];
-  //     const SelectionData = SelectionObject.selectionText;
-  //     console.log("Selectionkey", Selectionkey);
-  //     console.log("SelectionData", SelectionData);
-
-  //     for (const key in menuDataa) {
-  //       const menuItem = menuDataa[key];
-  //       const subnameid = menuItem.subitems;
-  //       const subNames = subnameid.map((item) => item.subName);
-  //       console.log("SubNames:", subNames);
-
-  //       const ids = subnameid.map((item) => item.id);
-  //       const subdetails = menuItem.subdetails;
-  //       const subdetailKeys = Object.keys(subdetails);
-
-  //       console.log("subdetails", subdetails);
-  //       const keys = Object.values(subdetails).flatMap((obj) =>
-  //         Object.keys(obj)
-  //       );
-
-  //       if (subdetails) {
-  //         for (let i = 0; i < Math.min(ids.length, subdetailKeys.length); i++) {
-  //           const subdetailKey = subdetailKeys[i];
-  //           const subdetailValue = subdetails[subdetailKey];
-  //           const id = ids[i];
-
-  //           for (const abc in subdetailValue) {
-  //             const tabvalue = subdetailValue[abc].tabname;
-  //             console.log("tabvalue", tabvalue);
-  //             if (keys.includes(Selectionkey)) {
-  //               console.log("czg", SelectionData);
-  //             }
-  //           }
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
-
-  function displayAdditionalData(
-    pdf,
-    item,
-    index,
-    menuNames,
-    LocalStorageSummaryData,
-    startY
-  ) {
-    const damageData = LocalStorageSummaryData.DamageData;
-    const tableSequenceNumber = index + 1;
-
-    // Iterate through the keys in DamageData
-    for (const key in damageData) {
-      // Check if the key matches the expected pattern
-      if (key.endsWith(`_d${tableSequenceNumber}`)) {
-        const damagePanelData = damageData[key];
-
-        // Display Rating
-        pdf.text(
-          10,
-          startY + 10,
-          `${damagePanelData.rating?.ratingName1 || ""}`
-        );
-
-        // Display Materials (black text and red text)
-        const materialsText = `Materials: 
-          Red Text: `;
-        const redText = damagePanelData.Damage1red || "";
-        pdf.setTextColor(255, 0, 0); // Set text color to red
-        pdf.text(40, startY + 10, redText);
-        pdf.setTextColor(0); // Reset text color to black
-        pdf.text(40, startY + 20, ` ${damagePanelData.Damage1black || ""}`);
-
-        // Description
-        pdf.text(
-          10,
-          startY,
-          `Description: ${damagePanelData.description || ""}`
-        );
-        break; // Exit loop after displaying data for the first matching sequence number
-      }
-    }
-  }
-
-  // Function to generate Lorem Ipsum text
-  function generateLoremIpsum() {
-    const loremIpsum = `
-     
-We appreciate the opportunity to conduct this inspection for you! Please carefully read your entire
-Inspection Report. Call us after you have reviewed your report if you have any question. Remember, when the inspection is completed and the report is delivered , we are still available for any questions you may have .
-<br/>
-<br/>
-Properties being inspected do not "Pass" or "Fail.” - The following report is based on an inspection of
-the visible portion of the structure; Inspection may be limited by vegetation and possessions. Depending  upon the age of property, some items like GFCI outlets may not be installed ;this report will focus on safety  and function ,not current code.This report identifies specific non-code , non-cosmetic concerns that the inspector feels may  need further investigation or repair .
-<br/>
-<br/>
-For your safety and liability purposes, we recommend that licensed contractors evaluate and repair
-any critical concerns and defects. Note that this report is a snapshot in time. We recommend that
-you or your representative carry out a walkthrough inspection to check the condition of the property,
-using this report as a guide.
-<br/>
-<br/>
-Video In Your Report - The inspector may include videos of issues within the report . If you are opening the PDF version of the report make sure you are viewing the PDF in the free Adobe Reader PDF programs . If you're viewing the report as a webpage the videos will play in any browser .Click on any video within the  report to start playing video.
-<br/>
-<br/>
-Throughout the report we utilize icons to make things easier to find and read. Use the legend below to understand each rating icon
-<br/>
-<br/>
-
- 
-
-
-    `;
-
-    return loremIpsum;
-  }
-
-  // Example: Generate Lorem Ipsum with a single block
-  const singleLoremIpsum = generateLoremIpsum();
-  // console.log(singleLoremIpsum);
-
-  // Function to strip HTML tags and convert to plain text
-  function stripHtml(html) {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    return doc.body.textContent || "";
-  }
-
-  // Function to convert base64 to Blob
-  function base64toBlob(base64data, contentType) {
-    const sliceSize = 512;
-    const byteCharacters = atob(base64data);
-    const byteArrays = [];
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-    return new Blob(byteArrays, { type: contentType });
-  }
-
-  // Function to strip HTML tags and convert to plain text
-  function stripHtml(html) {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    return doc.body.textContent || "";
-  }
-
-  // Function to convert base64 to Blob
-  function base64toBlob(base64data, contentType) {
-    const sliceSize = 512;
-    const byteCharacters = atob(base64data);
-    const byteArrays = [];
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-    return new Blob(byteArrays, { type: contentType });
-  }
-
   useEffect(() => {
     getDataLocal();
   }, []);
@@ -1039,17 +811,6 @@ Throughout the report we utilize icons to make things easier to find and read. U
     const reportData = JSON.parse(data);
     console.log("report data ", reportData);
     setLocalStorageData(reportData);
-  };
-  const ItemComponent = ({ item }) => {
-    const { id, name, subitems, subdetails } = item;
-    return (
-      <div>
-        <p>ID: {id}</p>
-        <p>Name: {name}</p>
-        <p>Subitems: {subitems.join(", ")}</p>
-        <p>Subdetails: {JSON.stringify(subdetails)}</p>
-      </div>
-    );
   };
 
   return (
@@ -1330,7 +1091,7 @@ w-full px-4 bg-white border border-black"
                       onClick={exportCoverPageToPDF}
                     >
                       Generate PDF & Close
-                    </button>{" "}
+                    </button>
                   </div>
                 </div>
               </div>
