@@ -13,78 +13,6 @@ import Alert from "../Alert/Alert";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 const SubMenuInfoReport = () => {
-  const [isAddDocumentPopupOpen, setAddDocumentPopupOpen] = useState(false);
-  const [documents, setDocuments] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [showAlert, setShowAlert] = useState({
-    showAlert: false,
-    message: "",
-    color: undefined,
-  });
-
-  // Event handler for opening the "Add New Document" popup
-  const handleAddDocumentClick = () => {
-    setAddDocumentPopupOpen(true);
-  };
-  // Event handler for closing the "Add New Document" popup
-  const handleAddDocumentClose = () => {
-    setAddDocumentPopupOpen(false);
-  };
-
-  function handleAddDocument() {
-    const newDocumentNameInput = document.getElementById("newDocumentName");
-    const newDocumentName = newDocumentNameInput.value.trim();
-
-    if (!newDocumentName) {
-      return; // Handle empty input gracefully (optional)
-    }
-
-    // Append the document name with .hdf extension
-    const newDocument = `${newDocumentName}.hdf`;
-
-    // Retrieve the existing documents from local storage
-    const existingDocuments =
-      JSON.parse(localStorage.getItem("documents")) || [];
-
-    // Add the new document to the array
-    const updatedDocuments = [...existingDocuments, newDocument];
-
-    // Update the documents state with the new document
-    setDocuments(updatedDocuments);
-
-    // Save the updated array back to local storage
-    localStorage.setItem("documents", JSON.stringify(updatedDocuments));
-
-    // Clear the input field for the next document
-    newDocumentNameInput.value = "";
-  }
-
-  // State to manage the selected option in the dropdown
-  // Event handler for dropdown change
-  // Event handler for button 1 click
-  const handleButton1Click = () => {
-    console.log(`Button 1 clicked with selected option: ${selectedOption}`);
-    // Add your custom logic here
-  };
-  // Event handler for button 2 click
-  const handleButton2Click = () => {
-    // Remove document from "tabledata" in localStorage
-    localStorage.removeItem("summarydataString");
-    setShowAlert({
-      showAlert: true,
-      message: "Document removed successfully.",
-      color: "green",
-    });
-    setTimeout(() => {
-      setShowAlert({
-        showAlert: false,
-        message: "",
-      }); // Hide the alert after 3 seconds
-    }, 4000);
-
-    // Add your custom logic here
-  };
-
   // text editor
   const [font, setFont] = useState("Arial");
   const [fontSize, setFontSize] = useState(16);
@@ -102,6 +30,24 @@ const SubMenuInfoReport = () => {
   const [findText, setFindText] = useState("");
   const [caseSensitive, setCaseSensitive] = useState(false);
   const [startAtTop, setStartAtTop] = useState(false);
+  const [isAddDocumentPopupOpen, setAddDocumentPopupOpen] = useState(false);
+  const [documents, setDocuments] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("");
+
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+    color: undefined,
+  });
+  const [selectedSubmenu, setSelectedSubmenu] = useState("");
+  const [submenus, setSubmenus] = useState([]);
+  const [selectedMenuId, setSelectedMenuId] = useState("");
+  const [menuData, setMenuData] = useState({});
+  const [selectedDamage, setSelectedDamage] = useState({});
+  const [documentTexts, setDocumentTexts] = useState({});
+  const [isChecked, setIsChecked] = useState(false);
+  const [details, setDetails] = useState(null);
+
   const handleFind = () => {
     setShowFindPopup(true);
   };
@@ -118,11 +64,6 @@ const SubMenuInfoReport = () => {
     setStartAtTop(!startAtTop);
   };
   const handleFindSubmit = () => {
-    // Implement your logic for finding text
-    // You can use the values of findText, caseSensitive, and startAtTop
-    // to perform the find operation
-    // ...
-    // Close the Find popup after finding
     setShowFindPopup(false);
   };
   useEffect(() => {
@@ -208,14 +149,49 @@ const SubMenuInfoReport = () => {
     console.log("Selected file:", event.target.files[0]);
   };
 
-  const [selectedSubmenu, setSelectedSubmenu] = useState("");
-  const [submenus, setSubmenus] = useState([]);
-  const [selectedMenuId, setSelectedMenuId] = useState("");
-  const [menuData, setMenuData] = useState({});
-  const [selectedDamage, setSelectedDamage] = useState({});
-  const [documentTexts, setDocumentTexts] = useState({});
+  //==============================================================================================================================================================
 
-  const tabNames = [];
+  //code to add documetns
+
+  const handleAddDocumentClick = () => {
+    setAddDocumentPopupOpen(true);
+  };
+  // Event handler for closing the "Add New Document" popup
+  const handleAddDocumentClose = () => {
+    setAddDocumentPopupOpen(false);
+  };
+
+  function handleAddDocument() {
+    const newDocumentNameInput = document.getElementById("newDocumentName");
+    const newDocumentName = newDocumentNameInput.value.trim();
+
+    if (!newDocumentName) {
+      return; // Handle empty input gracefully (optional)
+    }
+
+    // Append the document name with .hdf extension
+    const newDocument = `${newDocumentName}.hdf`;
+
+    // Retrieve the existing documents from local storage
+    const existingDocuments =
+      JSON.parse(localStorage.getItem("documents")) || [];
+
+    // Add the new document to the array
+    const updatedDocuments = [...existingDocuments, newDocument];
+
+    // Update the documents state with the new document
+    setDocuments(updatedDocuments);
+
+    // Save the updated array back to local storage
+    localStorage.setItem("documents", JSON.stringify(updatedDocuments));
+
+    // Clear the input field for the next document
+    newDocumentNameInput.value = "";
+  }
+
+  // code to remove document
+
+  // code to add submenu names
 
   useEffect(() => {
     // Step 1: Retrieve menuData from localStorage
@@ -258,27 +234,9 @@ const SubMenuInfoReport = () => {
       }
     }
 
-    console.log(tabNames);
+    // console.log(tabNames);
     setSubmenus(tabNames);
-
-    const extractedSubmenus = [];
-    Object.keys(parsedMenuData).forEach((key) => {
-      if (parsedMenuData[key].subitems) {
-        parsedMenuData[key].subitems.forEach((sub) => {
-          extractedSubmenus.push(sub.subName);
-        });
-      }
-    });
-
-    // Update submenus state with extracted subNames
-    // setSubmenus(extractedSubmenus);
-
-    // Optionally, select the first submenu or an empty string initially
-    const defaultSelectedSubmenu = submenus.length > 0 ? submenus[0] : "";
-    setSelectedSubmenu(defaultSelectedSubmenu);
   }, []);
-
-  //==============================================================================================================================================================
 
   useEffect(() => {
     // Load initial data from localStorage
@@ -313,13 +271,12 @@ const SubMenuInfoReport = () => {
         for (let key in storedData) {
           const storedDatakey = storedData[key];
           const selectedOpt = storedDatakey.selectedOption;
-          const selectedText = storedDatakey.selectedText;
           if (selectedOption === selectedOpt) {
-            const documentKey = `${selectedDamage}_${selectedOption}`;
+            const documentKey = selectedDamage;
             const savedData =
               JSON.parse(localStorage.getItem("CreateEditText")) || {};
             savedData[documentKey] = {
-              key: documentKey,
+              key: selectedOption,
               text: text,
             };
             localStorage.setItem("CreateEditText", JSON.stringify(savedData));
@@ -327,7 +284,7 @@ const SubMenuInfoReport = () => {
         }
       }
     }
-  }, [selectedDamage, selectedOption]);
+  }, [selectedDamage, documentTexts]);
 
   useEffect(() => {
     // Retrieve documents from local storage on component mount
@@ -348,6 +305,85 @@ const SubMenuInfoReport = () => {
       }));
     }
   }, [text, selectedOption]);
+
+  useEffect(() => {
+    const createEditCheck = isChecked;
+    // console.log("createEditCheck", createEditCheck);
+    localStorage.setItem("checkbox", createEditCheck);
+  }, [isChecked]);
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
+
+  const tabNames = [];
+  useEffect(() => {
+    // Define your selectedOption or retrieve it from somewhere
+
+    // Retrieve and parse menuData from localStorage
+    const menuDataString = localStorage.getItem("menuData");
+    if (!menuDataString) {
+      console.error("menuData not found in localStorage");
+      return;
+    }
+    const parsedMenuData = JSON.parse(menuDataString);
+
+    // Iterate over the keys of parsedMenuData
+    for (const key in parsedMenuData) {
+      const menuItem = parsedMenuData[key];
+      const subdetails = menuItem.subdetails;
+      for (const subKey in subdetails) {
+        const subdetail = subdetails[subKey];
+        for (const subsubKey in subdetail) {
+          const subKeyData = subdetail[subsubKey];
+          const damage1 = subKeyData.damage1;
+          const damage2 = subKeyData.damage2;
+          const selection1 = subKeyData.selection1;
+          const selection2 = subKeyData.selection2;
+
+          // Store the properties in an array
+
+          const dataArray = [
+            subKeyData.Damage1Data,
+            subKeyData.Damage2Data,
+            subKeyData.Selection1Data,
+            subKeyData.Selection2Data,
+          ];
+
+          // Iterate over dataArray
+          dataArray.forEach((datakey) => {
+            const storedDataString = localStorage.getItem("CreateEditText");
+            if (!storedDataString) {
+              console.error("CreateEditText not found in localStorage");
+              return;
+            }
+            const storedData = JSON.parse(storedDataString);
+
+            Object.keys(storedData).forEach((key) => {
+              const storedDatakey = storedData[key];
+              const selectedOpt = storedDatakey.key;
+
+              if (selectedOption === selectedOpt && key === datakey) {
+                setDetails({
+                  damage1,
+                  damage2,
+                  selection1,
+                  selection2,
+                });
+              }
+              if (
+                selectedOption === selectedOpt &&
+                key === "Table of Content"
+              ) {
+                setDetails({ details, toc: true }); //
+              } else if (selectedOption === selectedOpt && key === "Summary") {
+                setDetails({ details, summary: true });
+              }
+            });
+          });
+        }
+      }
+    }
+  }, [selectedOption]);
   function handleDropdownChange(event) {
     const selectedOption = event.target.value;
     // console.log("selected doc", selectedOption); // Example action
@@ -376,7 +412,40 @@ const SubMenuInfoReport = () => {
           const subdetail = subdetails[subKey];
           for (const subkey in subdetail) {
             const subKeyData = subdetail[subkey];
+            const damage1 = subKeyData.Damage1Data;
+            const damage2 = subKeyData.Damage2Data;
+            const selection1 = subKeyData.Selection1Data;
+            const selection2 = subKeyData.Selection2Data;
 
+            // Store the properties in an array
+            const dataArray = [
+              subKeyData.Damage1Data,
+              subKeyData.Damage2Data,
+              subKeyData.Selection1Data,
+              subKeyData.Selection2Data,
+            ];
+            let datakey = "";
+            Object.keys(dataArray).forEach((key) => {
+              datakey = dataArray[key];
+            });
+
+            const storedData = JSON.parse(
+              localStorage.getItem("CreateEditText")
+            );
+            Object.keys(storedData).forEach((key) => {
+              const keys = key;
+              const storedDatakey = storedData[key];
+              const selectedOpt = storedDatakey.key;
+
+              if (selectedOption === selectedOpt) {
+                if (keys === datakey) {
+                  console.log(keys);
+                  console.log(datakey);
+                  console.log(selectedOption);
+                  console.log(storedDatakey.text);
+                }
+              }
+            });
             if (
               subKeyData &&
               (subKeyData.damage1 === selectedSubmenu ||
@@ -404,9 +473,72 @@ const SubMenuInfoReport = () => {
       }
     }
 
-    console.log("submenu:", selectedMenu);
+    // console.log("submenu:", selectedMenu);
     setSelectedDamage(selectedMenu);
-    console.log("Selected submenu:", selectedSubmenu);
+    // console.log("Selected submenu:", selectedSubmenu);
+  };
+  const handleRemoveDocument = () => {
+    if (!selectedOption) {
+      return; // Handle no selected document case gracefully
+    }
+
+    // Retrieve the existing documents from local storage
+    const existingDocuments =
+      JSON.parse(localStorage.getItem("documents")) || [];
+
+    // Remove the selected document from the array
+    const documentToRemove = selectedOption;
+    const updatedDocuments = existingDocuments.filter(
+      (doc) => doc !== documentToRemove
+    );
+
+    // Update the documents state with the new list
+    setDocuments(updatedDocuments);
+
+    // Save the updated array back to local storage
+    localStorage.setItem("documents", JSON.stringify(updatedDocuments));
+
+    // Retrieve the stored CreateEditData from local storage
+    const createEditData =
+      JSON.parse(localStorage.getItem("CreateEditData")) || [];
+    const updatedCreateEditData = createEditData.filter(
+      (doc) => doc.selectedOption !== selectedOption
+    );
+
+    // Save the updated CreateEditData array back to local storage
+    localStorage.setItem(
+      "CreateEditData",
+      JSON.stringify(updatedCreateEditData)
+    );
+
+    // Retrieve the stored CreateEditText from local storage
+    const createEditText =
+      JSON.parse(localStorage.getItem("CreateEditText")) || {};
+    const updatedCreateEditText = Object.keys(createEditText).reduce(
+      (acc, key) => {
+        if (createEditText[key].key !== documentToRemove) {
+          acc[key] = createEditText[key];
+        }
+        return acc;
+      },
+      {}
+    );
+
+    // Save the updated CreateEditText object back to local storage
+    localStorage.setItem(
+      "CreateEditText",
+      JSON.stringify(updatedCreateEditText)
+    );
+
+    // Remove the text of the selected document from documentTexts state
+    setDocumentTexts((prevTexts) => {
+      const { [selectedOption]: removedText, ...newTexts } = prevTexts;
+      return newTexts;
+    });
+
+    // Clear the text state and selectedOption
+    setText("");
+    setSelectedOption("");
   };
 
   useEffect(() => {
@@ -414,72 +546,6 @@ const SubMenuInfoReport = () => {
     const storedMenuData = JSON.parse(localStorage.getItem("menuData")) || {};
     setMenuData(storedMenuData);
   }, []);
-  const handleSave = () => {
-    const selectedOptionId = generateUniqueId(); // Generate a unique ID
-    const textareaValue = textAreaRef.current.value; // Access value from textarea ref
-    console.log("textareaValue", textareaValue);
-
-    // If no submenu is selected, store textareaValue directly as tabledata in localStorage
-    if (!selectedSubmenu) {
-      localStorage.setItem("summarydataString", textareaValue);
-      setShowAlert({
-        showAlert: true,
-        message: "Text saved successfully",
-        color: "green",
-      });
-      setTimeout(() => {
-        setShowAlert({
-          showAlert: false,
-          message: "",
-        }); // Hide the alert after 3 seconds
-      }, 4000);
-      return;
-    }
-
-    // Create new summary data object
-    const newSummaryData = {
-      [selectedOptionId]: {
-        textareaValue,
-      },
-    };
-
-    // Update menuData with the new summary data under the selected submenu
-    const updatedMenuData = {
-      ...menuData,
-      [selectedSubmenu]: {
-        ...menuData[selectedSubmenu], // Preserve existing subMenu data
-        SummaryData: {
-          ...menuData[selectedSubmenu]?.SummaryData, // Merge existing SummaryData
-          ...newSummaryData,
-        },
-      },
-    };
-
-    setMenuData(updatedMenuData);
-
-    // Save updated menuData to localStorage
-    localStorage.setItem("menuData", JSON.stringify(updatedMenuData));
-
-    setShowAlert({
-      showAlert: true,
-      message: "Data saved succesfully ",
-      color: "green",
-    });
-    setTimeout(() => {
-      setShowAlert({
-        showAlert: false,
-        message: "",
-      }); // Hide the alert after 3 seconds
-    }, 4000);
-
-    // Handle optional download logic (commented out)
-    // ... code to download JSON as a file ...
-  };
-
-  // Function to generate a unique ID
-  const generateUniqueId = () => {
-    return Math.random().toString(36).substring(2) + Date.now().toString(36);
-  };
 
   return (
     <>
@@ -533,12 +599,7 @@ const SubMenuInfoReport = () => {
                   </div>
                 )}
                 {/* Button 2 */}
-                <button
-                  className="btns-for-add-and-remove-documents"
-                  onClick={handleButton2Click}
-                >
-                  Remove Docuement
-                </button>
+                <button onClick={handleRemoveDocument}>Remove Document</button>
               </section>
               <p className="title-of-the-document-report-info">
                 Current Document Title:{" "}
@@ -548,19 +609,45 @@ const SubMenuInfoReport = () => {
                 <p>Include Document In current Template Before Section:</p>
                 <section className="drop-down-and-checkboxes-with-title">
                   {/* <p>Include Document In current Template Before Section:</p> */}
-                  <select
-                    value={selectedSubmenu}
-                    onChange={handleSubmenuDropdownChange}
-                  >
-                    <option>Select Submenu</option>
-                    <option>Table of Content</option>
-                    <option>Summary</option>
-                    {submenus.map((tabName, index) => (
-                      <option key={index} value={tabName}>
-                        {tabName}
-                      </option>
-                    ))}
-                  </select>
+
+                  {details ? (
+                    <select>
+                      {details.damage1 && (
+                        <option value="damage1">{details.damage1}</option>
+                      )}
+                      {details.damage2 && (
+                        <option value="damage2">{details.damage2}</option>
+                      )}
+                      {details.selection1 && (
+                        <option value="selection1">{details.selection1}</option>
+                      )}
+                      {details.selection2 && (
+                        <option value="selection2">{details.selection2}</option>
+                      )}
+                      {details.toc && (
+                        <option value="Table of Content">
+                          Table of Content
+                        </option>
+                      )}
+                      {details.summary && (
+                        <option value="Summary">Summary</option>
+                      )}
+                    </select>
+                  ) : (
+                    <select
+                      value={selectedSubmenu}
+                      onChange={handleSubmenuDropdownChange}
+                    >
+                      <option>Select Submenu</option>
+                      <option>Table of Content</option>
+                      <option>Summary</option>
+                      {submenus.map((tabName, index) => (
+                        <option key={index} value={tabName}>
+                          {tabName}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </section>
               </section>
               <section className="checkbox-section-for-include-document">
@@ -568,7 +655,11 @@ const SubMenuInfoReport = () => {
                 <label htmlFor="">
                   This is useful for section Introduction:
                 </label>
-                <input type="checkbox" name="" id="" />
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={handleCheckboxChange}
+                />
               </section>
             </div>
             <div className="section-for-page-contains-editor-that-can-change-text-decoration">
@@ -805,9 +896,9 @@ const SubMenuInfoReport = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          <button className="border border-black p-1" onClick={handleSave}>
+          {/* <button className="border border-black p-1" onClick={handleSave}>
             Save
-          </button>
+          </button> */}
         </div>
       </div>
 

@@ -305,6 +305,7 @@ const SubMenuInfoReport = () => {
     const defaultSelectedSubmenu = submenus.length > 0 ? submenus[0] : "";
     setSelectedSubmenu(defaultSelectedSubmenu);
   }, []);
+  
   function handleDropdownChange(e) {
     const selectedDoc = e.target.value;
     setSelectedDocument(selectedDoc);
