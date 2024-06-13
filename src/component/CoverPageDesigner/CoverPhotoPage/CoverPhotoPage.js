@@ -22,7 +22,7 @@ const CoverPhotoPage = () => {
   };
 
   return (
-    <div className="content-for-the-cover-photo-check-box">
+    <div>
       {uploadedImage ? (
         <ResizableBox
           width={imageSize.width}
@@ -40,7 +40,7 @@ const CoverPhotoPage = () => {
           />
         </ResizableBox>
       ) : (
-        "Cover Photo"
+        <div className="content-for-the-cover-photo-check-box">Cover Photo</div>
       )}
     </div>
   );
