@@ -149,8 +149,6 @@ const SubMenuInfoReport = () => {
     console.log("Selected file:", event.target.files[0]);
   };
 
-  //==============================================================================================================================================================
-
   //code to add documetns
 
   const handleAddDocumentClick = () => {
@@ -361,6 +359,8 @@ const SubMenuInfoReport = () => {
             Object.keys(storedData).forEach((key) => {
               const storedDatakey = storedData[key];
               const selectedOpt = storedDatakey.key;
+              if (!(selectedOption === selectedOpt && key === datakey)) {
+              }
 
               if (selectedOption === selectedOpt && key === datakey) {
                 setDetails({
@@ -377,6 +377,11 @@ const SubMenuInfoReport = () => {
                 setDetails({ details, toc: true }); //
               } else if (selectedOption === selectedOpt && key === "Summary") {
                 setDetails({ details, summary: true });
+              }
+              if (!(selectedOption === selectedOpt && key === datakey)) {
+                setTimeout(() => {
+                  window.location.reload();
+                }, 10000);
               }
             });
           });
@@ -473,7 +478,7 @@ const SubMenuInfoReport = () => {
       }
     }
 
-    // console.log("submenu:", selectedMenu);
+    console.log("submenu:", selectedMenu);
     setSelectedDamage(selectedMenu);
     // console.log("Selected submenu:", selectedSubmenu);
   };

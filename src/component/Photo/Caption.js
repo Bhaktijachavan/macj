@@ -1,27 +1,69 @@
 import React, { useEffect, useState } from "react";
 import img7 from "./icons/notes.png";
+import img8 from "./icons/down-chevron.png";
 import close from "./icons/close_2997911.png";
 import "./Caption.css";
 import Buttons from "./Buttons";
 import Alert from "../Alert/Alert";
 
-
 const Caption = ({ setCap, caption, id, index }) => {
   const [captionValue, setCaptionValue] = useState(caption);
   const [popupCaptionValue, setPopupCaptionValue] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [damageValue, setDamageValue] = useState("");
 
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
     message: "",
   });
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
+  // Function to toggle dropdown visibility
+  const toggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
+  useEffect(() => {
+    console.log("damageValues", damageValue);
+  }, [damageValue]);
+  useEffect(() => {
+    let damageCaptions = [];
+    const damageDataString = localStorage.getItem("DamageData") || "{}";
+    const damageData = JSON.parse(damageDataString);
+
+    Object.keys(damageData).forEach((key) => {
+      const damageObject = damageData[key];
+      if (id === key) {
+        const processDamage = (damage) => {
+          if (typeof damage === "string") {
+            return damage.split("\n").filter((item) => item.trim() !== "");
+          } else if (Array.isArray(damage)) {
+            return damage.flatMap((d) =>
+              d.split("\n").filter((item) => item.trim() !== "")
+            );
+          }
+          return [];
+        };
+
+        damageCaptions = damageCaptions.concat(
+          processDamage(damageObject.Damage1black)
+        );
+        damageCaptions = damageCaptions.concat(
+          processDamage(damageObject.Damage1red)
+        );
+      }
+    });
+
+    // Debugging output to verify the content of damageCaptions before setting state
+    console.log("Processed damageCaptions:", damageCaptions);
+
+    setDamageValue(damageCaptions);
+  }, [id]);
   useEffect(() => {
     setCaptionValue(captionValue);
   }, [captionValue]);
 
   const handlePopupOpen = () => {
-    setPopupCaptionValue(captionValue); // Copy text to popup input field
+    setPopupCaptionValue(captionValue);
     setIsPopupOpen(true);
   };
 
@@ -36,39 +78,7 @@ const Caption = ({ setCap, caption, id, index }) => {
         setShowAlert({
           showAlert: true,
           message: "No Image Data Found ",
-        })
-        setTimeout(() => {
-          setShowAlert({
-            showAlert: false,
-            message: "",
-          }); // Hide the alert after 3 seconds
-        }, 3000);
-        return ;
-      }
-
-      imageData = JSON.parse(imageData);
-
-      // Check if the id exists in the imageData
-      if (!Array.isArray(imageData[id])) {
-        setShowAlert({
-          showAlert: true,
-          message: "No Image found for Provided Id ",
-        })
-        setTimeout(() => {
-          setShowAlert({
-            showAlert: false,
-            message: "",
-          }); // Hide the alert after 3 seconds
-        }, 3000);
-        return ;
-      }
-
-      // Check if the index is valid
-      if (index < 0 || index >= imageData[id].length) {
-        setShowAlert({
-          showAlert: true,
-          message: "Invalid Index ",
-        })
+        });
         setTimeout(() => {
           setShowAlert({
             showAlert: false,
@@ -78,24 +88,52 @@ const Caption = ({ setCap, caption, id, index }) => {
         return;
       }
 
+      imageData = JSON.parse(imageData);
+
+      if (!Array.isArray(imageData[id])) {
+        setShowAlert({
+          showAlert: true,
+          message: "No Image found for Provided Id ",
+        });
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          });
+        }, 3000);
+        return;
+      }
+
+      if (index < 0 || index >= imageData[id].length) {
+        setShowAlert({
+          showAlert: true,
+          message: "Invalid Index ",
+        });
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          });
+        }, 3000);
+        return;
+      }
+
       // Update the caption at the specified index
-      imageData[id][index].caption = popupCaptionValue;
-      setCaptionValue(popupCaptionValue);
+      imageData[id][index].caption = captionValue;
+      setCaptionValue(captionValue);
 
       // Save the updated image data to local storage
       localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
       setShowAlert({
         showAlert: true,
         message: "Caption Updated Successfully",
-      })
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
           message: "",
         }); // Hide the alert after 3 seconds
       }, 3000);
-
-     
     } catch (error) {
       console.error("Error updating caption:", error);
     }
@@ -112,21 +150,55 @@ const Caption = ({ setCap, caption, id, index }) => {
   const handlePopupInputChange = (e) => {
     setPopupCaptionValue(e.target.value);
   };
+  const handleCaptionSelect = (event) => {
+    const redblack = event.target.value;
+    setCaptionValue(redblack);
+  };
 
   return (
     <>
       <fieldset className="bordered-text-caption ">
-      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
+        {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         {/* <legend className="tag-for-line-draw-through-text">Caption</legend> */}
 
         <div className="caption-main-input-field-container">
-          <input
-            className="Caption-main-input-filed"
-            value={captionValue}
-            placeholder="Caption:  "
-            title="Add Caption"
-            onChange={handleInputChange}
-          />
+          <div className="flex">
+            <div>
+              <img
+                src={img8}
+                alt=""
+                title="Edit caption"
+                className="Caption-image-toopen-popupbox"
+                onClick={toggleDropdown}
+              />
+            </div>
+            <div className="relative">
+              <div>
+                <input
+                  className="Caption-main-input-filed"
+                  value={captionValue}
+                  placeholder="Caption:  "
+                  title="Add Caption"
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                {isDropdownVisible && (
+                  <div>
+                    <select className="w-[670px]" onClick={handleCaptionSelect}>
+                      {Array.isArray(damageValue) &&
+                        damageValue.map((value, index) => (
+                          <option key={index} value={value}>
+                            {value}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div>
             <img
               src={img7}
@@ -146,11 +218,6 @@ const Caption = ({ setCap, caption, id, index }) => {
               Caption Editor
             </label>
             <div className="caption-popup-close-image-container">
-              {/* <img
-                  src={close}
-                  className="caption-popup-close-image"
-                  onClick={handleClosePopup}
-                /> */}
               <p
                 className="caption-popup-close-image"
                 onClick={handleClosePopup}
@@ -164,8 +231,8 @@ const Caption = ({ setCap, caption, id, index }) => {
 
           <textarea
             className="caption-popupbox-input-filed"
-            value={popupCaptionValue}
-            onChange={handlePopupInputChange}
+            value={captionValue}
+            onChange={handleInputChange}
           />
           <br />
           <div className="caption-popupbox-buttons-main-container">

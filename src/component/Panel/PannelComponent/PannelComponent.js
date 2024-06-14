@@ -16,7 +16,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [rating, setRating] = useState(null);
   const [discriptionText, setDiscriptionText] = useState("");
   const [showPhotosModal, setShowPhotosModal] = useState(false);
-  const [fetch , setfetch] = useState(false)
+  const [fetch, setfetch] = useState(false);
   const handleShowPhotosClick = () => {
     setShowPhotosModal(true);
   };
@@ -57,21 +57,20 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
     setSelectedCheckboxes((prevState) => {
       // Destructure the previous state
       const { [key]: currentValue, ...rest } = prevState;
-  
+
       // Toggle the checkbox value
       const newValue = currentValue === ratingValue ? null : ratingValue;
-  
+
       // Filter out any null values
       const updatedCheckboxes = newValue !== null ? { [key]: newValue } : {};
-  
+
       // Return the updated state
       return {
         ...rest,
-        ...updatedCheckboxes
+        ...updatedCheckboxes,
       };
     });
   };
-  
 
   useEffect(() => {
     console.log("selected cheakbox ", fetch);
@@ -116,7 +115,6 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       const commentText = parsedData[value] || "";
       setCommentText(commentText);
     }
-   
   }, [fetch]);
   const handleLineClick = (index, color) => {
     setSelectedLineIndex(index);
@@ -181,26 +179,22 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   };
   const HandleDeleteText = () => {
     console.log("HandleDeleteText function called");
-  
-      if (selectedText) {
-        // Remove the selected text from commentText
-        const updatedCommentText = commentText.replace(selectedText, "");
-        setCommentText(updatedCommentText);
-        console.log("Text removed from comments:", selectedText);
-        // Update localStorage with the modified commentText
-        const storedData = localStorage.getItem("TempPanelData");
-        if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          parsedData[value] = updatedCommentText;
-          localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
-          setSelectedText("");
-          console.log(
-            "Updated commentText in localStorage:",
-            parsedData[value]
-          );
-        }
+
+    if (selectedText) {
+      // Remove the selected text from commentText
+      const updatedCommentText = commentText.replace(selectedText, "");
+      setCommentText(updatedCommentText);
+      console.log("Text removed from comments:", selectedText);
+      // Update localStorage with the modified commentText
+      const storedData = localStorage.getItem("TempPanelData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        parsedData[value] = updatedCommentText;
+        localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
+        setSelectedText("");
+        console.log("Updated commentText in localStorage:", parsedData[value]);
       }
-    
+    }
   };
   const handleAddText = (color) => {
     const newText = selectedText + "\n";
@@ -492,7 +486,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
               {showPhotosModal && (
                 <PhotosModal
                   onClose={() => setShowPhotosModal(false)}
-                  imageId={extractedValue}
+                  imageId={NewValue}
                 />
               )}
             </div>

@@ -67,7 +67,54 @@ const ColorPalette = ({ onClose }) => {
     top: 0,
     left: 0,
   });
+  const [submenus, setSubmenus] = useState([]);
+  const [menuDate, setMenuDate] = useState({});
+  const tabNames = [];
 
+  useEffect(() => {
+    // Step 1: Retrieve menuData from localStorage
+    const menuDataString = localStorage.getItem("menuData");
+    if (!menuDataString) {
+      return;
+    }
+
+    // Step 2: Parse menuData and set it to the state
+    const parsedMenuData = JSON.parse(menuDataString);
+    setMenuDate(parsedMenuData);
+    // console.log("parsedMenuData ", parsedMenuData);
+
+    // Extract submenus from parsedMenuData
+
+    for (const key in parsedMenuData) {
+      const menuItem = parsedMenuData[key];
+      const subdetails = menuItem.subdetails;
+
+      for (const subKey in subdetails) {
+        const subdetail = subdetails[subKey];
+
+        for (const key in subdetail) {
+          const subkey = subdetail[key];
+          if (subkey) {
+            if (subkey && subkey.damage1) {
+              tabNames.push(subkey.damage1);
+            }
+            if (subkey && subkey.damage2) {
+              tabNames.push(subkey.damage2);
+            }
+            if (subkey && subkey.selection1) {
+              tabNames.push(subkey.selection1);
+            }
+            if (subkey && subkey.selection2) {
+              tabNames.push(subkey.selection2);
+            }
+          }
+        }
+      }
+    }
+
+    // console.log(tabNames);
+    setSubmenus(tabNames);
+  }, []);
   // Function to handle color change
   const handleColorChange = (id, column, color) => {
     setRowColors((prevColors) =>
@@ -163,17 +210,23 @@ const ColorPalette = ({ onClose }) => {
     if (storedMenuData) {
       try {
         const parsedMenuData = JSON.parse(storedMenuData);
+        // console.log(parsedMenuData);
         setMenuData(parsedMenuData);
         setDummyData(parsedMenuData);
 
-        // Accessing the properties directly as per the JSON structure
-        const name = parsedMenuData[1].name;
-
-        // console.log("Name:", name);
-
-        // console.log("subitems", parsedMenuData[1].subitems[0].si);
-
-        Object.keys(parsedMenuData).map((key) => console.log("hello "));
+        {
+          Object.keys(parsedMenuData).map((key) =>
+            Object.keys(parsedMenuData[key].subdetails).map((subKey) =>
+              Object.keys(parsedMenuData[key].subdetails[subKey]).map(
+                (mainkey) =>
+                  console.log(
+                    "damagedata",
+                    parsedMenuData[key].subdetails[subKey][mainkey].tabname
+                  )
+              )
+            )
+          );
+        }
       } catch (error) {
         console.error("Error parsing JSON:", error);
       }
@@ -204,7 +257,6 @@ const ColorPalette = ({ onClose }) => {
     const menuData = localStorage.getItem("menuData");
     // console.log("menuData", menuData);
     const Checkboxes = localStorage.getItem("checkbox");
-    
 
     if (content) {
       // Modify the content to include border, page heading, and adjust page height
@@ -432,7 +484,7 @@ Throughout the report we utilize icons to make things easier to find and read. U
     });
 
     // Set font size and text color
-    let currentYPosition = 10; // Initial vertical position for text placement
+    let currentYPosition = 15; // Initial vertical position for text placement
     let currentXPosition = 5;
     let tabCounter = 1;
     const tableData = [["Table of Contents"]];
@@ -576,6 +628,7 @@ Throughout the report we utilize icons to make things easier to find and read. U
     const damageData = JSON.parse(damageDataString);
     Object.keys(damageData).forEach((key, index) => {
       const damagekey = key;
+
       const damageObject = damageData[key];
       const damageObjectkey = key.replace("_d1", "").replace("_d2", "");
 
@@ -689,13 +742,12 @@ Throughout the report we utilize icons to make things easier to find and read. U
                       const imageHeight = 60;
                       let imagesAdded = false;
 
-                      if (coverphotoImageData[subKey]) {
-                        coverphotoImageData[subKey].forEach((imageItem) => {
+                      if (coverphotoImageData[damagekey]) {
+                        coverphotoImageData[damagekey].forEach((imageItem) => {
                           const remainingSpace =
                             pageHeight - startY - marginBottom;
                           const requiredSpace =
-                            imageHeight + lineHeight + gapBetweenSections; // Image height + caption height + gap
-
+                            imageHeight + lineHeight + gapBetweenSections;
                           if (requiredSpace > remainingSpace) {
                             pdf.addPage();
                             startY = 50;
@@ -874,7 +926,7 @@ Throughout the report we utilize icons to make things easier to find and read. U
   const getDataLocal = () => {
     const data = localStorage.getItem("menuData");
     const reportData = JSON.parse(data);
-    console.log("report data ", reportData);
+    // console.log("report data ", reportData);
     setLocalStorageData(reportData);
   };
 
@@ -913,7 +965,7 @@ hover:text-white"
             </div>
 
             <div className="flex">
-              <div>
+              <div className="overflow-auto h-[40em]">
                 <table
                   className="w-full"
                   style={{

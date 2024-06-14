@@ -13,7 +13,6 @@ import DrawOvalContent from "./DrawOvalContent/DrawOvalContent";
 import OverLayImage from "./OverLayImage/OverLayImage";
 import Alert from "../Alert/Alert";
 
-
 const EditImageTabList = ({
   isOpen,
   onRequestClose,
@@ -45,12 +44,11 @@ const EditImageTabList = ({
 
   const [arrowColor, setArrowColor] = useState("Black");
   const [downloadUrl, setDownloadUrl] = useState(null);
-  //alert 
+  //alert
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
     message: "",
-    color : "",
-  
+    color: "",
   });
   const handleColorChange = (color) => {
     setArrowColor(color);
@@ -90,17 +88,17 @@ const EditImageTabList = ({
   const handleDownloadUrlChange = (url, setIdIndex) => {
     try {
       if (!id) {
-      setShowAlert({
+        setShowAlert({
           showAlert: true,
           message: "Please Select valid Image ",
-        })
+        });
         setTimeout(() => {
           setShowAlert({
             showAlert: false,
             message: "",
           }); // Hide the alert after 3 seconds
         }, 3000);
-        return  
+        return;
       }
 
       let imageData = localStorage.getItem("coverphotoImage");
@@ -136,7 +134,7 @@ const EditImageTabList = ({
       setShowAlert({
         showAlert: true,
         message: "Image data saved successfully.",
-      })
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
