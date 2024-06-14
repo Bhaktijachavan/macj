@@ -6,7 +6,14 @@ import "./Caption.css";
 import Buttons from "./Buttons";
 import Alert from "../Alert/Alert";
 
-const Caption = ({ setCap, caption, id, index }) => {
+const Caption = ({
+  setCap,
+  caption,
+  id,
+  index,
+  selectedTabName,
+  selectedDamage,
+}) => {
   const [captionValue, setCaptionValue] = useState(caption);
   const [popupCaptionValue, setPopupCaptionValue] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -17,14 +24,24 @@ const Caption = ({ setCap, caption, id, index }) => {
     message: "",
   });
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   // Function to toggle dropdown visibility
   const toggleDropdown = () => {
     setIsDropdownVisible(!isDropdownVisible);
   };
+  // useEffect(() => {
+  //   console.log("captionValue", captionValue);
+  //   console.log("selectedTabName", selectedTabName);
+  //   console.log("selectedDamage", selectedDamage);
+  //   console.log("isChecked", isChecked);
+  // }, [captionValue, selectedTabName, selectedDamage, isChecked]);
+
   useEffect(() => {
-    console.log("damageValues", damageValue);
-  }, [damageValue]);
+    if (isChecked && isChecked === true) {
+      setCaptionValue(selectedTabName + "," + selectedDamage);
+    }
+  }, [isChecked]);
   useEffect(() => {
     let damageCaptions = [];
     const damageDataString = localStorage.getItem("DamageData") || "{}";
@@ -70,8 +87,7 @@ const Caption = ({ setCap, caption, id, index }) => {
   const handleClosePopup = () => {
     setIsPopupOpen(false);
   };
-
-  const handleSaveChanges = (newCaption) => {
+  useEffect(() => {
     try {
       let imageData = localStorage.getItem("coverphotoImage");
       if (!imageData) {
@@ -137,7 +153,75 @@ const Caption = ({ setCap, caption, id, index }) => {
     } catch (error) {
       console.error("Error updating caption:", error);
     }
-  };
+  }, [captionValue]);
+
+  // const handleSaveChanges = (newCaption) => {
+  //   try {
+  //     let imageData = localStorage.getItem("coverphotoImage");
+  //     if (!imageData) {
+  //       setShowAlert({
+  //         showAlert: true,
+  //         message: "No Image Data Found ",
+  //       });
+  //       setTimeout(() => {
+  //         setShowAlert({
+  //           showAlert: false,
+  //           message: "",
+  //         }); // Hide the alert after 3 seconds
+  //       }, 3000);
+  //       return;
+  //     }
+
+  //     imageData = JSON.parse(imageData);
+
+  //     if (!Array.isArray(imageData[id])) {
+  //       setShowAlert({
+  //         showAlert: true,
+  //         message: "No Image found for Provided Id ",
+  //       });
+  //       setTimeout(() => {
+  //         setShowAlert({
+  //           showAlert: false,
+  //           message: "",
+  //         });
+  //       }, 3000);
+  //       return;
+  //     }
+
+  //     if (index < 0 || index >= imageData[id].length) {
+  //       setShowAlert({
+  //         showAlert: true,
+  //         message: "Invalid Index ",
+  //       });
+  //       setTimeout(() => {
+  //         setShowAlert({
+  //           showAlert: false,
+  //           message: "",
+  //         });
+  //       }, 3000);
+  //       return;
+  //     }
+
+  //     // Update the caption at the specified index
+  //     imageData[id][index].caption = captionValue;
+  //     setCaptionValue(captionValue);
+
+  //     // Save the updated image data to local storage
+  //     localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
+  //     setShowAlert({
+  //       showAlert: true,
+  //       message: "Caption Updated Successfully",
+  //     });
+  //     setTimeout(() => {
+  //       setShowAlert({
+  //         showAlert: false,
+  //         message: "",
+  //       }); // Hide the alert after 3 seconds
+  //     }, 3000);
+  //   } catch (error) {
+  //     console.error("Error updating caption:", error);
+  //   }
+  // };
 
   const handleDiscardChanges = () => {
     setIsPopupOpen(false);
@@ -147,16 +231,58 @@ const Caption = ({ setCap, caption, id, index }) => {
     setCaptionValue(e.target.value);
   };
 
-  const handlePopupInputChange = (e) => {
-    setPopupCaptionValue(e.target.value);
-  };
+  // const handlePopupInputChange = (e) => {
+  //   setPopupCaptionValue(e.target.value);
+  // };
   const handleCaptionSelect = (event) => {
     const redblack = event.target.value;
     setCaptionValue(redblack);
   };
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
 
   return (
     <>
+      <div className="PhotoReview-Location-Checkbox-Container">
+        <section className="Section-for-label-and-checkbox">
+          <input type="checkbox" name="agree" />
+          <label
+            htmlFor="agree"
+            className="PhotoReview-Location-Checkbox-label"
+          >
+            Print At End
+          </label>
+        </section>
+        <section className="Section-for-label-and-checkbox">
+          <input
+            type="checkbox"
+            className="PhotoReview-Location-Checkbox-label"
+            name="agree"
+          />
+          <label
+            htmlFor="agree"
+            className="PhotoReview-Location-Checkbox-label"
+          >
+            Summary
+          </label>
+        </section>
+        <section className="Section-for-label-and-checkbox">
+          <input
+            type="checkbox"
+            id="agree"
+            name="agree"
+            checked={isChecked}
+            onChange={handleCheckboxChange}
+          />
+          <label
+            htmlFor="agree"
+            className="PhotoReview-Location-Checkbox-label"
+          >
+            Use Location As Caption
+          </label>
+        </section>
+      </div>
       <fieldset className="bordered-text-caption ">
         {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         {/* <legend className="tag-for-line-draw-through-text">Caption</legend> */}
@@ -185,7 +311,10 @@ const Caption = ({ setCap, caption, id, index }) => {
               <div>
                 {isDropdownVisible && (
                   <div>
-                    <select className="w-[670px]" onClick={handleCaptionSelect}>
+                    <select
+                      className="w-[670px]"
+                      onChange={handleCaptionSelect}
+                    >
                       {Array.isArray(damageValue) &&
                         damageValue.map((value, index) => (
                           <option key={index} value={value}>
@@ -237,12 +366,12 @@ const Caption = ({ setCap, caption, id, index }) => {
           <br />
           <div className="caption-popupbox-buttons-main-container">
             <div className="caption-popupbox-Buttons">
-              <button
+              {/* <button
                 className="caption-popupbox-btns"
                 onClick={handleSaveChanges}
               >
                 Save Changes
-              </button>
+              </button> */}
             </div>
             <div className="caption-popupbox-Buttons">
               <button

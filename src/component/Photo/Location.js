@@ -30,6 +30,7 @@ const Location = ({ imageUrl }) => {
   const [selectedTabName, setSelectedtabName] = useState();
   const [damageNames, setDamageNames] = useState([]);
   const [damageId, setDamageId] = useState(null);
+  const [selectedDamage, setSelectedDamage] = useState();
 
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
@@ -60,9 +61,9 @@ const Location = ({ imageUrl }) => {
     if (imageData) {
       const parsedImageData = JSON.parse(imageData);
       const imagesArray = parsedImageData[panelId] || [];
-      console.log("imagesArray", imagesArray);
+      // console.log("imagesArray", imagesArray);
       const selectedImage = imagesArray[imageIndex];
-      console.log("selectedImage", selectedImage);
+      // console.log("selectedImage", selectedImage);
       if (selectedImage) {
         // Set the selected image to state
         setSelectedImage(selectedImage);
@@ -199,6 +200,7 @@ const Location = ({ imageUrl }) => {
   const handleSubmenuChange = (e) => {
     const selectedId = e.target.value;
     // console.log("selectedId", selectedId);
+    setSelectedDamage(selectedId);
     const menuDataString = localStorage.getItem("menuData");
     const parsedMenuData = JSON.parse(menuDataString);
 
@@ -400,6 +402,8 @@ const Location = ({ imageUrl }) => {
         </div>
         <Caption
           id={damageId}
+          selectedDamage={selectedDamage}
+          selectedTabName={selectedTabName}
           setCap={setCaption}
           caption={caption}
           index={imageIndex}
