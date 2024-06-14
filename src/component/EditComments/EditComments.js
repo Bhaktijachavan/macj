@@ -24,9 +24,9 @@ const EditComments = ({
       <div className="cont-editcomm">
         <div className="button-editcomm">
           <div className="">
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-2">
               <button
-                className="btn-editcomm mr-2 w-24 text-sm"
+                className="btn-editcomm mr-2 w-[7em] text-sm"
                 onClick={() => {
                   moveUp();
                 }}
@@ -34,7 +34,7 @@ const EditComments = ({
                 Move Up
               </button>
               <button
-                className="btn-editcomm mr-2 w-24 text-sm"
+                className="btn-editcomm mr-2 w-[7em] text-sm"
                 onClick={() => {
                   moveDown();
                 }}
@@ -42,7 +42,7 @@ const EditComments = ({
                 Move Down
               </button>
               <button
-                className="btn-editcomm mr-2  w-24 text-sm"
+                className="btn-editcomm mr-2  w-[7em] text-sm"
                 onClick={() => {
                   sortCommentText();
                 }}
@@ -50,7 +50,7 @@ const EditComments = ({
                 Sort
               </button>
               <button
-                className="btn-editcomm mr-2  w-24 text-sm"
+                className="btn-editcomm mr-2 w-[7em] text-sm"
                 onClick={() => {
                   handleDelete();
                 }}
@@ -58,7 +58,7 @@ const EditComments = ({
                 Delete
               </button>
               <button
-                className="btn-editcomm  w-24 text-sm"
+                className="btn-editcomm w-[7em] text-sm"
                 onClick={handleAddButtonClick}
               >
                 Add
@@ -76,7 +76,7 @@ const EditComments = ({
               <label className="block text-sm font-semibold text-gray-600">
                 Item Separator
               </label>
-              <select className="btn w-24 h-7">
+              <select className="btn w-[7em] h-7">
                 <option value="option1">Option 1</option>
                 <option value="option2">Option 2</option>
               </select>
@@ -86,11 +86,11 @@ const EditComments = ({
               <label className="block text-sm font-semibold text-gray-600">
                 Description text
               </label>
-              <textarea
-                className="btn-editcomm w-24 h-7 border"
+              <input
+                className="btn-editcomm w-[7em] h-7 border"
                 value={discriptionText ? discriptionText : ""}
                 onChange={(e) => setDiscriptionText(e.target.value)}
-              ></textarea>
+              />
             </div>
           </div>
         </div>

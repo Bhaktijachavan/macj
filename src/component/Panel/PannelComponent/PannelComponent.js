@@ -17,8 +17,12 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [discriptionText, setDiscriptionText] = useState("");
   const [showPhotosModal, setShowPhotosModal] = useState(false);
   const [fetch, setfetch] = useState(false);
+  const [Image, SetImage] = useState(null);
   const handleShowPhotosClick = () => {
     setShowPhotosModal(true);
+  };
+  const handleDeleteImage = (image) => {
+    SetImage(image);
   };
 
   useEffect(() => {
@@ -50,6 +54,22 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       }
     }
   }, [value]);
+  useEffect(() => {
+    const coverphotoImageData = JSON.parse(
+      localStorage.getItem("coverphotoImage") || "{}"
+    );
+    const damageDataString = localStorage.getItem("DamageData") || "{}";
+    const damageData = JSON.parse(damageDataString);
+    Object.keys(damageData).forEach((key, index) => {
+      const damagekey = key;
+
+      if (coverphotoImageData[damagekey]) {
+        coverphotoImageData[damagekey].forEach((imageItem) =>
+          console.log("images", imageItem.url)
+        );
+      }
+    }, []);
+  });
 
   const NewValue = value;
   const extractedValue = NewValue.replace(/_(d|s)\d$/, "");
@@ -357,33 +377,33 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 <button
                   onClick={handlesave}
                   type="button"
-                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-5 py-0 rounded"
                 >
                   Save Data For report
                 </button>
                 <button
-                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-5 py-0 rounded"
                   onClick={() => handleAddText("black")}
                 >
                   Black
                 </button>
                 <button
-                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-5 py-0 rounded"
                   onClick={() => handleAddText("red")}
                 >
                   Red
                 </button>
                 <button
-                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-5 py-0 rounded"
                   onClick={handleDelete}
                 >
                   Delete
                 </button>
                 <button
-                  onClick={handleShowPhotosClick}
+                  onClick={handleDeleteImage}
                   className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-0 py-0 rounded"
                 >
-                  Show Photos
+                  Delete Photos
                 </button>
               </div>
               <div className="container1-panel2">
@@ -482,13 +502,21 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                   </button>
                 </div>
               </div>
+              <div className="  scroll-box1-panel2 h-[15.5em] overflow-hidden">
+                <PhotosModal
+                  onClose={() => setShowPhotosModal(false)}
+                  imageId={NewValue}
+                  Image={Image}
+                  onImageDelete={handleDeleteImage}
+                />{" "}
+              </div>
               {/* Conditionally render the image */}
-              {showPhotosModal && (
+              {/* {showPhotosModal && (
                 <PhotosModal
                   onClose={() => setShowPhotosModal(false)}
                   imageId={NewValue}
                 />
-              )}
+              )} */}
             </div>
           </div>
         </div>

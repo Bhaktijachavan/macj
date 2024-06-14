@@ -709,9 +709,13 @@ Throughout the report we utilize icons to make things easier to find and read. U
                       const ratText = `RATINGS: ${Object.values(
                         damageObject.rating
                       ).join(", ")}`;
-                      const descText = `DESCRIPTION: ${damageObject.description}`;
-                      const obsText = `OBSERVATIONS: ${damageObject.Damage1black}`;
-                      const improveText = `IMPROVE: ${damageObject.Damage1red}`;
+                      // const descText = `DESCRIPTION: ${damageObject.description}`;
+                      const descText = damageObject.description
+                        ? damageObject.description
+                        : "OBSERVATIONS";
+
+                      const obsText = `${descText}: ${damageObject.Damage1black}`;
+                      const improveText = `${descText}: ${damageObject.Damage1red}`;
                       pdf.setTextColor(0, 0, 0);
                       pdf.setFontSize(12);
                       const descLines = pdf.splitTextToSize(descText, 194);

@@ -1,22 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./SelectionComponent.css";
 import EditComments from "../../EditComments/EditComments";
-import Alert from "../../Alert/Alert"
+import Alert from "../../Alert/Alert";
 
 const SelectionComponent = ({ panelData, value, classname }) => {
   const [commentText, setCommentText] = useState("");
-  const [fetch , setfetch] = useState(false)
+  const [fetch, setfetch] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
 
   const [discriptionText, setDiscriptionText] = useState("");
   const selectedTextRef = useRef([]);
 
-  //alert state 
+  //alert state
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
     message: "",
-    color : "",
-  
+    color: "",
   });
 
   // Define a function to filter empty strings from selectedTextRef.current
@@ -26,22 +25,20 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     );
   };
 
-
-
-  useEffect(()=>{
-    console.log("filtering is working in ")
-    filterEmptyStrings()
-  },[selectedTextRef])
+  useEffect(() => {
+    console.log("filtering is working in ");
+    filterEmptyStrings();
+  }, [selectedTextRef]);
 
   useEffect(() => {
     const storedData = localStorage.getItem("TempPanelData");
-    // filterEmptyStrings(); 
+    // filterEmptyStrings();
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       const commentText = parsedData[value] || "";
       setCommentText(commentText);
     }
-  }, [fetch]); 
+  }, [fetch]);
 
   useEffect(() => {
     filterEmptyStrings();
@@ -92,7 +89,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
 
   const handlesave = () => {
     const concatenatedText = selectedTextRef.current.join("\n");
-    console.log("concatenatedText",concatenatedText);
+    console.log("concatenatedText", concatenatedText);
     try {
       let tempPanelData = localStorage.getItem("SelectionData");
       if (!tempPanelData) {
@@ -116,7 +113,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       setShowAlert({
         showAlert: true,
         message: "Data has been saved ",
-      })
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
@@ -139,50 +136,45 @@ const SelectionComponent = ({ panelData, value, classname }) => {
     // Retrieve selected texts from selectedTextRef
     const selectedTexts = selectedTextRef.current;
 
-   
-      if (selectedTexts && selectedTexts.length > 0) {
-        let updatedCommentText = commentText;
-        selectedTexts.forEach((selectedText) => {
-          // Remove each selected text from commentText
-          updatedCommentText = updatedCommentText.replace(selectedText, "");
-        });
+    if (selectedTexts && selectedTexts.length > 0) {
+      let updatedCommentText = commentText;
+      selectedTexts.forEach((selectedText) => {
+        // Remove each selected text from commentText
+        updatedCommentText = updatedCommentText.replace(selectedText, "");
+      });
 
-        setCommentText(updatedCommentText);
-        console.log("Texts removed from comments:", selectedTexts);
+      setCommentText(updatedCommentText);
+      console.log("Texts removed from comments:", selectedTexts);
 
-        // Update localStorage with the modified commentText in TempPanelData
-        const storedData = localStorage.getItem("TempPanelData");
-        if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          parsedData[value] = updatedCommentText;
-          localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
-          console.log(
-            "Updated commentText in TempPanelData:",
-            parsedData[value]
-          );
-        }
-
-        // Remove the deleted text from SelectionData
-        const selectionData = localStorage.getItem("SelectionData");
-        if (selectionData) {
-          const parsedSelectionData = JSON.parse(selectionData);
-          if (parsedSelectionData[value]) {
-            // Replace selectedTexts with an empty string
-            parsedSelectionData[value].selectionText = parsedSelectionData[
-              value
-            ].selectionText.replace(selectedTexts.join("\n"), "");
-            localStorage.setItem(
-              "SelectionData",
-              JSON.stringify(parsedSelectionData)
-            );
-            console.log("Updated SelectionData:", parsedSelectionData);
-          }
-        }
-
-        // Empty the selectedTextRef array
-        selectedTextRef.current = [];
+      // Update localStorage with the modified commentText in TempPanelData
+      const storedData = localStorage.getItem("TempPanelData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        parsedData[value] = updatedCommentText;
+        localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
+        console.log("Updated commentText in TempPanelData:", parsedData[value]);
       }
-    
+
+      // Remove the deleted text from SelectionData
+      const selectionData = localStorage.getItem("SelectionData");
+      if (selectionData) {
+        const parsedSelectionData = JSON.parse(selectionData);
+        if (parsedSelectionData[value]) {
+          // Replace selectedTexts with an empty string
+          parsedSelectionData[value].selectionText = parsedSelectionData[
+            value
+          ].selectionText.replace(selectedTexts.join("\n"), "");
+          localStorage.setItem(
+            "SelectionData",
+            JSON.stringify(parsedSelectionData)
+          );
+          console.log("Updated SelectionData:", parsedSelectionData);
+        }
+      }
+
+      // Empty the selectedTextRef array
+      selectedTextRef.current = [];
+    }
   };
 
   const handleMoveUpSelection = () => {
@@ -249,7 +241,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       <div>
         <div className="panel-heading text-center m-2"></div>
         <div className="pl-2 m-2 flex">
-        {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
+          {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
           <div className="Editcomments-and-checkbox-container pl-4">
             <EditComments
               value={value}
