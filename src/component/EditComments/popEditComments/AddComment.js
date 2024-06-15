@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import img1 from "../../../Assets/icons/list.png";
 import img2 from "../../../Assets/icons/create_list.png";
 import img3 from "../../../Assets/icons/add_note.png";
@@ -10,7 +10,7 @@ import CreateListEditComm from "./CreateListEditComm";
 import InsertListPopup from "./InsertListPopup/InsertListPopup";
 import AddLinkPopup from "./AddLinkPopup/AddLinkPopup";
 import Alert from "../../Alert/Alert";
-const AddComment = ({ onClose, value , setfetch}) => {
+const AddComment = ({ onClose, value, setfetch }) => {
   const [isCreateListVisible, setIsCreateListVisible] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
@@ -21,29 +21,82 @@ const AddComment = ({ onClose, value , setfetch}) => {
   const [notesAndCaptions, setNotesAndCaptions] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedOption, setSelectedOption] = useState(""); // State to track the selected option
-    //alert state 
-    const [showAlert, setShowAlert] = useState({
-      showAlert: false,
-      message: "",
-      color : "",
-    
-    });
+  //alert state
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+    color: "",
+  });
+  const fileInputRef = useRef(null);
+  useEffect(() => {
+    // console.log("selectedImage", selectedImage);
+    // console.log("value", value);
+
+    if (selectedImage && value) {
+      // Retrieve existing coverphotoImageData from localStorage
+      let imageData = localStorage.getItem("coverphotoImage");
+      if (!imageData) {
+        imageData = {};
+      } else {
+        imageData = JSON.parse(imageData);
+      }
+
+      if (!Array.isArray(imageData[value])) {
+        // If not, initialize it as an empty array
+        imageData[value] = [];
+      }
+      const index = imageData[value].length;
+      // Check if there is already data for the current value
+      imageData[value].push({
+        id: index,
+        selectedText: "",
+        subnames: "",
+        NewTabs: "",
+        caption: "",
+        url: selectedImage,
+      });
+
+      // Update localStorage with the modified coverphotoImageData
+      localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
+      window.location.reload();
+
+      // Optionally, you can log the updated coverphotoImageData for debugging
+      // console.log("Updated coverphotoImageData", imageData);
+    }
+  }, [selectedImage]);
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      // Preview the selected image
+    if (e.target.files && e.target.files.length > 0) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
 
-      // You can also save the file object if needed
-      // setFileObject(file);
+      reader.onload = (event) => {
+        setSelectedImage(event.target.result);
+      };
+
+      reader.readAsDataURL(e.target.files[0]);
     }
   };
+  const handleImageClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+
+  //   if (file) {
+  //     // Preview the selected image
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setSelectedImage(reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+
+  //     // You can also save the file object if needed
+  //     // setFileObject(file);
+  //   }
+  // };
   const handleDeletePhoto = () => {
     setSelectedImage(null);
     // window.alert("Are you want to delete this photo?");
@@ -92,8 +145,6 @@ const AddComment = ({ onClose, value , setfetch}) => {
     setIsCreateListVisible(true);
   };
 
-
-
   const SaveText = () => {
     console.log("Saving text:", text);
     try {
@@ -125,29 +176,22 @@ const AddComment = ({ onClose, value , setfetch}) => {
 
       // Save the updated data back to local storage
       localStorage.setItem("TempPanelData", JSON.stringify(tempPanelData));
-      setfetch(true)
+      setfetch(true);
 
       console.log("Text saved successfully.");
       setText("");
 
-     resetfetch()
-
-    
-
-
-    
+      resetfetch();
     } catch (error) {
       console.error("Error saving text:", error);
     }
   };
 
-
   const resetfetch = () => {
     setTimeout(() => {
-      setfetch(false)
-      
+      setfetch(false);
     }, 2000);
-  }
+  };
   // Function to handle change in selected option
   // const handleOptionChange = (event) => {
   //   setSelectedOption(event.target.value);
@@ -165,210 +209,219 @@ const AddComment = ({ onClose, value , setfetch}) => {
     setInsertListPopup(false);
   };
   return (
-    <div>
-      <div className="Contant-editcomm">
-      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
-        <div className="template-card-editcomm">
-          <div className="template-selector-editcomm">
-            <span className="selecteditcomm">Select A Template</span>
-            <button onClick={onClose} className="close-button-editcomm">
-              X
-            </button>
-          </div>
-          <div className="buttonlists-editcomm">
-            <ul className="flex gap-5 pl-4">
-              <div className="text-sm hover:bg-gray-300 cursor-pointer">
-                <li className="p-2" onClick={openInsertListPopup}>
-                  <div className="flex justify-center">
-                    <img
-                      src={img1}
-                      alt=""
-                      style={{ width: "30px", height: "30px" }}
+    <>
+      <input
+        type="file"
+        accept="image/*"
+        style={{ display: "none" }}
+        ref={fileInputRef}
+        onChange={handleImageChange}
+      />
+      <div>
+        <div className="Contant-editcomm">
+          {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
+          <div className="template-card-editcomm">
+            <div className="template-selector-editcomm">
+              <span className="selecteditcomm">Select A Template</span>
+              <button onClick={onClose} className="close-button-editcomm">
+                X
+              </button>
+            </div>
+            <div className="buttonlists-editcomm">
+              <ul className="flex gap-5 pl-4">
+                <div className="text-sm hover:bg-gray-300 cursor-pointer">
+                  <li className="p-2" onClick={openInsertListPopup}>
+                    <div className="flex justify-center">
+                      <img
+                        src={img1}
+                        alt=""
+                        style={{ width: "30px", height: "30px" }}
+                      />
+                    </div>
+                    <span>Insert List</span>
+                  </li>
+                </div>
+
+                <div className="text-sm hover:bg-gray-300 cursor-pointer">
+                  <li className="p-2" onClick={clickCreatePop}>
+                    <div className="flex justify-center">
+                      <img
+                        src={img2}
+                        alt=""
+                        style={{ width: "30px", height: "30px" }}
+                      />
+                    </div>
+                    <span>Create/Edit Lists</span>
+                  </li>
+                  {isCreateListVisible && (
+                    <CreateListEditComm
+                      onClose={() => setIsCreateListVisible(false)}
                     />
-                  </div>
-                  <span>Insert List</span>
+                  )}
+                </div>
+
+                <div className="text-sm hover:bg-gray-300 cursor-pointer">
+                  <li className="p-2">
+                    <div className="flex justify-center">
+                      <img
+                        src={img3}
+                        alt=""
+                        style={{ width: "30px", height: "30px" }}
+                      />
+                    </div>
+                    <button onClick={handleEditNote}>Add Note</button>
+                  </li>
+                </div>
+
+                <div className="text-sm hover:bg-gray-300 cursor-pointer">
+                  <li className="p-2">
+                    <div className="flex justify-center">
+                      <img
+                        src={img4}
+                        alt=""
+                        style={{ width: "30px", height: "30px" }}
+                      />
+                    </div>
+                    <button onClick={handleEditCaption}>Add Caption</button>
+                  </li>
+                </div>
+
+                <div className="text-sm hover:bg-gray-300 cursor-pointer">
+                  <li className="p-2" onClick={openAddLinkPopup}>
+                    <div className="flex justify-center">
+                      <img
+                        src={img5}
+                        alt=""
+                        style={{ width: "30px", height: "30px" }}
+                      />
+                    </div>
+
+                    <span>Link</span>
+                  </li>
+                </div>
+
+                <div className="text-sm hover:bg-gray-300 cursor-pointer">
+                  <li className="p-2">
+                    <div className="flex justify-center">
+                      <img
+                        src={img6}
+                        alt=""
+                        style={{ width: "30px", height: "30px" }}
+                        onClick={handleImageClick}
+                      />
+                    </div>
+                    <label className="custom-file-upload">Link Photo</label>
+                  </li>
+                </div>
+
+                {/* <div className="text-sm hover:bg-gray-300 cursor-pointer">
+                  <li className="p-2">
+                    <div className="flex justify-center">
+                      <img
+                        src={img7}
+                        alt=""
+                        style={{ width: "30px", height: "30px" }}
+                        onClick={handleDeletePhoto}
+                      />
+                    </div>
+                    <span onClick={handleDeletePhoto}>Delete Photo</span>
+                  </li>
+                </div> */}
+
+                <li className="flex items-center">
+                  <span
+                    onClick={handleBoldClick}
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: isBold ? "underline" : "none",
+                    }}
+                  >
+                    B
+                  </span>
                 </li>
-              </div>
-
-              <div className="text-sm hover:bg-gray-300 cursor-pointer">
-                <li className="p-2" onClick={clickCreatePop}>
-                  <div className="flex justify-center">
-                    <img
-                      src={img2}
-                      alt=""
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </div>
-                  <span>Create/Edit Lists</span>
+                <li className="flex items-center">
+                  <span
+                    onClick={handleItalicClick}
+                    style={{
+                      cursor: "pointer",
+                      fontStyle: isItalic ? "italic" : "normal",
+                    }}
+                  >
+                    I
+                  </span>
                 </li>
-                {isCreateListVisible && (
-                  <CreateListEditComm
-                    onClose={() => setIsCreateListVisible(false)}
-                  />
-                )}
-              </div>
-
-              <div className="text-sm hover:bg-gray-300 cursor-pointer">
-                <li className="p-2">
-                  <div className="flex justify-center">
-                    <img
-                      src={img3}
-                      alt=""
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </div>
-                  <button onClick={handleEditNote}>Add Note</button>
+                <li className="flex items-center">
+                  <span
+                    onClick={handleUnderlineClick}
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: isUnderline ? "underline" : "none",
+                    }}
+                  >
+                    U
+                  </span>
                 </li>
-              </div>
-
-              <div className="text-sm hover:bg-gray-300 cursor-pointer">
-                <li className="p-2">
-                  <div className="flex justify-center">
-                    <img
-                      src={img4}
-                      alt=""
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </div>
-                  <button onClick={handleEditCaption}>Add Caption</button>
-                </li>
-              </div>
-
-              <div className="text-sm hover:bg-gray-300 cursor-pointer">
-                <li className="p-2" onClick={openAddLinkPopup}>
-                  <div className="flex justify-center">
-                    <img
-                      src={img5}
-                      alt=""
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </div>
-
-                  <span>Link</span>
-                </li>
-              </div>
-
-              <div className="text-sm hover:bg-gray-300 cursor-pointer">
-                <li className="p-2">
-                  <div className="flex justify-center">
-                    <img
-                      src={img6}
-                      alt=""
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </div>
-                  <label className="custom-file-upload">
-                    <input type="file" onChange={handleImageChange} hidden />
-                    Link Photo
-                  </label>
-                </li>
-              </div>
-
-              <div className="text-sm hover:bg-gray-300 cursor-pointer">
-                <li className="p-2">
-                  <div className="flex justify-center">
-                    <img
-                      src={img7}
-                      alt=""
-                      style={{ width: "30px", height: "30px" }}
-                    />
-                  </div>
-                  <span onClick={handleDeletePhoto}>Delete Photo</span>
-                </li>
-              </div>
-
-              <li className="flex items-center">
-                <span
-                  onClick={handleBoldClick}
-                  style={{
-                    cursor: "pointer",
-                    textDecoration: isBold ? "underline" : "none",
-                  }}
-                >
-                  B
-                </span>
-              </li>
-              <li className="flex items-center">
-                <span
-                  onClick={handleItalicClick}
-                  style={{
-                    cursor: "pointer",
-                    fontStyle: isItalic ? "italic" : "normal",
-                  }}
-                >
-                  I
-                </span>
-              </li>
-              <li className="flex items-center">
-                <span
-                  onClick={handleUnderlineClick}
-                  style={{
-                    cursor: "pointer",
-                    textDecoration: isUnderline ? "underline" : "none",
-                  }}
-                >
-                  U
-                </span>
-              </li>
-              {/* <li className="text-sm flex items-center">
+                {/* <li className="text-sm flex items-center">
                 <input type="color"></input>
               </li> */}
-            </ul>
-          </div>
-
-          <div className="scroll-box-editcomm p-4 bg-gray-100">
-            <div>
-              {insertListPopup && (
-                <div className="popup">
-                  <InsertListPopup
-                    onClose={closeInsertListPopup}
-                    // selectedOption={selectedOption}
-                    // onSelectOption={setSelectedOption}
-                    onSelectOption={onSelectOption}
-                  />
-                </div>
-              )}
-              {addLinkPopup && (
-                <div className="popup">
-                  <AddLinkPopup
-                    onClose={closeAddLinkPopup}
-                    value={value}
-                    setText={setText}
-                  />
-                </div>
-              )}
-              <textarea
-                style={{
-                  fontWeight: isBold ? "bold" : "normal",
-                  fontStyle: isItalic ? "italic" : "normal",
-                  width: "100%",
-                  height: "40vh",
-                  boxSizing: "border-box",
-                }}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-              />
+              </ul>
             </div>
-          </div>
 
-          <div className="button-container-editcomm">
-            {selectedImage && (
-              <img
-                src={selectedImage}
-                alt="Selected"
-                style={{ width: "100px", height: "100px" }}
-              />
-            )}
-            <button className="open-button-editcomm" onClick={SaveText}>
-              Ok
-            </button>
-            <button className="cancel-button-editcomm" onClick={onClose}>
-              Cancel
-            </button>
+            <div className="scroll-box-editcomm p-4 bg-gray-100">
+              <div>
+                {insertListPopup && (
+                  <div className="popup">
+                    <InsertListPopup
+                      onClose={closeInsertListPopup}
+                      // selectedOption={selectedOption}
+                      // onSelectOption={setSelectedOption}
+                      onSelectOption={onSelectOption}
+                    />
+                  </div>
+                )}
+                {addLinkPopup && (
+                  <div className="popup">
+                    <AddLinkPopup
+                      onClose={closeAddLinkPopup}
+                      value={value}
+                      setText={setText}
+                    />
+                  </div>
+                )}
+                <textarea
+                  style={{
+                    fontWeight: isBold ? "bold" : "normal",
+                    fontStyle: isItalic ? "italic" : "normal",
+                    width: "100%",
+                    height: "40vh",
+                    boxSizing: "border-box",
+                  }}
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                />
+                {/* <a href="https://www.example.com">Visit Example</a> */}
+              </div>
+            </div>
+
+            <div className="button-container-editcomm">
+              {selectedImage && (
+                <img
+                  src={selectedImage}
+                  alt="Selected"
+                  style={{ width: "100px", height: "100px" }}
+                />
+              )}
+              <button className="open-button-editcomm" onClick={SaveText}>
+                Ok
+              </button>
+              <button className="cancel-button-editcomm" onClick={onClose}>
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

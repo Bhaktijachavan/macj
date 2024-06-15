@@ -563,6 +563,8 @@ Throughout the report we utilize icons to make things easier to find and read. U
     const selectionDataString = localStorage.getItem("SelectionData") || "{}";
 
     const Selection = JSON.parse(selectionDataString);
+    // console.log("Selection", Selection);
+
     let selectionkey = "";
     Object.keys(Selection).forEach((key) => {
       selectionkey = key;
@@ -604,7 +606,7 @@ Throughout the report we utilize icons to make things easier to find and read. U
     const coverphotoImageData = JSON.parse(
       localStorage.getItem("coverphotoImage") || "{}"
     );
-    console.log("coverphotoImageData", coverphotoImageData);
+    // console.log("coverphotoImageData", coverphotoImageData);
     const imagekeys = Object.keys(coverphotoImageData);
 
     for (const key in mainData) {
@@ -698,7 +700,12 @@ Throughout the report we utilize icons to make things easier to find and read. U
                         let selectionText =
                           Selection[`${subKey}_s1`]?.selectionText ||
                           Selection[`${subKey}_s2`]?.selectionText;
-                        const materialsText = `MATERIALS: ${selectionText}`;
+                        let selecText =
+                          Selection[`${subKey}_s1`]?.description ||
+                          Selection[`${subKey}_s2`]?.description;
+                        let secdef = selecText ? selecText : "MATERIALS";
+
+                        const materialsText = `${secdef}: ${selectionText}`;
                         const materialsLines = pdf.splitTextToSize(
                           materialsText,
                           194

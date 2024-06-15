@@ -126,6 +126,45 @@ const SelectionComponent = ({ panelData, value, classname }) => {
       console.error("Error saving data:", error);
     }
   };
+  const concatenatedText = selectedTextRef.current.join("\n");
+  useEffect(() => {
+    // console.log("concatenatedText", concatenatedText);
+    try {
+      let tempPanelData = localStorage.getItem("SelectionData");
+      if (!tempPanelData) {
+        tempPanelData = {};
+      } else {
+        tempPanelData = JSON.parse(tempPanelData);
+      }
+
+      if (!tempPanelData[value]) {
+        tempPanelData[value] = {};
+      }
+
+      tempPanelData[value]["selectionText"] = concatenatedText;
+      tempPanelData[value]["description"] = discriptionText;
+
+      // console.log("selectionData", tempPanelData);
+
+      localStorage.setItem("SelectionData", JSON.stringify(tempPanelData));
+
+      // console.log("Data saved successfully.");
+      // setShowAlert({
+      //   showAlert: true,
+      //   message: "Data has been saved ",
+      // });
+      // setTimeout(() => {
+      //   setShowAlert({
+      //     showAlert: false,
+      //     message: "",
+      //   }); // Hide the alert after 3 seconds
+      // }, 3000);
+      // Clear the selected text after saving
+      // selectedTextRef.current = [];
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  }, [concatenatedText, discriptionText]);
 
   const HandleDeleteText = () => {
     if (!selectedTextRef.current || selectedTextRef.current.length === 0) {
@@ -253,14 +292,14 @@ const SelectionComponent = ({ panelData, value, classname }) => {
               discriptionText={discriptionText}
               setfetch={setfetch}
             />
-            <button
+            {/* <button
               onClick={handlesave}
               type="button"
               className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black py-0 rounded text-sm w-24"
             >
               Save Data
               <br /> For report
-            </button>
+            </button> */}
           </div>
           <div
             className={classname ? classname : "scroll-box-panel3 bg-gray-100"}
@@ -273,7 +312,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
                 onClick={() => handleSelectText(line)}
                 style={{
                   backgroundColor: selectedTextRef.current.includes(line)
-                    ? "#e0e0e0"
+                    ? "#2e95d3"
                     : "transparent",
                 }}
               >

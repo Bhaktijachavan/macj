@@ -54,22 +54,6 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       }
     }
   }, [value]);
-  useEffect(() => {
-    const coverphotoImageData = JSON.parse(
-      localStorage.getItem("coverphotoImage") || "{}"
-    );
-    const damageDataString = localStorage.getItem("DamageData") || "{}";
-    const damageData = JSON.parse(damageDataString);
-    Object.keys(damageData).forEach((key, index) => {
-      const damagekey = key;
-
-      if (coverphotoImageData[damagekey]) {
-        coverphotoImageData[damagekey].forEach((imageItem) =>
-          console.log("images", imageItem.url)
-        );
-      }
-    }, []);
-  });
 
   const NewValue = value;
   const extractedValue = NewValue.replace(/_(d|s)\d$/, "");
@@ -97,7 +81,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   }, [fetch]);
 
   const handlesave = () => {
-    console.log("Saving data...");
+    // console.log("Saving data...");
     try {
       // Check if DamageData already exists in local storage
       let tempPanelData = localStorage.getItem("DamageData");
@@ -128,6 +112,36 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
     }
   };
   useEffect(() => {
+    try {
+      // Check if DamageData already exists in local storage
+      let tempPanelData = localStorage.getItem("DamageData");
+      if (!tempPanelData) {
+        // If not, create an empty object
+        tempPanelData = {};
+      } else {
+        // If it exists, parse the JSON string to an object
+        tempPanelData = JSON.parse(tempPanelData);
+      }
+      // Create a nested object for Damage1Data if it doesn't exist
+      if (!tempPanelData[value]) {
+        tempPanelData[value] = {};
+      }
+      // Store Damage1red and Damage1black values under Damage1Data
+      tempPanelData[value]["Damage1red"] = redText;
+      tempPanelData[value]["Damage1black"] = blackText;
+      tempPanelData[value]["description"] = discriptionText;
+      tempPanelData[value]["rating"] = selectedCheckboxes;
+      // console.log("tempPanelData", tempPanelData);
+      // Save the updated data back to local storage
+      localStorage.setItem("DamageData", JSON.stringify(tempPanelData));
+      // console.log("Data saved successfully.");
+      // console.log("Data saved successfully.");
+      // No need to reset any state here since there's no 'text' state being used
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  }, [redText, blackText, discriptionText, selectedCheckboxes]);
+  useEffect(() => {
     // Fetch CommentText from localStorage initially
     const storedData = localStorage.getItem("TempPanelData");
     if (storedData) {
@@ -148,6 +162,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       container.nodeType === 3 ? container.nodeValue : container.innerText;
     setSelectedText(selectedText);
   };
+
   const handleMoveUpDamage = () => {
     console.log("handleMoveUpDamage function called");
     if (selectedText) {
@@ -343,7 +358,16 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 onMouseUp={handleTextSelection}
               >
                 {commentText.split("\n").map((line, index) => (
-                  <p key={index}>{line}</p>
+                  <p
+                    key={index}
+                    style={{
+                      backgroundColor: selectedText.includes(line)
+                        ? "#2e95d3"
+                        : "transparent",
+                    }}
+                  >
+                    {line}
+                  </p>
                 ))}
               </div>
             </div>
@@ -374,13 +398,13 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 )}
               </div>
               <div className="flex flex-col space-y-2 ml-2 mr-2 text-sm pt-10">
-                <button
+                {/* <button
                   onClick={handlesave}
                   type="button"
                   className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-5 py-0 rounded"
                 >
                   Save Data For report
-                </button>
+                </button> */}
                 <button
                   className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-5 py-0 rounded"
                   onClick={() => handleAddText("black")}
@@ -409,7 +433,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
               <div className="container1-panel2">
                 <div
                   className="scroll-box1-panel2"
-                  onClick={() => handleLineClick(index, "black")}
+                  style={{ padding: "10px", color: "black" }}
                 >
                   {blackText &&
                     blackText.split("\n").map((line, index) => (
@@ -420,7 +444,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                           backgroundColor:
                             selectedLineColor === "black" &&
                             selectedLineIndex === index
-                              ? "#ddd"
+                              ? "#3182ce"
                               : "transparent",
                         }}
                         onClick={() => {
@@ -446,7 +470,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                           backgroundColor:
                             selectedLineColor === "red" &&
                             selectedLineIndex === index
-                              ? "#ddd"
+                              ? "#3182ce"
                               : "transparent",
                         }}
                         onClick={() => {
