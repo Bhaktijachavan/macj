@@ -1,23 +1,38 @@
 import React, { useState, useEffect } from "react";
 import "./InsertListPopup.css";
-const InsertListPopup = ({ onClose, onSelectOption }) => {
+const InsertListPopup = ({ onClose, onSelectOption, onSelectiontext }) => {
   const [selectedOption, setSelectedOption] = useState(""); // State to track the selected option
-  const [savedText, setSavedText] = useState(""); // State to store the text retrieved from local storage
+  const [keyys, Setkeys] = useState([]); // State to store the text retrieved from local storage
 
   // Function to handle change in selected option
   const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
+    const Selectedkey = event.target.value;
+    setSelectedOption(Selectedkey);
   };
   // Function to retrieve saved text from local storage
   useEffect(() => {
     const textFromLocalStorage = localStorage.getItem("text2");
-    if (textFromLocalStorage) {
-      setSavedText(textFromLocalStorage);
+
+    const parsedData = JSON.parse(textFromLocalStorage);
+    console.log("parsedData", parsedData);
+    for (const key in parsedData) {
     }
-  }, []);
+    const keys = Object.keys(parsedData);
+
+    Setkeys(keys);
+
+    keys.forEach((key) => {
+      if (selectedOption === key) {
+        const text = parsedData[key].text;
+        onSelectOption(selectedOption);
+        onSelectiontext(text);
+      }
+    });
+  }, [selectedOption]);
   // Function to handle Ok button click
   const handleOkClick = () => {
     // Pass the selected option to the parent component
+
     onSelectOption(selectedOption);
     // Close the popup
     onClose();
@@ -41,11 +56,11 @@ const InsertListPopup = ({ onClose, onSelectOption }) => {
                 onChange={handleOptionChange}
               >
                 <option value="">Select an option</option>
-                <option value={savedText}>{savedText}</option>{" "}
-                <option value="option1">Bathroom Locations</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-                {/* Add more options as needed */}
+                {keyys.map((keyName, index) => (
+                  <option key={index} value={keyName}>
+                    {keyName}
+                  </option>
+                ))}{" "}
               </select>
               {/* <p>Selected Option: {selectedOption}</p> */}
             </div>

@@ -13,19 +13,37 @@ const CreateListEditComm = ({ onClose }) => {
   const [deletetlistPopup, setDeletetlistPopup] = useState(false);
   const [editCommentListPopup, setEditCommentListPopup] = useState(false);
   const [selectedText, setSelectedText] = useState(""); // To store selected text
+  const [selectedComment, setSelectedComment] = useState(""); // To store selected text
 
   const handleTextSelect = () => {
     const selection = window.getSelection().toString(); // Get selected text
+    console.log("Selected text:", selection); // Print selected text in console
     setSelectedText(selection); // Store selected text
   };
+  const handleCommentSelection = () => {
+    const comment = window.getSelection().toString();
+    // console.log("comment", comment);
+    setSelectedComment(comment);
+  };
+  const handleCommentDelete = () => {
+    if (selectedComment) {
+      setText2((prevText) => prevText.replace(selectedComment, ""));
+      setSelectedComment(""); // Clear the selected text after deletion
+    }
+  };
   const openDeletetListPopup = () => {
-    setDeletetlistPopup(true);
+    // setDeletetlistPopup(true);
+    if (selectedText) {
+      setText1((prevText) => prevText.replace(selectedText, ""));
+      setSelectedText(""); // Clear the selected text after deletion
+    }
   };
   const closeDeletetListPopup = () => {
     setDeletetlistPopup(false);
   };
-  const openEditCommentListPopup = () => {
-    setEditCommentListPopup(true);
+  const openEditCommentListPopup = (newcomment) => {
+    // setEditCommentListPopup(true);
+    const comment = selectedComment.replace(selectedComment, newcomment);
   };
   const closeEditCommentListPopup = () => {
     setEditCommentListPopup(false);
@@ -40,23 +58,117 @@ const CreateListEditComm = ({ onClose }) => {
     setIsAddCommentsPopUp(false);
   };
   const handleAddCommPopopClick = () => {
-    setIsAddCommentsPopUp(true);
+    if (selectedText) {
+      setIsAddCommentsPopUp(true);
+    }
   };
   const handleAddListSubmit = (listName) => {
-    setText1((prevText) => `${prevText}${listName}`);
+    // Split text1 into lines
+    const lines = text1.split("\n");
+
+    // Find the index of the selectedText in lines
+    const index = lines.findIndex((line) => line === selectedText);
+
+    if (index !== -1) {
+      // Replace the selectedText with the new listName
+      lines.splice(index, 1, listName);
+
+      // Update text1 state with the modified lines array
+      setText1(lines.join("\n"));
+    } else {
+      // If no selected text, simply append to the end
+      setText1((prevText) => `${prevText}\n${listName}`);
+    }
   };
+
   const handleAddCommentsSubmit = (editedText) => {
-    setText2((prevText) => `${prevText}${editedText}`);
+    const lines = text2.split("\n");
+    const index = lines.findIndex((line) => line === selectedComment);
+
+    if (index !== -1) {
+      // Replace the selectedText with the new listName
+      lines.splice(index, 1, editedText);
+
+      // Update text1 state with the modified lines array
+      setText2(lines.join("\n"));
+    } else {
+      // If no selected text, simply append to the end
+      setText2((prevText) => `${prevText}\n${editedText}`);
+    }
   };
   // Function to save text2 to local storage
   const saveText2ToLocalStorage = () => {
-    try {
-      localStorage.setItem("text2", text2);
-      console.log("Text saved to local storage:", text2);
-    } catch (error) {
-      console.error("Error saving text to local storage:", error);
+    if (selectedText && text2) {
+      const selectedOpt = selectedText;
+      const saveData = JSON.parse(localStorage.getItem("text2")) || {};
+      saveData[selectedOpt] = {
+        text: text2,
+      };
+      localStorage.setItem("text2", JSON.stringify(saveData));
+    }
+    setText2("");
+    // console.log("Text saved to local storage:", text2);
+  };
+
+  const moveUp = () => {
+    const lines = text1.split("\n");
+    const index = lines.findIndex((line) => line === selectedText);
+    if (index > 0) {
+      const temp = lines[index - 1];
+      lines[index - 1] = lines[index];
+      lines[index] = temp;
+      setText1(lines.join("\n"));
+      setSelectedText(lines[index - 1]); // Keep the selection at the moved text
     }
   };
+  const moveUpComment = () => {
+    const lines = text2.split("\n");
+    const index = lines.findIndex((line) => line === selectedComment);
+    if (index > 0) {
+      const temp = lines[index - 1];
+      lines[index - 1] = lines[index];
+      lines[index] = temp;
+      setText2(lines.join("\n"));
+      setSelectedComment(lines[index - 1]); // Keep the selection at the moved text
+    }
+  };
+
+  // Move the selected list item down
+  const moveDown = () => {
+    const lines = text1.split("\n");
+    const index = lines.findIndex((line) => line === selectedText);
+    if (index < lines.length - 1) {
+      const temp = lines[index + 1];
+      lines[index + 1] = lines[index];
+      lines[index] = temp;
+      setText1(lines.join("\n"));
+      setSelectedText(lines[index + 1]); // Clear the selected text after moving
+    }
+  };
+  const moveDownComment = () => {
+    const lines = text2.split("\n");
+    const index = lines.findIndex((line) => line === selectedComment);
+    if (index < lines.length - 1) {
+      const temp = lines[index + 1];
+      lines[index + 1] = lines[index];
+      lines[index] = temp;
+      setText2(lines.join("\n"));
+      setSelectedComment(lines[index + 1]); // Clear the selected text after moving
+    }
+  };
+
+  // Sort the list alphabetically
+  const sortList = () => {
+    const lines = text1.split("\n");
+    lines.sort();
+    setText1(lines.join("\n"));
+  };
+  const sortListComment = () => {
+    const lines = text2.split("\n");
+    lines.sort();
+    setText2(lines.join("\n"));
+  };
+
   return (
     <div>
       <div className="Contant-create">
@@ -103,11 +215,14 @@ const CreateListEditComm = ({ onClose }) => {
                           )}
                         </div>
                       </div>
-                      <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
+                      {/* <div
+                        className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer"
+                        onClick={handleRenameList}
+                      >
                         <li>
                           Rename <br /> List
                         </li>
-                      </div>
+                      </div> */}
                       <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
                         <li onClick={openDeletetListPopup}>
                           Delete <br /> List
@@ -119,24 +234,33 @@ const CreateListEditComm = ({ onClose }) => {
                           </div>
                         )}
                       </div>
-                      <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
+                      <div
+                        className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer"
+                        onClick={moveUp}
+                      >
                         <li>
                           Move <br /> up
                         </li>
                       </div>
-                      <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
+                      <div
+                        className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer"
+                        onClick={moveDown}
+                      >
                         <li>
                           Move <br /> Down
                         </li>
                       </div>
-                      <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
+                      <div
+                        className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer"
+                        onClick={sortList}
+                      >
                         <li>
                           sort <br /> list
                         </li>
                       </div>
                     </ul>
                   </div>
-                  <div className="pl-4">
+                  <div className="pl-4 ">
                     <textarea
                       style={{
                         width: "56vh",
@@ -145,7 +269,8 @@ const CreateListEditComm = ({ onClose }) => {
                       }}
                       value={text1}
                       onChange={(e) => setText1(e.target.value)}
-                      onSelect={handleTextSelect} // Call handleTextSelect when text is selected
+                      onSelect={handleTextSelect}
+                      readOnly
                     />
                   </div>
                 </div>
@@ -169,35 +294,47 @@ const CreateListEditComm = ({ onClose }) => {
                           <AddCommentsPopUp onClose={handlePopUpClose} />
                         )} */}
                       </div>
-                      <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
+                      <div
+                        className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer"
+                        onClick={handleCommentDelete}
+                      >
                         <li>
                           Delete <br /> Comments
                         </li>
                       </div>
-                      <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
+                      {/* <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
                         <li onClick={openEditCommentListPopup}>
                           Edit <br /> Comment
                         </li>{" "}
-                        {editCommentListPopup && (
+                         {editCommentListPopup && (
                           <div className="popup">
                             {/* Render your color palet component here */}
-                            <EditCommentPopup
+                      {/* <EditCommentPopup
                               onClose={closeEditCommentListPopup}
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
+                            /> */}
+                      {/* </div> */}
+                      {/* )}  */}
+                      {/* </div> */}
+                      <div
+                        className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer"
+                        onClick={moveUpComment}
+                      >
                         <li>
                           Move <br /> up
                         </li>
                       </div>
-                      <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
+                      <div
+                        className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer"
+                        onClick={moveDownComment}
+                      >
                         <li>
                           Move <br /> Down
                         </li>
                       </div>
-                      <div className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer">
+                      <div
+                        className="flex-shrink-0 p-2 text-sm hover:bg-gray-300 cursor-pointer"
+                        onClick={sortListComment}
+                      >
                         <li>
                           Sort <br /> Comments
                         </li>
@@ -207,12 +344,14 @@ const CreateListEditComm = ({ onClose }) => {
                   <div className="pl-2">
                     <textarea
                       style={{
-                        width: "56vh",
+                        width: "54vh",
                         height: "42vh",
                         boxSizing: "border-box",
                       }}
                       value={text2}
                       onChange={(e) => setText2(e.target.value)}
+                      readOnly
+                      onClick={handleCommentSelection}
                     />
                   </div>
                 </div>
@@ -220,18 +359,17 @@ const CreateListEditComm = ({ onClose }) => {
               {isAddCommentsPopUp && (
                 <AddCommentsPopUp
                   // onClose={() => setSelectedText("")} // Reset selectedText when popup is closed
-                  selectedText={selectedText}
                   onSubmit={handleAddCommentsSubmit}
                   onClose={handlePopUpClose}
                 />
               )}
             </div>
             <div className="text-center p-2">
-              <div className="mx-auto">
+              {/* <div className="mx-auto">
                 <button className="btn-editcomm mr-2 w-32 text-sm">
                   Update Defaults
                 </button>
-              </div>
+              </div> */}
               <div className="mx-auto">
                 <p>
                   Note that this only updates if the previous default was blank,
@@ -247,7 +385,12 @@ const CreateListEditComm = ({ onClose }) => {
               >
                 Ok
               </button>
-              <button className="btn-editcomm mr-2 w-24 text-sm" onClick={onClose}>Cancel</button>
+              <button
+                className="btn-editcomm mr-2 w-24 text-sm"
+                onClick={onClose}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>

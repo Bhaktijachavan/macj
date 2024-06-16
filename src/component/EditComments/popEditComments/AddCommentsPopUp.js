@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./AddCommentsPopUp.css";
 import InspectionSignature from "./../../CoverPageDesigner/Inspection Signature/InspectionSignature";
 
-const AddCommentsPopUp = ({ onClose, selectedText, onSubmit }) => {
-  const [editedText, setEditedText] = useState(selectedText); // Initialize input field with selected text
-
+const AddCommentsPopUp = ({ onClose, onSubmit }) => {
+  const [editedText, setEditedText] = useState(); // Initialize input field with selected text
   // Function to handle input field change
   const handleInputChange = (e) => {
     setEditedText(e.target.value); // Update edited text state
@@ -12,13 +11,13 @@ const AddCommentsPopUp = ({ onClose, selectedText, onSubmit }) => {
 
   const handleSubmit = () => {
     onSubmit(editedText);
-    onClose();
+    setEditedText("");
   };
 
   // Update editedText when selectedText changes
-  useEffect(() => {
-    setEditedText(selectedText);
-  }, [selectedText]);
+  // useEffect(() => {
+  //   setEditedText(selectedText);
+  // }, [selectedText]);
   return (
     <div>
       <div className="Contant-addCommentsPopUp">

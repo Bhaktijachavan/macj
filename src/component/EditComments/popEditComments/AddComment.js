@@ -21,6 +21,12 @@ const AddComment = ({ onClose, value, setfetch }) => {
   const [notesAndCaptions, setNotesAndCaptions] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedOption, setSelectedOption] = useState(""); // State to track the selected option
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedText, setSelectedText] = useState("");
+  const [list, setList] = useState("");
+  const [addlist, setAddList] = useState("");
+  const [shorListed, setshortListed] = useState("");
+
   //alert state
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
@@ -204,9 +210,50 @@ const AddComment = ({ onClose, value, setfetch }) => {
   // Function to handle change in selected option
   const onSelectOption = (option) => {
     // Set the selected option to the text area
-    setText(option);
+    setList(option);
+    // setShowDropdown(true);
     // Close the insert list popup
     setInsertListPopup(false);
+  };
+  const onSelectiontext = (text) => {
+    console.log(text);
+    setSelectedText(text);
+  };
+  const handleSelecttext = (event) => {
+    const selected = event.target.value;
+    setSelectedOption(selected);
+    // console.log(selected);
+    setList(selected);
+  };
+  // const handleInsertList = () => {
+  //   // Concatenate text and list once
+  //   const newText = `${text}${list}`;
+  //   setText(newText);
+  //   setAddList(""); // Clear list after insertion
+  //   setList("");
+  //   setShowDropdown(true);
+  // };
+  useEffect(() => {
+    const newText = `${text}${list}`;
+    setText(newText);
+    setAddList(""); // Clear list after insertion
+    setList("");
+    if (list) {
+      setShowDropdown(true);
+    }
+    // setShowDropdown(true);
+  }, [list]);
+
+  const handleTextareaSelect = (e) => {
+    const selectedText = window.getSelection().toString();
+    setshortListed(selectedText);
+
+    // if (selectedText === text) {
+    //   setShowDropdown(false);
+    //   // Additional logic or state updates as needed
+    // } else {
+    setShowDropdown(false);
+    // }
   };
   return (
     <>
@@ -267,6 +314,7 @@ const AddComment = ({ onClose, value, setfetch }) => {
                         src={img3}
                         alt=""
                         style={{ width: "30px", height: "30px" }}
+                        onClick={handleEditNote}
                       />
                     </div>
                     <button onClick={handleEditNote}>Add Note</button>
@@ -280,6 +328,7 @@ const AddComment = ({ onClose, value, setfetch }) => {
                         src={img4}
                         alt=""
                         style={{ width: "30px", height: "30px" }}
+                        onClick={handleEditCaption}
                       />
                     </div>
                     <button onClick={handleEditCaption}>Add Caption</button>
@@ -375,6 +424,7 @@ const AddComment = ({ onClose, value, setfetch }) => {
                       onClose={closeInsertListPopup}
                       // selectedOption={selectedOption}
                       // onSelectOption={setSelectedOption}
+                      onSelectiontext={onSelectiontext}
                       onSelectOption={onSelectOption}
                     />
                   </div>
@@ -392,14 +442,39 @@ const AddComment = ({ onClose, value, setfetch }) => {
                   style={{
                     fontWeight: isBold ? "bold" : "normal",
                     fontStyle: isItalic ? "italic" : "normal",
+                    textDecoration: isUnderline ? "underline" : "none",
                     width: "100%",
                     height: "40vh",
                     boxSizing: "border-box",
                   }}
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
+                  value={text || list}
+                  onChange={
+                    ((e) => setText(e.target.value)) ||
+                    ((e) => setList(e.target.value))
+                  }
+                  onSelect={handleTextareaSelect}
+                  // onClick={handleInsertList}
                 />
-                {/* <a href="https://www.example.com">Visit Example</a> */}
+
+                {showDropdown && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "8%", // Adjust based on your textarea height
+                      left: "75%",
+                      background: "white",
+                      border: "1px solid #ccc",
+                      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
+                      zIndex: 1000,
+                    }}
+                  >
+                    <select value={selectedOption} onChange={handleSelecttext}>
+                      {selectedText.split("\n").map((line, index) => (
+                        <option key={index}>{line}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
             </div>
 
