@@ -25,7 +25,8 @@ const AddComment = ({ onClose, value, setfetch }) => {
   const [selectedText, setSelectedText] = useState("");
   const [list, setList] = useState("");
   const [addlist, setAddList] = useState("");
-  const [shorListed, setshortListed] = useState("");
+  const [shortListed, setshortListed] = useState("");
+  const [highlightColor, setHighlightColor] = useState("#000000");
 
   //alert state
   const [showAlert, setShowAlert] = useState({
@@ -146,7 +147,10 @@ const AddComment = ({ onClose, value, setfetch }) => {
     document.execCommand("underline", false, null);
     setIsUnderline(!isUnderline);
   };
-
+  const handleColorhighlight = (e) => {
+    const text = e.target.value;
+    setHighlightColor(text);
+  };
   const clickCreatePop = () => {
     setIsCreateListVisible(true);
   };
@@ -244,16 +248,55 @@ const AddComment = ({ onClose, value, setfetch }) => {
     // setShowDropdown(true);
   }, [list]);
 
+  // const handleTextareaSelect = (e) => {
+  //   const selectedText = window.getSelection().toString();
+  //   setshortListed(selectedText);
+
+  //   // if (selectedText === text) {
+  //   //   setShowDropdown(false);
+  //   //   // Additional logic or state updates as needed
+  //   // } else {
+  //   setShowDropdown(false);
+  //   // }
+  // };
+
   const handleTextareaSelect = (e) => {
     const selectedText = window.getSelection().toString();
-    setshortListed(selectedText);
-
-    // if (selectedText === text) {
-    //   setShowDropdown(false);
-    //   // Additional logic or state updates as needed
-    // } else {
+    if (selectedText && !shortListed.includes(selectedText)) {
+      setshortListed([
+        ...shortListed,
+        { text: selectedText, color: highlightColor },
+      ]);
+    }
     setShowDropdown(false);
-    // }
+  };
+  const getHighlightedText = () => {
+    if (shortListed.length === 0) {
+      return text;
+    }
+    const parts = text.split(
+      new RegExp(`(${shortListed.map((item) => item.text).join("|")})`, "gi")
+    );
+    return parts.map((part, index) => {
+      const highlight = shortListed.find(
+        (item) => item.text.toLowerCase() === part.toLowerCase()
+      );
+      return highlight ? (
+        <span
+          key={index}
+          style={{
+            fontWeight: isBold ? "bold" : "normal",
+            fontStyle: isItalic ? "italic" : "normal",
+            textDecoration: isUnderline ? "underline" : "none",
+            color: highlight.color,
+          }}
+        >
+          {part}
+        </span>
+      ) : (
+        part
+      );
+    });
   };
   return (
     <>
@@ -382,7 +425,7 @@ const AddComment = ({ onClose, value, setfetch }) => {
                     onClick={handleBoldClick}
                     style={{
                       cursor: "pointer",
-                      textDecoration: isBold ? "underline" : "none",
+                      textDecoration: isBold ? "Bold" : "none",
                     }}
                   >
                     B
@@ -410,9 +453,13 @@ const AddComment = ({ onClose, value, setfetch }) => {
                     U
                   </span>
                 </li>
-                {/* <li className="text-sm flex items-center">
-                <input type="color"></input>
-              </li> */}
+                <li className="text-sm flex items-center">
+                  <input
+                    type="color"
+                    value={highlightColor}
+                    onChange={handleColorhighlight}
+                  ></input>
+                </li>
               </ul>
             </div>
 
@@ -455,6 +502,16 @@ const AddComment = ({ onClose, value, setfetch }) => {
                   onSelect={handleTextareaSelect}
                   // onClick={handleInsertList}
                 />
+                <div
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    marginTop: "20px",
+                    border: "1px solid #ccc",
+                    padding: "10px",
+                  }}
+                >
+                  {getHighlightedText()}
+                </div>
 
                 {showDropdown && (
                   <div
