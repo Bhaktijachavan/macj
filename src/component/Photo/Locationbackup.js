@@ -6,7 +6,6 @@ import Caption from "./Caption";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { PanalSelect } from "../Function/function";
 import Alert from "../Alert/Alert";
-import img7 from "../Photo/icons/greater-than.png";
 
 const Location = ({ imageUrl }) => {
   const [uploadedFile, setUploadedFile] = useState(!imageUrl ? null : imageUrl);
@@ -26,20 +25,15 @@ const Location = ({ imageUrl }) => {
   const [subnames, setSubnames] = useState([]);
   const [NewTabs, setNewTabs] = useState();
   const [selectedText, setSelectedText] = useState();
-  const [submenus, setSubmenus] = useState([]);
-  const [selectedTabName, setSelectedtabName] = useState();
-  const [damageNames, setDamageNames] = useState([]);
-  const [damageId, setDamageId] = useState(null);
-  const [selectedDamage, setSelectedDamage] = useState();
 
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
     message: "",
   });
 
-  // useEffect(() => {
-  //   console.log("damageId", damageId);
-  // }, [damageId]);
+  useEffect(() => {
+    console.log("selectedText", selectedText);
+  }, [selectedText]);
 
   useEffect(() => {
     if (imageUrl != null) {
@@ -61,9 +55,9 @@ const Location = ({ imageUrl }) => {
     if (imageData) {
       const parsedImageData = JSON.parse(imageData);
       const imagesArray = parsedImageData[panelId] || [];
-      // console.log("imagesArray", imagesArray);
+      console.log("imagesArray", imagesArray);
       const selectedImage = imagesArray[imageIndex];
-      // console.log("selectedImage", selectedImage);
+      console.log("selectedImage", selectedImage);
       if (selectedImage) {
         // Set the selected image to state
         setSelectedImage(selectedImage);
@@ -103,38 +97,6 @@ const Location = ({ imageUrl }) => {
     // Clear interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
-  const tabNamesArray = [];
-  useEffect(() => {
-    // Step 1: Retrieve menuData from localStorage
-    const menuDataString = localStorage.getItem("menuData");
-    if (!menuDataString) {
-      return;
-    }
-
-    // Step 2: Parse menuData and set it to the state
-    const parsedMenuData = JSON.parse(menuDataString);
-    // setMenuData(parsedMenuData);
-    // console.log("parsedMenuData ", parsedMenuData);
-
-    // Extract submenus from parsedMenuData
-
-    for (const key in parsedMenuData) {
-      const menuItem = parsedMenuData[key];
-      const subdetails = menuItem.subdetails;
-
-      for (const subKey in subdetails) {
-        const subdetail = subdetails[subKey];
-
-        for (const key in subdetail) {
-          const subkey = subdetail[key];
-          tabNamesArray.push(subkey.tabname);
-        }
-      }
-    }
-
-    // console.log(tabNames);
-    setSubmenus(tabNamesArray);
-  }, []);
 
   useEffect(() => {
     if (selectedSubmenuId && menuData && menuData[selectedMenuId]) {
@@ -145,97 +107,63 @@ const Location = ({ imageUrl }) => {
   }, [selectedSubmenuId, menuData, selectedMenuId]);
 
   const handleMenuChange = (e) => {
-    const selectedSubmenu = e.target.value;
-    // console.log("selectedId,", selectedSubmenu);
-    setSelectedtabName(selectedSubmenu);
+    const selectedId = e.target.value;
+    setSelectedMenuId(selectedId);
     setSelectedSubmenuId(null);
-    let selectedMenu = "";
-    const menuDataString = localStorage.getItem("menuData");
-    const parsedMenuData = JSON.parse(menuDataString);
-
-    // Check if selectedSubmenu is Table of Content or Summary
-
-    // Iterate over the keys of parsedMenuData
-    for (const key in parsedMenuData) {
-      const menuItem = parsedMenuData[key];
-      const subdetails = menuItem.subdetails;
-      for (const subKey in subdetails) {
-        const subdetail = subdetails[subKey];
-        for (const subkey in subdetail) {
-          const subKeyData = subdetail[subkey];
-
-          if (subKeyData && subKeyData.tabname === selectedSubmenu) {
-            selectedMenu = subkey;
-          }
-        }
-      }
-    }
-    setSelectedMenuId(selectedMenu);
   };
-  useEffect(() => {
-    const menuDataString = localStorage.getItem("menuData");
-    const parsedMenuData = JSON.parse(menuDataString);
-    let damageNames = [];
-    if (selectedMenuId) {
-      Object.keys(parsedMenuData).forEach((key) =>
-        Object.keys(parsedMenuData[key].subdetails).forEach((subKey) =>
-          Object.keys(parsedMenuData[key].subdetails[subKey]).forEach(
-            (mainkey) => {
-              if (mainkey === selectedMenuId) {
-                damageNames.push(
-                  parsedMenuData[key].subdetails[subKey][mainkey].damage1
-                );
-                damageNames.push(
-                  parsedMenuData[key].subdetails[subKey][mainkey].damage2
-                );
-              }
-            }
-          )
-        )
-      );
-    }
-    setDamageNames(damageNames);
-  }, [selectedMenuId]);
 
   const handleSubmenuChange = (e) => {
     const selectedId = e.target.value;
-    // console.log("selectedId", selectedId);
-    setSelectedDamage(selectedId);
-    const menuDataString = localStorage.getItem("menuData");
-    const parsedMenuData = JSON.parse(menuDataString);
+    setSelectedSubmenuId(selectedId);
+    setPanelId(null); // Reset panelId when submenu changes
+    // Update submenu details based on selected submenu ID
+    const submenuItems = menuData[selectedMenuId].subitems;
 
-    // Check if selectedSubmenu is Table of Content or Summary
-    let subdetailkey = "";
-    let maindamageid = "";
-    let damageid = "";
-    // Iterate over the keys of parsedMenuData
-    for (const key in parsedMenuData) {
-      const menuItem = parsedMenuData[key];
-      const subdetails = menuItem.subdetails;
-      for (const subKey in subdetails) {
-        const subdetail = subdetails[subKey];
-        for (const subkey in subdetail) {
-          const subKeyData = subdetail[subkey];
+    const selectedSubmenuItem = submenuItems.find(
+      (item) => item.id.toString() === selectedId
+    );
 
-          if (subKeyData && subKeyData.damage1 === selectedId) {
-            subdetailkey = subkey;
-            maindamageid = subKeyData;
-            damageid = subKeyData.Damage1Data;
-          } else if (subKeyData && subKeyData.damage2 === selectedId) {
-            subdetailkey = subkey;
-            maindamageid = subKeyData;
-            damageid = subKeyData.Damage2Data;
-          }
+    if (selectedSubmenuItem) {
+      const selectedSubName = selectedSubmenuItem.subName;
+      // console.log("Selected subName:", selectedSubName);
+      setSubnames(selectedSubName);
+      const summaryData = menuData[selectedMenuId].SummaryData;
+      console.log("SummaryData:", summaryData);
+      for (const key in summaryData) {
+        if (summaryData.hasOwnProperty(key)) {
+          const textareaValue = summaryData[key].textareaValue;
+          // console.log(`Textarea value for ${key}:`, textareaValue);
+          setSelectedText(textareaValue);
         }
       }
+    } else {
+      console.log("Submenu item not found for the selected id:", selectedId);
     }
-    setDamageId(damageid);
-    setTabData(maindamageid);
-    setPanelId(subdetailkey);
+    if (
+      menuData &&
+      menuData[selectedMenuId] &&
+      menuData[selectedMenuId].subdetails[selectedId]
+    ) {
+      setSubmenuDetails(menuData[selectedMenuId].subdetails[selectedId]);
+    } else {
+      setSubmenuDetails(null);
+    }
   };
 
+  const handleTabChange = (e) => {
+    const panelId = e.target.value;
+    // console.log("Selected value:", panelId);
+    setPanelId(panelId);
+
+    setTabData(submenuDetails[panelId]);
+    const selectedId = panelId;
+    const selectedTabname = submenuDetails[selectedId]?.tabname || ""; // Get the tabname based on the selected id
+    // console.log("Selected id:", selectedId);
+    // console.log("Selected tabname:", selectedTabname);
+    setNewTabs(selectedTabname);
+  };
   const handlePanel = () => {
-    if (!panelId) {
+    if (!panelId || !TabData) {
       setShowAlert({
         showAlert: true,
         message: "Please select Panal",
@@ -263,6 +191,7 @@ const Location = ({ imageUrl }) => {
         <div className="PhotoReview-rectangular-container-main-container">
           <div className="PhotoReview-rectangle">
             <div className="PhotoReview-Location-container">
+              {/* <label htmlFor="menuDropdown">Location</label> */}
               <fieldset className=" border-1 border-gray-400 px-[4px] py-[4px]  ">
                 <legend className="ml-2 text-[17px]">Location</legend>
 
@@ -272,12 +201,13 @@ const Location = ({ imageUrl }) => {
                     className="PhotoReview-Location-first-inputfields"
                     onChange={handleMenuChange}
                   >
-                    <option>Select Menu</option>
-                    {submenus.map((tabName, index) => (
-                      <option key={index} value={tabName}>
-                        {tabName}
-                      </option>
-                    ))}{" "}
+                    <option value="">Select Menu</option>
+                    {menuData &&
+                      Object.keys(menuData).map((menuId) => (
+                        <option key={menuId} value={menuId}>
+                          {menuData[menuId].name}
+                        </option>
+                      ))}
                   </select>
                   <br />
                   <label htmlFor="submenuDropdown"></label>
@@ -288,27 +218,54 @@ const Location = ({ imageUrl }) => {
                     onChange={handleSubmenuChange}
                     disabled={!selectedMenuId}
                   >
-                    <option value="">Select Damage</option>
-
-                    {damageNames.map((damage, index) => (
-                      <option key={index} value={damage}>
-                        {damage}
-                      </option>
-                    ))}
+                    <option value="">Select Submenu</option>
+                    {selectedMenuId &&
+                      Object.keys(menuData[selectedMenuId].subitems).map(
+                        (subkey) => (
+                          <option
+                            key={subkey}
+                            value={menuData[selectedMenuId].subitems[subkey].si}
+                          >
+                            {menuData[selectedMenuId].subitems[subkey].subName}
+                          </option>
+                        )
+                      )}
                   </select>
 
                   <label htmlFor="damageDropdown"></label>
                   <br />
+                  <select
+                    id="damageDropdown"
+                    className="PhotoReview-Location-first-inputfields"
+                    disabled={!selectedSubmenuId}
+                    onChange={handleTabChange}
+                  >
+                    <option value="">Select Damage</option>
+                    {submenuDetails &&
+                      Object.keys(submenuDetails)
+                        .filter(
+                          (subdetailkey) => !["id", "si"].includes(subdetailkey)
+                        )
+                        .filter(
+                          (subdetailkey) =>
+                            ![3, 4].includes(
+                              submenuDetails[subdetailkey].Radiopanal
+                            )
+                        )
+                        .map((subdetailkey) => (
+                          <option key={subdetailkey} value={subdetailkey}>
+                            {submenuDetails[subdetailkey].tabname}
+                          </option>
+                        ))}
+                  </select>
                 </div>
               </fieldset>
               <div className="PhotoReview-Location-button">
-                <img
-                  src={img7}
-                  alt=""
-                  onClick={handlePanel}
-                  title="Navigate to Panel"
-                  className="size-5 "
-                />
+                {/* <Link> */}
+                <button onClick={handlePanel} title="Navigate to Panel">
+                  @
+                </button>
+                {/* </Link> */}
               </div>
               {/* <div className="PhotoReview-Location-Checkbox-Container">
                 <section className="Section-for-label-and-checkbox">
@@ -388,7 +345,7 @@ const Location = ({ imageUrl }) => {
             <Buttons
               caption={caption}
               url={!uploadedFile ? null : uploadedFile}
-              id={damageId}
+              id={panelId}
               SetImageIndex={SetImageIndex}
               onFileSelect={handleFileSelect}
               onIconPreview={handleIconPreview}
@@ -399,17 +356,20 @@ const Location = ({ imageUrl }) => {
               selectedText={selectedText}
             />
           </div>
+          {/* <button onClick={handleImageSet} title="Navigate to Panel">
+            Delete
+          </button> */}
+          {/* Display selected icon on top of the image */}
         </div>
         <Caption
-          id={damageId}
-          selectedDamage={selectedDamage}
-          selectedTabName={selectedTabName}
+          id={panelId}
           setCap={setCaption}
           caption={caption}
           index={imageIndex}
         />
       </div>
 
+      {/* Popup container */}
       {showPopup && (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-[999]">
           <div className="bg-gray-300 border border-gray-400  relative w-[99%] p-0">

@@ -5,8 +5,10 @@ const AddListPopUp = ({ onClose, onSubmit }) => {
   const [listName, setListName] = useState("");
 
   const handleSubmit = () => {
-    onSubmit(listName);
-    onClose();
+    const formattedListName = `<<${listName}>>`;
+    onSubmit(formattedListName);
+    // onClose();
+    setListName("");
   };
   return (
     <div>
@@ -37,11 +39,11 @@ const AddListPopUp = ({ onClose, onSubmit }) => {
                 />
               </div>
               <div>
-                <select className="w-28 px-1 py-1 border rounded">
+                {/* <select className="w-28 px-1 py-1 border rounded">
                   <option value="option1">Option 1</option>
                   <option value="option2">Option 2</option>
                   <option value="option3">Option 3</option>
-                </select>
+                </select> */}
               </div>
             </div>
 

@@ -16,9 +16,13 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   const [rating, setRating] = useState(null);
   const [discriptionText, setDiscriptionText] = useState("");
   const [showPhotosModal, setShowPhotosModal] = useState(false);
-  const [fetch , setfetch] = useState(false)
+  const [fetch, setfetch] = useState(false);
+  const [Image, SetImage] = useState(null);
   const handleShowPhotosClick = () => {
     setShowPhotosModal(true);
+  };
+  const handleDeleteImage = (image) => {
+    SetImage(image);
   };
 
   useEffect(() => {
@@ -57,28 +61,27 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
     setSelectedCheckboxes((prevState) => {
       // Destructure the previous state
       const { [key]: currentValue, ...rest } = prevState;
-  
+
       // Toggle the checkbox value
       const newValue = currentValue === ratingValue ? null : ratingValue;
-  
+
       // Filter out any null values
       const updatedCheckboxes = newValue !== null ? { [key]: newValue } : {};
-  
+
       // Return the updated state
       return {
         ...rest,
-        ...updatedCheckboxes
+        ...updatedCheckboxes,
       };
     });
   };
-  
 
   useEffect(() => {
     console.log("selected cheakbox ", fetch);
   }, [fetch]);
 
   const handlesave = () => {
-    console.log("Saving data...");
+    // console.log("Saving data...");
     try {
       // Check if DamageData already exists in local storage
       let tempPanelData = localStorage.getItem("DamageData");
@@ -109,6 +112,36 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
     }
   };
   useEffect(() => {
+    try {
+      // Check if DamageData already exists in local storage
+      let tempPanelData = localStorage.getItem("DamageData");
+      if (!tempPanelData) {
+        // If not, create an empty object
+        tempPanelData = {};
+      } else {
+        // If it exists, parse the JSON string to an object
+        tempPanelData = JSON.parse(tempPanelData);
+      }
+      // Create a nested object for Damage1Data if it doesn't exist
+      if (!tempPanelData[value]) {
+        tempPanelData[value] = {};
+      }
+      // Store Damage1red and Damage1black values under Damage1Data
+      tempPanelData[value]["Damage1red"] = redText;
+      tempPanelData[value]["Damage1black"] = blackText;
+      tempPanelData[value]["description"] = discriptionText;
+      tempPanelData[value]["rating"] = selectedCheckboxes;
+      // console.log("tempPanelData", tempPanelData);
+      // Save the updated data back to local storage
+      localStorage.setItem("DamageData", JSON.stringify(tempPanelData));
+      // console.log("Data saved successfully.");
+      // console.log("Data saved successfully.");
+      // No need to reset any state here since there's no 'text' state being used
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  }, [redText, blackText, discriptionText, selectedCheckboxes]);
+  useEffect(() => {
     // Fetch CommentText from localStorage initially
     const storedData = localStorage.getItem("TempPanelData");
     if (storedData) {
@@ -116,7 +149,6 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       const commentText = parsedData[value] || "";
       setCommentText(commentText);
     }
-   
   }, [fetch]);
   const handleLineClick = (index, color) => {
     setSelectedLineIndex(index);
@@ -130,6 +162,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
       container.nodeType === 3 ? container.nodeValue : container.innerText;
     setSelectedText(selectedText);
   };
+
   const handleMoveUpDamage = () => {
     console.log("handleMoveUpDamage function called");
     if (selectedText) {
@@ -181,26 +214,22 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
   };
   const HandleDeleteText = () => {
     console.log("HandleDeleteText function called");
-  
-      if (selectedText) {
-        // Remove the selected text from commentText
-        const updatedCommentText = commentText.replace(selectedText, "");
-        setCommentText(updatedCommentText);
-        console.log("Text removed from comments:", selectedText);
-        // Update localStorage with the modified commentText
-        const storedData = localStorage.getItem("TempPanelData");
-        if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          parsedData[value] = updatedCommentText;
-          localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
-          setSelectedText("");
-          console.log(
-            "Updated commentText in localStorage:",
-            parsedData[value]
-          );
-        }
+
+    if (selectedText) {
+      // Remove the selected text from commentText
+      const updatedCommentText = commentText.replace(selectedText, "");
+      setCommentText(updatedCommentText);
+      console.log("Text removed from comments:", selectedText);
+      // Update localStorage with the modified commentText
+      const storedData = localStorage.getItem("TempPanelData");
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        parsedData[value] = updatedCommentText;
+        localStorage.setItem("TempPanelData", JSON.stringify(parsedData));
+        setSelectedText("");
+        console.log("Updated commentText in localStorage:", parsedData[value]);
       }
-    
+    }
   };
   const handleAddText = (color) => {
     const newText = selectedText + "\n";
@@ -329,7 +358,16 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 onMouseUp={handleTextSelection}
               >
                 {commentText.split("\n").map((line, index) => (
-                  <p key={index}>{line}</p>
+                  <p
+                    key={index}
+                    style={{
+                      backgroundColor: selectedText.includes(line)
+                        ? "#2e95d3"
+                        : "transparent",
+                    }}
+                  >
+                    {line}
+                  </p>
                 ))}
               </div>
             </div>
@@ -360,42 +398,42 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                 )}
               </div>
               <div className="flex flex-col space-y-2 ml-2 mr-2 text-sm pt-10">
-                <button
+                {/* <button
                   onClick={handlesave}
                   type="button"
-                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-5 py-0 rounded"
                 >
                   Save Data For report
-                </button>
+                </button> */}
                 <button
-                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-5 py-0 rounded"
                   onClick={() => handleAddText("black")}
                 >
                   Black
                 </button>
                 <button
-                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-5 py-0 rounded"
                   onClick={() => handleAddText("red")}
                 >
                   Red
                 </button>
                 <button
-                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-10 py-0 rounded"
+                  className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-5 py-0 rounded"
                   onClick={handleDelete}
                 >
                   Delete
                 </button>
                 <button
-                  onClick={handleShowPhotosClick}
+                  onClick={handleDeleteImage}
                   className="bg-gray-100 border border-gray-400 hover:bg-blue-100 text-black px-0 py-0 rounded"
                 >
-                  Show Photos
+                  Delete Photos
                 </button>
               </div>
               <div className="container1-panel2">
                 <div
                   className="scroll-box1-panel2"
-                  onClick={() => handleLineClick(index, "black")}
+                  style={{ padding: "10px", color: "black" }}
                 >
                   {blackText &&
                     blackText.split("\n").map((line, index) => (
@@ -406,7 +444,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                           backgroundColor:
                             selectedLineColor === "black" &&
                             selectedLineIndex === index
-                              ? "#ddd"
+                              ? "#3182ce"
                               : "transparent",
                         }}
                         onClick={() => {
@@ -432,7 +470,7 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                           backgroundColor:
                             selectedLineColor === "red" &&
                             selectedLineIndex === index
-                              ? "#ddd"
+                              ? "#3182ce"
                               : "transparent",
                         }}
                         onClick={() => {
@@ -488,13 +526,21 @@ const PannelComponent = ({ showAlternateContent, setRed, setBlack, value }) => {
                   </button>
                 </div>
               </div>
-              {/* Conditionally render the image */}
-              {showPhotosModal && (
+              <div className="  scroll-box1-panel2 h-[15.5em] overflow-hidden">
                 <PhotosModal
                   onClose={() => setShowPhotosModal(false)}
-                  imageId={extractedValue}
+                  imageId={NewValue}
+                  Image={Image}
+                  onImageDelete={handleDeleteImage}
+                />{" "}
+              </div>
+              {/* Conditionally render the image */}
+              {/* {showPhotosModal && (
+                <PhotosModal
+                  onClose={() => setShowPhotosModal(false)}
+                  imageId={NewValue}
                 />
-              )}
+              )} */}
             </div>
           </div>
         </div>

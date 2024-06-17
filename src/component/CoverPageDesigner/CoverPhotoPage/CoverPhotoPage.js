@@ -57,7 +57,7 @@ const CoverPhotoPage = () => {
           />
         </ResizableBox>
       ) : (
-        "Cover Photo"
+        <div className="content-for-the-cover-photo-check-box">Cover Photo</div>
       )}
     </div>
   );

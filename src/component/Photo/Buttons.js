@@ -12,7 +12,6 @@ import img11 from "./icons/delete.png";
 import "./Buttons.css";
 import EditImageTabList from "./../EditImageTabList/EditImageTabList";
 
-
 import PropTypes from "prop-types";
 import Alert from "../Alert/Alert";
 
@@ -121,14 +120,13 @@ const Buttons = ({
         setShowAlert({
           showAlert: true,
           message: "Image Successfully Saved to Coverpage",
-        })
+        });
         setTimeout(() => {
           setShowAlert({
             showAlert: false,
             message: "",
           }); // Hide the alert after 3 seconds
         }, 3000);
-        
       };
       reader.readAsDataURL(uploadedFileRef.current);
     } else if (url) {
@@ -137,14 +135,13 @@ const Buttons = ({
       setShowAlert({
         showAlert: true,
         message: "Image Successfully Uploaded to Coverpage ! ",
-      })
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
           message: "",
         }); // Hide the alert after 3 seconds
       }, 3000);
-      
     } else {
       console.log("No image uploaded or URL provided to save.");
     }
@@ -210,7 +207,6 @@ const Buttons = ({
   );
   return (
     <>
-
       <input
         type="file"
         accept="image/*,video/*"
@@ -219,7 +215,7 @@ const Buttons = ({
         onChange={handleFileChange}
       />
       <div className="Buttons-super-container-for-all-Buttons-Photo">
-      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
+        {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
         <div className="Buttons-main-contianer-for-unorder-list-container">
           <ul className="Buttons-unorderlist-container">
             <li>

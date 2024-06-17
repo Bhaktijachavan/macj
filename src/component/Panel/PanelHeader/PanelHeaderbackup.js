@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
 import Header from "../../Header/Header";
 import { useLocation } from "react-router-dom";
 import { PanalSelect } from "../../Function/function";
@@ -7,49 +8,24 @@ import { useEditTempContext } from "../../../Context";
 
 const PanelHeader = () => {
   const location = useLocation();
-  const [activePanelKey, setActivePanelKey] = useState(null);
-  const [selectedPanel, setSelectedPanel] = useState(null);
-  const { showComment } = useEditTempContext();
+  const [activePanel, setActivePanel] = useState(null);
   const state = location.state;
+  console.log("headerdata", state);
 
-  useEffect(() => {
-    // Check if there's saved state in localStorage
-    const savedActivePanelKey = localStorage.getItem("activePanelKey");
-    const savedPanelData = localStorage.getItem("selectedPanelData");
+  const [selectedPanel, setSelectedPanel] = useState(null);
+  const { showComment, setShowComment } = useEditTempContext();
 
-    if (savedActivePanelKey && savedPanelData) {
-      setActivePanelKey(savedActivePanelKey);
-      const panelData = JSON.parse(savedPanelData);
-      const panelNumber = parseInt(panelData?.Radiopanal);
-      const panelComponent = PanalSelect(panelNumber, panelData);
-      setSelectedPanel(panelComponent);
-    }
-
-    // Clear localStorage after loading the state
-    localStorage.removeItem("activePanelKey");
-    localStorage.removeItem("selectedPanelData");
-  }, []);
-
-  const handleButtonClick = (key, panelNumber, panelData) => {
-    console.log("handleButtonClick called with:", key, panelNumber, panelData);
-
-    // Store state in localStorage before reloading
-    localStorage.setItem("activePanelKey", key);
-    localStorage.setItem("selectedPanelData", JSON.stringify(panelData));
-
-    // Reload the page
-    window.location.reload();
+  const handleButtonClick = (panelNumber, panelData) => {
+    const panelComponent = PanalSelect(panelNumber, panelData);
+    setSelectedPanel(panelComponent);
+    setActivePanel(panelNumber);
   };
-
-  // useEffect(() => {
-  //   console.log("selectedPanel updated:", selectedPanel);
-  // }, [selectedPanel]);
 
   return (
     <>
       <div>
         <Header />
-        <div className="panelheader flex border-b border-black">
+        <div className="panelheader flex border-b  border-black">
           <div>
             <div>
               <ul
@@ -59,16 +35,18 @@ const PanelHeader = () => {
                 {state &&
                   Object.keys(state).map((key) => {
                     const panelData = state[key];
+                    console.log("panelData", panelData);
                     const panelNumber = parseInt(panelData?.Radiopanal);
+                    console.log("panelNumber", panelNumber);
                     return (
                       <li key={key}>
                         <button
                           onClick={() =>
-                            handleButtonClick(key, panelNumber, panelData)
+                            handleButtonClick(panelNumber, panelData)
                           }
                           className={
-                            "border-r-2 border-black " +
-                            (key === activePanelKey
+                            "border-r-2 border-black  " +
+                            (panelNumber === activePanel
                               ? " bg-gray-300 text-black"
                               : "")
                           }
@@ -90,9 +68,6 @@ const PanelHeader = () => {
               flex: 1,
               flexDirection: "row",
               flexWrap: "wrap",
-              padding: "10px",
-              border: "1px solid black",
-              marginTop: "10px",
             }}
           >
             {selectedPanel}
@@ -102,5 +77,4 @@ const PanelHeader = () => {
     </>
   );
 };
-
 export default PanelHeader;

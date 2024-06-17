@@ -52,3 +52,9 @@
   cursor: pointer;
   color: white;
 }
+::selection {
+  background: "" #2e95d3 "";
+}
+::comment {
+  background: "" #2e95d3 "";
+}

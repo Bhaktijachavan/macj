@@ -403,7 +403,7 @@ function CoverPageDesigner({ onClose }) {
     setAddedImages([]); // Reset added images
     setSelectedObjects([]); // Reset selected objects
     setSelectedCheckboxContents([]); // Reset selected checkbox contents
-
+    setCompanyLogo("");
     // Reset any other states that hold changes if needed
 
     // Optionally, you can also reset the checkbox states to their initial values
@@ -602,7 +602,7 @@ function CoverPageDesigner({ onClose }) {
                         />
                         Inspection Signature
                       </label>
-                      <label className="flex items-center gap-2">
+                      {/* <label className="flex items-center gap-2">
                         <input
                           checked
                           type="checkbox"
@@ -612,7 +612,7 @@ function CoverPageDesigner({ onClose }) {
                           }
                         />
                         Agent Photo
-                      </label>
+                      </label> */}
                       {/* ... Add more checkboxes for other template components */}
                     </div>
                   </fieldset>

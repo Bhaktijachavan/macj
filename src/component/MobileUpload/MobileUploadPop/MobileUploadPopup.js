@@ -3,6 +3,7 @@ import "./MobileUploadPopup.css";
 import img from "../../../Assets/icons/icons8-download-from-the-cloud-48.png";
 import image1 from "../../../Assets/icons/icons8-delete-16.png";
 import axios from "axios";
+import axios from "axios";
 import Alert from "../../Alert/Alert";
 
 const MobileUploadPopup = ({ onClose }) => {
@@ -49,9 +50,13 @@ const MobileUploadPopup = ({ onClose }) => {
   return (
     <div className="container-for-the-mobileuploadpopup">
       {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
+      {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
       <div className="width-set-for-the-mobileuploadpopup">
         <div className="close-button-and-mobileuploadpopup-header-for-popup-box">
           <p>Manage Inspections in Cloud</p>
+          <p className="close-btn-mobileuploadpopup" onClick={onClose}>
+            X
+          </p>
           <p className="close-btn-mobileuploadpopup" onClick={onClose}>
             X
           </p>

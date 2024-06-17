@@ -67,7 +67,54 @@ const ColorPalette = ({ onClose }) => {
     top: 0,
     left: 0,
   });
+  const [submenus, setSubmenus] = useState([]);
+  const [menuDate, setMenuDate] = useState({});
+  const tabNames = [];
 
+  useEffect(() => {
+    // Step 1: Retrieve menuData from localStorage
+    const menuDataString = localStorage.getItem("menuData");
+    if (!menuDataString) {
+      return;
+    }
+
+    // Step 2: Parse menuData and set it to the state
+    const parsedMenuData = JSON.parse(menuDataString);
+    setMenuDate(parsedMenuData);
+    // console.log("parsedMenuData ", parsedMenuData);
+
+    // Extract submenus from parsedMenuData
+
+    for (const key in parsedMenuData) {
+      const menuItem = parsedMenuData[key];
+      const subdetails = menuItem.subdetails;
+
+      for (const subKey in subdetails) {
+        const subdetail = subdetails[subKey];
+
+        for (const key in subdetail) {
+          const subkey = subdetail[key];
+          if (subkey) {
+            if (subkey && subkey.damage1) {
+              tabNames.push(subkey.damage1);
+            }
+            if (subkey && subkey.damage2) {
+              tabNames.push(subkey.damage2);
+            }
+            if (subkey && subkey.selection1) {
+              tabNames.push(subkey.selection1);
+            }
+            if (subkey && subkey.selection2) {
+              tabNames.push(subkey.selection2);
+            }
+          }
+        }
+      }
+    }
+
+    // console.log(tabNames);
+    setSubmenus(tabNames);
+  }, []);
   // Function to handle color change
   const handleColorChange = (id, column, color) => {
     setRowColors((prevColors) =>
@@ -163,17 +210,23 @@ const ColorPalette = ({ onClose }) => {
     if (storedMenuData) {
       try {
         const parsedMenuData = JSON.parse(storedMenuData);
+        // console.log(parsedMenuData);
         setMenuData(parsedMenuData);
         setDummyData(parsedMenuData);
 
-        // Accessing the properties directly as per the JSON structure
-        const name = parsedMenuData[1].name;
-
-        // console.log("Name:", name);
-
-        // console.log("subitems", parsedMenuData[1].subitems[0].si);
-
-        Object.keys(parsedMenuData).map((key) => console.log("hello "));
+        {
+          Object.keys(parsedMenuData).map((key) =>
+            Object.keys(parsedMenuData[key].subdetails).map((subKey) =>
+              Object.keys(parsedMenuData[key].subdetails[subKey]).map(
+                (mainkey) =>
+                  console.log(
+                    "damagedata",
+                    parsedMenuData[key].subdetails[subKey][mainkey].tabname
+                  )
+              )
+            )
+          );
+        }
       } catch (error) {
         console.error("Error parsing JSON:", error);
       }
@@ -203,6 +256,7 @@ const ColorPalette = ({ onClose }) => {
     // Fetch menu data from localStorage
     const menuData = localStorage.getItem("menuData");
     // console.log("menuData", menuData);
+    const Checkboxes = localStorage.getItem("checkbox");
 
     if (content) {
       // Modify the content to include border, page heading, and adjust page height
@@ -414,8 +468,23 @@ Throughout the report we utilize icons to make things easier to find and read. U
   }
 
   function addTableOfContents(pdf, parsedMenuData) {
+    // Retrieve stored data
+    const storedData = JSON.parse(localStorage.getItem("CreateEditText"));
+    let storedDatakey = "";
+    let storedDatavalue = "";
+
+    // Loop through storedData to find the relevant key-value pair
+    Object.keys(storedData).forEach((key) => {
+      if (key === "Table of Content") {
+        storedDatakey = key;
+        console.log("storedDatakey", storedDatakey);
+        storedDatavalue = storedData[key].text;
+        console.log("storedDatavalue", storedDatavalue);
+      }
+    });
+
     // Set font size and text color
-    let currentYPosition = 20; // Initial vertical position for text placement
+    let currentYPosition = 15; // Initial vertical position for text placement
     let currentXPosition = 5;
     let tabCounter = 1;
     const tableData = [["Table of Contents"]];
@@ -423,6 +492,15 @@ Throughout the report we utilize icons to make things easier to find and read. U
     const fontColor = "black";
     pdf.setFontSize(fontSize);
     pdf.setTextColor(fontColor);
+
+    // Add storedDatavalue if storedDatakey is "Table of Content"
+    if (storedDatakey === "Table of Content") {
+      const editTextLines = pdf.splitTextToSize(storedDatavalue, 194);
+      editTextLines.forEach((line) => {
+        pdf.text(line, currentXPosition, currentYPosition);
+        currentYPosition += 8; // Adjust vertical position after adding each line of text
+      });
+    }
 
     // Loop through each item in parsedMenuData
     Object.values(parsedMenuData).forEach((item, index) => {
@@ -447,6 +525,7 @@ Throughout the report we utilize icons to make things easier to find and read. U
         tabCounter++;
       });
     });
+
     const tableOptions = {
       startY: currentYPosition,
       startX: currentXPosition,
@@ -482,7 +561,16 @@ Throughout the report we utilize icons to make things easier to find and read. U
   function mainData(pdf) {
     const mainData = JSON.parse(localStorage.getItem("menuData") || "{}");
     const selectionDataString = localStorage.getItem("SelectionData") || "{}";
+
     const Selection = JSON.parse(selectionDataString);
+    // console.log("Selection", Selection);
+
+    let selectionkey = "";
+    Object.keys(Selection).forEach((key) => {
+      selectionkey = key;
+    });
+
+    const storedData = JSON.parse(localStorage.getItem("CreateEditText"));
 
     let startY = 35;
     let prevSubKey = null;
@@ -518,7 +606,7 @@ Throughout the report we utilize icons to make things easier to find and read. U
     const coverphotoImageData = JSON.parse(
       localStorage.getItem("coverphotoImage") || "{}"
     );
-    console.log("coverphotoImageData", coverphotoImageData);
+    // console.log("coverphotoImageData", coverphotoImageData);
     const imagekeys = Object.keys(coverphotoImageData);
 
     for (const key in mainData) {
@@ -541,6 +629,8 @@ Throughout the report we utilize icons to make things easier to find and read. U
     const damageDataString = localStorage.getItem("DamageData") || "{}";
     const damageData = JSON.parse(damageDataString);
     Object.keys(damageData).forEach((key, index) => {
+      const damagekey = key;
+
       const damageObject = damageData[key];
       const damageObjectkey = key.replace("_d1", "").replace("_d2", "");
 
@@ -577,6 +667,23 @@ Throughout the report we utilize icons to make things easier to find and read. U
 
                       // Add item_id to PDF
                       pdf.text(item_subName, 10, startY - 10);
+                      pdf.setFontSize(14);
+                      if (storedData[damagekey]) {
+                        const editText = storedData[damagekey].text;
+                        const editTextLines = pdf.splitTextToSize(
+                          editText,
+                          194
+                        );
+                        drawTextBlock(editTextLines);
+                      }
+                      if (storedData[selectionkey]) {
+                        const editText = storedData[selectionkey].text;
+                        const editTextLines = pdf.splitTextToSize(
+                          editText,
+                          194
+                        );
+                        drawTextBlock(editTextLines);
+                      }
                       pdf.setFillColor(180, 180, 184);
                       pdf.rect(9, startY - 6, 194, 8, "F");
                       pdf.setTextColor(0, 0, 0);
@@ -593,7 +700,12 @@ Throughout the report we utilize icons to make things easier to find and read. U
                         let selectionText =
                           Selection[`${subKey}_s1`]?.selectionText ||
                           Selection[`${subKey}_s2`]?.selectionText;
-                        const materialsText = `MATERIALS: ${selectionText}`;
+                        let selecText =
+                          Selection[`${subKey}_s1`]?.description ||
+                          Selection[`${subKey}_s2`]?.description;
+                        let secdef = selecText ? selecText : "MATERIALS";
+
+                        const materialsText = `${secdef}: ${selectionText}`;
                         const materialsLines = pdf.splitTextToSize(
                           materialsText,
                           194
@@ -604,9 +716,13 @@ Throughout the report we utilize icons to make things easier to find and read. U
                       const ratText = `RATINGS: ${Object.values(
                         damageObject.rating
                       ).join(", ")}`;
-                      const descText = `DESCRIPTION: ${damageObject.description}`;
-                      const obsText = `OBSERVATIONS: ${damageObject.Damage1black}`;
-                      const improveText = `IMPROVE: ${damageObject.Damage1red}`;
+                      // const descText = `DESCRIPTION: ${damageObject.description}`;
+                      const descText = damageObject.description
+                        ? damageObject.description
+                        : "OBSERVATIONS";
+
+                      const obsText = `${descText}: ${damageObject.Damage1black}`;
+                      const improveText = `${descText}: ${damageObject.Damage1red}`;
                       pdf.setTextColor(0, 0, 0);
                       pdf.setFontSize(12);
                       const descLines = pdf.splitTextToSize(descText, 194);
@@ -637,13 +753,12 @@ Throughout the report we utilize icons to make things easier to find and read. U
                       const imageHeight = 60;
                       let imagesAdded = false;
 
-                      if (coverphotoImageData[subKey]) {
-                        coverphotoImageData[subKey].forEach((imageItem) => {
+                      if (coverphotoImageData[damagekey]) {
+                        coverphotoImageData[damagekey].forEach((imageItem) => {
                           const remainingSpace =
                             pageHeight - startY - marginBottom;
                           const requiredSpace =
-                            imageHeight + lineHeight + gapBetweenSections; // Image height + caption height + gap
-
+                            imageHeight + lineHeight + gapBetweenSections;
                           if (requiredSpace > remainingSpace) {
                             pdf.addPage();
                             startY = 50;
@@ -694,9 +809,22 @@ Throughout the report we utilize icons to make things easier to find and read. U
     const damageDataStrings = localStorage.getItem("DamageData");
     const damageData = JSON.parse(damageDataStrings || "{}");
     const menuDataa = JSON.parse(localStorage.getItem("menuData") || "{}");
-    const tabledata = localStorage.getItem("summarydataString") || "";
 
-    const textHeight = pdf.getTextDimensions(tabledata, {
+    const storedData = JSON.parse(localStorage.getItem("CreateEditText"));
+    let storedDatakey = "";
+    let storedDatavalue = "";
+
+    // Loop through storedData to find the relevant key-value pair
+    Object.keys(storedData).forEach((key) => {
+      if (key === "Summary") {
+        storedDatakey = key;
+        console.log("storedDatakey", storedDatakey);
+        storedDatavalue = storedData[key].text;
+        console.log("storedDatavalue", storedDatavalue);
+      }
+    });
+
+    const textHeight = pdf.getTextDimensions(storedDatavalue, {
       maxWidth: 210, // Adjust the maxWidth according to your page width
       align: "left",
     }).h;
@@ -707,10 +835,10 @@ Throughout the report we utilize icons to make things easier to find and read. U
     // Position the addSummaryTable() below the textWithLink() with a dynamic gap
     const baseY = textHeight + verticalGap + 18;
     const baseX = verticalGap + 18;
-    const addSummaryTableY = tabledata ? baseY : baseX;
+    const addSummaryTableY = storedDatavalue ? baseY : baseX;
     // Add the textWithLink() with dynamic gap
     pdf.setFontSize(12);
-    pdf.textWithLink(tabledata, 14, 40, {
+    pdf.textWithLink(storedDatavalue, 14, 40, {
       maxWidth: 185, // Adjust the maxWidth according to your page width
       align: "left",
     });
@@ -809,7 +937,7 @@ Throughout the report we utilize icons to make things easier to find and read. U
   const getDataLocal = () => {
     const data = localStorage.getItem("menuData");
     const reportData = JSON.parse(data);
-    console.log("report data ", reportData);
+    // console.log("report data ", reportData);
     setLocalStorageData(reportData);
   };
 
@@ -848,7 +976,7 @@ hover:text-white"
             </div>
 
             <div className="flex">
-              <div>
+              <div className="overflow-auto h-[40em]">
                 <table
                   className="w-full"
                   style={{
