@@ -34,7 +34,7 @@ const InternetLogin = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:7000/api/executive/login",
+        "http://node-backend.macj-abuyerschoice.com/api/executive/login",
         {
           email,
           password,

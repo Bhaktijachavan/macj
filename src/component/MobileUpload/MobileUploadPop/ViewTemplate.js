@@ -34,7 +34,7 @@ const ViewTemplate = ({ onClose }) => {
     return;
    }
    try {
-    const response = await axios.get('http://localhost:7000/api/template');
+    const response = await axios.get('http://node-backend.macj-abuyerschoice.com/api/template');
     if (response.status === 200) {
       setTemplateData(response.data.data);
     }
@@ -82,7 +82,7 @@ const ViewTemplate = ({ onClose }) => {
     }
     try {
       // Send selectedInspectionIds array to the server for deletion
-      const response = await axios.delete('http://localhost:7000/api/template', {
+      const response = await axios.delete('http://node-backend.macj-abuyerschoice.com/api/template', {
         data: { templateIds: selectedInspectionIds } // Sending data in the request body
       });
       console.log("Response from server:", response.data);
@@ -141,7 +141,7 @@ const ViewTemplate = ({ onClose }) => {
                     <td className="border px-4 py-2">{data.TemplateName || ""}</td>
                     <td className="border px-4 py-2">{data.description || ""}</td>
                     <td className="border px-4 py-2">
-                      <button className="text-blue-500 hover:text-blue-700" onClick={() => window.open(data.pdf, '_blank')}>
+                      <button className="text-blue-500 hover:text-blue-700" onClick={() => window.open(data.pdf, '_self')}>
                         Download
                       </button>
                     </td>

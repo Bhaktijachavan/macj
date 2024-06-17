@@ -5,6 +5,7 @@ import "./CoverPhotoPage.css";
 
 const CoverPhotoPage = () => {
   const uploadedImage = localStorage.getItem("uploadedImage");
+  const clientInfoImage = localStorage.getItem("clientInfoImage"); // Retrieve clientInfoImage
   const [imageSize, setImageSize] = useState({ width: 300, height: 300 }); // Initial size
 
   useEffect(() => {
@@ -23,7 +24,23 @@ const CoverPhotoPage = () => {
 
   return (
     <div className="content-for-the-cover-photo-check-box">
-      {uploadedImage ? (
+      {clientInfoImage ? ( // Check if clientInfoImage exists
+        <ResizableBox
+          width={imageSize.width}
+          height={imageSize.height}
+          minConstraints={[100, 100]} // Minimum size
+          maxConstraints={[800, 800]} // Maximum size
+          onResize={handleResize}
+          resizeHandles={["se"]} // Only allow resizing from the bottom right corner
+        >
+          <img
+            src={clientInfoImage} // Use clientInfoImage instead of uploadedImage
+            alt="Cover Photo"
+            className="content-for-the-cover-photo-check-box-image"
+            style={{ width: "100%", height: "100%" }}
+          />
+        </ResizableBox>
+      ) : uploadedImage ? (
         <ResizableBox
           width={imageSize.width}
           height={imageSize.height}
@@ -47,50 +64,3 @@ const CoverPhotoPage = () => {
 };
 
 export default CoverPhotoPage;
-
-// import React from "react";
-// import "./CoverPhotoPage.css";
-
-// const CoverPhotoPage = () => {
-//   const uploadedImage = localStorage.getItem("uploadedImage");
-
-//   return (
-//     <>
-//       <div className="content-for-the-cover-photo-check-box">
-//         {uploadedImage ? (
-//           <img
-//             src={uploadedImage}
-//             alt="Cover Photo"
-//             className="content-for-the-cover-photo-check-box-image-height-width"
-//           />
-//         ) : (
-//           "Cover Photo"
-//         )}
-//       </div>
-//     </>
-//   );
-// };
-
-// export default CoverPhotoPage;
-
-// import React from "react";
-// import "./CoverPhotoPage.css";
-
-// const CoverPhotoPage = () => {
-//   const uploadedImage = localStorage.getItem("uploadedImage");
-//   const coverphotoImage = localStorage.getItem("coverphotoImage");
-
-//   return (
-//     <div className="content-for-the-cover-photo-check-box">
-//       {uploadedImage ? (
-//         <img src={uploadedImage} alt="Uploaded Image" />
-//       ) : coverphotoImage ? (
-//         <img src={coverphotoImage} alt="Cover Photo" />
-//       ) : (
-//         "No photo available"
-//       )}
-//     </div>
-//   );
-// };
-
-// export default CoverPhotoPage;

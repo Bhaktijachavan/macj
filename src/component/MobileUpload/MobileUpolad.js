@@ -73,7 +73,7 @@ const MobileUpload = ({ onClose }) => {
       formData.append("description", description);
       formData.append("pdf", selectedFile);
   
-      const response = await axios.post("http://localhost:7000/api/template/upload", formData);
+      const response = await axios.post("http://node-backend.macj-abuyerschoice.com/api/template/upload", formData);
   
       console.log(response.data);
   

@@ -10,13 +10,12 @@ import imageCompression from "browser-image-compression";
 import Alert from "../Alert/Alert";
 
 const Book = () => {
-//alerts 
-const [showAlert, setShowAlert] = useState({
-  showAlert: false,
-  message: "",
-  color : "",
-
-});
+  //alerts
+  const [showAlert, setShowAlert] = useState({
+    showAlert: false,
+    message: "",
+    color: "",
+  });
   const [formData, setFormData] = useState({
     agentlastname: "",
     firstName: "",
@@ -93,7 +92,7 @@ const [showAlert, setShowAlert] = useState({
         setShowAlert({
           showAlert: true,
           message: "file has been uploaded succesfully ",
-        })
+        });
         setTimeout(() => {
           setShowAlert({
             showAlert: false,
@@ -103,11 +102,10 @@ const [showAlert, setShowAlert] = useState({
         setSelectedFile(null);
       }, 2000);
     } else {
-      
       setShowAlert({
         showAlert: true,
         message: "Please select a file to upload",
-      })
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
@@ -121,12 +119,15 @@ const [showAlert, setShowAlert] = useState({
     setIsUploading(false);
     setSelectedFile(null);
   };
+
   useEffect(() => {
-    localStorage.setItem("formData", JSON.stringify(tableData));
-  }, [tableData]);
-  useEffect(() => {
-    const existingData = JSON.parse(localStorage.getItem("formData")) || [];
-    setTableData(existingData);
+    // Fetch data from localStorage
+    const formData = localStorage.getItem("formData");
+    if (formData) {
+      // Parse JSON string into an array of objects
+      const parsedFormData = JSON.parse(formData);
+      setTableData(parsedFormData);
+    }
   }, []);
 
   // const handleSave = () => {
@@ -279,7 +280,7 @@ const [showAlert, setShowAlert] = useState({
         <div class="basis-1/1 ml-4">
           <div className="box1-book flex ">
             <form className="formcont-book ">
-            {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
+              {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
               <h1 className="text-book text-lg">
                 Real Estate Agent Information
               </h1>
@@ -769,9 +770,9 @@ const [showAlert, setShowAlert] = useState({
                 </tr>
               </thead>
               <tbody>
-                {tableData.map((data) => (
+                {tableData.map((data, index) => (
                   <tr
-                    key={data.id}
+                    key={data.id} // Assuming data.id is unique
                     onClick={() => setSelectedAgentId(data.id)}
                     className={`cursor-pointer ${
                       selectedAgentId === data.id
@@ -789,7 +790,7 @@ const [showAlert, setShowAlert] = useState({
                       {data.Company}
                     </td>
                     <td style={{ border: "1px solid black" }}>
-                      {data.workPhone}
+                      {data.HomePhone}
                     </td>
                   </tr>
                 ))}

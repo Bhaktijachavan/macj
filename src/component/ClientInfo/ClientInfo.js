@@ -16,7 +16,7 @@ const ClientInfo = () => {
     city: "",
     state: "",
     zipCode: "",
-    agent: "macj-home-inspector",
+    agent: "macj-home-inspector", // Set the default agent here
     dateOfInspection: "",
     timeOfInspection: "",
     ageOfHome: "",
@@ -26,13 +26,20 @@ const ClientInfo = () => {
     otherInfo: "",
   });
 
+  const [agents, setAgents] = useState([]);
+
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("clientInfoData"));
-    if (data) {
-      setFormData(data);
+    const clientInfoData = JSON.parse(localStorage.getItem("clientInfoData"));
+    if (clientInfoData) {
+      setFormData(clientInfoData);
+    }
+
+    const formData = JSON.parse(localStorage.getItem("formData"));
+    if (formData) {
+      setAgents(formData);
     }
   }, []);
-  // Filter out empty fields
+
   const nonEmptyFields = Object.entries(formData).reduce(
     (acc, [key, value]) => {
       if (value !== "") {
@@ -42,18 +49,18 @@ const ClientInfo = () => {
     },
     {}
   );
+
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
     message: "",
   });
+
   const hanndleSaveToLocalStorage = (event) => {
     event.preventDefault();
 
     const { firstName, lastName, email, phone } = formData;
 
     if (!firstName || !lastName || !email || !phone) {
-      // alert("Incomplete data. Please fill in all required fields.");
-      // window.alert("Please fill in all required fields.");
       setShowAlert({
         showAlert: true,
         message: "Incomplete data. Please fill in all required fields.",
@@ -62,16 +69,16 @@ const ClientInfo = () => {
         setShowAlert({
           showAlert: false,
           message: "",
-        }); // Hide the alert after 3 seconds
+        });
       }, 4000);
 
       return;
     }
 
-    // Convert the object to a string and store it in local storage
     localStorage.setItem("clientInfoData", JSON.stringify(formData));
     setpop(true);
   };
+
   const [pop, setpop] = useState(false);
 
   const handleInputChange = useCallback((e) => {
@@ -94,7 +101,7 @@ const ClientInfo = () => {
       city: "",
       state: "",
       zipCode: "",
-      agent: "macj-home-inspector",
+      agent: "macj-home-inspector", // Reset to default agent here
       dateOfInspection: "",
       timeOfInspection: "",
       ageOfHome: "",
@@ -104,22 +111,21 @@ const ClientInfo = () => {
       otherInfo: "",
     });
     localStorage.removeItem("clientInfoData");
-    // No need to reload the page here
 
-    // Return true to indicate form was cleared
     return true;
   };
+
   const handleClearForm = () => {
     if (clearForm()) {
       setShowAlert({
         showAlert: true,
         message: "Form data is cleared now",
-      }); // Show the alert
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
           message: "",
-        }); // Hide the alert after 3 seconds
+        });
       }, 4000);
     }
   };
@@ -147,7 +153,6 @@ const ClientInfo = () => {
         </div>
       )}
       <div>
-        {/* <Header /> */}
         <Header />
       </div>
       {showAlert.showAlert && <Alert>{showAlert.message}</Alert>}
@@ -312,7 +317,14 @@ const ClientInfo = () => {
             value={formData.agent}
             onChange={handleInputChange}
           >
-            <option value="macj-home-inspector">macj-home-inspector</option>
+            {agents.map((agent) => (
+              <option
+                key={agent.id}
+                value={`${agent.firstName} ${agent.agentlastname}`}
+              >
+                {agent.firstName} {agent.agentlastname}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -324,7 +336,7 @@ const ClientInfo = () => {
             type="date"
             className="input-for-form"
             id="inputdate"
-            name="dateOfInspection" // Corrected property name
+            name="dateOfInspection"
             value={formData.dateOfInspection}
             onChange={handleInputChange}
           />

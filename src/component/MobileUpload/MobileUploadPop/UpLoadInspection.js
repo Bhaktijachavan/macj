@@ -59,7 +59,7 @@ const UploadInspectionPopup = ({ onClose }) => {
         }
       });
 
-      const response = await axios.post('http://localhost:7000/api/inspection/upload', formData, {
+      const response = await axios.post('http://node-backend.macj-abuyerschoice.com/api/inspection/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -47,8 +47,9 @@ const Header = ({ onButtonClick }) => {
   const [batchAddPhotosPopup, setBatchAddPhotosPopup] = useState(false);
   const [coverPageDesignPopup, setCoverPageDesignPopup] = useState(false);
   const [editDocumentPopup, setEditDocumentPopup] = useState(false);
-  const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] =
-    useState(false);
+  const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] = useState(
+    false
+  );
   const [activePopup, setActivePopup] = useState(null);
   const [colorPaletPopup, setOpenColorPaletPopup] = useState(false);
   const [pastedText, setPastedText] = useState("");
@@ -167,101 +168,46 @@ const Header = ({ onButtonClick }) => {
       const encryptedData = await readFileAsText(file);
       const decryptedData = decryptData(encryptedData, encryptionKey);
       console.log("decryptedData ", decryptedData);
-      if (
-        decryptedData.clientInfoData !== null &&
-        decryptedData.clientInfoData !== undefined
-      ) {
-        localStorage.setItem(
-          "clientInfoData",
-          JSON.stringify(decryptedData.clientInfoData)
-        );
-      }
-      if (
-        decryptedData.TempPanelData !== null &&
-        decryptedData.TempPanelData !== undefined
-      ) {
-        localStorage.setItem(
-          "TempPanelData",
-          JSON.stringify(decryptedData.TempPanelData)
-        );
-      }
-      if (
-        decryptedData.SelectionData !== null &&
-        decryptedData.SelectionData !== undefined
-      ) {
-        localStorage.setItem(
-          "SelectionData",
-          JSON.stringify(decryptedData.SelectionData)
-        );
-      }
-      if (
-        decryptedData.DamageData !== null &&
-        decryptedData.DamageData !== undefined
-      ) {
-        localStorage.setItem(
-          "DamageData",
-          JSON.stringify(decryptedData.DamageData)
-        );
-      }
-      if (
-        decryptedData.coverphotoImage !== null &&
-        decryptedData.coverphotoImage !== undefined
-      ) {
-        localStorage.setItem(
-          "coverphotoImage",
-          JSON.stringify(decryptedData.coverphotoImage)
-        );
-      }
-      if (
-        decryptedData.uploadedImage !== null &&
-        decryptedData.uploadedImage !== undefined
-      ) {
-        localStorage.setItem("uploadedImage", decryptedData.uploadedImage);
-      }
-      if (
-        decryptedData.menuData !== null &&
-        decryptedData.menuData !== undefined
-      ) {
-        localStorage.setItem(
-          "menuData",
-          JSON.stringify(decryptedData.menuData)
-        );
-      }
-      if (
-        decryptedData.outputContent !== null &&
-        decryptedData.outputContent !== undefined
-      ) {
-        localStorage.setItem("outputContent", decryptedData.outputContent);
-      }
-      if (
-        decryptedData.ratingsData !== null &&
-        decryptedData.ratingsData !== undefined
-      ) {
-        localStorage.setItem(
-          "ratingsData",
-          JSON.stringify(decryptedData.ratingsData)
-        );
+
+      const setLocalStorageItem = (key, value) => {
+        if (value !== null && value !== undefined) {
+          if (typeof value === "object" && !Array.isArray(value)) {
+            // Ensure value is an object but not an array
+            localStorage.setItem(key, JSON.stringify(value));
+          } else {
+            localStorage.setItem(key, value);
+          }
+        }
+      };
+
+      setLocalStorageItem("clientInfoData", decryptedData.clientInfoData);
+      setLocalStorageItem("TempPanelData", decryptedData.TempPanelData);
+      setLocalStorageItem("SelectionData", decryptedData.SelectionData);
+      setLocalStorageItem("DamageData", decryptedData.DamageData);
+      setLocalStorageItem("uploadedImage", decryptedData.uploadedImage);
+      setLocalStorageItem("menuData", decryptedData.menuData);
+      setLocalStorageItem("outputContent", decryptedData.outputContent);
+      setLocalStorageItem("ratingsData", decryptedData.ratingsData);
+
+      // Handle clientInfoImage specifically
+      if (decryptedData.clientInfoImage) {
+        // Assuming clientInfoImage is a base64 encoded string
+        setLocalStorageItem("clientInfoImage", decryptedData.clientInfoImage);
       }
 
-      
-      
-      
-      
       setShowAlert({
         showAlert: true,
-        message: "Inpection opens successfully wait for 3 sec .",
-      })
+        message: "Inspection opens successfully, wait for 3 sec.",
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
           message: "",
-        }); 
+        });
       }, 4000);
-      
-      
+
       setTimeout(() => {
-        window.location.reload()
-        
+        window.location.reload();
       }, 3000);
     }
   };
@@ -294,22 +240,22 @@ const Header = ({ onButtonClick }) => {
       setShowAlert({
         showAlert: true,
         message: "Incomplete data. Please fill in all required fields.",
-      })
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
           message: "",
         }); // Hide the alert after 3 seconds
       }, 4000);
-      return ;
+      return;
     }
     const menuData = JSON.parse(getTemp);
     const TempPanelData = JSON.parse(getPanalData);
-    const ratingsData= JSON.parse(ratingsData1);
+    const ratingsData = JSON.parse(ratingsData1);
     const tempData = {
       menuData,
       TempPanelData,
-      ratingsData
+      ratingsData,
     };
     const encryptedData = encryptData(tempData, encryptionKey);
     downloadFileTpz(encryptedData);
@@ -329,11 +275,11 @@ const Header = ({ onButtonClick }) => {
       localStorage.setItem(
         "ratingsData",
         JSON.stringify(decryptedData.ratingsData)
-      )
+      );
       setShowAlert({
         showAlert: true,
         message: "successfully opened tpz file .",
-      })
+      });
       setTimeout(() => {
         setShowAlert({
           showAlert: false,
