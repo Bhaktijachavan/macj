@@ -16,7 +16,7 @@ const ClientInfo = () => {
     city: "",
     state: "",
     zipCode: "",
-    agent: "macj-home-inspector", // Set the default agent here
+    agent: "",
     dateOfInspection: "",
     timeOfInspection: "",
     ageOfHome: "",
@@ -40,22 +40,12 @@ const ClientInfo = () => {
     }
   }, []);
 
-  const nonEmptyFields = Object.entries(formData).reduce(
-    (acc, [key, value]) => {
-      if (value !== "") {
-        acc[key] = value;
-      }
-      return acc;
-    },
-    {}
-  );
-
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
     message: "",
   });
 
-  const hanndleSaveToLocalStorage = (event) => {
+  const handleSaveToLocalStorage = (event) => {
     event.preventDefault();
 
     const { firstName, lastName, email, phone } = formData;
@@ -89,6 +79,15 @@ const ClientInfo = () => {
     }));
   }, []);
 
+  const handleAgentChange = (e) => {
+    const selectedAgentName = e.target.value;
+    console.log("Selected Agent:", selectedAgentName);
+    setFormData((prevState) => ({
+      ...prevState,
+      agent: e.target.value,
+    }));
+  };
+
   const clearForm = () => {
     setFormData({
       lastName: "",
@@ -101,7 +100,7 @@ const ClientInfo = () => {
       city: "",
       state: "",
       zipCode: "",
-      agent: "macj-home-inspector", // Reset to default agent here
+      agent: "",
       dateOfInspection: "",
       timeOfInspection: "",
       ageOfHome: "",
@@ -131,10 +130,10 @@ const ClientInfo = () => {
   };
 
   return (
-    <div className="main-container-clientinfo ">
+    <div className="main-container-clientinfo">
       {pop && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="relative max-w-md ">
+          <div className="relative max-w-md">
             <div className="popup">
               <div className="popup-content flex flex-col items-center content-center justify-center">
                 <h2 className="text-xl font-semibold mb-2">Inspection Saved</h2>
@@ -315,7 +314,7 @@ const ClientInfo = () => {
             id="inputagent"
             name="agent"
             value={formData.agent}
-            onChange={handleInputChange}
+            onChange={handleAgentChange}
           >
             {agents.map((agent) => (
               <option
@@ -346,7 +345,7 @@ const ClientInfo = () => {
             className="label"
             style={{ width: "11%", marginLeft: "5px" }}
           >
-            Time :
+            Time:
           </label>
           <input
             type="text"
@@ -419,12 +418,12 @@ const ClientInfo = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="inputagent" className="label">
+          <label htmlFor="inputotherinfo" className="label">
             Other Info:
           </label>
           <textarea
             className="input-for-form"
-            id="inputagent"
+            id="inputotherinfo"
             rows="4"
             name="otherInfo"
             value={formData.otherInfo}
@@ -435,7 +434,7 @@ const ClientInfo = () => {
       <div className="div-for-saving-the-data-to-the-localstorage-btn-client-info">
         <button
           className="for-saving-the-data-to-the-localstorage-btn-client-info"
-          onClick={hanndleSaveToLocalStorage}
+          onClick={handleSaveToLocalStorage}
         >
           Save
         </button>

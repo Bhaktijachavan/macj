@@ -23,7 +23,7 @@ const CoverPhotoPage = () => {
   };
 
   return (
-    <div className="content-for-the-cover-photo-check-box">
+    <div>
       {clientInfoImage ? ( // Check if clientInfoImage exists
         <ResizableBox
           width={imageSize.width}

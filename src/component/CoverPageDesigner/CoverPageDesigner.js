@@ -373,6 +373,7 @@ function CoverPageDesigner({ onClose }) {
   };
   const handleRemovePhoto = () => {
     const coverphoto = localStorage.removeItem("uploadedImage");
+    localStorage.removeItem("ClientInfoImage");
     if (coverphoto === null) {
       setShowAlert({
         showAlert: true,

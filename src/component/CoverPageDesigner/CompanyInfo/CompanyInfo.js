@@ -14,7 +14,7 @@ function CompanyInfo({ id }) {
     city: "",
     state: "",
     zipCode: "",
-    agent: "macj-home-inspector",
+    agent: "",
     dateOfInspection: "",
     timeOfInspection: "",
     ageOfHome: "",
@@ -111,6 +111,7 @@ function CompanyInfo({ id }) {
             {renderInputField("Time Of Inspection", "timeOfInspection")}
             {renderInputField("Date Of Inspection", "dateOfInspection")}
             {renderInputField("Age Of Home", "ageOfHome")}
+            {renderInputField("Agent", "agent")}
           </div>
           <div className="flex flex-col gap-[5px]">
             {editableText.lastName && (
