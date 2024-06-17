@@ -141,6 +141,7 @@ function CompanyInfo({ id, onDiscardChanges }) {
             {renderInputField("Time Of Inspection", "timeOfInspection")}
             {renderInputField("Date Of Inspection", "dateOfInspection")}
             {renderInputField("Age Of Home", "ageOfHome")}
+            {renderInputField("Agent Info", "agent")}
           </div>
           <div className="flex flex-col gap-[5px]">
             {editableText.lastName && (
