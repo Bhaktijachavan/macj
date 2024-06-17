@@ -41,6 +41,7 @@ function CoverPageDesigner({ onClose }) {
   const [uploadedLogo, setUploadedLogo] = useState(null);
   const uploadedImage = localStorage.getItem("uploadedImage");
   const [imageSize, setImageSize] = useState({ width: 300, height: 300 }); // Initial size
+  const [discardChanges, setDiscardChanges] = useState(false);
 
   useEffect(() => {
     // Optionally, you can retrieve saved image size from local storage or a backend service
@@ -307,7 +308,7 @@ function CoverPageDesigner({ onClose }) {
       // case "Company Logo":
       //   return <CheckboxContent2 />;
       case "Company Information":
-        return <CompanyInfo />;
+        return <CompanyInfo id="someId" key={discardChanges.toString()} />;
       case "Agent Information":
         return <AgentInformation />;
       // case "Cover Company":
@@ -405,6 +406,8 @@ function CoverPageDesigner({ onClose }) {
     setSelectedObjects([]); // Reset selected objects
     setSelectedCheckboxContents([]); // Reset selected checkbox contents
     setCompanyLogo("");
+    setDiscardChanges(!discardChanges);
+
     // Reset any other states that hold changes if needed
 
     // Optionally, you can also reset the checkbox states to their initial values
@@ -722,12 +725,24 @@ function CoverPageDesigner({ onClose }) {
                     >
                       Import Layout <br /> from File
                     </button>{" "}
-                    <button
+                    {/* <button
                       className="button-for-footer-for-changes-in-cover-page"
                       onClick={() => handleDiscardChanges()}
                     >
                       Discard <br /> Changes
-                    </button>
+                    </button> */}
+                    <div>
+                      {/* <CompanyInfo
+                        id="someId"
+                        key={discardChanges.toString()}
+                      /> */}
+                      <button
+                        onClick={handleDiscardChanges}
+                        className="button-for-footer-for-changes-in-cover-page"
+                      >
+                        Discard Changes
+                      </button>
+                    </div>
                     {/* {addedImages.map(({ id, height, width }) => (
                       <div key={id} className="image-adjustment-container">
                         <p className="font-bold">Resize the Logo(in pxl):</p>

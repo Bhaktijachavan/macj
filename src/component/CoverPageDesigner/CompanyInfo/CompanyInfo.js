@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 // import "./CompanyInfo.css";
 // import "./test.css";
 
-function CompanyInfo({ id }) {
+function CompanyInfo({ id, onDiscardChanges }) {
   const [editableText, setEditableText] = useState({
     firstName: "",
     lastName: "",
@@ -29,12 +29,51 @@ function CompanyInfo({ id }) {
     const clientInfoData = clientInfoDataString
       ? JSON.parse(clientInfoDataString)
       : {};
-    setEditableText(clientInfoData);
-  }, []);
 
-  const handleDragStart = (event) => {
-    event.dataTransfer.setData("text/plain", event.target.id);
-  };
+    // Destructure the clientInfoData object and set default values
+    const {
+      firstName = "",
+      lastName = "",
+      email = "",
+      phone = "",
+      fax = "",
+      inspectionAddress = "",
+      addressLine2 = "",
+      city = "",
+      state = "",
+      zipCode = "",
+      agent = "",
+      dateOfInspection = "",
+      timeOfInspection = "",
+      ageOfHome = "",
+      size = "",
+      inspectionFee = "",
+      weather = "",
+      otherInfo = "",
+    } = clientInfoData;
+
+    // Update the state with retrieved data
+    setEditableText({
+      firstName,
+      lastName,
+      email,
+      phone,
+      fax,
+      inspectionAddress,
+      addressLine2,
+      city,
+      state,
+      zipCode,
+      agent,
+      dateOfInspection,
+      timeOfInspection,
+      ageOfHome,
+      size,
+      inspectionFee,
+      weather,
+      otherInfo,
+    });
+  }, []);
 
   const handleInputChange = (key, value) => {
     setEditableText({
@@ -69,23 +108,14 @@ function CompanyInfo({ id }) {
 
   return (
     <>
-      {/* <div
-        id={id}
-        draggable="true"
-        onDragStart={handleDragStart}
-        className="draggable-text"
-      ></div> */}
-
       <div className="other-client-info-flex-direction flex flex-col ml-24 text-[13.3px]">
         <div className="flex items-center content-center justify-center">
           <div className="flex flex-col gap-[5px]">
             {editableText.firstName && (
               <section className="flex items-center">
-                {/* <label htmlFor="firstName">First Name:</label> */}
                 <p>First Name:</p>
                 <input
                   type="text"
-                  id="firstName"
                   value={editableText.firstName}
                   onChange={(e) =>
                     handleInputChange("firstName", e.target.value)
@@ -111,12 +141,10 @@ function CompanyInfo({ id }) {
             {renderInputField("Time Of Inspection", "timeOfInspection")}
             {renderInputField("Date Of Inspection", "dateOfInspection")}
             {renderInputField("Age Of Home", "ageOfHome")}
-            {renderInputField("Agent", "agent")}
           </div>
           <div className="flex flex-col gap-[5px]">
             {editableText.lastName && (
               <section className="flex items-center">
-                {" "}
                 <label htmlFor="">Last Name:</label>
                 <input
                   type="text"
