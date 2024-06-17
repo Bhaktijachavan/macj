@@ -71,7 +71,7 @@ const Caption = ({
     });
 
     // Debugging output to verify the content of damageCaptions before setting state
-    console.log("Processed damageCaptions:", damageCaptions);
+    // console.log("Processed damageCaptions:", damageCaptions);
 
     setDamageValue(damageCaptions);
   }, [id]);

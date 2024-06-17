@@ -41,35 +41,51 @@ function PhotoReviewTablist() {
     // alert("Do you want to clear all photos");
     setActiveTab("tab1"); // Set active tab to the default tab
   };
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const files = Array.from(e.target.files); // Convert FileList to array
 
-      // Extract URLs from files
-      const imageUrls = files.map((file) => URL.createObjectURL(file));
-
-      // Calculate the number of tabs needed
-      const numTabsToAdd = Math.ceil(imageUrls.length / 4);
-
-      // Create new tabs if needed and distribute images across them
-      let newTabs = [];
-      for (let i = 0; i < numTabsToAdd; i++) {
-        const newTabId = `tab${i + 1}`; // Ensure unique tab IDs
-        const newTabName = `Tab ${i + 1}`;
-        const start = i * 4;
-        const end = Math.min((i + 1) * 4, imageUrls.length);
-        const images = imageUrls.slice(start, end);
-        const newTabContent = <PhotoReview key={newTabId} images={images} />;
-        newTabs.push({
-          id: newTabId,
-          name: newTabName,
-          content: newTabContent,
+      // Function to read a file as a Data URL
+      const readFileAsDataURL = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
         });
-      }
+      };
 
-      // Set the new tabs and activate the first one
-      setTabs(newTabs);
-      setActiveTab(newTabs[0].id);
+      try {
+        // Convert all files to Data URLs
+        const imageUrls = await Promise.all(
+          files.map((file) => readFileAsDataURL(file))
+        );
+
+        // Calculate the number of tabs needed
+        const numTabsToAdd = Math.ceil(imageUrls.length / 4);
+
+        // Create new tabs if needed and distribute images across them
+        let newTabs = [];
+        for (let i = 0; i < numTabsToAdd; i++) {
+          const newTabId = `tab${i + 1}`; // Ensure unique tab IDs
+          const newTabName = `Tab ${i + 1}`;
+          const start = i * 4;
+          const end = Math.min((i + 1) * 4, imageUrls.length);
+          const images = imageUrls.slice(start, end);
+          const newTabContent = <PhotoReview key={newTabId} images={images} />;
+          newTabs.push({
+            id: newTabId,
+            name: newTabName,
+            content: newTabContent,
+          });
+        }
+
+        // Set the new tabs and activate the first one
+        setTabs(newTabs);
+        setActiveTab(newTabs[0].id);
+      } catch (error) {
+        console.error("Error reading files as Data URLs", error);
+      }
     }
   };
 

@@ -57,6 +57,67 @@ const Buttons = ({
   const [uploadedIconNames, setUploadedIconNames] = useState([]);
   const iconShowRef = useRef(null);
 
+  useEffect(() => {
+    try {
+      if (!id || !uploadedImageUrl) {
+        setShowAlert({
+          showAlert: true,
+          message: "Please Select valid Location & Image ",
+        });
+        setTimeout(() => {
+          setShowAlert({
+            showAlert: false,
+            message: "",
+          }); // Hide the alert after 3 seconds
+        }, 3000);
+        return;
+      }
+
+      let imageData = localStorage.getItem("coverphotoImage");
+      if (!imageData) {
+        imageData = {};
+      } else {
+        imageData = JSON.parse(imageData);
+      }
+
+      // Check if there's already an array for the given id
+      if (!Array.isArray(imageData[id])) {
+        // If not, initialize it as an empty array
+        imageData[id] = [];
+      }
+
+      // Get the next index for the new image object
+      const index = imageData[id].length;
+
+      imageData[id].push({
+        id: index,
+        selectedText: selectedText,
+        subnames: subnames,
+        NewTabs: NewTabs,
+        caption: caption,
+        url: uploadedImageUrl,
+      });
+
+      // Call the setIndex callback with the index of the newly saved image
+      SetImageIndex(index);
+
+      // Save the updated image data to local storage
+      localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
+      setShowAlert({
+        showAlert: true,
+        message: "Image data saved successfully.",
+      });
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
+    } catch (error) {
+      // console.error("Error saving image data:", error);
+    }
+  }, [id, uploadedImageUrl]);
+
   const handleIconClick = (iconShowRef) => {
     // Check which icon is clicked
 
@@ -83,10 +144,26 @@ const Buttons = ({
     }
   };
 
+  // const handleFileChange = (e) => {
+  //   if (e.target.files && e.target.files.length > 0) {
+  //     const imageUrl = URL.createObjectURL(e.target.files[0]);
+  //     setUploadedImageUrl(imageUrl);
+  //     uploadedFileRef.current = e.target.files[0];
+  //     onFileSelect(uploadedFileRef.current);
+  //   }
+  // };
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const imageUrl = URL.createObjectURL(e.target.files[0]);
-      setUploadedImageUrl(imageUrl);
+
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        setUploadedImageUrl(event.target.result);
+        // onFileSelect(event.target.result);
+      };
+
+      reader.readAsDataURL(e.target.files[0]);
       uploadedFileRef.current = e.target.files[0];
       onFileSelect(uploadedFileRef.current);
     }
