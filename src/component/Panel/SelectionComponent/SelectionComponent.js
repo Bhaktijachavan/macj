@@ -303,7 +303,7 @@ const SelectionComponent = ({ panelData, value, classname }) => {
           </div>
           <div
             className={classname ? classname : "scroll-box-panel3 bg-gray-100"}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", overflowY: "auto" }}
             onMouseUp={handleTextSelectionforSelectionChange}
           >
             {commentText.split("\n").map((line, index) => (
