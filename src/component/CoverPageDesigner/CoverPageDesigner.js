@@ -40,7 +40,7 @@ function CoverPageDesigner({ onClose }) {
   const [isCompanyLogoChecked, setIsCompanyLogoChecked] = useState(false);
   const [uploadedLogo, setUploadedLogo] = useState(null);
   const uploadedImage = localStorage.getItem("uploadedImage");
-  const [imageSize, setImageSize] = useState({ width: 300, height: 300 }); // Initial size
+  const [imageSize, setImageSize] = useState({ width: 200, height: 150 }); // Initial size
   const [discardChanges, setDiscardChanges] = useState(false);
 
   useEffect(() => {

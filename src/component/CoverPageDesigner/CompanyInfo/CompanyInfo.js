@@ -141,7 +141,6 @@ function CompanyInfo({ id, onDiscardChanges }) {
             {renderInputField("Time Of Inspection", "timeOfInspection")}
             {renderInputField("Date Of Inspection", "dateOfInspection")}
             {renderInputField("Age Of Home", "ageOfHome")}
-            {renderInputField("Agent Info", "agent")}
           </div>
           <div className="flex flex-col gap-[5px]">
             {editableText.lastName && (
@@ -166,6 +165,8 @@ function CompanyInfo({ id, onDiscardChanges }) {
           </div>
         </div>
         <section className="other-client-info-for-cover-page-genearate-report  flex flex-col gap-[10px] ">
+          {renderInputField("Agent Info", "agent")}
+
           {editableText.addressLine2 && (
             <section className="only-for-addressLine2-input flex items-center">
               <label htmlFor="">Address Line 2:</label>

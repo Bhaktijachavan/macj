@@ -6,7 +6,7 @@ import "./CoverPhotoPage.css";
 const CoverPhotoPage = () => {
   const uploadedImage = localStorage.getItem("uploadedImage");
   const clientInfoImage = localStorage.getItem("clientInfoImage"); // Retrieve clientInfoImage
-  const [imageSize, setImageSize] = useState({ width: 300, height: 300 }); // Initial size
+  const [imageSize, setImageSize] = useState({ width: 300, height: 250 }); // Initial size
 
   useEffect(() => {
     // Optionally, you can retrieve saved image size from local storage or a backend service
