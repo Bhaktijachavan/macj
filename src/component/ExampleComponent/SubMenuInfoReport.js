@@ -305,10 +305,17 @@ const SubMenuInfoReport = () => {
   }, [text, selectedOption]);
 
   useEffect(() => {
-    const createEditCheck = isChecked;
-    // console.log("createEditCheck", createEditCheck);
-    localStorage.setItem("checkbox", createEditCheck);
-  }, [isChecked]);
+    // Define createEditCheck object
+    const createEditCheck = [];
+    // Assuming you want to store isChecked status
+    createEditCheck.push({
+      name: "CreateEdit",
+      isChecked: isChecked,
+    });
+
+    // Stringify createEditCheck object before saving to localStorage
+    localStorage.setItem("checkbox", JSON.stringify(createEditCheck));
+  }, [isChecked]); // I
   const handleCheckboxChange = (event) => {
     setIsChecked(event.target.checked);
   };

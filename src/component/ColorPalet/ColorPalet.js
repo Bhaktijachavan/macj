@@ -484,7 +484,7 @@ Throughout the report we utilize icons to make things easier to find and read. U
     });
 
     // Set font size and text color
-    let currentYPosition = 15; // Initial vertical position for text placement
+    let currentYPosition = 18; // Initial vertical position for text placement
     let currentXPosition = 5;
     let tabCounter = 1;
     const tableData = [["Table of Contents"]];

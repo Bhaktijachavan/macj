@@ -27,6 +27,8 @@ const Buttons = ({
   subnames,
   NewTabs,
   selectedText,
+  selectedTabName,
+  imageurl,
 }) => {
   // tablistconst [isPopupOpen, setIsPopupOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
@@ -56,6 +58,11 @@ const Buttons = ({
   const isImageUploaded = !!uploadedFileRef.current;
   const [uploadedIconNames, setUploadedIconNames] = useState([]);
   const iconShowRef = useRef(null);
+
+  useEffect(() => {
+    setUploadedImageUrl(imageurl);
+    console.log("imageurls ")
+  }, [imageurl]);
 
   useEffect(() => {
     try {
@@ -181,37 +188,16 @@ const Buttons = ({
     onFileSelect(null);
     onSelectedImage(null);
     onDeleteBulk(null);
+    setUploadedImageUrl(null);
   };
 
-  const handleImg8Click = () => {
-    if (uploadedFileRef.current instanceof Blob) {
-      // If an uploaded file is available, read it as a data URL
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        // Get the base64 data of the uploaded image
-        const imageData = event.target.result;
+  useEffect(() => {
+    if (selectedTabName == "Cover Photo" && uploadedImageUrl) {
+      localStorage.setItem("uploadedImage", uploadedImageUrl);
 
-        // Save the image data to local storage
-        localStorage.setItem("uploadedImage", imageData);
-
-        setShowAlert({
-          showAlert: true,
-          message: "Image Successfully Saved to Coverpage",
-        });
-        setTimeout(() => {
-          setShowAlert({
-            showAlert: false,
-            message: "",
-          }); // Hide the alert after 3 seconds
-        }, 3000);
-      };
-      reader.readAsDataURL(uploadedFileRef.current);
-    } else if (url) {
-      // If URL is available, save it directly to local storage
-      localStorage.setItem("uploadedImage", url);
       setShowAlert({
         showAlert: true,
-        message: "Image Successfully Uploaded to Coverpage ! ",
+        message: "Image Successfully Saved to Coverpage",
       });
       setTimeout(() => {
         setShowAlert({
@@ -220,7 +206,33 @@ const Buttons = ({
         }); // Hide the alert after 3 seconds
       }, 3000);
     } else {
-      console.log("No image uploaded or URL provided to save.");
+      setShowAlert({
+        showAlert: true,
+        message: " Please Select Image",
+      });
+      setTimeout(() => {
+        setShowAlert({
+          showAlert: false,
+          message: "",
+        }); // Hide the alert after 3 seconds
+      }, 3000);
+    }
+  }, [selectedTabName, uploadedImageUrl]);
+
+  const handleImg8Click = async () => {
+    try {
+      const response = await fetch(uploadedImageUrl); // Assuming imageUrl is accessible directly
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "image.jpg"; // You can set the filename here dynamically
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading image:", error);
     }
   };
 

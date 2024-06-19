@@ -47,62 +47,61 @@ const Location = ({ imageUrl }) => {
       return setUploadedFile(imageUrl);
     }
   }, []);
+  // useEffect(() => {
+  //   try {
+  //     if (!damageId || !imageUrl) {
+  //       setShowAlert({
+  //         showAlert: true,
+  //         message: "Please Select valid Location & Image ",
+  //       });
+  //       setTimeout(() => {
+  //         setShowAlert({
+  //           showAlert: false,
+  //           message: "",
+  //         }); // Hide the alert after 3 seconds
+  //       }, 3000);
+  //       return;
+  //     }
 
-  useEffect(() => {
-    try {
-      if (!damageId || !imageUrl) {
-        setShowAlert({
-          showAlert: true,
-          message: "Please Select valid Location & Image ",
-        });
-        setTimeout(() => {
-          setShowAlert({
-            showAlert: false,
-            message: "",
-          }); // Hide the alert after 3 seconds
-        }, 3000);
-        return;
-      }
+  //     let imageData = localStorage.getItem("coverphotoImage");
+  //     if (!imageData) {
+  //       imageData = {};
+  //     } else {
+  //       imageData = JSON.parse(imageData);
+  //     }
 
-      let imageData = localStorage.getItem("coverphotoImage");
-      if (!imageData) {
-        imageData = {};
-      } else {
-        imageData = JSON.parse(imageData);
-      }
+  //     // Check if there's already an array for the given id
+  //     if (!Array.isArray(imageData[damageId])) {
+  //       // If not, initialize it as an empty array
+  //       imageData[damageId] = [];
+  //     }
 
-      // Check if there's already an array for the given id
-      if (!Array.isArray(imageData[damageId])) {
-        // If not, initialize it as an empty array
-        imageData[damageId] = [];
-      }
+  //     // Get the next index for the new image object
+  //     const index = imageData[damageId].length;
 
-      // Get the next index for the new image object
-      const index = imageData[damageId].length;
+  //     imageData[damageId].push({
+  //       url: imageUrl,
+  //     });
 
-      imageData[damageId].push({
-        url: imageUrl,
-      });
+  //     // Call the setIndex callback with the index of the newly saved image
+  //     SetImageIndex(index);
 
-      // Call the setIndex callback with the index of the newly saved image
-      SetImageIndex(index);
-
-      // Save the updated image data to local storage
-      localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
-      setShowAlert({
-        showAlert: true,
-        message: "Image data saved successfully.",
-      });
-      setTimeout(() => {
-        setShowAlert({
-          showAlert: false,
-          message: "",
-        }); // Hide the alert after 3 seconds
-      }, 3000);
-    } catch (error) {
-      // console.error("Error saving image data:", error);
-    }
-  }, [damageId, imageUrl]);
+  //     // Save the updated image data to local storage
+  //     localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
+  //     setShowAlert({
+  //       showAlert: true,
+  //       message: "Image data saved successfully.",
+  //     });
+  //     setTimeout(() => {
+  //       setShowAlert({
+  //         showAlert: false,
+  //         message: "",
+  //       }); // Hide the alert after 3 seconds
+  //     }, 3000);
+  //   } catch (error) {
+  //     // console.error("Error saving image data:", error);
+  //   }
+  // }, [damageId, imageUrl]);
 
   const handleImageSet = () => {
     // uploadedFile(null);
@@ -329,6 +328,7 @@ const Location = ({ imageUrl }) => {
                     onChange={handleMenuChange}
                   >
                     <option>Select Menu</option>
+                    <option>Cover Photo</option>
                     {submenus.map((tabName, index) => (
                       <option key={index} value={tabName}>
                         {tabName}
@@ -454,6 +454,7 @@ const Location = ({ imageUrl }) => {
               NewTabs={NewTabs}
               selectedText={selectedText}
               imageurl={imageUrl}
+              selectedTabName={selectedTabName}
             />
           </div>
         </div>

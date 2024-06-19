@@ -13,22 +13,35 @@ const InsertListPopup = ({ onClose, onSelectOption, onSelectiontext }) => {
   useEffect(() => {
     const textFromLocalStorage = localStorage.getItem("text2");
 
-    const parsedData = JSON.parse(textFromLocalStorage);
-    console.log("parsedData", parsedData);
-    for (const key in parsedData) {
-    }
-    const keys = Object.keys(parsedData);
+    if (textFromLocalStorage) {
+      try {
+        const parsedData = JSON.parse(textFromLocalStorage);
+        console.log("parsedData", parsedData);
 
-    Setkeys(keys);
+        const keys = Object.keys(parsedData);
+        Setkeys(keys);
 
-    keys.forEach((key) => {
-      if (selectedOption === key) {
-        const text = parsedData[key].text;
-        onSelectOption(selectedOption);
-        onSelectiontext(text);
+        keys.forEach((key) => {
+          if (selectedOption === key) {
+            const text = parsedData[key].text;
+            onSelectOption(selectedOption);
+            onSelectiontext(text);
+          }
+        });
+      } catch (error) {
+        console.error("Error parsing JSON from localStorage:", error);
+        // Handle error, e.g., set default values or show an error message
       }
-    });
+    } else {
+      // Handle case where localStorage item is empty or not found
+      console.log("No data available in localStorage for 'text2'");
+      // You might want to clear keys or set to an empty array
+      Setkeys([]);
+      // Handle what should happen when there's no data
+      // e.g., onSelectOption(selectedOption);  // Depends on your logic
+    }
   }, [selectedOption]);
+
   // Function to handle Ok button click
   const handleOkClick = () => {
     // Pass the selected option to the parent component

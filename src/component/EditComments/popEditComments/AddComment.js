@@ -526,6 +526,7 @@ const AddComment = ({ onClose, value, setfetch }) => {
                     }}
                   >
                     <select value={selectedOption} onChange={handleSelecttext}>
+                      <option>Select</option>
                       {selectedText.split("\n").map((line, index) => (
                         <option key={index}>{line}</option>
                       ))}
