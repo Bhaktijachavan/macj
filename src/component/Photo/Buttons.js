@@ -29,6 +29,7 @@ const Buttons = ({
   selectedText,
   selectedTabName,
   imageurl,
+  imageIndex,
 }) => {
   // tablistconst [isPopupOpen, setIsPopupOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
@@ -61,7 +62,7 @@ const Buttons = ({
 
   useEffect(() => {
     setUploadedImageUrl(imageurl);
-    console.log("imageurls ")
+    console.log("imageurls ");
   }, [imageurl]);
 
   useEffect(() => {
@@ -345,6 +346,7 @@ const Buttons = ({
                       subnames={subnames}
                       NewTabs={NewTabs}
                       selectedText={selectedText}
+                      imageIndex={imageIndex}
                     />
                   </div>
                 )}

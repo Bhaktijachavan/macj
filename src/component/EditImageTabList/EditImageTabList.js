@@ -23,6 +23,7 @@ const EditImageTabList = ({
   subnames,
   NewTabs,
   selectedText,
+  imageIndex,
 }) => {
   const overlayImageRef = useRef(null);
   const [activeTab, setActiveTab] = useState(10);
@@ -86,65 +87,95 @@ const EditImageTabList = ({
   };
 
   const handleDownloadUrlChange = (url, setIdIndex) => {
-    try {
-      if (!id) {
-        setShowAlert({
-          showAlert: true,
-          message: "Please Select valid Image ",
-        });
-        setTimeout(() => {
-          setShowAlert({
-            showAlert: false,
-            message: "",
-          }); // Hide the alert after 3 seconds
-        }, 3000);
-        return;
+    const newDataurl = url;
+    // console.log("newDataurl", newDataurl);
+    let imageData = localStorage.getItem("coverphotoImage");
+
+    const CoverData = JSON.parse(imageData);
+    console.log(CoverData);
+    let isUpdated = false;
+    for (const key in CoverData) {
+      const keys = key;
+      const Coverdata = CoverData[key];
+      for (const value in Coverdata) {
+        const valueNum = Number(value);
+        const compare = valueNum === imageIndex;
+        // console.log("imageIndex", imageIndex);
+
+        if (keys === id && compare) {
+          console.log(Coverdata[valueNum].url);
+          Coverdata[valueNum].url = newDataurl;
+          // console.log("compare", compare);
+          isUpdated = true;
+          // console.log("valueNum", valueNum);
+        }
       }
-
-      let imageData = localStorage.getItem("coverphotoImage");
-      if (!imageData) {
-        imageData = {};
-      } else {
-        imageData = JSON.parse(imageData);
-      }
-
-      // Check if there's already an array for the given id
-      if (!Array.isArray(imageData[id])) {
-        // If not, initialize it as an empty array
-        imageData[id] = [];
-      }
-
-      // Get the next index for the new image object
-      const index = imageData[id].length;
-
-      imageData[id].push({
-        id: index,
-        selectedText: selectedText,
-        subnames: subnames,
-        NewTabs: NewTabs,
-        caption: caption,
-        url: url,
-      });
-
-      // Call the setIndex callback with the index of the newly saved image
-      SetImageIndex(index);
-
-      // Save the updated image data to local storage
-      localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
-      setShowAlert({
-        showAlert: true,
-        message: "Image data saved successfully.",
-      });
-      setTimeout(() => {
-        setShowAlert({
-          showAlert: false,
-          message: "",
-        }); // Hide the alert after 3 seconds
-      }, 3000);
-    } catch (error) {
-      // console.error("Error saving image data:", error);
+    }
+    if (isUpdated) {
+      localStorage.setItem("coverphotoImage", JSON.stringify(CoverData));
     }
   };
+
+  // const handleDownloadUrlChange = (url, setIdIndex) => {
+  //   try {
+  //     if (!id) {
+  //       setShowAlert({
+  //         showAlert: true,
+  //         message: "Please Select valid Image ",
+  //       });
+  //       setTimeout(() => {
+  //         setShowAlert({
+  //           showAlert: false,
+  //           message: "",
+  //         }); // Hide the alert after 3 seconds
+  //       }, 3000);
+  //       return;
+  //     }
+
+  //     let imageData = localStorage.getItem("coverphotoImage");
+  //     if (!imageData) {
+  //       imageData = {};
+  //     } else {
+  //       imageData = JSON.parse(imageData);
+  //     }
+
+  //     // Check if there's already an array for the given id
+  //     if (!Array.isArray(imageData[id])) {
+  //       // If not, initialize it as an empty array
+  //       imageData[id] = [];
+  //     }
+
+  //     // Get the next index for the new image object
+  //     const index = imageData[id].length;
+
+  //     imageData[id].push({
+  //       id: index,
+  //       selectedText: selectedText,
+  //       subnames: subnames,
+  //       NewTabs: NewTabs,
+  //       caption: caption,
+  //       url: url,
+  //     });
+
+  //     // Call the setIndex callback with the index of the newly saved image
+  //     SetImageIndex(index);
+
+  //     // Save the updated image data to local storage
+  //     localStorage.setItem("coverphotoImage", JSON.stringify(imageData));
+  //     setShowAlert({
+  //       showAlert: true,
+  //       message: "Image data saved successfully.",
+  //     });
+  //     setTimeout(() => {
+  //       setShowAlert({
+  //         showAlert: false,
+  //         message: "",
+  //       }); // Hide the alert after 3 seconds
+  //     }, 3000);
+  //   } catch (error) {
+  //     // console.error("Error saving image data:", error);
+  //   }
+  // };
 
   const handleCrop = (croppedImageData) => {
     // Store cropped image data in state

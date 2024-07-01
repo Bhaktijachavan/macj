@@ -455,6 +455,7 @@ const Location = ({ imageUrl }) => {
               selectedText={selectedText}
               imageurl={imageUrl}
               selectedTabName={selectedTabName}
+              imageIndex={imageIndex}
             />
           </div>
         </div>

@@ -386,9 +386,9 @@ const SubMenuInfoReport = () => {
                 setDetails({ details, summary: true });
               }
               if (!(selectedOption === selectedOpt && key === datakey)) {
-                setTimeout(() => {
-                  window.location.reload();
-                }, 10000);
+                // setTimeout(() => {
+                //   window.location.reload();
+                // }, 10000);
               }
             });
           });
@@ -622,6 +622,19 @@ const SubMenuInfoReport = () => {
                 <section className="drop-down-and-checkboxes-with-title">
                   {/* <p>Include Document In current Template Before Section:</p> */}
 
+                  <select
+                    value={selectedSubmenu}
+                    onChange={handleSubmenuDropdownChange}
+                  >
+                    <option>Select Submenu</option>
+                    <option>Table of Content</option>
+                    <option>Summary</option>
+                    {submenus.map((tabName, index) => (
+                      <option key={index} value={tabName}>
+                        {tabName}
+                      </option>
+                    ))}
+                  </select>
                   {details ? (
                     <select>
                       {details.damage1 && (
@@ -646,19 +659,7 @@ const SubMenuInfoReport = () => {
                       )}
                     </select>
                   ) : (
-                    <select
-                      value={selectedSubmenu}
-                      onChange={handleSubmenuDropdownChange}
-                    >
-                      <option>Select Submenu</option>
-                      <option>Table of Content</option>
-                      <option>Summary</option>
-                      {submenus.map((tabName, index) => (
-                        <option key={index} value={tabName}>
-                          {tabName}
-                        </option>
-                      ))}
-                    </select>
+                    <option>Ii</option>
                   )}
                 </section>
               </section>
