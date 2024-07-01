@@ -23,7 +23,7 @@ const MobileUploadPopup = ({ onClose }) => {
       }
 
       try {
-        const response = await fetch("http://localhost:7000/api/abc");
+        const response = await fetch("http://localhost:7000/api/inspection");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -54,9 +54,7 @@ const MobileUploadPopup = ({ onClose }) => {
       <div className="width-set-for-the-mobileuploadpopup">
         <div className="close-button-and-mobileuploadpopup-header-for-popup-box">
           <p>Manage Inspections in Cloud</p>
-          <p className="close-btn-mobileuploadpopup" onClick={onClose}>
-            X
-          </p>
+
           <p className="close-btn-mobileuploadpopup" onClick={onClose}>
             X
           </p>
@@ -89,9 +87,9 @@ const MobileUploadPopup = ({ onClose }) => {
             <thead>
               <tr>
                 <th>Inspection Name</th>
-                <th>Client Name</th>
+                {/* <th>Client Name</th>
                 <th>Inspection Address</th>
-                <th>Date Inspected</th>
+                <th>Date Inspected</th> */}
                 <th>Download</th>
                 <th>Delete</th>
               </tr>
@@ -119,19 +117,14 @@ const MobileUploadPopup = ({ onClose }) => {
               ))}
             </tbody>
           </table>
-          //{" "}
         </div>
-        //{" "}
+
         <div>
-          //{" "}
           <button className="close-button-mobileuploadpopup" onClick={onClose}>
-            // Close //{" "}
+            Close
           </button>
-          //{" "}
         </div>
-        //{" "}
       </div>
-      //{" "}
     </div>
   );
 };

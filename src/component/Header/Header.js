@@ -135,7 +135,7 @@ const Header = ({ onButtonClick }) => {
     const coverphotoImage = localStorage.getItem("coverphotoImage")
       ? JSON.parse(localStorage.getItem("coverphotoImage"))
       : null;
-    const uploadedImage = localStorage.getItem("uploadedImage");
+    const uploadedImages = localStorage.getItem("uploadedImages");
     const menuData = localStorage.getItem("menuData")
       ? JSON.parse(localStorage.getItem("menuData"))
       : null;
@@ -152,7 +152,7 @@ const Header = ({ onButtonClick }) => {
       ...(coverphotoImage && { coverphotoImage }),
       ...(menuData && { menuData }),
       ...(outputContent && { outputContent }),
-      ...(uploadedImage && { uploadedImage }),
+      ...(uploadedImages && { uploadedImages }),
       ...(ratingsData && { ratingsData }),
       id: Date.now(),
     };
@@ -169,35 +169,71 @@ const Header = ({ onButtonClick }) => {
       const decryptedData = decryptData(encryptedData, encryptionKey);
       console.log("decryptedData ", decryptedData);
 
-      const setLocalStorageItem = (key, value) => {
-        if (value !== null && value !== undefined) {
-          if (typeof value === "object" && !Array.isArray(value)) {
-            // Ensure value is an object but not an array
-            localStorage.setItem(key, JSON.stringify(value));
-          } else {
-            localStorage.setItem(key, value);
-          }
-        }
-      };
-
-      setLocalStorageItem("clientInfoData", decryptedData.clientInfoData);
-      setLocalStorageItem("TempPanelData", decryptedData.TempPanelData);
-      setLocalStorageItem("SelectionData", decryptedData.SelectionData);
-      setLocalStorageItem("DamageData", decryptedData.DamageData);
-      setLocalStorageItem("uploadedImage", decryptedData.uploadedImage);
-      setLocalStorageItem("menuData", decryptedData.menuData);
-      setLocalStorageItem("outputContent", decryptedData.outputContent);
-      setLocalStorageItem("ratingsData", decryptedData.ratingsData);
-
-      // Handle clientInfoImage specifically
-      if (decryptedData.clientInfoImage) {
-        // Assuming clientInfoImage is a base64 encoded string
-        setLocalStorageItem("clientInfoImage", decryptedData.clientInfoImage);
+      // Store decrypted data in localStorage
+      if (decryptedData.clientInfoData !== undefined) {
+        localStorage.setItem(
+          "clientInfoData",
+          JSON.stringify(decryptedData.clientInfoData)
+        );
+      }
+      if (decryptedData.TempPanelData !== undefined) {
+        localStorage.setItem(
+          "TempPanelData",
+          JSON.stringify(decryptedData.TempPanelData)
+        );
+      }
+      if (decryptedData.SelectionData !== undefined) {
+        localStorage.setItem(
+          "SelectionData",
+          JSON.stringify(decryptedData.SelectionData)
+        );
+      }
+      if (decryptedData.DamageData !== undefined) {
+        localStorage.setItem(
+          "DamageData",
+          JSON.stringify(decryptedData.DamageData)
+        );
+      }
+      if (decryptedData.clientInfoImage !== undefined) {
+        localStorage.setItem(
+          "clientInfoImage",
+          JSON.stringify(decryptedData.clientInfoImage)
+        );
+      }
+      if (decryptedData.uploadedImages !== undefined) {
+        localStorage.setItem(
+          "uploadedImages",
+          JSON.stringify(decryptedData.uploadedImages)
+        );
+      }
+      if (decryptedData.menuData !== undefined) {
+        localStorage.setItem(
+          "menuData",
+          JSON.stringify(decryptedData.menuData)
+        );
+      }
+      if (decryptedData.outputContent !== undefined) {
+        localStorage.setItem(
+          "outputContent",
+          JSON.stringify(decryptedData.outputContent)
+        );
+      }
+      if (decryptedData.ratingsData !== undefined) {
+        localStorage.setItem(
+          "ratingsData",
+          JSON.stringify(decryptedData.ratingsData)
+        );
+      }
+      if (decryptedData.miscImages !== undefined) {
+        localStorage.setItem(
+          "miscImages",
+          JSON.stringify(decryptedData.miscImages)
+        );
       }
 
       setShowAlert({
         showAlert: true,
-        message: "Inspection opens successfully, wait for 3 sec.",
+        message: "Inspection opened successfully, wait for 3 sec.",
       });
       setTimeout(() => {
         setShowAlert({
