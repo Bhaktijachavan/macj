@@ -420,7 +420,7 @@ const AddComment = ({ onClose, value, setfetch }) => {
                   </li>
                 </div> */}
 
-                <li className="flex items-center">
+                {/* <li className="flex items-center">
                   <span
                     onClick={handleBoldClick}
                     style={{
@@ -459,7 +459,7 @@ const AddComment = ({ onClose, value, setfetch }) => {
                     value={highlightColor}
                     onChange={handleColorhighlight}
                   ></input>
-                </li>
+                </li> */}
               </ul>
             </div>
 

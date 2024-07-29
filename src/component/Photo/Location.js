@@ -31,7 +31,15 @@ const Location = ({ imageUrl }) => {
   const [damageNames, setDamageNames] = useState([]);
   const [damageId, setDamageId] = useState(null);
   const [selectedDamage, setSelectedDamage] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const handleImageClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
     message: "",
@@ -411,6 +419,7 @@ const Location = ({ imageUrl }) => {
                     height: "100%",
                     objectFit: "cover",
                   }}
+                  onClick={handleImageClick}
                 />
               ) : uploadedFile ? (
                 <img
@@ -425,11 +434,10 @@ const Location = ({ imageUrl }) => {
                     height: "100%",
                     objectFit: "cover",
                   }}
+                  onClick={handleImageClick}
                 />
               ) : (
-                <p className="Drag-Drop-Box-Para">
-                  The Selected Image will Appear Here !
-                </p>
+                <p className="Drag-Drop-Box-Para">Image</p>
               )}
               {selectedIcon && (
                 <img
@@ -468,6 +476,25 @@ const Location = ({ imageUrl }) => {
           index={imageIndex}
         />
       </div>
+
+      {isModalOpen && (
+        <div
+          className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-[999]"
+          onClick={closeModal}
+        >
+          <img
+            className="modal-content"
+            src={
+              selectedImage
+                ? selectedImage.url
+                : typeof uploadedFile === "string"
+                ? uploadedFile
+                : URL.createObjectURL(uploadedFile)
+            }
+            alt="Full Screen Image"
+          />
+        </div>
+      )}
 
       {showPopup && (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-[999]">

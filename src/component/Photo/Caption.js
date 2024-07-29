@@ -18,7 +18,10 @@ const Caption = ({
   const [popupCaptionValue, setPopupCaptionValue] = useState("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [damageValue, setDamageValue] = useState("");
-
+  const [checkedState, setCheckedState] = useState({
+    printAtEnd: false,
+    summary: false,
+  });
   const [showAlert, setShowAlert] = useState({
     showAlert: false,
     message: "",
@@ -37,6 +40,13 @@ const Caption = ({
   //   console.log("isChecked", isChecked);
   // }, [captionValue, selectedTabName, selectedDamage, isChecked]);
 
+  useEffect(() => {
+    // Load the initial state from localStorage
+    const storedData = JSON.parse(localStorage.getItem("checkboxesdata")) || {};
+    if (storedData[id]) {
+      setCheckedState(storedData[id]);
+    }
+  }, [id]);
   useEffect(() => {
     if (isChecked && isChecked === true) {
       setCaptionValue(selectedTabName + "," + selectedDamage);
@@ -242,11 +252,30 @@ const Caption = ({
     setIsChecked(event.target.checked);
   };
 
+  const handleCheckboxesChange = (event) => {
+    const { name, checked } = event.target;
+    const newState = {
+      ...checkedState,
+      [name]: checked,
+    };
+    setCheckedState(newState);
+
+    // Save the new state to localStorage
+    const storedData = JSON.parse(localStorage.getItem("checkboxesdata")) || {};
+    storedData[id] = newState;
+    localStorage.setItem("checkboxesdata", JSON.stringify(storedData));
+  };
+
   return (
     <>
       <div className="PhotoReview-Location-Checkbox-Container">
         <section className="Section-for-label-and-checkbox">
-          <input type="checkbox" name="agree" />
+          <input
+            type="checkbox"
+            name="printAtEnd"
+            checked={checkedState.printAtEnd}
+            onChange={handleCheckboxesChange}
+          />
           <label
             htmlFor="agree"
             className="PhotoReview-Location-Checkbox-label"
@@ -257,8 +286,9 @@ const Caption = ({
         <section className="Section-for-label-and-checkbox">
           <input
             type="checkbox"
-            className="PhotoReview-Location-Checkbox-label"
-            name="agree"
+            name="summary"
+            checked={checkedState.summary}
+            onChange={handleCheckboxesChange}
           />
           <label
             htmlFor="agree"

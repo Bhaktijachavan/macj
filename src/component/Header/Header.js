@@ -47,9 +47,8 @@ const Header = ({ onButtonClick }) => {
   const [batchAddPhotosPopup, setBatchAddPhotosPopup] = useState(false);
   const [coverPageDesignPopup, setCoverPageDesignPopup] = useState(false);
   const [editDocumentPopup, setEditDocumentPopup] = useState(false);
-  const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] = useState(
-    false
-  );
+  const [opencoverPageDesignPopup, setopenCoverPageDesignPopup] =
+    useState(false);
   const [activePopup, setActivePopup] = useState(null);
   const [colorPaletPopup, setOpenColorPaletPopup] = useState(false);
   const [pastedText, setPastedText] = useState("");
@@ -665,11 +664,12 @@ mt-2"
                           {header[key].subitems.map((subItem) => (
                             <li key={subItem.id}>
                               <button
-                                onClick={() =>
+                                onClick={() => {
                                   navigate("/panalHeader", {
                                     state: header[key].subdetails[subItem.si],
-                                  })
-                                }
+                                  });
+                                  window.location.reload(); // This will reload the page after navigation
+                                }}
                               >
                                 {subItem.subName}
                               </button>

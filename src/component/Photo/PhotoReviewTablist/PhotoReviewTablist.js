@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PhotoReview from "../PhotoReview";
 
 import Header from "../../Header/Header";
@@ -13,6 +13,55 @@ function PhotoReviewTablist() {
     { id: "tab1", name: "Tab 1", content: <PhotoReview images={[]} /> },
   ]);
   const [activeTab, setActiveTab] = useState("tab1");
+
+  // useEffect(() => {
+  //   // Function to retrieve images from local storage and set tabs
+  //   const loadImagesFromLocalStorage = () => {
+  //     const miscImagesString = localStorage.getItem("miscImages");
+  //     if (!miscImagesString) {
+  //       console.error("miscImages not found in localStorage");
+  //       return;
+  //     }
+
+  //     try {
+  //       const miscImages = JSON.parse(miscImagesString);
+  //       const imageUrls = Object.values(miscImages).map((img) => img.src);
+  //       // console.log("imageUrls", imageUrls);
+  //       const captions = Object.values(miscImages).map((text) => text.caption);
+  //       // console.log("captions", captions);
+
+  //       // Calculate the number of tabs needed
+  //       const numTabsToAdd = Math.ceil(imageUrls.length / 4);
+
+  //       // Create new tabs and distribute images across them
+  //       let newTabs = [];
+  //       for (let i = 0; i < numTabsToAdd; i++) {
+  //         const newTabId = `tab${i + 1}`; // Ensure unique tab IDs
+  //         const newTabName = `Tab ${i + 1}`;
+  //         const start = i * 4;
+  //         const end = Math.min((i + 1) * 4, imageUrls.length);
+  //         const images = imageUrls.slice(start, end);
+  //         const newTabContent = (
+  //           <PhotoReview key={newTabId} images={images} captions={captions} />
+  //         );
+  //         newTabs.push({
+  //           id: newTabId,
+  //           name: newTabName,
+  //           content: newTabContent,
+  //         });
+  //       }
+
+  //       // Set the new tabs and activate the first one
+  //       setTabs(newTabs);
+  //       setActiveTab(newTabs[0]?.id || null); // Safeguard in case there are no tabs
+  //     } catch (error) {
+  //       console.error("Error parsing miscImages from localStorage", error);
+  //     }
+  //   };
+
+  //   // Load images on component mount
+  //   loadImagesFromLocalStorage();
+  // }, []);
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);

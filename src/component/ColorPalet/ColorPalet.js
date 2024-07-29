@@ -55,7 +55,6 @@ const ColorPalette = ({ onClose }) => {
   const [selectedRow, setSelectedRow] = useState(null);
 
   // State for "Select All" checkbox
-  const [selectAll, setSelectAll] = useState(false);
 
   // State to store all table data
   const [allTableData, setAllTableData] = useState([]);
@@ -131,12 +130,12 @@ const ColorPalette = ({ onClose }) => {
   // };
 
   // Function to handle row click
-  const handleRowClick = (index, columnIndex) => {
-    if (columnIndex === 0) {
-      setSelectedRow(index === selectedRow ? null : index);
-      setSelectAll(false); // Deselect "Select All" when a specific rowis clicked
-    }
-  };
+  // const handleRowClick = (index, columnIndex) => {
+  //   if (columnIndex === 0) {
+  //     setSelectedRow(index === selectedRow ? null : index);
+  //     setSelectAll(false); // Deselect "Select All" when a specific rowis clicked
+  //   }
+  // };
 
   // Function to handle moving up
   const handleMoveUp = () => {
@@ -185,53 +184,358 @@ const ColorPalette = ({ onClose }) => {
   };
 
   // Function to handle "Select All"
+  const [selectAll, setSelectAlll] = useState(false);
+
   const handleSelectAll = () => {
-    setSelectAll(!selectAll);
-    setSelectedRow(null);
-
-    // Retrieve all table data when "Select All" is checked
-    if (!selectAll) {
-      const allData = dummyData.map((data) => ({ ...data }));
-      setAllTableData(allData);
-    } else {
-      setAllTableData([]);
-    }
+    const newCheckedState = {};
+    Object.keys(dummyData).forEach((key) => {
+      Object.keys(dummyData[key].subitems).forEach((subKey) => {
+        const subName = dummyData[key].subitems[subKey].subName;
+        newCheckedState[subName] = !selectAll;
+      });
+    });
+    setCheckedState(newCheckedState);
+    setSelectAlll(!selectAll);
+    localStorage.setItem("printData", JSON.stringify(newCheckedState));
   };
-
   const [menuData, setMenuData] = useState([]);
   // Function to close the color picker
   const closeColorPicker = () => {
     setIsModalOpen(false);
   };
+  const [maindatakey, setmaindatakey] = useState([]);
+  const [maindata, setmaindata] = useState("");
+  const [selectionObjectkey, setselectionObjectkey] = useState("");
+  const [selectionkeys, setselectiontkeys] = useState("");
+  const [damageObjectkey, setdamageObjectkey] = useState("");
+  const [damagekeys, setdamagekeys] = useState([]);
+
   useEffect(() => {
     const storedMenuData = localStorage.getItem("menuData");
-    // console.log("storedMenuData:", storedMenuData);
+    const damageDataString = localStorage.getItem("DamageData") || "{}";
+    const selectionDataString = localStorage.getItem("SelectionData") || "{}";
+    const printData = JSON.parse(localStorage.getItem("printData") || "{}");
+    const storedData =
+      JSON.parse(localStorage.getItem("CreateEditText")) || "{}";
+    // let startY = 35;
+    // let prevSubKey = null;
 
-    if (storedMenuData) {
-      try {
-        const parsedMenuData = JSON.parse(storedMenuData);
-        // console.log(parsedMenuData);
-        setMenuData(parsedMenuData);
-        setDummyData(parsedMenuData);
+    // const pageHeight = pdf.internal.pageSize.height;
+    // const marginBottom = 20; // Bottom margin to avoid text getting too close to the page edge
+    // const lineHeight = 4.5; // Height of each line
+    // const gapBetweenSections = 5; // Gap between sections
+    // function drawTextBlock(textLines) {
+    //   const remainingSpace = pageHeight - startY - marginBottom;
+    //   const blockHeight = textLines.length * lineHeight;
 
-        {
-          Object.keys(parsedMenuData).map((key) =>
-            Object.keys(parsedMenuData[key].subdetails).map((subKey) =>
-              Object.keys(parsedMenuData[key].subdetails[subKey]).map(
-                (mainkey) =>
-                  console.log(
-                    "damagedata",
-                    parsedMenuData[key].subdetails[subKey][mainkey].tabname
-                  )
-              )
-            )
-          );
-        }
-      } catch (error) {
-        console.error("Error parsing JSON:", error);
-      }
+    //   if (blockHeight <= remainingSpace) {
+    //     pdf.text(textLines, 10, startY);
+    //     startY += blockHeight;
+    //   } else {
+    //     const linesThatFit = Math.floor(remainingSpace / lineHeight);
+    //     const currentPageLines = textLines.slice(0, linesThatFit);
+    //     const nextPageLines = textLines.slice(linesThatFit);
+
+    //     pdf.text(currentPageLines, 10, startY);
+    //     pdf.addPage();
+    //     startY = 50;
+    //     pdf.text(nextPageLines, 10, startY);
+    //     startY += nextPageLines.length * lineHeight;
+    //   }
+    //   startY += gapBetweenSections;
+    // }
+
+    const coverphotoImageData = JSON.parse(
+      localStorage.getItem("coverphotoImage") || "{}"
+    );
+    // console.log("coverphotoImageData", coverphotoImageData);
+    const imagekeys = Object.keys(coverphotoImageData);
+
+    try {
+      const parsedMenuData = JSON.parse(storedMenuData);
+      const damageData = JSON.parse(damageDataString);
+
+      const selectionData = JSON.parse(selectionDataString);
+
+      setMenuData(parsedMenuData);
+      setDummyData(parsedMenuData);
+
+      let maindatakeys = [];
+      let maindatas = [];
+      let selectionkeysArray = [];
+      let selectionObjectkeysArray = [];
+      let damageObjectkeysArray = [];
+      let damagekeysArray = [];
+
+      Object.keys(damageData).forEach((key) => {
+        let damagekey = key;
+        console.log("damagekey", damagekey);
+
+        const damageObject = damageData[key];
+        // console.log("damageObject", damageObject);
+
+        let damageObjectkey = key.replace("_d1", "").replace("_d2", "");
+        damagekeysArray.push(damagekey);
+        damageObjectkeysArray.push(damageObjectkey);
+      });
+
+      Object.keys(selectionData).forEach((sikey) => {
+        let selectionkeys = sikey;
+        let selectionObjectkey = sikey.replace("_s1", "").replace("_s2", "");
+        selectionkeysArray.push(selectionkeys);
+        selectionObjectkeysArray.push(selectionObjectkey);
+      });
+
+      Object.keys(parsedMenuData).forEach((key) => {
+        Object.keys(parsedMenuData[key].subdetails).forEach((subKey) => {
+          Object.keys(parsedMenuData[key].subitems).forEach((subitemkey) => {
+            Object.keys(parsedMenuData[key].subdetails[subKey]).forEach(
+              (detailKey) => {
+                let maindatakey = detailKey;
+                let maindata =
+                  parsedMenuData[key].subdetails[subKey][detailKey];
+
+                maindatakeys.push(maindatakey);
+                maindatas.push(maindata);
+                // console.log(
+                //   "subname",
+                //   parsedMenuData[key].subitems[subitemkey].subName
+                // );
+
+                // damagekeysArray.includes(
+                //   parsedMenuData[key].subdetails[subKey][detailKey].Damage2Data
+                // );
+                // console.log(
+                //   "tabname",
+                //   parsedMenuData[key].subdetails[subKey][detailKey].tabname
+                // );
+                // if (
+                //   damageObjectkeysArray.includes(maindatakey) &&
+                //   damagekeysArray.includes(
+                //     parsedMenuData[key].subdetails[subKey][detailKey]
+                //       .Damage1Data ||
+                //       parsedMenuData[key].subdetails[subKey][detailKey]
+                //         .Damage2Data
+                //   )
+                // ) {
+                //   console.log(
+                //     "Damage1Data:",
+                //     damageData[
+                //       parsedMenuData[key].subdetails[subKey][detailKey]
+                //         .Damage1Data
+                //     ] || "Damage2Data:",
+                //     damageData[
+                //       parsedMenuData[key].subdetails[subKey][detailKey]
+                //         .Damage2Data
+                //     ]
+                //   );
+                // }
+                // if (
+                //   damageObjectkeysArray.includes(maindatakey) &&
+                //   damagekeysArray.includes(
+                //     parsedMenuData[key].subdetails[subKey][detailKey]
+                //       .Damage2Data
+                //   )
+                // ) {
+                //   console.log(
+                //     "Damage1Data:",
+                //     parsedMenuData[key].subdetails[subKey][detailKey].damage2
+                //   );
+                // }
+                // if (
+                //   selectionObjectkeysArray.includes(maindatakey) &&
+                //   selectionkeysArray.includes(
+                //     parsedMenuData[key].subdetails[subKey][detailKey]
+                //       .Selection1Data
+                //   )
+                // ) {
+                //   console.log(
+                //     "Selection1Data:",
+                //     parsedMenuData[key].subdetails[subKey][detailKey].selection1
+                //   );
+                // }
+                // if (
+                //   selectionObjectkeysArray.includes(maindatakey) &&
+                //   selectionkeysArray.includes(
+                //     parsedMenuData[key].subdetails[subKey][detailKey]
+                //       .Selection2Data
+                //   )
+                // ) {
+                //   console.log(
+                //     "Selection2Data:",
+                //     parsedMenuData[key].subdetails[subKey][detailKey].selection2
+                //   );
+                // }
+                // if (printData[item_subName]) {
+                //   if (prevSubKey !== null && prevSubKey !== subKey) {
+                //     pdf.addPage();
+                //     startY = 50;
+                //   }
+                //   prevSubKey = subKey;
+
+                //   pdf.setTextColor(0, 0, 0);
+                //   pdf.setFontSize(20);
+
+                //   // Add item_id to PDF
+                //   pdf.text(item_subName, 10, startY - 10);
+                //   pdf.setFontSize(14);
+                //   if (storedData[damagekey]) {
+                //     const editText = storedData[damagekey].text;
+                //     const editTextLines = pdf.splitTextToSize(editText, 194);
+                //     drawTextBlock(editTextLines);
+                //   }
+                //   if (storedData[selectionkey]) {
+                //     const editText = storedData[selectionkey].text;
+                //     const editTextLines = pdf.splitTextToSize(editText, 194);
+                //     drawTextBlock(editTextLines);
+                //   }
+                //   pdf.setFillColor(180, 180, 184);
+                //   pdf.rect(9, startY - 6, 194, 8, "F");
+                //   pdf.setTextColor(0, 0, 0);
+                //   pdf.setFontSize(14);
+
+                //   pdf.text(tabName, 10, startY);
+
+                //   startY += 10;
+
+                //   // Check for selection data
+                //   if (Selection[`${subKey}_s1`] || Selection[`${subKey}_s2`]) {
+                //     let selectionText1 =
+                //       Selection[`${subKey}_s1`]?.selectionText;
+                //     let selectionText2 =
+                //       Selection[`${subKey}_s2`]?.selectionText;
+
+                //     // Log values to debug
+                //     console.log(
+                //       "selectionText",
+                //       selectionText1,
+                //       ",",
+                //       selectionText2
+                //     );
+
+                //     // Use both values if they exist
+
+                //     let descriptionText1 =
+                //       Selection[`${subKey}_s1`]?.description || "MATERIALS";
+                //     let descriptionText2 =
+                //       Selection[`${subKey}_s2`]?.description || "MATERIALS";
+                //     let newtext1 =
+                //       selectionText1 && descriptionText1
+                //         ? `${descriptionText1} : ${selectionText1}`
+                //         : "";
+                //     let newtext2 =
+                //       selectionText2 && descriptionText2
+                //         ? `${descriptionText2} : ${selectionText2}`
+                //         : "";
+
+                //     let selecText = [newtext1, newtext2]
+                //       .filter(Boolean)
+                //       .join("\n");
+
+                //     const materialsText = `${selecText}`;
+                //     const materialsLines = pdf.splitTextToSize(
+                //       materialsText,
+                //       194
+                //     );
+                //     drawTextBlock(materialsLines);
+                //   }
+
+                //   const ratText = `RATINGS: ${Object.values(
+                //     damageObject.rating
+                //   ).join(", ")}`;
+                //   // const descText = `DESCRIPTION: ${damageObject.description}`;
+                //   const descText = damageObject.description
+                //     ? damageObject.description
+                //     : "OBSERVATIONS";
+
+                //   const obsText = `${descText}: ${damageObject.Damage1black}`;
+                //   const improveText = `${descText}: ${damageObject.Damage1red}`;
+                //   pdf.setTextColor(0, 0, 0);
+                //   pdf.setFontSize(12);
+                //   const descLines = pdf.splitTextToSize(descText, 194);
+                //   const ratLines = pdf.splitTextToSize(ratText, 194);
+                //   const obsLines = pdf.splitTextToSize(obsText, 194);
+                //   const improveLines = pdf.splitTextToSize(improveText, 194);
+
+                //   drawTextBlock(descLines);
+
+                //   // Draw RATINGS text block
+                //   drawTextBlock(ratLines);
+
+                //   // Draw OBSERVATIONS text block
+                //   drawTextBlock(obsLines);
+
+                //   // Draw IMPROVE text block
+                //   pdf.setTextColor(255, 0, 0);
+                //   drawTextBlock(improveLines);
+
+                //   // Add images above "IMPROVE" text
+                //   pdf.setTextColor(0, 0, 0);
+
+                //   const imageWidth = 70;
+                //   const imageHeight = 60;
+                //   let imagesAdded = false;
+
+                //   if (coverphotoImageData[damagekey]) {
+                //     coverphotoImageData[damagekey].forEach((imageItem) => {
+                //       const remainingSpace = pageHeight - startY - marginBottom;
+                //       const requiredSpace =
+                //         imageHeight + lineHeight + gapBetweenSections;
+                //       if (requiredSpace > remainingSpace) {
+                //         pdf.addPage();
+                //         startY = 50;
+                //       }
+
+                //       pdf.addImage(
+                //         imageItem.url,
+                //         "JPEG",
+                //         70,
+                //         startY,
+                //         imageWidth,
+                //         imageHeight
+                //       );
+                //       startY += imageHeight + 4;
+                //       const caption = imageItem.caption;
+                //       const captionDimensions = pdf.getTextDimensions(caption, {
+                //         maxWidth: imageWidth,
+                //       });
+                //       const captionHeight = captionDimensions.h;
+
+                //       pdf.text(caption, 70, startY, {
+                //         maxWidth: imageWidth,
+                //       });
+                //       startY += captionHeight + 2;
+                //       imagesAdded = true;
+                //     });
+                //   }
+
+                //   // Reset text color for the next section
+                //   pdf.setTextColor(0, 0, 0);
+
+                //   // Add a gap between different items
+                //   startY += 20;
+                // }
+              }
+            );
+          });
+        });
+      });
+
+      // console.log("maindatakeys:", maindatakeys);
+      // console.log("maindatas:", maindatas);
+      // console.log("selectionkeysArray:", selectionkeysArray);
+      // console.log("selectionObjectkeysArray:", selectionObjectkeysArray);
+      // console.log("damageObjectkeysArray:", damageObjectkeysArray);
+      // console.log("damagekeysArray:", damagekeysArray);
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
     }
   }, []);
+
+  useEffect(() => {
+    console.log("damagekeys", damagekeys);
+    console.log("maindatakey", maindatakey);
+  }, [maindatakey]);
 
   useEffect(() => {
     // console.log("parsed object ", dummyData);
@@ -254,9 +558,9 @@ const ColorPalette = ({ onClose }) => {
     const extractedImages =
       JSON.parse(localStorage.getItem("extractedImages")) || []; // Provide a fallback value if extractedImages is null
     // Fetch menu data from localStorage
-    const menuData = localStorage.getItem("menuData");
+    const menuData = localStorage.getItem("menuData") || "{}";
     // console.log("menuData", menuData);
-    const Checkboxes = localStorage.getItem("checkbox");
+    const Checkboxes = localStorage.getItem("checkbox") || "{}";
 
     if (content) {
       // Modify the content to include border, page heading, and adjust page height
@@ -469,7 +773,7 @@ Throughout the report we utilize icons to make things easier to find and read. U
 
   function addTableOfContents(pdf, parsedMenuData) {
     // Retrieve stored data
-    const storedData = JSON.parse(localStorage.getItem("CreateEditText"));
+    const storedData = JSON.parse(localStorage.getItem("CreateEditText")) || {};
     let storedDatakey = "";
     let storedDatavalue = "";
 
@@ -560,17 +864,27 @@ Throughout the report we utilize icons to make things easier to find and read. U
 
   function mainData(pdf) {
     const mainData = JSON.parse(localStorage.getItem("menuData") || "{}");
+
+    const printData = JSON.parse(localStorage.getItem("printData") || "{}");
     const selectionDataString = localStorage.getItem("SelectionData") || "{}";
 
     const Selection = JSON.parse(selectionDataString);
     // console.log("Selection", Selection);
 
+    let selectionkeyArray = [];
+    let selectionObjectkeyArray = [];
     let selectionkey = "";
+
     Object.keys(Selection).forEach((key) => {
       selectionkey = key;
+      let selectionObjectkey = key.replace("_s1", "").replace("_s2", "");
+
+      selectionkeyArray.push(selectionkey);
+      selectionObjectkeyArray.push(selectionObjectkey);
     });
 
-    const storedData = JSON.parse(localStorage.getItem("CreateEditText"));
+    const storedData =
+      JSON.parse(localStorage.getItem("CreateEditText")) || "{}";
 
     let startY = 35;
     let prevSubKey = null;
@@ -634,18 +948,21 @@ Throughout the report we utilize icons to make things easier to find and read. U
       const damageObject = damageData[key];
       const damageObjectkey = key.replace("_d1", "").replace("_d2", "");
 
-      for (const mainKey in mainData) {
+      Object.keys(mainData).forEach((mainKey) => {
         const menuItem = mainData[mainKey];
         const subdetails = menuItem.subdetails;
 
-        for (const detailKey in subdetails) {
+        Object.keys(subdetails).forEach((detailKey) => {
           if (subdetails.hasOwnProperty(detailKey)) {
             let details = subdetails[detailKey];
 
-            for (let subKey in details) {
+            Object.keys(details).forEach((subKey) => {
+              // console.log("details", details[subKey].tabname);
+
               if (details.hasOwnProperty(subKey)) {
                 if (damageObjectkey === subKey) {
                   let subdetailsItem = details[subKey];
+
                   let detailSubkey = detailKey;
                   const subnameid = menuItem.subitems;
 
@@ -656,161 +973,482 @@ Throughout the report we utilize icons to make things easier to find and read. U
                     if (detailSubkey == item_id) {
                       let tabName = subdetailsItem.tabname;
 
-                      if (prevSubKey !== null && prevSubKey !== subKey) {
-                        pdf.addPage();
-                        startY = 50;
-                      }
-                      prevSubKey = subKey;
+                      if (printData[item_subName]) {
+                        if (prevSubKey !== null && prevSubKey !== subKey) {
+                          pdf.addPage();
+                          startY = 50;
+                        }
+                        prevSubKey = subKey;
 
-                      pdf.setTextColor(0, 0, 0);
-                      pdf.setFontSize(20);
+                        pdf.setTextColor(0, 0, 0);
+                        pdf.setFontSize(20);
 
-                      // Add item_id to PDF
-                      pdf.text(item_subName, 10, startY - 10);
-                      pdf.setFontSize(14);
-                      if (storedData[damagekey]) {
-                        const editText = storedData[damagekey].text;
-                        const editTextLines = pdf.splitTextToSize(
-                          editText,
-                          194
-                        );
-                        drawTextBlock(editTextLines);
-                      }
-                      if (storedData[selectionkey]) {
-                        const editText = storedData[selectionkey].text;
-                        const editTextLines = pdf.splitTextToSize(
-                          editText,
-                          194
-                        );
-                        drawTextBlock(editTextLines);
-                      }
-                      pdf.setFillColor(180, 180, 184);
-                      pdf.rect(9, startY - 6, 194, 8, "F");
-                      pdf.setTextColor(0, 0, 0);
-                      pdf.setFontSize(14);
-
-                      pdf.text(tabName, 10, startY);
-                      startY += 10;
-
-                      // Check for selection data
-                      if (
-                        Selection[`${subKey}_s1`] ||
-                        Selection[`${subKey}_s2`]
-                      ) {
-                        let selectionText =
-                          Selection[`${subKey}_s1`]?.selectionText ||
-                          Selection[`${subKey}_s2`]?.selectionText;
-                        let selecText =
-                          Selection[`${subKey}_s1`]?.description ||
-                          Selection[`${subKey}_s2`]?.description;
-                        let secdef = selecText ? selecText : "MATERIALS";
-
-                        const materialsText = `${secdef}: ${selectionText}`;
-                        const materialsLines = pdf.splitTextToSize(
-                          materialsText,
-                          194
-                        );
-                        drawTextBlock(materialsLines);
-                      }
-
-                      const ratText = `RATINGS: ${Object.values(
-                        damageObject.rating
-                      ).join(", ")}`;
-                      // const descText = `DESCRIPTION: ${damageObject.description}`;
-                      const descText = damageObject.description
-                        ? damageObject.description
-                        : "OBSERVATIONS";
-
-                      const obsText = `${descText}: ${damageObject.Damage1black}`;
-                      const improveText = `${descText}: ${damageObject.Damage1red}`;
-                      pdf.setTextColor(0, 0, 0);
-                      pdf.setFontSize(12);
-                      const descLines = pdf.splitTextToSize(descText, 194);
-                      const ratLines = pdf.splitTextToSize(ratText, 194);
-                      const obsLines = pdf.splitTextToSize(obsText, 194);
-                      const improveLines = pdf.splitTextToSize(
-                        improveText,
-                        194
-                      );
-
-                      // Draw DESCRIPTION text block
-                      drawTextBlock(descLines);
-
-                      // Draw RATINGS text block
-                      drawTextBlock(ratLines);
-
-                      // Draw OBSERVATIONS text block
-                      drawTextBlock(obsLines);
-
-                      // Draw IMPROVE text block
-                      pdf.setTextColor(255, 0, 0);
-                      drawTextBlock(improveLines);
-
-                      // Add images above "IMPROVE" text
-                      pdf.setTextColor(0, 0, 0);
-
-                      const imageWidth = 70;
-                      const imageHeight = 60;
-                      let imagesAdded = false;
-
-                      if (coverphotoImageData[damagekey]) {
-                        coverphotoImageData[damagekey].forEach((imageItem) => {
-                          const remainingSpace =
-                            pageHeight - startY - marginBottom;
-                          const requiredSpace =
-                            imageHeight + lineHeight + gapBetweenSections;
-                          if (requiredSpace > remainingSpace) {
-                            pdf.addPage();
-                            startY = 50;
-                          }
-
-                          pdf.addImage(
-                            imageItem.url,
-                            "JPEG",
-                            70,
-                            startY,
-                            imageWidth,
-                            imageHeight
+                        // Add item_id to PDF
+                        pdf.text(item_subName, 10, startY - 10);
+                        pdf.setFontSize(14);
+                        if (storedData[damagekey]) {
+                          const editText = storedData[damagekey].text;
+                          const editTextLines = pdf.splitTextToSize(
+                            editText,
+                            194
                           );
-                          startY += imageHeight + 4;
-                          const caption = imageItem.caption;
-                          const captionDimensions = pdf.getTextDimensions(
-                            caption,
-                            {
-                              maxWidth: imageWidth,
+                          drawTextBlock(editTextLines);
+                        }
+                        if (storedData[selectionkey]) {
+                          const editText = storedData[selectionkey].text;
+                          const editTextLines = pdf.splitTextToSize(
+                            editText,
+                            194
+                          );
+                          drawTextBlock(editTextLines);
+                        }
+                        pdf.setFillColor(180, 180, 184);
+                        pdf.rect(9, startY - 6, 194, 8, "F");
+                        pdf.setTextColor(0, 0, 0);
+                        pdf.setFontSize(14);
+
+                        pdf.text(tabName, 10, startY);
+
+                        startY += 10;
+
+                        // Check for selection data
+                        if (
+                          Selection[`${subKey}_s1`] ||
+                          Selection[`${subKey}_s2`]
+                        ) {
+                          let selectionText1 =
+                            Selection[`${subKey}_s1`]?.selectionText;
+                          let selectionText2 =
+                            Selection[`${subKey}_s2`]?.selectionText;
+
+                          // Log values to debug
+                          console.log(
+                            "selectionText",
+                            selectionText1,
+                            ",",
+                            selectionText2
+                          );
+
+                          // Use both values if they exist
+
+                          let descriptionText1 =
+                            Selection[`${subKey}_s1`]?.description ||
+                            "MATERIALS";
+                          let descriptionText2 =
+                            Selection[`${subKey}_s2`]?.description ||
+                            "MATERIALS";
+                          let newtext1 =
+                            selectionText1 && descriptionText1
+                              ? `${descriptionText1} : ${selectionText1}`
+                              : "";
+                          let newtext2 =
+                            selectionText2 && descriptionText2
+                              ? `${descriptionText2} : ${selectionText2}`
+                              : "";
+
+                          let selecText = [newtext1, newtext2]
+                            .filter(Boolean)
+                            .join("\n");
+
+                          const materialsText = `${selecText}`;
+                          const materialsLines = pdf.splitTextToSize(
+                            materialsText,
+                            194
+                          );
+                          drawTextBlock(materialsLines);
+                        }
+
+                        const ratText = `RATINGS: ${Object.values(
+                          damageObject.rating
+                        ).join(", ")}`;
+                        // const descText = `DESCRIPTION: ${damageObject.description}`;
+                        const descText = damageObject.description
+                          ? damageObject.description
+                          : "OBSERVATIONS";
+
+                        const obsText = `${descText}: ${damageObject.Damage1black}`;
+                        const improveText = `${descText}: ${damageObject.Damage1red}`;
+                        pdf.setTextColor(0, 0, 0);
+                        pdf.setFontSize(12);
+                        const descLines = pdf.splitTextToSize(descText, 194);
+                        const ratLines = pdf.splitTextToSize(ratText, 194);
+                        const obsLines = pdf.splitTextToSize(obsText, 194);
+                        const improveLines = pdf.splitTextToSize(
+                          improveText,
+                          194
+                        );
+
+                        drawTextBlock(descLines);
+
+                        // Draw RATINGS text block
+                        drawTextBlock(ratLines);
+
+                        // Draw OBSERVATIONS text block
+                        drawTextBlock(obsLines);
+
+                        // Draw IMPROVE text block
+                        pdf.setTextColor(255, 0, 0);
+                        drawTextBlock(improveLines);
+
+                        // Add images above "IMPROVE" text
+                        pdf.setTextColor(0, 0, 0);
+
+                        const imageWidth = 70;
+                        const imageHeight = 60;
+                        let imagesAdded = false;
+
+                        if (coverphotoImageData[damagekey]) {
+                          coverphotoImageData[damagekey].forEach(
+                            (imageItem) => {
+                              const remainingSpace =
+                                pageHeight - startY - marginBottom;
+                              const requiredSpace =
+                                imageHeight + lineHeight + gapBetweenSections;
+                              if (requiredSpace > remainingSpace) {
+                                pdf.addPage();
+                                startY = 50;
+                              }
+
+                              pdf.addImage(
+                                imageItem.url,
+                                "JPEG",
+                                70,
+                                startY,
+                                imageWidth,
+                                imageHeight
+                              );
+                              startY += imageHeight + 4;
+                              const caption = imageItem.caption;
+                              const captionDimensions = pdf.getTextDimensions(
+                                caption,
+                                {
+                                  maxWidth: imageWidth,
+                                }
+                              );
+                              const captionHeight = captionDimensions.h;
+
+                              pdf.text(caption, 70, startY, {
+                                maxWidth: imageWidth,
+                              });
+                              startY += captionHeight + 2;
+                              imagesAdded = true;
                             }
                           );
-                          const captionHeight = captionDimensions.h;
+                        }
 
-                          pdf.text(caption, 70, startY, {
-                            maxWidth: imageWidth,
-                          });
-                          startY += captionHeight + 2;
-                          imagesAdded = true;
-                        });
+                        // Reset text color for the next section
+                        pdf.setTextColor(0, 0, 0);
+
+                        // Add a gap between different items
+                        startY += 20;
                       }
-
-                      // Reset text color for the next section
-                      pdf.setTextColor(0, 0, 0);
-
-                      // Add a gap between different items
-                      startY += 20;
                     }
                   });
                 }
               }
-            }
+            });
           }
-        }
-      }
+        });
+      });
     });
   }
+  // function mainData(pdf) {
+  //   const storedMenuData = localStorage.getItem("menuData");
+  //   const damageDataString = localStorage.getItem("DamageData") || "{}";
+  //   const selectionDataString = localStorage.getItem("SelectionData") || "{}";
+  //   const printData = JSON.parse(localStorage.getItem("printData") || "{}");
+  //   const storedData =
+  //     JSON.parse(localStorage.getItem("CreateEditText")) || "{}";
+  //   let startY = 35;
+  //   let prevSubKey = null;
+
+  //   const pageHeight = pdf.internal.pageSize.height;
+  //   const marginBottom = 20; // Bottom margin to avoid text getting too close to the page edge
+  //   const lineHeight = 4.5; // Height of each line
+  //   const gapBetweenSections = 5; // Gap between sections
+  //   function drawTextBlock(textLines) {
+  //     const remainingSpace = pageHeight - startY - marginBottom;
+  //     const blockHeight = textLines.length * lineHeight;
+
+  //     if (blockHeight <= remainingSpace) {
+  //       pdf.text(textLines, 10, startY);
+  //       startY += blockHeight;
+  //     } else {
+  //       const linesThatFit = Math.floor(remainingSpace / lineHeight);
+  //       const currentPageLines = textLines.slice(0, linesThatFit);
+  //       const nextPageLines = textLines.slice(linesThatFit);
+
+  //       pdf.text(currentPageLines, 10, startY);
+  //       pdf.addPage();
+  //       startY = 50;
+  //       pdf.text(nextPageLines, 10, startY);
+  //       startY += nextPageLines.length * lineHeight;
+  //     }
+  //     startY += gapBetweenSections;
+  //   }
+
+  //   const coverphotoImageData = JSON.parse(
+  //     localStorage.getItem("coverphotoImage") || "{}"
+  //   );
+  //   // console.log("coverphotoImageData", coverphotoImageData);
+  //   const imagekeys = Object.keys(coverphotoImageData);
+
+  //   try {
+  //     const parsedMenuData = JSON.parse(storedMenuData);
+  //     const damageData = JSON.parse(damageDataString);
+  //     const selectionData = JSON.parse(selectionDataString);
+
+  //     setMenuData(parsedMenuData);
+  //     setDummyData(parsedMenuData);
+
+  //     let maindatakeys = [];
+  //     let maindatas = [];
+  //     let selectionkeysArray = [];
+  //     let selectionObjectkeysArray = [];
+  //     let damageObjectkeysArray = [];
+  //     let damagekeysArray = [];
+
+  //     Object.keys(damageData).forEach((key) => {
+  //       let damagekey = key;
+  //       const damageObject = damageData[key];
+  //       let damageObjectkey = key.replace("_d1", "").replace("_d2", "");
+  //       damagekeysArray.push(damagekey);
+  //       damageObjectkeysArray.push(damageObjectkey);
+  //     });
+
+  //     Object.keys(selectionData).forEach((sikey) => {
+  //       let selectionkeys = sikey;
+  //       let selectionObjectkey = sikey.replace("_s1", "").replace("_s2", "");
+  //       selectionkeysArray.push(selectionkeys);
+  //       selectionObjectkeysArray.push(selectionObjectkey);
+  //     });
+  //     let item_subName = "";
+  //     let item_tabName = "";
+  //     Object.keys(parsedMenuData).forEach((key) => {
+  //       Object.keys(parsedMenuData[key].subdetails).forEach((subKey) => {
+  //         Object.keys(parsedMenuData[key].subitems).forEach((subitemkey) => {
+  //           Object.keys(parsedMenuData[key].subdetails[subKey]).forEach(
+  //             (detailKey) => {
+  //               let maindatakey = detailKey;
+  //               let maindata =
+  //                 parsedMenuData[key].subdetails[subKey][detailKey];
+
+  //               maindatakeys.push(maindatakey);
+  //               maindatas.push(maindata);
+  //               item_subName = parsedMenuData[key].subitems[subitemkey].subName;
+
+  //               item_tabName =
+  //                 parsedMenuData[key].subdetails[subKey][detailKey].tabname;
+  //             }
+  //           );
+  //         });
+  //       });
+  //     });
+  //     for (let abc in maindatakeys) {
+  //       for (let xyz in maindatas) {
+  //         for (let key in selectionObjectkeysArray) {
+  //           const subKey = maindatakeys[abc];
+  //           console.log("subKey", maindatas[xyz]);
+  //           if (maindatakeys[abc] === selectionObjectkeysArray[key]) {
+  //             if (printData[item_subName]) {
+  //               if (prevSubKey !== null && prevSubKey !== subKey) {
+  //                 pdf.addPage();
+  //                 startY = 50;
+  //               }
+  //               prevSubKey = subKey;
+
+  //               pdf.setTextColor(0, 0, 0);
+  //               pdf.setFontSize(20);
+
+  //               // Add item_id to PDF
+  //               pdf.text(item_subName, 10, startY - 10);
+  //               pdf.setFontSize(14);
+  //               damagekeysArray.forEach((damagekey) => {
+  //                 if (storedData[damagekey]) {
+  //                   const editText = storedData[damagekey].text;
+  //                   const editTextLines = pdf.splitTextToSize(editText, 194);
+  //                   drawTextBlock(editTextLines);
+  //                 }
+  //               });
+  //               selectionkeysArray.forEach((selectionkey) => {
+  //                 if (storedData[selectionkey]) {
+  //                   const editText = storedData[selectionkey].text;
+  //                   const editTextLines = pdf.splitTextToSize(editText, 194);
+  //                   drawTextBlock(editTextLines);
+  //                 }
+  //               });
+
+  //               pdf.setFillColor(180, 180, 184);
+  //               pdf.rect(9, startY - 6, 194, 8, "F");
+  //               pdf.setTextColor(0, 0, 0);
+  //               pdf.setFontSize(14);
+
+  //               // if (damagekeysArray.includes(maindatas[xyz].Damage1Data)) {
+  //               //   pdf.text(maindatas[xyz].damage1, 10, startY);
+  //               // }
+  //               // if (damagekeysArray.includes(maindatas[xyz].Damage2Data)) {
+  //               //   pdf.text(maindatas[xyz].damage2, 10, startY);
+  //               // }
+  //               // if (
+  //               //   selectionkeysArray.includes(maindatas[xyz].Selection1Data)
+  //               // ) {
+  //               //   pdf.text(maindatas[xyz].selection1, 10, startY);
+  //               // }
+  //               startY += 10;
+
+  //               // Check for selection data
+
+  //               if (
+  //                 selectionData[`${subKey}_s1`] ||
+  //                 selectionData[`${subKey}_s2`]
+  //               ) {
+  //                 let selectionText1 =
+  //                   selectionData[`${subKey}_s1`]?.selectionText;
+  //                 let selectionText2 =
+  //                   selectionData[`${subKey}_s2`]?.selectionText;
+
+  //                 // Log values to debug
+  //                 // console.log(
+  //                 //   "selectionText",
+  //                 //   selectionText1,
+  //                 //   ",",
+  //                 //   selectionText2
+  //                 // );
+
+  //                 // Use both values if they exist
+
+  //                 let descriptionText1 =
+  //                   selectionData[`${subKey}_s1`]?.description || "MATERIALS";
+  //                 let descriptionText2 =
+  //                   selectionData[`${subKey}_s2`]?.description || "MATERIALS";
+  //                 let newtext1 =
+  //                   selectionText1 && descriptionText1
+  //                     ? `${descriptionText1} : ${selectionText1}`
+  //                     : "";
+  //                 let newtext2 =
+  //                   selectionText2 && descriptionText2
+  //                     ? `${descriptionText2} : ${selectionText2}`
+  //                     : "";
+
+  //                 let selecText = [newtext1, newtext2]
+  //                   .filter(Boolean)
+  //                   .join("\n");
+
+  //                 const materialsText = `${selecText}`;
+  //                 const materialsLines = pdf.splitTextToSize(
+  //                   materialsText,
+  //                   194
+  //                 );
+  //                 drawTextBlock(materialsLines);
+  //               }
+
+  //               // damagekeysArray.forEach((damagekey) => {
+  //               //   const damageObject = damageData[damagekey];
+  //               //   const ratText = `RATINGS: ${Object.values(
+  //               //     damageObject.rating
+  //               //   ).join(", ")}`;
+  //               //   // const descText = `DESCRIPTION: ${damageObject.description}`;
+  //               //   const descText = damageObject.description
+  //               //     ? damageObject.description
+  //               //     : "OBSERVATIONS";
+
+  //               //   const obsText = `${descText}: ${damageObject.Damage1black}`;
+  //               //   const improveText = `${descText}: ${damageObject.Damage1red}`;
+  //               //   pdf.setTextColor(0, 0, 0);
+  //               //   pdf.setFontSize(12);
+  //               //   const descLines = pdf.splitTextToSize(descText, 194);
+  //               //   const ratLines = pdf.splitTextToSize(ratText, 194);
+  //               //   const obsLines = pdf.splitTextToSize(obsText, 194);
+  //               //   const improveLines = pdf.splitTextToSize(
+  //               //     improveText,
+  //               //     194
+  //               //   );
+
+  //               //   drawTextBlock(descLines);
+
+  //               //   // Draw RATINGS text block
+  //               //   drawTextBlock(ratLines);
+
+  //               //   // Draw OBSERVATIONS text block
+  //               //   drawTextBlock(obsLines);
+
+  //               //   // Draw IMPROVE text block
+  //               //   pdf.setTextColor(255, 0, 0);
+  //               //   drawTextBlock(improveLines);
+
+  //               //   // Add images above "IMPROVE" text
+  //               //   pdf.setTextColor(0, 0, 0);
+
+  //               //   const imageWidth = 70;
+  //               //   const imageHeight = 60;
+  //               //   let imagesAdded = false;
+
+  //               //   if (coverphotoImageData[damagekey]) {
+  //               //     coverphotoImageData[damagekey].forEach((imageItem) => {
+  //               //       const remainingSpace =
+  //               //         pageHeight - startY - marginBottom;
+  //               //       const requiredSpace =
+  //               //         imageHeight + lineHeight + gapBetweenSections;
+  //               //       if (requiredSpace > remainingSpace) {
+  //               //         pdf.addPage();
+  //               //         startY = 50;
+  //               //       }
+
+  //               //       pdf.addImage(
+  //               //         imageItem.url,
+  //               //         "JPEG",
+  //               //         70,
+  //               //         startY,
+  //               //         imageWidth,
+  //               //         imageHeight
+  //               //       );
+  //               //       startY += imageHeight + 4;
+  //               //       const caption = imageItem.caption;
+  //               //       const captionDimensions = pdf.getTextDimensions(
+  //               //         caption,
+  //               //         {
+  //               //           maxWidth: imageWidth,
+  //               //         }
+  //               //       );
+  //               //       const captionHeight = captionDimensions.h;
+
+  //               //       pdf.text(caption, 70, startY, {
+  //               //         maxWidth: imageWidth,
+  //               //       });
+  //               //       startY += captionHeight + 2;
+  //               //       imagesAdded = true;
+  //               //     });
+  //               //   }
+  //               // });
+
+  //               // Reset text color for the next section
+  //               pdf.setTextColor(0, 0, 0);
+
+  //               // Add a gap between different items
+  //               startY += 20;
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }
+
+  //     // console.log("maindatakeys:", maindatakeys);
+  //     // console.log("selectionkeysArray:", selectionkeysArray);
+  //     // console.log("selectionObjectkeysArray:", selectionObjectkeysArray);
+  //     // console.log("damageObjectkeysArray:", damageObjectkeysArray);
+  //     // console.log("damagekeysArray:", damagekeysArray);
+  //   } catch (error) {
+  //     console.error("Error parsing JSON:", error);
+  //   }
+  // }
+
   function addSummaryTable(pdf, menuNames) {
-    const damageDataStrings = localStorage.getItem("DamageData");
+    const damageDataStrings = localStorage.getItem("DamageData") || "{}";
     const damageData = JSON.parse(damageDataStrings || "{}");
     const menuDataa = JSON.parse(localStorage.getItem("menuData") || "{}");
 
-    const storedData = JSON.parse(localStorage.getItem("CreateEditText"));
+    const storedData =
+      JSON.parse(localStorage.getItem("CreateEditText")) || "{}";
     let storedDatakey = "";
     let storedDatavalue = "";
 
@@ -865,7 +1503,7 @@ Throughout the report we utilize icons to make things easier to find and read. U
       // console.log("Keys:", keys);
 
       const subdetailKeys = Object.keys(subdetails);
-      console.log("subdetailKeys", subdetailKeys);
+      // console.log("subdetailKeys", subdetailKeys);
 
       if (subdetails) {
         for (let i = 0; i < Math.min(ids.length, subdetailKeys.length); i++) {
@@ -939,6 +1577,23 @@ Throughout the report we utilize icons to make things easier to find and read. U
     const reportData = JSON.parse(data);
     // console.log("report data ", reportData);
     setLocalStorageData(reportData);
+  };
+  const [checkedState, setCheckedState] = useState({});
+  useEffect(() => {
+    const storedData = localStorage.getItem("printData");
+    if (storedData) {
+      setCheckedState(JSON.parse(storedData));
+    }
+  }, []);
+
+  const handleCheckboxesChange = (event) => {
+    const { id, checked } = event.target;
+    const newCheckedState = {
+      ...checkedState,
+      [id]: checked,
+    };
+    setCheckedState(newCheckedState);
+    localStorage.setItem("printData", JSON.stringify(newCheckedState));
   };
 
   return (
@@ -1021,8 +1676,13 @@ hover:text-white"
                           <td className="border p-2">
                             <input
                               type="checkbox"
-                              checked={dummyData[key].print}
-                              onChange={() => {}}
+                              id={`${dummyData[key].subitems[subKey].subName}`}
+                              checked={
+                                checkedState[
+                                  `${dummyData[key].subitems[subKey].subName}`
+                                ] || false
+                              }
+                              onChange={handleCheckboxesChange}
                             />
                           </td>
                           <td className="border p-2">

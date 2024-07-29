@@ -408,8 +408,11 @@ const SubMenuInfoReport = () => {
 
     let selectedMenu = "";
     const menuDataString = localStorage.getItem("menuData");
+    if (!menuDataString) {
+      console.error("menuData not found in localStorage");
+      return;
+    }
     const parsedMenuData = JSON.parse(menuDataString);
-
     // Check if selectedSubmenu is Table of Content or Summary
     if (selectedSubmenu === "Table of Content") {
       selectedMenu = "Table of Content";
@@ -424,40 +427,39 @@ const SubMenuInfoReport = () => {
           const subdetail = subdetails[subKey];
           for (const subkey in subdetail) {
             const subKeyData = subdetail[subkey];
-            const damage1 = subKeyData.Damage1Data;
-            const damage2 = subKeyData.Damage2Data;
-            const selection1 = subKeyData.Selection1Data;
-            const selection2 = subKeyData.Selection2Data;
-
-            // Store the properties in an array
             const dataArray = [
               subKeyData.Damage1Data,
               subKeyData.Damage2Data,
               subKeyData.Selection1Data,
               subKeyData.Selection2Data,
             ];
+
             let datakey = "";
-            Object.keys(dataArray).forEach((key) => {
-              datakey = dataArray[key];
+            dataArray.forEach((data) => {
+              if (data === selectedSubmenu) {
+                datakey = data;
+              }
             });
 
-            const storedData = JSON.parse(
-              localStorage.getItem("CreateEditText")
-            );
+            const storedDataString = localStorage.getItem("CreateEditText");
+            if (!storedDataString) {
+              console.error("CreateEditText not found in localStorage");
+              return;
+            }
+            const storedData = JSON.parse(storedDataString);
+
             Object.keys(storedData).forEach((key) => {
-              const keys = key;
               const storedDatakey = storedData[key];
               const selectedOpt = storedDatakey.key;
 
-              if (selectedOption === selectedOpt) {
-                if (keys === datakey) {
-                  console.log(keys);
-                  console.log(datakey);
-                  console.log(selectedOption);
-                  console.log(storedDatakey.text);
-                }
+              if (selectedOption === selectedOpt && key === datakey) {
+                console.log(keys);
+                console.log(datakey);
+                console.log(selectedOption);
+                console.log(storedDatakey.text);
               }
             });
+
             if (
               subKeyData &&
               (subKeyData.damage1 === selectedSubmenu ||
@@ -466,16 +468,12 @@ const SubMenuInfoReport = () => {
                 subKeyData.selection2 === selectedSubmenu)
             ) {
               if (subKeyData.damage1 === selectedSubmenu) {
-                console.log("Damage1Data:", subKeyData.Damage1Data);
                 selectedMenu = subKeyData.Damage1Data;
               } else if (subKeyData.damage2 === selectedSubmenu) {
-                console.log("Damage2Data:", subKeyData.Damage2Data);
                 selectedMenu = subKeyData.Damage2Data;
               } else if (subKeyData.selection1 === selectedSubmenu) {
-                console.log("Selection1Data:", subKeyData.Selection1Data);
                 selectedMenu = subKeyData.Selection1Data;
               } else if (subKeyData.selection2 === selectedSubmenu) {
-                console.log("Selection2Data:", subKeyData.Selection2Data);
                 selectedMenu = subKeyData.Selection2Data;
               }
               break;
@@ -487,8 +485,8 @@ const SubMenuInfoReport = () => {
 
     console.log("submenu:", selectedMenu);
     setSelectedDamage(selectedMenu);
-    // console.log("Selected submenu:", selectedSubmenu);
   };
+
   const handleRemoveDocument = () => {
     if (!selectedOption) {
       return; // Handle no selected document case gracefully
@@ -659,7 +657,7 @@ const SubMenuInfoReport = () => {
                       )}
                     </select>
                   ) : (
-                    <option>Ii</option>
+                    <option></option>
                   )}
                 </section>
               </section>
