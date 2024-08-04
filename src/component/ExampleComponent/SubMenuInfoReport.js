@@ -453,7 +453,7 @@ const SubMenuInfoReport = () => {
               const selectedOpt = storedDatakey.key;
 
               if (selectedOption === selectedOpt && key === datakey) {
-                console.log(keys);
+                // console.log(keys);
                 console.log(datakey);
                 console.log(selectedOption);
                 console.log(storedDatakey.text);
