@@ -183,15 +183,16 @@ const Location = ({ imageUrl }) => {
 
     for (const key in parsedMenuData) {
       const menuItem = parsedMenuData[key];
-      const subdetails = menuItem.subdetails;
+      const subdetails = menuItem.subitems;
 
       for (const subKey in subdetails) {
         const subdetail = subdetails[subKey];
+        tabNamesArray.push(subdetail.subName)
 
-        for (const key in subdetail) {
-          const subkey = subdetail[key];
-          tabNamesArray.push(subkey.tabname);
-        }
+        // for (const key in subdetail) {
+        //   const subkey = subdetail[key];
+        //   tabNamesArray.push(subkey.tabname);
+        // }
       }
     }
 
@@ -207,12 +208,41 @@ const Location = ({ imageUrl }) => {
     }
   }, [selectedSubmenuId, menuData, selectedMenuId]);
 
+  // const handleMenuChange = (e) => {
+  //   const selectedSubmenu = e.target.value;
+  //   // console.log("selectedId,", selectedSubmenu);
+  //   setSelectedtabName(selectedSubmenu);
+  //   setSelectedSubmenuId(null);
+  //   let selectedMenu = "";
+  //   const menuDataString = localStorage.getItem("menuData");
+  //   const parsedMenuData = JSON.parse(menuDataString);
+
+  //   // Check if selectedSubmenu is Table of Content or Summary
+
+  //   // Iterate over the keys of parsedMenuData
+  //   for (const key in parsedMenuData) {
+  //     const menuItem = parsedMenuData[key];
+  //     const subdetails = menuItem.subdetails;
+  //     for (const subKey in subdetails) {
+  //       const subdetail = subdetails[subKey];
+  //       for (const subkey in subdetail) {
+  //         const subKeyData = subdetail[subkey];
+
+  //         if (subKeyData && subKeyData.tabname === selectedSubmenu) {
+  //           selectedMenu = subkey;
+  //           console.log("selectedMenu",selectedMenu)
+  //         }
+  //       }
+  //     }
+  //   }
+  //   setSelectedMenuId(selectedMenu);
+  // };
   const handleMenuChange = (e) => {
     const selectedSubmenu = e.target.value;
     // console.log("selectedId,", selectedSubmenu);
     setSelectedtabName(selectedSubmenu);
     setSelectedSubmenuId(null);
-    let selectedMenu = "";
+    let selectedMenu = [];
     const menuDataString = localStorage.getItem("menuData");
     const parsedMenuData = JSON.parse(menuDataString);
 
@@ -220,45 +250,73 @@ const Location = ({ imageUrl }) => {
 
     // Iterate over the keys of parsedMenuData
     for (const key in parsedMenuData) {
-      const menuItem = parsedMenuData[key];
-      const subdetails = menuItem.subdetails;
-      for (const subKey in subdetails) {
-        const subdetail = subdetails[subKey];
-        for (const subkey in subdetail) {
-          const subKeyData = subdetail[subkey];
+      const menuItem = parsedMenuData[key]; 
+      const subitemkey = key;
+      const subitems = menuItem.subitems;
+      // console.log("subitems",subitems)
+      for(const xyz in subitems){
+        const sdfl = subitems[xyz]
+          const subdetails = menuItem.subdetails;
 
-          if (subKeyData && subKeyData.tabname === selectedSubmenu) {
-            selectedMenu = subkey;
+
+        
+
+      
+
+     
+
+
+          for (const subKey in subdetails) {
+
+            const subdetail = subdetails[subKey];
+            for (const subkey in subdetail) {
+              // console.log("id",subkey)
+          if ( sdfl.subName === selectedSubmenu && sdfl.id ==subKey) {
+            console.log("id",sdfl.id)
+            console.log("subKey",subKey)
+
+            selectedMenu .push(subkey);
           }
-        }
+        
       }
     }
+      }
+    }
+
     setSelectedMenuId(selectedMenu);
   };
   useEffect(() => {
     const menuDataString = localStorage.getItem("menuData");
     const parsedMenuData = JSON.parse(menuDataString);
+
     let damageNames = [];
-    if (selectedMenuId) {
-      Object.keys(parsedMenuData).forEach((key) =>
-        Object.keys(parsedMenuData[key].subdetails).forEach((subKey) =>
-          Object.keys(parsedMenuData[key].subdetails[subKey]).forEach(
-            (mainkey) => {
-              if (mainkey === selectedMenuId) {
-                damageNames.push(
-                  parsedMenuData[key].subdetails[subKey][mainkey].damage1
-                );
-                damageNames.push(
-                  parsedMenuData[key].subdetails[subKey][mainkey].damage2
-                );
+
+    // Ensure selectedMenuId is an array
+    const safeSelectedMenuId = Array.isArray(selectedMenuId) ? selectedMenuId : [];
+
+    Object.keys(parsedMenuData).forEach((key) =>
+      Object.keys(parsedMenuData[key].subdetails).forEach((subKey) =>
+        Object.keys(parsedMenuData[key].subdetails[subKey]).forEach((mainkey) => {
+          // Check if the mainkey is in the safeSelectedMenuId array
+          if (safeSelectedMenuId.includes(mainkey)) {
+            const item = parsedMenuData[key].subdetails[subKey][mainkey];
+            if (item) { // Check if item exists to avoid potential errors
+              if (item.damage1) {
+                damageNames.push(item.damage1);
+              }
+              if (item.damage2) {
+                damageNames.push(item.damage2);
               }
             }
-          )
-        )
-      );
-    }
+          }
+        })
+      )
+    );
+
     setDamageNames(damageNames);
-  }, [selectedMenuId]);
+  }, [selectedMenuId]); // Dependency array includes selectedMenuId
+
+  
 
   const handleSubmenuChange = (e) => {
     const selectedId = e.target.value;

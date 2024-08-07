@@ -1,19 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import jsPDF from "jspdf";
 import "jspdf-autotable";
-import html2canvas from "html2canvas";
 import html2pdf from "html2pdf.js";
-import moveUpButtonImg from "../../Assets/icons/ic_up.png";
-import moveDownButtonImg from "../../Assets/icons/ic_down.png";
+
 import inheritButtonImg from "../../Assets/icons/sync.png";
 import selectIconsButtonImg from "../../Assets/icons/open_inspection.png";
 
-import Header from "./../Header/Header";
-import Footer from "./../Footer/Footer";
-import ColorPicker from "./ColorPicker";
 import CoverPageDesigner from "./../CoverPageDesigner/CoverPageDesigner";
 import "./ColorPalet.css";
-import Icon1 from "../EditImageTabList/OverLayImage/Acceptable 2.png";
 import Icon2 from "../EditImageTabList/OverLayImage/Acceptable.png";
 import Icon3 from "../EditImageTabList/OverLayImage/Monitor.png";
 import Icon4 from "../EditImageTabList/OverLayImage/Not Accessible 1.png";
@@ -24,33 +17,34 @@ const ColorPalette = ({ onClose }) => {
   const [localStorageData, setLocalStorageData] = useState([]);
   const coverPageRef = useRef(null);
   // State for row colors
-  const [rowColors, setRowColors] = useState([
-    {
-      id: 1,
-      border: "#ff0000",
-      headerBackground: "#00ff00",
-      footerBackground: "#0000ff",
-      tocBackground: "#ffff00",
-    },
-    {
-      id: 2,
-      border: "#ff0000",
-      headerBackground: "#00ff00",
-      footerBackground: "#0000ff",
-      tocBackground: "#ffff00",
-    },
-    {
-      id: 3,
-      border: "#ff0000",
-      headerBackground: "#00ff00",
-      footerBackground: "#0000ff",
-      tocBackground: "#ffff00",
-    },
-  ]);
+
+  // const [rowColors, setRowColors] = useState(defaultColors);
 
   // State for table data
   const [dummyData, setDummyData] = useState([]);
+  const generateDefaultColors = (data) => {
+    const colors = {};
+    Object.values(data).forEach((item) => {
+      item.subitems.forEach((subItem) => {
+        colors[subItem.subName] = {
+          titleFont: "Arial",
+          border: "#000000",
+          headerBackground: "#000000",
+          headerFont: "Arial",
+          footerBackground: "#000000",
+          footerFont: "Arial",
+          tocBackground: "#000000",
+          tocFont: "Arial",
+        };
+      });
+    });
+    return colors;
+  };
 
+  const [rowColors, setRowColors] = useState(generateDefaultColors(dummyData));
+  useEffect(() => {
+    console.log("rowColors", rowColors);
+  }, [rowColors]);
   // State for selected row
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -116,13 +110,34 @@ const ColorPalette = ({ onClose }) => {
   }, []);
   // Function to handle color change
   const handleColorChange = (id, column, color) => {
-    setRowColors((prevColors) =>
-      prevColors.map((row) =>
-        row.id === id ? { ...row, [column]: color } : row
-      )
-    );
+    console.log("id", id, "column", column, "color", color);
+    setRowColors((prevColors) => ({
+      ...prevColors,
+      [id]: {
+        ...prevColors[id],
+        [column]: color,
+      },
+    }));
   };
 
+  const handleMatchColor = () => {
+    setRowColors((prevColors) => {
+      const updatedColors = {};
+      Object.keys(prevColors).forEach((key) => {
+        updatedColors[key] = {
+          ...prevColors[key],
+          border: prevColors[key].headerBackground,
+          footerBackground: prevColors[key].headerBackground,
+          tocBackground: prevColors[key].headerBackground,
+        };
+      });
+      return updatedColors;
+    });
+  };
+
+  const handleInherit = () => {
+    setRowColors(generateDefaultColors(dummyData));
+  };
   // Function to handle close
 
   // const handleClose = () => {
@@ -185,7 +200,22 @@ const ColorPalette = ({ onClose }) => {
 
   // Function to handle "Select All"
   const [selectAll, setSelectAlll] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState(null);
 
+  const handleSelectionIcon = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setSelectedIcon(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveIcon = () => {
+    setSelectedIcon(null);
+  };
   const handleSelectAll = () => {
     const newCheckedState = {};
     Object.keys(dummyData).forEach((key) => {
@@ -211,7 +241,7 @@ const ColorPalette = ({ onClose }) => {
   const [damagekeys, setdamagekeys] = useState([]);
 
   useEffect(() => {
-    const storedMenuData = localStorage.getItem("menuData");
+    const storedMenuData = localStorage.getItem("menuData") || "{}";
     const damageDataString = localStorage.getItem("DamageData") || "{}";
     const selectionDataString = localStorage.getItem("SelectionData") || "{}";
     const printData = JSON.parse(localStorage.getItem("printData") || "{}");
@@ -1595,6 +1625,7 @@ Throughout the report we utilize icons to make things easier to find and read. U
     setCheckedState(newCheckedState);
     localStorage.setItem("printData", JSON.stringify(newCheckedState));
   };
+  const [selectedFont, setSelectedFont] = useState("Arial");
 
   return (
     <>
@@ -1669,11 +1700,109 @@ hover:text-white"
                     {Object.keys(dummyData).map((key, index) =>
                       Object.keys(dummyData[key].subitems).map((subKey) => (
                         <tr key={subKey}>
-                          <td>{dummyData[key].subitems[subKey].subName}</td>
-                          <td className="border p-2">
-                            {JSON.stringify(dummyData[key].selectedOption)}
+                          <td className="flex place-content-center">
+                            {dummyData[key].subitems[subKey].subName}
                           </td>
                           <td className="border p-2">
+                            <div className="">
+                              <select
+                                className="border p-2 w-full bg-white"
+                                value={
+                                  rowColors[
+                                    dummyData[key].subitems[subKey].subName
+                                  ]?.titleFont || "Arial"
+                                }
+                                onChange={(e) =>
+                                  handleColorChange(
+                                    dummyData[key].subitems[subKey].subName,
+                                    "titleFont",
+                                    e.target.value
+                                  )
+                                }
+                                style={{ fontFamily: selectedFont }}
+                              >
+                                <option
+                                  value="Arial"
+                                  style={{ fontFamily: "Arial, sans-serif" }}
+                                >
+                                  Arial
+                                </option>
+                                <option
+                                  value="Helvetica"
+                                  style={{
+                                    fontFamily: "Arial, Helvetica, sans-serif",
+                                  }}
+                                >
+                                  Helvetica
+                                </option>
+                                <option
+                                  value="Times New Roman"
+                                  style={{
+                                    fontFamily:
+                                      '"Times New Roman", Times, serif',
+                                  }}
+                                >
+                                  Times New Roman
+                                </option>
+                                <option
+                                  value="Verdana"
+                                  style={{
+                                    fontFamily: "Verdana, Geneva, sans-serif",
+                                  }}
+                                >
+                                  Verdana
+                                </option>
+                                <option
+                                  value="Courier New"
+                                  style={{
+                                    fontFamily:
+                                      '"Courier New", Courier, monospace',
+                                  }}
+                                >
+                                  Courier New
+                                </option>
+                                <option
+                                  value="Lucida Console"
+                                  style={{
+                                    fontFamily:
+                                      '"Lucida Console", Monaco, monospace',
+                                  }}
+                                >
+                                  Lucida Console
+                                </option>
+                                <option
+                                  value="Garamond"
+                                  style={{ fontFamily: "Garamond, serif" }}
+                                >
+                                  Garamond
+                                </option>
+                                <option
+                                  value="Palatino"
+                                  style={{
+                                    fontFamily:
+                                      '"Palatino Linotype", "Book Antiqua", Palatino, serif',
+                                  }}
+                                >
+                                  Palatino
+                                </option>
+                                <option
+                                  value="Trebuchet MS"
+                                  style={{
+                                    fontFamily: '"Trebuchet MS", sans-serif',
+                                  }}
+                                >
+                                  Trebuchet MS
+                                </option>
+                                <option
+                                  value="Georgia"
+                                  style={{ fontFamily: "Georgia, serif" }}
+                                >
+                                  Georgia
+                                </option>
+                              </select>
+                            </div>
+                          </td>
+                          <td className="border p-2 flex place-content-center">
                             <input
                               type="checkbox"
                               id={`${dummyData[key].subitems[subKey].subName}`}
@@ -1688,60 +1817,391 @@ hover:text-white"
                           <td className="border p-2">
                             <input
                               type="color"
-                              id={`border_color_${index}`}
-                              name={`border_color_${index}`}
-                              value={rowColors[index].border}
+                              id={`${dummyData[key].subitems[subKey].subName}-border`}
+                              value={
+                                rowColors[
+                                  dummyData[key].subitems[subKey].subName
+                                ]?.border || "#000000"
+                              }
                               onChange={(e) =>
                                 handleColorChange(
-                                  dummyData[key].id,
+                                  dummyData[key].subitems[subKey].subName,
                                   "border",
                                   e.target.value
                                 )
                               }
                             />
                           </td>
-                          <td className="border p-2">
+                          <td className="border p-2 flex place-content-center">
                             <input
                               type="color"
-                              id={`header_bg_color_${index}`}
-                              name={`header_bg_color_${index}`}
-                              value={rowColors[index].headerBackground}
+                              id={`${dummyData[key].subitems[subKey].subName}-headerBackground`}
+                              value={
+                                rowColors[
+                                  dummyData[key].subitems[subKey].subName
+                                ]?.headerBackground || "#000000"
+                              }
                               onChange={(e) =>
                                 handleColorChange(
-                                  dummyData[key].id,
+                                  dummyData[key].subitems[subKey].subName,
                                   "headerBackground",
                                   e.target.value
                                 )
                               }
                             />
                           </td>
-                          <td className="border p-2"></td>
                           <td className="border p-2">
+                            <div className="">
+                              <select
+                                className="border p-2 w-full bg-white"
+                                value={
+                                  rowColors[
+                                    dummyData[key].subitems[subKey].subName
+                                  ]?.headerFont || "Arial"
+                                }
+                                onChange={(e) =>
+                                  handleColorChange(
+                                    dummyData[key].subitems[subKey].subName,
+                                    "headerFont",
+                                    e.target.value
+                                  )
+                                }
+                                style={{ fontFamily: selectedFont }}
+                              >
+                                <option
+                                  value="Arial"
+                                  style={{ fontFamily: "Arial, sans-serif" }}
+                                >
+                                  Arial
+                                </option>
+                                <option
+                                  value="Helvetica"
+                                  style={{
+                                    fontFamily: "Arial, Helvetica, sans-serif",
+                                  }}
+                                >
+                                  Helvetica
+                                </option>
+                                <option
+                                  value="Times New Roman"
+                                  style={{
+                                    fontFamily:
+                                      '"Times New Roman", Times, serif',
+                                  }}
+                                >
+                                  Times New Roman
+                                </option>
+                                <option
+                                  value="Verdana"
+                                  style={{
+                                    fontFamily: "Verdana, Geneva, sans-serif",
+                                  }}
+                                >
+                                  Verdana
+                                </option>
+                                <option
+                                  value="Courier New"
+                                  style={{
+                                    fontFamily:
+                                      '"Courier New", Courier, monospace',
+                                  }}
+                                >
+                                  Courier New
+                                </option>
+                                <option
+                                  value="Lucida Console"
+                                  style={{
+                                    fontFamily:
+                                      '"Lucida Console", Monaco, monospace',
+                                  }}
+                                >
+                                  Lucida Console
+                                </option>
+                                <option
+                                  value="Garamond"
+                                  style={{ fontFamily: "Garamond, serif" }}
+                                >
+                                  Garamond
+                                </option>
+                                <option
+                                  value="Palatino"
+                                  style={{
+                                    fontFamily:
+                                      '"Palatino Linotype", "Book Antiqua", Palatino, serif',
+                                  }}
+                                >
+                                  Palatino
+                                </option>
+                                <option
+                                  value="Trebuchet MS"
+                                  style={{
+                                    fontFamily: '"Trebuchet MS", sans-serif',
+                                  }}
+                                >
+                                  Trebuchet MS
+                                </option>
+                                <option
+                                  value="Georgia"
+                                  style={{ fontFamily: "Georgia, serif" }}
+                                >
+                                  Georgia
+                                </option>
+                              </select>
+                            </div>
+                          </td>
+                          <td className="border p-2 flex place-content-center">
                             <input
                               type="color"
-                              id={`footer_bg_color_${index}`}
-                              name={`footer_bg_color_${index}`}
-                              value={rowColors[index].footerBackground}
+                              id={`${dummyData[key].subitems[subKey].subName}-footerBackground`}
+                              value={
+                                rowColors[
+                                  dummyData[key].subitems[subKey].subName
+                                ]?.footerBackground || "#000000"
+                              }
                               onChange={(e) =>
                                 handleColorChange(
-                                  dummyData[key].id,
+                                  dummyData[key].subitems[subKey].subName,
                                   "footerBackground",
                                   e.target.value
                                 )
                               }
                             />
                           </td>
-                          <td className="border p-2"></td>
-                          <td className="border p-2"></td>
                           <td className="border p-2">
-                            <div>
+                            <div className="">
+                              <select
+                                className="border p-2 w-full bg-white"
+                                value={
+                                  rowColors[
+                                    dummyData[key].subitems[subKey].subName
+                                  ]?.footerFont || "Arial"
+                                }
+                                onChange={(e) =>
+                                  handleColorChange(
+                                    dummyData[key].subitems[subKey].subName,
+                                    "footerFont",
+                                    e.target.value
+                                  )
+                                }
+                                style={{ fontFamily: selectedFont }}
+                              >
+                                <option
+                                  value="Arial"
+                                  style={{ fontFamily: "Arial, sans-serif" }}
+                                >
+                                  Arial
+                                </option>
+                                <option
+                                  value="Helvetica"
+                                  style={{
+                                    fontFamily: "Arial, Helvetica, sans-serif",
+                                  }}
+                                >
+                                  Helvetica
+                                </option>
+                                <option
+                                  value="Times New Roman"
+                                  style={{
+                                    fontFamily:
+                                      '"Times New Roman", Times, serif',
+                                  }}
+                                >
+                                  Times New Roman
+                                </option>
+                                <option
+                                  value="Verdana"
+                                  style={{
+                                    fontFamily: "Verdana, Geneva, sans-serif",
+                                  }}
+                                >
+                                  Verdana
+                                </option>
+                                <option
+                                  value="Courier New"
+                                  style={{
+                                    fontFamily:
+                                      '"Courier New", Courier, monospace',
+                                  }}
+                                >
+                                  Courier New
+                                </option>
+                                <option
+                                  value="Lucida Console"
+                                  style={{
+                                    fontFamily:
+                                      '"Lucida Console", Monaco, monospace',
+                                  }}
+                                >
+                                  Lucida Console
+                                </option>
+                                <option
+                                  value="Garamond"
+                                  style={{ fontFamily: "Garamond, serif" }}
+                                >
+                                  Garamond
+                                </option>
+                                <option
+                                  value="Palatino"
+                                  style={{
+                                    fontFamily:
+                                      '"Palatino Linotype", "Book Antiqua", Palatino, serif',
+                                  }}
+                                >
+                                  Palatino
+                                </option>
+                                <option
+                                  value="Trebuchet MS"
+                                  style={{
+                                    fontFamily: '"Trebuchet MS", sans-serif',
+                                  }}
+                                >
+                                  Trebuchet MS
+                                </option>
+                                <option
+                                  value="Georgia"
+                                  style={{ fontFamily: "Georgia, serif" }}
+                                >
+                                  Georgia
+                                </option>
+                              </select>
+                            </div>
+                          </td>
+                          <td className="border p-2 flex place-content-center">
+                            {" "}
+                            {selectedIcon ? (
+                              <img
+                                src={selectedIcon}
+                                alt="Selected Icon"
+                                style={{ width: "20px", height: "20px" }}
+                                onChange={handleSelectionIcon}
+                              />
+                            ) : (
+                              <img
+                                src={selectIconsButtonImg}
+                                alt="Select Icons For All Sections"
+                                className="mr-2"
+                              />
+                            )}
+                          </td>
+                          <td className="border p-2 ">
+                            <div className="flex place-content-center">
                               <input
                                 type="color"
-                                id={`section_icon_color_${index}`}
+                                id={`${dummyData[key].subitems[subKey].subName}-tocBackground`}
+                                value={
+                                  rowColors[
+                                    dummyData[key].subitems[subKey].subName
+                                  ]?.tocBackground || "#000000"
+                                }
+                                onChange={(e) =>
+                                  handleColorChange(
+                                    dummyData[key].subitems[subKey].subName,
+                                    "tocBackground",
+                                    e.target.value
+                                  )
+                                }
                               />
                             </div>
                           </td>
-                          <td className="border p-2"></td>
+                          <td className="border p-2">
+                            <div className="">
+                              <select
+                                className="border p-2 w-full bg-white"
+                                value={
+                                  rowColors[
+                                    dummyData[key].subitems[subKey].subName
+                                  ]?.tocFont || "Arial"
+                                }
+                                onChange={(e) =>
+                                  handleColorChange(
+                                    dummyData[key].subitems[subKey].subName,
+                                    "tocFont",
+                                    e.target.value
+                                  )
+                                }
+                                style={{ fontFamily: selectedFont }}
+                              >
+                                <option
+                                  value="Arial"
+                                  style={{ fontFamily: "Arial, sans-serif" }}
+                                >
+                                  Arial
+                                </option>
+                                <option
+                                  value="Helvetica"
+                                  style={{
+                                    fontFamily: "Arial, Helvetica, sans-serif",
+                                  }}
+                                >
+                                  Helvetica
+                                </option>
+                                <option
+                                  value="Times New Roman"
+                                  style={{
+                                    fontFamily:
+                                      '"Times New Roman", Times, serif',
+                                  }}
+                                >
+                                  Times New Roman
+                                </option>
+                                <option
+                                  value="Verdana"
+                                  style={{
+                                    fontFamily: "Verdana, Geneva, sans-serif",
+                                  }}
+                                >
+                                  Verdana
+                                </option>
+                                <option
+                                  value="Courier New"
+                                  style={{
+                                    fontFamily:
+                                      '"Courier New", Courier, monospace',
+                                  }}
+                                >
+                                  Courier New
+                                </option>
+                                <option
+                                  value="Lucida Console"
+                                  style={{
+                                    fontFamily:
+                                      '"Lucida Console", Monaco, monospace',
+                                  }}
+                                >
+                                  Lucida Console
+                                </option>
+                                <option
+                                  value="Garamond"
+                                  style={{ fontFamily: "Garamond, serif" }}
+                                >
+                                  Garamond
+                                </option>
+                                <option
+                                  value="Palatino"
+                                  style={{
+                                    fontFamily:
+                                      '"Palatino Linotype", "Book Antiqua", Palatino, serif',
+                                  }}
+                                >
+                                  Palatino
+                                </option>
+                                <option
+                                  value="Trebuchet MS"
+                                  style={{
+                                    fontFamily: '"Trebuchet MS", sans-serif',
+                                  }}
+                                >
+                                  Trebuchet MS
+                                </option>
+                                <option
+                                  value="Georgia"
+                                  style={{ fontFamily: "Georgia, serif" }}
+                                >
+                                  Georgia
+                                </option>
+                              </select>
+                            </div>
+                          </td>
                         </tr>
                       ))
                     )}
@@ -1752,7 +2212,7 @@ hover:text-white"
                 className="text-center mx-2 text-sm"
                 style={{ width: "20%" }}
               >
-                <div>
+                {/* <div>
                   <button
                     className="flex items-center justify-center w-full
 px-4 bg-white  border border-black"
@@ -1776,7 +2236,8 @@ px-4 bg-white  border border-black"
                     Move Down
                   </button>
                 </div>
-                <div>
+                */}
+                <div onClick={handleInherit}>
                   <button
                     className="flex items-center justify-center
 w-full px-4 bg-white border border-black"
@@ -1789,10 +2250,11 @@ w-full px-4 bg-white border border-black"
                     Inherit from formatting
                   </button>
                 </div>
-                <div className="mb-6">
+                <div className="py-6">
                   <button
                     className="flex items-center justify-center
 w-full px-4 bg-white border border-black"
+                    onClick={handleMatchColor}
                   >
                     <img alt="" className="mr-2" />
                     Match Colors
@@ -1807,7 +2269,7 @@ px-4 bg-white border border-black"
                     {selectAll ? "Deselect All" : "Select All"}
                   </button>
                 </div>
-                <div>
+                {/* <div>
                   <button
                     className="flex items-center justify-center
 w-full px-4  "
@@ -1815,8 +2277,8 @@ w-full px-4  "
                     <input type="checkbox" />
                     Show print option before Generating Report
                   </button>
-                </div>
-                <div className="mb-6">
+                </div> */}
+                {/* <div className="mb-6">
                   <button
                     className="flex items-center justify-center
 w-full px-4 bg-white border border-black"
@@ -1824,11 +2286,12 @@ w-full px-4 bg-white border border-black"
                     <img alt="" className="mr-2" />
                     Select Section With Comments Ratings or Photos
                   </button>
-                </div>
-                <div>
+                </div> */}
+                <div className="py-6">
                   <button
                     className="flex items-center justify-center
 w-full px-4 bg-white border border-black"
+                    onClick={() => document.getElementById("iconInput").click()}
                   >
                     <img
                       src={selectIconsButtonImg}
@@ -1837,19 +2300,26 @@ w-full px-4 bg-white border border-black"
                     />
                     Select Icons For All Sections
                   </button>
+                  <input
+                    type="file"
+                    id="iconInput"
+                    style={{ display: "none" }}
+                    onChange={handleSelectionIcon}
+                  />
                 </div>
                 <div className="mb-6">
                   <button
                     className="flex items-center justify-center
 w-full px-4 bg-white border border-black"
+                    onClick={handleRemoveIcon}
                   >
                     <img alt="" className="mr-2" />
                     Remove All Section For All Sections
                   </button>
                 </div>
                 <div>
-                  <p className="mb-6">Select Alignment For All Section</p>
-                  <div className="flex justify-center ">
+                  {/* <p className="mb-6">Select Alignment For All Section</p> */}
+                  {/* <div className="flex justify-center ">
                     <button className="mr-2">
                       <img alt="left" />
                     </button>
@@ -1859,7 +2329,7 @@ w-full px-4 bg-white border border-black"
                     <button>
                       <img alt="right" />
                     </button>
-                  </div>
+                  </div> */}
                   <div className="flex justify-center pt-4 pb-4">
                     <div id="pdf-content">
                       <div
@@ -1875,7 +2345,8 @@ w-full px-4 bg-white border border-black"
                       </div>
                     </div>
                     <button
-                      className="border-2 border-black py-1 px-2 mr-4"
+                      className="flex items-center justify-center
+w-full px-4 bg-white border border-black"
                       onClick={exportCoverPageToPDF}
                     >
                       Generate PDF & Close

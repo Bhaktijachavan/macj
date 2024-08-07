@@ -1319,7 +1319,7 @@ const DynamicMenuComponent = ({ onClose }) => {
                       ))}
                     </select>
                     <div style={{ textAlign: "right" }}>
-                      {/* <button onClick={() => handleAction("copy")}>Copy</button> */}
+                      <button onClick={() => handleAction("copy")}>Copy</button>
                       <button onClick={() => handleAction("move")}>Move</button>
                       <button onClick={() => setShowMovePopup(false)}>
                         Cancel
