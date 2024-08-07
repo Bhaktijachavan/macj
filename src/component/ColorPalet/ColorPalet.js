@@ -40,11 +40,17 @@ const ColorPalette = ({ onClose }) => {
     });
     return colors;
   };
-
+  const[styless,setStyless]=useState([])
   const [rowColors, setRowColors] = useState(generateDefaultColors(dummyData));
   useEffect(() => {
-    console.log("rowColors", rowColors);
+  
+    setStyless(rowColors)
+   
+   
+     
+     
   }, [rowColors]);
+  
   // State for selected row
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -809,88 +815,89 @@ Throughout the report we utilize icons to make things easier to find and read. U
 
     // Loop through storedData to find the relevant key-value pair
     Object.keys(storedData).forEach((key) => {
-      if (key === "Table of Content") {
-        storedDatakey = key;
-        console.log("storedDatakey", storedDatakey);
-        storedDatavalue = storedData[key].text;
-        console.log("storedDatavalue", storedDatavalue);
-      }
+        if (key === "Table of Content") {
+            storedDatakey = key;
+            storedDatavalue = storedData[key].text;
+        }
     });
 
-    // Set font size and text color
+    // Set font size and text color for initial text
     let currentYPosition = 18; // Initial vertical position for text placement
     let currentXPosition = 5;
-    let tabCounter = 1;
-    const tableData = [["Table of Contents"]];
-    const fontSize = 16;
-    const fontColor = "black";
-    pdf.setFontSize(fontSize);
-    pdf.setTextColor(fontColor);
+    pdf.setFontSize(16);
+    pdf.setTextColor("black");
 
     // Add storedDatavalue if storedDatakey is "Table of Content"
     if (storedDatakey === "Table of Content") {
-      const editTextLines = pdf.splitTextToSize(storedDatavalue, 194);
-      editTextLines.forEach((line) => {
-        pdf.text(line, currentXPosition, currentYPosition);
-        currentYPosition += 8; // Adjust vertical position after adding each line of text
-      });
+        const editTextLines = pdf.splitTextToSize(storedDatavalue, 194);
+        editTextLines.forEach((line) => {
+            pdf.text(line, currentXPosition, currentYPosition);
+            currentYPosition += 8; // Adjust vertical position after adding each line of text
+        });
     }
+
+    // Prepare data for the table of contents
+    const tableData = [["Table of Contents"]];
+    let tabCounter = 1;
 
     // Loop through each item in parsedMenuData
     Object.values(parsedMenuData).forEach((item, index) => {
-      // Check if the item has subitems (prevent errors)
-      if (!item.subitems) {
-        console.warn(
-          `Item ${
-            index + 1
-          } in parsedMenuData has no subitems to display in the table of contents.`
-        );
-        return; // Skip to the next item if no subitems
-      }
+        // Check if the item has subitems (prevent errors)
+        if (!item.subitems) {
+            console.warn(
+                `Item ${
+                    index + 1
+                } in parsedMenuData has no subitems to display in the table of contents.`
+            );
+            return; // Skip to the next item if no subitems
+        }
 
-      // Variable to track the current vertical position within the subitems section
-      let currentYPosition = 40 + index * 10; // Start after index gap
-
-      // Loop through subitems and add them to the table of contents
-      item.subitems.forEach((subitem, subindex) => {
-        tableData.push([subitem.subName]);
-
-        // Increment tabCounter
-        tabCounter++;
-      });
+        // Loop through subitems and add them to the table of contents
+        item.subitems.forEach((subitem) => {
+            tableData.push([subitem.subName]);
+            tabCounter++;
+        });
     });
 
     const tableOptions = {
-      startY: currentYPosition,
-      startX: currentXPosition,
-      theme: "grid", // Apply grid theme for table
-      headStyles: {
-        fillColor: [0, 0, 0], // Background color for header row
-        fontSize: 20, // Increase font size for header
-        halign: "center", // Center align header text
-      },
-      columnStyles: {
-        0: { cellWidth: 180, halign: "center", fontSize: 20 }, // Adjust column width for Sr. No
-      },
+        startY: currentYPosition,
+        startX: currentXPosition,
+        theme: "grid", // Apply grid theme for table
+        headStyles: {
+            fillColor: [0, 0, 0], // Background color for header row
+            fontSize: 20, // Increase font size for header
+            halign: "center", // Center align header text
+        },
+        columnStyles: {
+            0: { cellWidth: 180, halign: "center", fontSize: 20 }, // Adjust column width
+        },
     };
 
     const tableRows = tableData.map((rowData, rowIndex) => {
-      return rowData.map((cellData, colIndex) => {
-        // Set text color to red for cells in the "Damage Data" column
-        if (colIndex === 3 && rowIndex > 0) {
-          return { content: cellData, styles: { textColor: [255, 0, 0] } };
-        }
-        return cellData;
-      });
+        return rowData.map((cellData, colIndex) => {
+            let styles = {
+            };
+            // Set styles based on the styless object
+            Object.keys(styless).forEach((item) => {
+                if (item === cellData) {
+                    // styles.textColor = [255, 0, 0];
+                    styles.font = styless[item].tocFont;
+                    styles.fillColor = styless[item].tocBackground; // Use fillColor for background
+                }
+            });
+
+            return { content: cellData, styles };
+        });
     });
 
     // Generate table using autoTable method
     pdf.autoTable({
-      head: [tableRows[0]], // Extract header row from tableRows
-      body: tableRows.slice(1), // Extract data rows from tableRows
-      ...tableOptions,
+        head: [tableRows[0]], // Extract header row from tableRows
+        body: tableRows.slice(1), // Extract data rows from tableRows
+        ...tableOptions,
     });
-  }
+}
+
 
   function mainData(pdf) {
     const mainData = JSON.parse(localStorage.getItem("menuData") || "{}");
