@@ -286,7 +286,7 @@ const Location = ({ imageUrl }) => {
     setSelectedMenuId(selectedMenu);
   };
   useEffect(() => {
-    const menuDataString = localStorage.getItem("menuData");
+    const menuDataString = localStorage.getItem("menuData") || "{}";
     const parsedMenuData = JSON.parse(menuDataString);
 
     let damageNames = [];
